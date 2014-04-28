@@ -20,20 +20,20 @@ import eu.stratosphere.api.common.operators.base.PlainMapOperatorBase;
 import eu.stratosphere.api.java.tuple.Tuple;
 import eu.stratosphere.api.java.typeutils.TypeInformation;
 
-public class PlanProjectOperator<T, R extends Tuple> 
+public class PlanProjectOperator<T, R extends Tuple>
 	extends PlainMapOperatorBase<GenericMap<T, R>>
 	implements UnaryJavaPlanNode<T, R>
 {
 	private final TypeInformation<T> inType;
 	private final TypeInformation<R> outType;
-	
-	
+
+
 	public PlanProjectOperator(int[] fields, String name, TypeInformation<T> inType, TypeInformation<R> outType) {
 		super(new MapProjector<T, R>(fields, outType.createSerializer().createInstance()), name);
 		this.inType = inType;
 		this.outType = outType;
 	}
-	
+
 	@Override
 	public TypeInformation<R> getReturnType() {
 		return this.outType;
@@ -43,19 +43,19 @@ public class PlanProjectOperator<T, R extends Tuple>
 	public TypeInformation<T> getInputType() {
 		return this.inType;
 	}
-	
-	
+
+
 	// --------------------------------------------------------------------------------------------
-	
-	public static final class MapProjector<T, R extends Tuple> 
+
+	public static final class MapProjector<T, R extends Tuple>
 		extends AbstractFunction
 		implements GenericMap<T, R>
 	{
 		private static final long serialVersionUID = 1L;
-		
+
 		private final int[] fields;
 		private final R outTuple;
-		
+
 		private MapProjector(int[] fields, R outTupleInstance) {
 			this.fields = fields;
 			this.outTuple = outTupleInstance;
@@ -64,7 +64,7 @@ public class PlanProjectOperator<T, R extends Tuple>
 		// TODO We should use code generation for this.
 		@Override
 		public R map(T inTuple) throws Exception {
-			
+
 			for(int i=0; i<fields.length; i++) {
 				outTuple.setField(((Tuple)inTuple).getField(fields[i]), i);
 			}

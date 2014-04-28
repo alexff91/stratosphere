@@ -14,7 +14,7 @@
 /**
  * This file is based on source code from the Hadoop Project (http://hadoop.apache.org/), licensed by the Apache
  * Software Foundation (ASF) under the Apache License, Version 2.0. See the NOTICE file distributed with this work for
- * additional information regarding copyright ownership. 
+ * additional information regarding copyright ownership.
  */
 
 package eu.stratosphere.nephele.ipc;
@@ -39,7 +39,7 @@ class ConnectionHeader implements IOReadableWritable {
 
 	/**
 	 * Creates a new {@link ConnectionHeader} with the given <code>protocol</code>.
-	 * 
+	 *
 	 * @param protocol
 	 *        protocol used for communication between the IPC client and the server
 	 */

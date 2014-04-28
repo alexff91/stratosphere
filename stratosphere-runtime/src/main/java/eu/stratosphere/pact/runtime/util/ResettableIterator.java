@@ -28,5 +28,5 @@ public interface ResettableIterator<E> extends Iterator<E>
 	 * Resets the iterator.
 	 */
 	public void reset() throws IOException;
-	
+
 }

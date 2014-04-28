@@ -28,63 +28,63 @@ import eu.stratosphere.pact.runtime.shipping.ShipStrategyType;
 import eu.stratosphere.pact.runtime.task.util.LocalStrategy;
 
 /**
- * 
+ *
  */
 public class Channel implements EstimateProvider, Cloneable, DumpableConnection<PlanNode> {
-	
+
 	private PlanNode source;
-	
+
 	private PlanNode target;
-	
+
 	private ShipStrategyType shipStrategy = ShipStrategyType.NONE;
-	
+
 	private LocalStrategy localStrategy = LocalStrategy.NONE;
-	
+
 	private FieldList shipKeys;
-	
+
 	private FieldList localKeys;
-	
+
 	private boolean[] shipSortOrder;
-	
+
 	private boolean[] localSortOrder;
-	
+
 	private GlobalProperties globalProps;
-	
+
 	private LocalProperties localProps;
-	
+
 	private TypeSerializerFactory<?> serializer;
-	
+
 	private TypeComparatorFactory<?> shipStrategyComparator;
-	
+
 	private TypeComparatorFactory<?> localStrategyComparator;
-	
+
 	private DataDistribution dataDistribution;
-	
+
 	private TempMode tempMode;
-	
+
 	private long tempMemory;
-	
+
 	private long memoryGlobalStrategy;
-	
+
 	private long memoryLocalStrategy;
-	
+
 	private int replicationFactor = 1;
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public Channel(PlanNode sourceNode) {
 		this(sourceNode, null);
 	}
-	
+
 	public Channel(PlanNode sourceNode, TempMode tempMode) {
 		this.source = sourceNode;
 		this.tempMode = (tempMode == null ? TempMode.NONE : tempMode);
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 	//                                         Accessors
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Gets the source of this Channel.
 	 *
@@ -93,7 +93,7 @@ public class Channel implements EstimateProvider, Cloneable, DumpableConnection<
 	public PlanNode getSource() {
 		return this.source;
 	}
-	
+
 	/**
 	 * Sets the target of this Channel.
 	 *
@@ -102,7 +102,7 @@ public class Channel implements EstimateProvider, Cloneable, DumpableConnection<
 	public void setTarget(PlanNode target) {
 		this.target = target;
 	}
-	
+
 	/**
 	 * Gets the target of this Channel.
 	 *
@@ -111,84 +111,84 @@ public class Channel implements EstimateProvider, Cloneable, DumpableConnection<
 	public PlanNode getTarget() {
 		return this.target;
 	}
-	
+
 	public void setShipStrategy(ShipStrategyType strategy) {
 		setShipStrategy(strategy, null, null);
 	}
-	
+
 	public void setShipStrategy(ShipStrategyType strategy, FieldList keys) {
 		setShipStrategy(strategy, keys, null);
 	}
-	
+
 	public void setShipStrategy(ShipStrategyType strategy, FieldList keys, boolean[] sortDirection) {
 		this.shipStrategy = strategy;
 		this.shipKeys = keys;
 		this.shipSortOrder = sortDirection;
 		this.globalProps = null;		// reset the global properties
 	}
-	
-	
+
+
 	public ShipStrategyType getShipStrategy() {
 		return this.shipStrategy;
 	}
-	
+
 	public FieldList getShipStrategyKeys() {
 		return this.shipKeys;
 	}
-	
+
 	public boolean[] getShipStrategySortOrder() {
 		return this.shipSortOrder;
 	}
-	
+
 	public void setLocalStrategy(LocalStrategy strategy) {
 		setLocalStrategy(strategy, null, null);
 	}
-	
+
 	public void setLocalStrategy(LocalStrategy strategy, FieldList keys) {
 		setLocalStrategy(strategy, keys, null);
 	}
-	
+
 	public void setLocalStrategy(LocalStrategy strategy, FieldList keys, boolean[] sortDirection) {
 		this.localStrategy = strategy;
 		this.localKeys = keys;
 		this.localSortOrder = sortDirection;
 		this.localProps = null;		// reset the local properties
 	}
-	
+
 	public LocalStrategy getLocalStrategy() {
 		return this.localStrategy;
 	}
-	
+
 	public FieldList getLocalStrategyKeys() {
 		return this.localKeys;
 	}
-	
+
 	public boolean[] getLocalStrategySortOrder() {
 		return this.localSortOrder;
 	}
-	
+
 	public void setDataDistribution(DataDistribution dataDistribution) {
 		this.dataDistribution = dataDistribution;
 	}
-	
+
 	public DataDistribution getDataDistribution() {
 		return this.dataDistribution;
 	}
-	
+
 	public TempMode getTempMode() {
 		return this.tempMode;
 	}
 
 	/**
 	 * Sets the temp mode of the connection.
-	 * 
+	 *
 	 * @param tempMode
 	 *        The temp mode of the connection.
 	 */
 	public void setTempMode(TempMode tempMode) {
 		this.tempMode = tempMode;
 	}
-	
+
 	/**
 	 * Gets the memory for materializing the channel's result from this Channel.
 	 *
@@ -197,7 +197,7 @@ public class Channel implements EstimateProvider, Cloneable, DumpableConnection<
 	public long getTempMemory() {
 		return this.tempMemory;
 	}
-	
+
 	/**
 	 * Sets the memory for materializing the channel's result from this Channel.
 	 *
@@ -206,25 +206,25 @@ public class Channel implements EstimateProvider, Cloneable, DumpableConnection<
 	public void setTempMemory(long tempMemory) {
 		this.tempMemory = tempMemory;
 	}
-	
+
 	/**
 	 * Sets the replication factor of the connection.
-	 * 
+	 *
 	 * @param factor The replication factor of the connection.
 	 */
 	public void setReplicationFactor(int factor) {
 		this.replicationFactor = factor;
 	}
-	
+
 	/**
 	 * Returns the replication factor of the connection.
-	 * 
+	 *
 	 * @return The replication factor of the connection.
 	 */
 	public int getReplicationFactor() {
 		return this.replicationFactor;
 	}
-	
+
 	/**
 	 * Gets the serializer from this Channel.
 	 *
@@ -234,7 +234,7 @@ public class Channel implements EstimateProvider, Cloneable, DumpableConnection<
 		return serializer;
 	}
 
-	
+
 	/**
 	 * Sets the serializer for this Channel.
 	 *
@@ -243,7 +243,7 @@ public class Channel implements EstimateProvider, Cloneable, DumpableConnection<
 	public void setSerializer(TypeSerializerFactory<?> serializer) {
 		this.serializer = serializer;
 	}
-	
+
 	/**
 	 * Gets the ship strategy comparator from this Channel.
 	 *
@@ -252,7 +252,7 @@ public class Channel implements EstimateProvider, Cloneable, DumpableConnection<
 	public TypeComparatorFactory<?> getShipStrategyComparator() {
 		return shipStrategyComparator;
 	}
-	
+
 	/**
 	 * Sets the ship strategy comparator for this Channel.
 	 *
@@ -261,7 +261,7 @@ public class Channel implements EstimateProvider, Cloneable, DumpableConnection<
 	public void setShipStrategyComparator(TypeComparatorFactory<?> shipStrategyComparator) {
 		this.shipStrategyComparator = shipStrategyComparator;
 	}
-	
+
 	/**
 	 * Gets the local strategy comparator from this Channel.
 	 *
@@ -270,7 +270,7 @@ public class Channel implements EstimateProvider, Cloneable, DumpableConnection<
 	public TypeComparatorFactory<?> getLocalStrategyComparator() {
 		return localStrategyComparator;
 	}
-	
+
 	/**
 	 * Sets the local strategy comparator for this Channel.
 	 *
@@ -279,27 +279,27 @@ public class Channel implements EstimateProvider, Cloneable, DumpableConnection<
 	public void setLocalStrategyComparator(TypeComparatorFactory<?> localStrategyComparator) {
 		this.localStrategyComparator = localStrategyComparator;
 	}
-	
+
 	public long getMemoryGlobalStrategy() {
 		return memoryGlobalStrategy;
 	}
-	
+
 	public void setMemoryGlobalStrategy(long memoryGlobalStrategy) {
 		this.memoryGlobalStrategy = memoryGlobalStrategy;
 	}
-	
+
 	public long getMemoryLocalStrategy() {
 		return memoryLocalStrategy;
 	}
-	
+
 	public void setMemoryLocalStrategy(long memoryLocalStrategy) {
 		this.memoryLocalStrategy = memoryLocalStrategy;
 	}
-	
+
 	public boolean isOnDynamicPath() {
 		return this.source.isOnDynamicPath();
 	}
-	
+
 	public int getCostWeight() {
 		return this.source.getCostWeight();
 	}
@@ -307,7 +307,7 @@ public class Channel implements EstimateProvider, Cloneable, DumpableConnection<
 	// --------------------------------------------------------------------------------------------
 	//                                Statistic Estimates
 	// --------------------------------------------------------------------------------------------
-	
+
 
 	@Override
 	public long getEstimatedOutputSize() {
@@ -318,16 +318,16 @@ public class Channel implements EstimateProvider, Cloneable, DumpableConnection<
 	public long getEstimatedNumRecords() {
 		return this.source.template.getEstimatedNumRecords() * this.replicationFactor;
 	}
-	
+
 	@Override
 	public float getEstimatedAvgWidthPerOutputRecord() {
 		return this.source.template.getEstimatedAvgWidthPerOutputRecord();
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 	//                                Data Property Handling
 	// --------------------------------------------------------------------------------------------
-	
+
 
 	public GlobalProperties getGlobalProperties() {
 		if (this.globalProps == null) {
@@ -365,10 +365,10 @@ public class Channel implements EstimateProvider, Cloneable, DumpableConnection<
 					throw new CompilerException("Cannot produce GlobalProperties before ship strategy is set.");
 			}
 		}
-		
+
 		return this.globalProps;
 	}
-	
+
 	public LocalProperties getLocalProperties() {
 		if (this.localProps == null) {
 			this.localProps = getLocalPropertiesAfterShippingOnly().clone();
@@ -383,10 +383,10 @@ public class Channel implements EstimateProvider, Cloneable, DumpableConnection<
 					throw new CompilerException("Unsupported local strategy for channel.");
 			}
 		}
-		
+
 		return this.localProps;
 	}
-	
+
 	public LocalProperties getLocalPropertiesAfterShippingOnly() {
 		if (this.shipStrategy == ShipStrategyType.FORWARD) {
 			return this.source.getLocalProperties();
@@ -408,18 +408,18 @@ public class Channel implements EstimateProvider, Cloneable, DumpableConnection<
 			return props;
 		}
 	}
-	
+
 	public void adjustGlobalPropertiesForFullParallelismChange() {
 		if (this.shipStrategy == null || this.shipStrategy == ShipStrategyType.NONE) {
 			throw new IllegalStateException("Cannot adjust channel for degree of parallelism " +
 					"change before the ship strategy is set.");
 		}
-		
+
 		// make sure the properties are acquired
 		if (this.globalProps == null) {
 			getGlobalProperties();
 		}
-		
+
 		// some strategies globally reestablish properties
 		switch (this.shipStrategy) {
 		case FORWARD:
@@ -435,18 +435,18 @@ public class Channel implements EstimateProvider, Cloneable, DumpableConnection<
 		}
 		throw new CompilerException("Unrecognized Ship Strategy Type: " + this.shipStrategy);
 	}
-	
+
 	public void adjustGlobalPropertiesForLocalParallelismChange() {
 		if (this.shipStrategy == null || this.shipStrategy == ShipStrategyType.NONE) {
 			throw new IllegalStateException("Cannot adjust channel for degree of parallelism " +
 					"change before the ship strategy is set.");
 		}
-		
+
 		// make sure the properties are acquired
 		if (this.globalProps == null) {
 			getGlobalProperties();
 		}
-		
+
 		// some strategies globally reestablish properties
 		switch (this.shipStrategy) {
 		case FORWARD:
@@ -460,15 +460,15 @@ public class Channel implements EstimateProvider, Cloneable, DumpableConnection<
 		case PARTITION_RANDOM:
 			return;
 		}
-		
+
 		throw new CompilerException("Unrecognized Ship Strategy Type: " + this.shipStrategy);
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Utility method used while swapping binary union nodes for n-ary union nodes.
-	 * 
+	 *
 	 * @param newUnionNode
 	 */
 	public void swapUnionNodes(PlanNode newUnionNode) {
@@ -478,22 +478,22 @@ public class Channel implements EstimateProvider, Cloneable, DumpableConnection<
 			this.source = newUnionNode;
 		}
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public int getMaxDepth() {
 		return this.source.getOptimizerNode().getMaxDepth() + 1;
 	}
 	// --------------------------------------------------------------------------------------------
 
-	
+
 
 	public String toString() {
 		return "Channel (" + this.source + (this.target == null ? ')' : ") -> (" + this.target + ')') +
 				'[' + this.shipStrategy + "] [" + this.localStrategy + "] " +
 				(this.tempMode == null || this.tempMode == TempMode.NONE ? "{NO-TEMP}" : this.tempMode);
 	}
-	
+
 	public Channel clone() {
 		try {
 			return (Channel) super.clone();

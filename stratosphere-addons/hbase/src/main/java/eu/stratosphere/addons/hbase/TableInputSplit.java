@@ -42,7 +42,7 @@ public class TableInputSplit extends LocatableInputSplit {
 
 	/**
 	 * Creates a new table input split
-	 * 
+	 *
 	 * @param splitNumber
 	 *        the number of the input split
 	 * @param hostnames
@@ -76,7 +76,7 @@ public class TableInputSplit extends LocatableInputSplit {
 
 	/**
 	 * Returns the table name.
-	 * 
+	 *
 	 * @return The table name.
 	 */
 	public byte[] getTableName() {
@@ -85,7 +85,7 @@ public class TableInputSplit extends LocatableInputSplit {
 
 	/**
 	 * Returns the start row.
-	 * 
+	 *
 	 * @return The start row.
 	 */
 	public byte[] getStartRow() {
@@ -94,7 +94,7 @@ public class TableInputSplit extends LocatableInputSplit {
 
 	/**
 	 * Returns the end row.
-	 * 
+	 *
 	 * @return The end row.
 	 */
 	public byte[] getEndRow() {

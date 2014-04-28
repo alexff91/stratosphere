@@ -30,11 +30,11 @@ import eu.stratosphere.api.java.typeutils.TupleTypeInfo;
 public class ProjectionOperatorTest {
 
 	// TUPLE DATA
-	
-	private final List<Tuple5<Integer, Long, String, Long, Integer>> emptyTupleData = 
+
+	private final List<Tuple5<Integer, Long, String, Long, Integer>> emptyTupleData =
 			new ArrayList<Tuple5<Integer, Long, String, Long, Integer>>();
-	
-	private final TupleTypeInfo<Tuple5<Integer, Long, String, Long, Integer>> tupleTypeInfo = new 
+
+	private final TupleTypeInfo<Tuple5<Integer, Long, String, Long, Integer>> tupleTypeInfo = new
 			TupleTypeInfo<Tuple5<Integer, Long, String, Long, Integer>>(
 					BasicTypeInfo.INT_TYPE_INFO,
 					BasicTypeInfo.LONG_TYPE_INFO,
@@ -42,14 +42,14 @@ public class ProjectionOperatorTest {
 					BasicTypeInfo.LONG_TYPE_INFO,
 					BasicTypeInfo.INT_TYPE_INFO
 			);
-	
+
 	// LONG DATA
-	
+
 	private final List<Long> emptyLongData = new ArrayList<Long>();
-	
+
 	@Test
 	public void testFieldsProjection() {
-		
+
 		final ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 		DataSet<Tuple5<Integer, Long, String, Long, Integer>> tupleDs = env.fromCollection(emptyTupleData, tupleTypeInfo);
 
@@ -59,7 +59,7 @@ public class ProjectionOperatorTest {
 		} catch(Exception e) {
 			Assert.fail();
 		}
-		
+
 		// should not work: too many fields
 		try {
 			tupleDs.project(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22);
@@ -69,7 +69,7 @@ public class ProjectionOperatorTest {
 		} catch(Exception e) {
 			Assert.fail();
 		}
-		
+
 		// should not work: index out of bounds of input tuple
 		try {
 			tupleDs.project(0,5,2);
@@ -79,7 +79,7 @@ public class ProjectionOperatorTest {
 		} catch(Exception e) {
 			Assert.fail();
 		}
-		
+
 		// should not work: not applied to tuple dataset
 		DataSet<Long> longDs = env.fromCollection(emptyLongData, BasicTypeInfo.LONG_TYPE_INFO);
 		try {
@@ -90,44 +90,44 @@ public class ProjectionOperatorTest {
 		} catch(Exception e) {
 			Assert.fail();
 		}
-		
+
 	}
-	
+
 	@Test
 	public void testFieldMaskProjection() {
-		
+
 		final ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
-		DataSet<Tuple5<Integer, Long, String, Long, Integer>> tupleDs = 
+		DataSet<Tuple5<Integer, Long, String, Long, Integer>> tupleDs =
 				env.fromCollection(emptyTupleData, tupleTypeInfo);
-		
+
 		// should work
 		try {
 			tupleDs.project("TFTTF");
 		} catch(Exception e) {
 			Assert.fail();
 		}
-		
+
 		// should work
 		try {
 			tupleDs.project("tfftf");
 		} catch(Exception e) {
 			Assert.fail();
 		}
-		
+
 		// should work
 		try {
 			tupleDs.project("01101");
 		} catch(Exception e) {
 			Assert.fail();
 		}
-		
+
 		// should work
 		try {
 			tupleDs.project("101");
 		} catch(Exception e) {
 			Assert.fail();
 		}
-		
+
 		// should not work: too many fields
 		try {
 			tupleDs.project("TTTTTTTTTTTTTTTTTTTTTTT");
@@ -137,7 +137,7 @@ public class ProjectionOperatorTest {
 		} catch(Exception e) {
 			Assert.fail();
 		}
-		
+
 		// should not work: too few fields
 		try {
 			tupleDs.project("");
@@ -147,7 +147,7 @@ public class ProjectionOperatorTest {
 		} catch(Exception e) {
 			Assert.fail();
 		}
-		
+
 		// should not work: no selected field
 		try {
 			tupleDs.project("FFFFF");
@@ -157,7 +157,7 @@ public class ProjectionOperatorTest {
 		} catch(Exception e) {
 			Assert.fail();
 		}
-		
+
 		// should not work: illegal character
 		try {
 			tupleDs.project("TFXFT");
@@ -167,7 +167,7 @@ public class ProjectionOperatorTest {
 		} catch(Exception e) {
 			Assert.fail();
 		}
-		
+
 		// should not work: not applied to tuple dataset
 		DataSet<Long> longDs = env.fromCollection(emptyLongData, BasicTypeInfo.LONG_TYPE_INFO);
 		try {
@@ -178,55 +178,55 @@ public class ProjectionOperatorTest {
 		} catch(Exception e) {
 			Assert.fail();
 		}
-		
+
 	}
-	
+
 	@Test
 	public void testFieldFlagsProjection() {
-		
+
 		final ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
-		DataSet<Tuple5<Integer, Long, String, Long, Integer>> tupleDs = 
+		DataSet<Tuple5<Integer, Long, String, Long, Integer>> tupleDs =
 				env.fromCollection(emptyTupleData, tupleTypeInfo);
-		
+
 		// should work
 		try {
 			tupleDs.project(true, true, false, true, false);
 		} catch(Exception e) {
 			Assert.fail();
 		}
-		
+
 		// should work
 		try {
 			tupleDs.project(false, true);
 		} catch(Exception e) {
 			Assert.fail();
 		}
-		
+
 		// should not work: too many fields
 		try {
 			tupleDs.project(
-					true, true, true, true, true, true, true, true, true, true, 
+					true, true, true, true, true, true, true, true, true, true,
 					true, true, true, true, true, true, true, true, true, true,
 					true, true, true);
-			
+
 			Assert.fail();
 		} catch(IllegalArgumentException iae) {
 			// we're good here
 		} catch(Exception e) {
 			Assert.fail();
 		}
-		
+
 		// should not work: no selected field
 		try {
 			tupleDs.project(false, false, false, false, false);
-			
+
 			Assert.fail();
 		} catch(IllegalArgumentException iae) {
 			// we're good here
 		} catch(Exception e) {
 			Assert.fail();
 		}
-		
+
 		// should not work: not applied to tuple dataset
 		DataSet<Long> longDs = env.fromCollection(emptyLongData, BasicTypeInfo.LONG_TYPE_INFO);
 		try {
@@ -237,12 +237,12 @@ public class ProjectionOperatorTest {
 		} catch(Exception e) {
 			Assert.fail();
 		}
-		
+
 	}
-	
+
 	@Test
 	public void testProjectionTypes() {
-		
+
 		final ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 		DataSet<Tuple5<Integer, Long, String, Long, Integer>> tupleDs = env.fromCollection(emptyTupleData, tupleTypeInfo);
 
@@ -252,7 +252,7 @@ public class ProjectionOperatorTest {
 		} catch(Exception e) {
 			Assert.fail();
 		}
-		
+
 		// should not work: too few types
 		try {
 			tupleDs.project(2,1,4).types(String.class, Long.class);
@@ -262,7 +262,7 @@ public class ProjectionOperatorTest {
 		} catch(Exception e) {
 			Assert.fail();
 		}
-		
+
 		// should not work: given types do not match input types
 		try {
 			tupleDs.project(2,1,4).types(String.class, Long.class, Long.class);
@@ -272,7 +272,7 @@ public class ProjectionOperatorTest {
 		} catch(Exception e) {
 			Assert.fail();
 		}
-		
+
 	}
-	
+
 }

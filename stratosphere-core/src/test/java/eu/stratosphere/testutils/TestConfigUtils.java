@@ -23,22 +23,22 @@ import eu.stratosphere.configuration.GlobalConfiguration;
  *
  */
 public class TestConfigUtils {
-	
+
 	public static final void loadGlobalConf(String[] keys, String[] values) throws IOException {
 		loadGlobalConf(getConfAsString(keys, values));
 	}
-	
+
 	public static void loadGlobalConf(String contents) throws IOException {
 		final File tempDir = new File(System.getProperty("java.io.tmpdir"));
 		File confDir = null;
 		do {
 			confDir = new File(tempDir, TestFileUtils.randomFileName());
 		} while (confDir.exists());
-		
+
 		try {
 			confDir.mkdirs();
 			final File confFile = new File(confDir, "tempConfig.xml");
-		
+
 			try {
 				BufferedWriter writer = new BufferedWriter(new FileWriter(confFile));
 				try {
@@ -55,15 +55,15 @@ public class TestConfigUtils {
 			confDir.delete();
 		}
 	}
-	
+
 	public static final String getConfAsString(String[] keys, String[] values) {
 		if (keys == null || values == null || keys.length != values.length) {
 			throw new IllegalArgumentException();
 		}
-		
+
 		StringBuilder bld = new StringBuilder();
 		bld.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<configuration>\n");
-		
+
 		for (int i = 0; i < keys.length; i++) {
 			bld.append("<property>\n<key>").append(keys[i]).append("</key>\n");
 			bld.append("<value>").append(values[i]).append("</value>\n</property>\n");
@@ -73,7 +73,7 @@ public class TestConfigUtils {
 	}
 
 	// ------------------------------------------------------------------------
-	
+
 	private TestConfigUtils() {}
 
 }

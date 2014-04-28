@@ -25,7 +25,7 @@ import eu.stratosphere.types.Key;
  * the newline character.
  * <p>
  * This class is a wrapper for the key part of the integer number.
- * 
+ *
  */
 public final class TeraKey implements Key {
 	private static final long serialVersionUID = 1L;
@@ -39,16 +39,16 @@ public final class TeraKey implements Key {
 	 * The buffer to store the key.
 	 */
 	private byte[] key;
-	
+
 	/**
 	 * The offset to the key byte sequence.
 	 */
 	private int offset;
 
 	/**
-	 * Constructs a new key object. The key points to the subsequence in the given array, i.e. it 
+	 * Constructs a new key object. The key points to the subsequence in the given array, i.e. it
 	 * is sharing the byte array.
-	 * 
+	 *
 	 * @param srcBuf The source buffer to read the key from.
 	 * @param offset The offset in the byte array where the key subsequence starts.
 	 */
@@ -63,11 +63,11 @@ public final class TeraKey implements Key {
 	public TeraKey() {
 		this.key = new byte[KEY_SIZE];
 	}
-	
+
 	/**
-	 * Sets the value of this key object. This key will point to the subsequence in the given array, i.e. it 
+	 * Sets the value of this key object. This key will point to the subsequence in the given array, i.e. it
 	 * is sharing the byte array.
-	 * 
+	 *
 	 * @param data The source buffer to read the key from.
 	 * @param offset The offset in the byte array where the key subsequence starts.
 	 */
@@ -125,9 +125,10 @@ public final class TeraKey implements Key {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (getClass() != obj.getClass())
-			return false;
-		
+		if (getClass() != obj.getClass()) {
+		return false;
+		}
+
 		final TeraKey other = (TeraKey) obj;
 		for (int i = 0, tx = this.offset, ox = other.offset; i < KEY_SIZE; i++, tx++, ox++) {
 			if (this.key[tx] != other.key[ox]) {
@@ -139,7 +140,7 @@ public final class TeraKey implements Key {
 
 	/**
 	 * Copies the key to the given byte buffer.
-	 * 
+	 *
 	 * @param buf
 	 *        the buffer to copy the key to
 	 */

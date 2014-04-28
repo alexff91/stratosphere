@@ -28,15 +28,15 @@ import eu.stratosphere.nephele.io.channels.bytebuffered.NetworkInputChannel;
 public interface InputGate<T extends IOReadableWritable> extends Gate<T> {
 
 	/**
-	 * Reads a record from one of the associated input channels. Channels are read such that one buffer from a channel is 
+	 * Reads a record from one of the associated input channels. Channels are read such that one buffer from a channel is
 	 * consecutively consumed. The buffers in turn are consumed in the order in which they arrive.
 	 * Note that this method is not guaranteed to return a record, because the currently available channel data may not always
 	 * constitute an entire record, when events or partial records are part of the data.
-	 * 
+	 *
 	 * When called even though no data is available, this call will block until data is available, so this method should be called
 	 * when waiting is desired (such as when synchronously consuming a single gate) or only when it is known that data is available
 	 * (such as when reading a union of multiple input gates).
-	 * 
+	 *
 	 * @param target The record object into which to construct the complete record.
 	 * @return The result indicating whether a complete record is available, a event is available, only incomplete data
 	 *         is available (NONE), or the gate is exhausted.
@@ -47,14 +47,14 @@ public interface InputGate<T extends IOReadableWritable> extends Gate<T> {
 
 	/**
 	 * Returns the number of input channels associated with this input gate.
-	 * 
+	 *
 	 * @return the number of input channels associated with this input gate
 	 */
 	int getNumberOfInputChannels();
 
 	/**
 	 * Returns the input channel from position <code>pos</code> of the gate's internal channel list.
-	 * 
+	 *
 	 * @param pos
 	 *        the position to retrieve the channel from
 	 * @return the channel from the given position or <code>null</code> if such position does not exist.
@@ -64,7 +64,7 @@ public interface InputGate<T extends IOReadableWritable> extends Gate<T> {
 	/**
 	 * Notify the gate that the channel with the given index has
 	 * at least one record available.
-	 * 
+	 *
 	 * @param channelIndex
 	 *        the index of the channel which has at least one record available
 	 */
@@ -72,7 +72,7 @@ public interface InputGate<T extends IOReadableWritable> extends Gate<T> {
 
 	/**
 	 * Notify the gate that is has consumed a data unit from the channel with the given index
-	 * 
+	 *
 	 * @param channelIndex
 	 *        the index of the channel from which a data unit has been consumed
 	 */
@@ -82,7 +82,7 @@ public interface InputGate<T extends IOReadableWritable> extends Gate<T> {
 	 * Immediately closes the input gate and all its input channels. The corresponding
 	 * output channels are notified. Any remaining records in any buffers or queue is considered
 	 * irrelevant and is discarded.
-	 * 
+	 *
 	 * @throws IOException
 	 *         thrown if an I/O error occurs while closing the gate
 	 * @throws InterruptedException
@@ -92,7 +92,7 @@ public interface InputGate<T extends IOReadableWritable> extends Gate<T> {
 
 	/**
 	 * Creates a new network input channel and assigns it to the given input gate.
-	 * 
+	 *
 	 * @param inputGate
 	 *        the input gate the channel shall be assigned to
 	 * @param channelID
@@ -109,7 +109,7 @@ public interface InputGate<T extends IOReadableWritable> extends Gate<T> {
 
 	/**
 	 * Creates a new in-memory input channel and assigns it to the given input gate.
-	 * 
+	 *
 	 * @param inputGate
 	 *        the input gate the channel shall be assigned to
 	 * @param channelID
@@ -125,12 +125,12 @@ public interface InputGate<T extends IOReadableWritable> extends Gate<T> {
 
 	/**
 	 * Registers a {@link RecordAvailabilityListener} with this input gate.
-	 * 
+	 *
 	 * @param listener
 	 *        the listener object to be registered
 	 */
 	void registerRecordAvailabilityListener(RecordAvailabilityListener<T> listener);
-	
-	
+
+
 	AbstractTaskEvent getCurrentEvent();
 }

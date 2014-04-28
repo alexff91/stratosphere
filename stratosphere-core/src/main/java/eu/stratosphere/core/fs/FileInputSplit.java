@@ -14,7 +14,7 @@
 /**
  * This file is based on source code from the Hadoop Project (http://hadoop.apache.org/), licensed by the Apache
  * Software Foundation (ASF) under the Apache License, Version 2.0. See the NOTICE file distributed with this work for
- * additional information regarding copyright ownership. 
+ * additional information regarding copyright ownership.
  */
 
 package eu.stratosphere.core.fs;
@@ -29,7 +29,7 @@ import eu.stratosphere.core.io.StringRecord;
 /**
  * A file input split provides information on a particular part of a file, possibly
  * hosted on a distributed file system and replicated among several hosts.
- * 
+ *
  */
 public class FileInputSplit implements InputSplit {
 
@@ -60,7 +60,7 @@ public class FileInputSplit implements InputSplit {
 
 	/**
 	 * Constructs a split with host information.
-	 * 
+	 *
 	 * @param num
 	 *        the number of this input split
 	 * @param file
@@ -88,7 +88,7 @@ public class FileInputSplit implements InputSplit {
 
 	/**
 	 * Returns the path of the file containing this split's data.
-	 * 
+	 *
 	 * @return the path of the file containing this split's data.
 	 */
 	public Path getPath() {
@@ -97,7 +97,7 @@ public class FileInputSplit implements InputSplit {
 
 	/**
 	 * Returns the position of the first byte in the file to process.
-	 * 
+	 *
 	 * @return the position of the first byte in the file to process
 	 */
 	public long getStart() {
@@ -106,7 +106,7 @@ public class FileInputSplit implements InputSplit {
 
 	/**
 	 * Returns the number of bytes in the file to process.
-	 * 
+	 *
 	 * @return the number of bytes in the file to process
 	 */
 	public long getLength() {
@@ -115,7 +115,7 @@ public class FileInputSplit implements InputSplit {
 
 	/**
 	 * Gets the names of the hosts that this file split resides on.
-	 * 
+	 *
 	 * @return The names of the hosts that this file split resides on.
 	 */
 	public String[] getHostNames() {

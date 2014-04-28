@@ -13,8 +13,8 @@
 
 package eu.stratosphere.nephele.taskmanager.transferenvelope;
 
-import static org.junit.Assert.fail;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,14 +33,12 @@ import eu.stratosphere.nephele.io.channels.BufferFactory;
 import eu.stratosphere.nephele.io.channels.ChannelID;
 import eu.stratosphere.nephele.io.channels.MemoryBuffer;
 import eu.stratosphere.nephele.jobgraph.JobID;
-import eu.stratosphere.nephele.taskmanager.transferenvelope.TransferEnvelope;
-import eu.stratosphere.nephele.taskmanager.transferenvelope.DefaultSerializer;
 import eu.stratosphere.nephele.util.BufferPoolConnector;
 import eu.stratosphere.nephele.util.ServerTestUtils;
 
 /**
  * This class contains tests covering the serialization of transfer envelopes to a byte stream.
- * 
+ *
  */
 public class DefaultSerializerTest {
 
@@ -81,13 +79,13 @@ public class DefaultSerializerTest {
 
 	/**
 	 * Auxiliary class to explicitly access the internal buffer of an ID object.
-	 * 
+	 *
 	 */
 	private static class SerializationTestID extends AbstractID {
 
 		/**
 		 * Constructs a new ID.
-		 * 
+		 *
 		 * @param content
 		 *        a byte buffer representing the ID
 		 */
@@ -120,7 +118,7 @@ public class DefaultSerializerTest {
 
 	/**
 	 * Generates and serializes a series of {@link TransferEnvelope} objects to a random file.
-	 * 
+	 *
 	 * @return the file containing the serializes envelopes
 	 * @throws IOException
 	 *         thrown if an I/O error occurs while writing the envelopes
@@ -135,11 +133,11 @@ public class DefaultSerializerTest {
 		final DefaultSerializer serializer = new DefaultSerializer();
 		final MemorySegment byteBuffer = new MemorySegment(new byte[BUFFER_SIZE]);
 		final ByteBuffer initBuffer = ByteBuffer.allocate(1);
-		
+
 		// The byte buffer is initialized from this buffer
 		initBuffer.put(BUFFER_CONTENT);
 		initBuffer.flip();
-		
+
 		// Put byte buffer to recycled queue
 		recycleQueue.add(byteBuffer);
 
@@ -160,21 +158,22 @@ public class DefaultSerializerTest {
 
 			// set envelope to be serialized and write it to file channel
 			serializer.setTransferEnvelope(transferEnvelope);
-			while (serializer.write(fileChannel))
-				;
+			while (serializer.write(fileChannel)) {
+			;
+			}
 
 			// Put buffer back to the recycling queue
 			buffer.recycleBuffer();
 		}
 
 		fileChannel.close();
-		
+
 		return outputFile;
 	}
 
 	/**
 	 * Analyzes the given test file and checks whether its content matches Nephele's serialization pattern.
-	 * 
+	 *
 	 * @param testFile
 	 *        the test file to analyze
 	 * @throws IOException
@@ -198,7 +197,7 @@ public class DefaultSerializerTest {
 
 	/**
 	 * Attempts to read a buffer of the given size from the file stream and checks the buffer's content.
-	 * 
+	 *
 	 * @param fileInputStream
 	 *        the file stream to read from
 	 * @param expectedBufferSize
@@ -226,7 +225,7 @@ public class DefaultSerializerTest {
 
 	/**
 	 * Attempts to read an empty notification list from the given file input stream.
-	 * 
+	 *
 	 * @param fileInputStream
 	 *        the file input stream to read from
 	 * @throws IOException
@@ -253,7 +252,7 @@ public class DefaultSerializerTest {
 	/**
 	 * Attempts to read an integer number from the given file input stream and compares it to
 	 * <code>expectedSequenceNumber</code>.
-	 * 
+	 *
 	 * @param fileInputStream
 	 *        the file input stream to read from
 	 * @param expectedSeqNumber
@@ -272,7 +271,7 @@ public class DefaultSerializerTest {
 
 	/**
 	 * Attempts to read a channel ID from the given file input stream and compares it to <code>expectedChannelID</code>.
-	 * 
+	 *
 	 * @param fileInputStream
 	 *        the file input stream to read from
 	 * @param expectedID
@@ -298,7 +297,7 @@ public class DefaultSerializerTest {
 
 	/**
 	 * Converts the first four bytes of the provided buffer's content to an integer number.
-	 * 
+	 *
 	 * @param buffer
 	 *        the buffer to convert
 	 * @return the integer number converted from the first four bytes of the buffer's content

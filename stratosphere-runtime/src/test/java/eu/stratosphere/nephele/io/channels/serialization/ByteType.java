@@ -23,25 +23,25 @@ import java.util.Random;
 public class ByteType implements SerializationTestType
 {
 	private byte value;
-	
+
 
 	public ByteType()
 	{
 		this.value = (byte) 0;
 	}
-	
+
 	private ByteType(byte value)
 	{
 		this.value = value;
 	}
-	
+
 
 	@Override
 	public ByteType getRandom(Random rnd)
 	{
 		return new ByteType((byte) rnd.nextInt(256));
 	}
-	
+
 
 	@Override
 	public void write(DataOutput out) throws IOException

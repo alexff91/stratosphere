@@ -22,7 +22,7 @@ import eu.stratosphere.core.fs.FSDataInputStream;
 /**
  * The <code>LocalDataInputStream</code> class is a wrapper class for a data
  * input stream to the local file system.
- * 
+ *
  */
 public class LocalDataInputStream extends FSDataInputStream {
 
@@ -33,7 +33,7 @@ public class LocalDataInputStream extends FSDataInputStream {
 
 	/**
 	 * Constructs a new <code>LocalDataInputStream</code> object from a given {@link File} object.
-	 * 
+	 *
 	 * @param file
 	 *        the {@link File} object the data stream is written to
 	 * @throws IOException

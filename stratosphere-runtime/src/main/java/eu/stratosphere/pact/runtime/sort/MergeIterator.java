@@ -30,18 +30,18 @@ import eu.stratosphere.util.MutableObjectIterator;
  * The order among the elements is established using the methods from the
  * {@link TypeSerializer} class, specifically {@link TypeSerializer#setReference(Object)}
  * and {@link TypeSerializer#compareToReference(TypeSerializer)}.
- * 
+ *
  * @see TypeSerializer
  * @see TypeSerializer#setReference(Object)
  * @see TypeSerializer#compareToReference(TypeSerializer)
- * 
+ *
  */
 public class MergeIterator<E> implements MutableObjectIterator<E>
 {
 	private final PartialOrderPriorityQueue<HeadStream<E>> heap;	// heap over the head elements of the stream
-	
+
 	private final TypeSerializer<E> serializer;
-	
+
 	/**
 	 * @param iterators
 	 * @param accessors The accessors used to establish an order among the elements.
@@ -54,7 +54,7 @@ public class MergeIterator<E> implements MutableObjectIterator<E>
 	{
 		this.heap = new PartialOrderPriorityQueue<HeadStream<E>>(new HeadStreamComparator<E>(), iterators.size());
 		this.serializer = serializer;
-		
+
 		for (MutableObjectIterator<E> iterator : iterators) {
 			this.heap.add(new HeadStream<E>(iterator, serializer, comparator.duplicate()));
 		}
@@ -63,12 +63,12 @@ public class MergeIterator<E> implements MutableObjectIterator<E>
 	/**
 	 * Gets the next smallest element, with respect to the definition of order implied by
 	 * the {@link TypeSerializer} provided to this iterator.
-	 * 
+	 *
 	 * @param reuse The object into which the result is put. The contents of the reuse object
 	 *               is only valid after this method, if the method returned true. Otherwise
 	 *               the contents is undefined.
-	 * @return True, if the iterator had another element, false otherwise. 
-	 * 
+	 * @return True, if the iterator had another element, false otherwise.
+	 *
 	 * @see eu.stratosphere.util.MutableObjectIterator#next(java.lang.Object)
 	 */
 	@Override
@@ -78,7 +78,7 @@ public class MergeIterator<E> implements MutableObjectIterator<E>
 			// get the smallest element
 			final HeadStream<E> top = this.heap.peek();
 			reuse = this.serializer.copy(top.getHead(), reuse);
-			
+
 			// read an element
 			if (!top.nextHead()) {
 				this.heap.poll();
@@ -95,13 +95,13 @@ public class MergeIterator<E> implements MutableObjectIterator<E>
 	// ============================================================================================
 	//                      Internal Classes that wrap the sorted input streams
 	// ============================================================================================
-	
+
 	private static final class HeadStream<E>
 	{
 		private final MutableObjectIterator<E> iterator;
-		
+
 		private final TypeComparator<E> comparator;
-		
+
 		private E head;
 
 		public HeadStream(MutableObjectIterator<E> iterator, TypeSerializer<E> serializer, TypeComparator<E> comparator)
@@ -110,9 +110,10 @@ public class MergeIterator<E> implements MutableObjectIterator<E>
 			this.iterator = iterator;
 			this.comparator = comparator;
 			this.head = serializer.createInstance();
-			
-			if (!nextHead())
-				throw new IllegalStateException();
+
+			if (!nextHead()) {
+			throw new IllegalStateException();
+			}
 		}
 
 		public E getHead() {
@@ -132,9 +133,9 @@ public class MergeIterator<E> implements MutableObjectIterator<E>
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	private static final class HeadStreamComparator<E> implements Comparator<HeadStream<E>>
-	{		
+	{
 		@Override
 		public int compare(HeadStream<E> o1, HeadStream<E> o2)
 		{

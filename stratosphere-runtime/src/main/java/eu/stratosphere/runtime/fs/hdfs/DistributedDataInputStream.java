@@ -20,7 +20,7 @@ import eu.stratosphere.core.fs.FSDataInputStream;
 /**
  * Concrete implementation of the {@link FSDataInputStream} for the
  * Hadoop Distributed File System.
- * 
+ *
  */
 public final class DistributedDataInputStream extends FSDataInputStream {
 
@@ -28,7 +28,7 @@ public final class DistributedDataInputStream extends FSDataInputStream {
 
 	/**
 	 * Creates a new data input stream from the given HDFS input stream
-	 * 
+	 *
 	 * @param fsDataInputStream
 	 *        the HDFS input stream
 	 */

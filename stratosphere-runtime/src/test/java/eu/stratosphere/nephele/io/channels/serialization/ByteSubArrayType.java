@@ -27,13 +27,13 @@ public class ByteSubArrayType implements SerializationTestType
 
 	private final byte[] data;
 	private int len;
-	
+
 	public ByteSubArrayType()
 	{
 		this.data = new byte[MAX_LEN];
 		this.len = 0;
 	}
-	
+
 
 	@Override
 	public ByteSubArrayType getRandom(Random rnd)
@@ -41,15 +41,15 @@ public class ByteSubArrayType implements SerializationTestType
 		final int len = rnd.nextInt(MAX_LEN) + 1;
 		final ByteSubArrayType t = new ByteSubArrayType();
 		t.len = len;
-		
+
 		final byte[] data = t.data;
 		for (int i = 0; i < len; i++) {
 			data[i] = (byte) rnd.nextInt(256);
 		}
-		
+
 		return t;
 	}
-	
+
 
 	@Override
 	public void write(DataOutput out) throws IOException
@@ -65,7 +65,7 @@ public class ByteSubArrayType implements SerializationTestType
 		this.len = in.readInt();
 		in.readFully(this.data, 0, this.len);
 	}
-	
+
 
 	@Override
 	public int hashCode()

@@ -20,9 +20,9 @@ import eu.stratosphere.api.common.Program;
 import eu.stratosphere.api.common.ProgramDescription;
 import eu.stratosphere.api.common.operators.FileDataSink;
 import eu.stratosphere.api.common.operators.FileDataSource;
+import eu.stratosphere.api.java.record.functions.FunctionAnnotation.ConstantFields;
 import eu.stratosphere.api.java.record.functions.MapFunction;
 import eu.stratosphere.api.java.record.functions.ReduceFunction;
-import eu.stratosphere.api.java.record.functions.FunctionAnnotation.ConstantFields;
 import eu.stratosphere.api.java.record.io.CsvOutputFormat;
 import eu.stratosphere.api.java.record.io.TextInputFormat;
 import eu.stratosphere.api.java.record.operators.MapOperator;
@@ -32,8 +32,8 @@ import eu.stratosphere.client.LocalExecutor;
 import eu.stratosphere.types.IntValue;
 import eu.stratosphere.types.Record;
 import eu.stratosphere.types.StringValue;
-import eu.stratosphere.util.SimpleStringUtils;
 import eu.stratosphere.util.Collector;
+import eu.stratosphere.util.SimpleStringUtils;
 
 /**
  * Implements a word count which takes the input file and counts the number of
@@ -41,7 +41,7 @@ import eu.stratosphere.util.Collector;
  * this program performs better by using mutable objects and optimized tools.
  */
 public class WordCountOptimized implements Program, ProgramDescription {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -50,30 +50,30 @@ public class WordCountOptimized implements Program, ProgramDescription {
 	 * where the token is the first field and an Integer(1) is the second field.
 	 */
 	public static class TokenizeLine extends MapFunction {
-		
+
 		private static final long serialVersionUID = 1L;
-		
+
 		// initialize reusable mutable objects
 		private final Record outputRecord = new Record();
 		private StringValue word = new StringValue();
 		private final IntValue one = new IntValue(1);
-		
+
 		private final SimpleStringUtils.WhitespaceTokenizer tokenizer =
 				new SimpleStringUtils.WhitespaceTokenizer();
-		
+
 		@Override
 		public void map(Record record, Collector<Record> collector) {
 			// get the first field (as type StringValue) from the record
 			StringValue line = record.getField(0, StringValue.class);
-			
+
 			// normalize the line
 			SimpleStringUtils.replaceNonWordChars(line, ' ');
 			SimpleStringUtils.toLowerCase(line);
-			
+
 			// tokenize the line
 			this.tokenizer.setStringToTokenize(line);
 			while (tokenizer.next(this.word)) {
-				// we emit a (word, 1) pair 
+				// we emit a (word, 1) pair
 				this.outputRecord.setField(0, this.word);
 				this.outputRecord.setField(1, this.one);
 				collector.collect(this.outputRecord);
@@ -88,11 +88,11 @@ public class WordCountOptimized implements Program, ProgramDescription {
 	@Combinable
 	@ConstantFields(0)
 	public static class CountWords extends ReduceFunction {
-		
+
 		private static final long serialVersionUID = 1L;
-		
+
 		private final IntValue cnt = new IntValue();
-		
+
 		@Override
 		public void reduce(Iterator<Record> records, Collector<Record> out) throws Exception {
 			Record element = null;
@@ -107,7 +107,7 @@ public class WordCountOptimized implements Program, ProgramDescription {
 			element.setField(1, this.cnt);
 			out.collect(element);
 		}
-		
+
 		@Override
 		public void combine(Iterator<Record> records, Collector<Record> out) throws Exception {
 			// the logic is the same as in the reduce function, so simply call the reduce method
@@ -139,7 +139,7 @@ public class WordCountOptimized implements Program, ProgramDescription {
 			.fieldDelimiter(' ')
 			.field(StringValue.class, 0)
 			.field(IntValue.class, 1);
-		
+
 		Plan plan = new Plan(out, "WordCount Example");
 		plan.setDefaultParallelism(numSubTasks);
 		return plan;
@@ -150,7 +150,7 @@ public class WordCountOptimized implements Program, ProgramDescription {
 	public String getDescription() {
 		return "Parameters: [numSubStasks] [input] [output]";
 	}
-	
+
 	// This can be used to locally run a plan from within eclipse (or anywhere else)
 	public static void main(String[] args) throws Exception {
 		WordCountOptimized wc = new WordCountOptimized();

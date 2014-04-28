@@ -21,20 +21,20 @@ public final class MessageIterator<Message extends Value> implements Iterator<Me
 
 	private final Message instance;
 	private Iterator<Record> source;
-	
+
 	public MessageIterator(Message instance) {
 		this.instance = instance;
 	}
-	
+
 	public final void setSource(Iterator<Record> source) {
 		this.source = source;
 	}
-	
+
 	@Override
 	public final boolean hasNext() {
 		return this.source.hasNext();
 	}
-	
+
 	@Override
 	public final Message next() {
 		this.source.next().getFieldInto(1, this.instance);

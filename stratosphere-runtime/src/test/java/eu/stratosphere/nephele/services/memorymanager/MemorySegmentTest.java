@@ -30,7 +30,7 @@ import eu.stratosphere.core.memory.MemorySegment;
 import eu.stratosphere.nephele.services.memorymanager.spi.DefaultMemoryManager;
 
 public class MemorySegmentTest {
-	
+
 	public static final long RANDOM_SEED = 643196033469871L;
 
 	public static final int MANAGED_MEMORY_SIZE = 1024 * 1024 * 16;
@@ -60,7 +60,7 @@ public class MemorySegmentTest {
 		this.manager.release(this.segment);
 		this.random = null;
 		this.segment = null;
-		
+
 		if (!this.manager.verifyEmpty()) {
 			Assert.fail("Not all memory has been properly released.");
 		}
@@ -423,7 +423,7 @@ public class MemorySegmentTest {
 				assertEquals(random.nextLong(), segment.getLong(i));
 			}
 		}
-		
+
 		// test unaligned offsets
 		{
 			final long seed = random.nextLong();
@@ -433,7 +433,7 @@ public class MemorySegmentTest {
 				long value = random.nextLong();
 				segment.putLong(offset, value);
 			}
-			
+
 			random.setSeed(seed);
 			for (int offset = 0; offset < PAGE_SIZE - 8; offset += random.nextInt(24) + 8) {
 				long shouldValue = random.nextLong();

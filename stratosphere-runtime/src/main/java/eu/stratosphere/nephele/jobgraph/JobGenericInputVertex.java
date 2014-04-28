@@ -33,7 +33,7 @@ public class JobGenericInputVertex extends JobInputVertex
 
 	/**
 	 * Creates a new job input vertex with the specified name.
-	 * 
+	 *
 	 * @param name The name of the new job file input vertex.
 	 * @param id The ID of this vertex.
 	 * @param jobGraph The job graph this vertex belongs to.
@@ -44,7 +44,7 @@ public class JobGenericInputVertex extends JobInputVertex
 
 	/**
 	 * Creates a new job file input vertex with the specified name.
-	 * 
+	 *
 	 * @param name The name of the new job file input vertex.
 	 * @param jobGraph The job graph this vertex belongs to.
 	 */
@@ -54,7 +54,7 @@ public class JobGenericInputVertex extends JobInputVertex
 
 	/**
 	 * Creates a new job file input vertex.
-	 * 
+	 *
 	 * @param jobGraph The job graph this vertex belongs to.
 	 */
 	public JobGenericInputVertex(JobGraph jobGraph) {
@@ -63,7 +63,7 @@ public class JobGenericInputVertex extends JobInputVertex
 
 	/**
 	 * Sets the class of the vertex's input task.
-	 * 
+	 *
 	 * @param inputClass The class of the vertex's input task.
 	 */
 	public void setInputClass(Class<? extends AbstractInputTask<?>> inputClass) {
@@ -72,7 +72,7 @@ public class JobGenericInputVertex extends JobInputVertex
 
 	/**
 	 * Returns the class of the vertex's input task.
-	 * 
+	 *
 	 * @return the class of the vertex's input task or <code>null</code> if no task has yet been set
 	 */
 	public Class<? extends AbstractInputTask<?>> getInputClass() {
@@ -140,7 +140,7 @@ public class JobGenericInputVertex extends JobInputVertex
 			throw icex; // simply forward
 		}
 		catch (Throwable t) {
-			throw new IllegalConfigurationException("Checking the invokable's configuration caused an error: " 
+			throw new IllegalConfigurationException("Checking the invokable's configuration caused an error: "
 				+ StringUtils.stringifyException(t));
 		}
 	}

@@ -25,9 +25,9 @@ public interface CloseableInputProvider<E> extends Closeable
 {
 	/**
 	 * Gets the iterator over this input.
-	 * 
+	 *
 	 * @return The iterator provided by this iterator provider.
-	 * @throws InterruptedException 
+	 * @throws InterruptedException
 	 */
 	public MutableObjectIterator<E> getIterator() throws InterruptedException, IOException;
 }

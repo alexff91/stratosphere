@@ -27,7 +27,12 @@ import eu.stratosphere.api.common.typeutils.TypeComparatorFactory;
 import eu.stratosphere.api.common.typeutils.TypePairComparatorFactory;
 import eu.stratosphere.api.common.typeutils.TypeSerializer;
 import eu.stratosphere.api.common.typeutils.TypeSerializerFactory;
-import eu.stratosphere.api.java.operators.translation.*;
+import eu.stratosphere.api.java.operators.translation.BinaryJavaPlanNode;
+import eu.stratosphere.api.java.operators.translation.JavaPlanNode;
+import eu.stratosphere.api.java.operators.translation.PlanBulkIterationOperator;
+import eu.stratosphere.api.java.operators.translation.PlanDataSource;
+import eu.stratosphere.api.java.operators.translation.PlanDeltaIterationOperator;
+import eu.stratosphere.api.java.operators.translation.UnaryJavaPlanNode;
 import eu.stratosphere.api.java.typeutils.AtomicType;
 import eu.stratosphere.api.java.typeutils.CompositeType;
 import eu.stratosphere.api.java.typeutils.TypeInformation;
@@ -36,28 +41,40 @@ import eu.stratosphere.api.java.typeutils.runtime.RuntimePairComparatorFactory;
 import eu.stratosphere.api.java.typeutils.runtime.RuntimeSerializerFactory;
 import eu.stratosphere.compiler.CompilerException;
 import eu.stratosphere.compiler.CompilerPostPassException;
-import eu.stratosphere.compiler.plan.*;
+import eu.stratosphere.compiler.plan.BulkIterationPlanNode;
+import eu.stratosphere.compiler.plan.BulkPartialSolutionPlanNode;
+import eu.stratosphere.compiler.plan.Channel;
+import eu.stratosphere.compiler.plan.DualInputPlanNode;
+import eu.stratosphere.compiler.plan.NAryUnionPlanNode;
+import eu.stratosphere.compiler.plan.OptimizedPlan;
+import eu.stratosphere.compiler.plan.PlanNode;
+import eu.stratosphere.compiler.plan.SingleInputPlanNode;
+import eu.stratosphere.compiler.plan.SinkPlanNode;
+import eu.stratosphere.compiler.plan.SolutionSetPlanNode;
+import eu.stratosphere.compiler.plan.SourcePlanNode;
+import eu.stratosphere.compiler.plan.WorksetIterationPlanNode;
+import eu.stratosphere.compiler.plan.WorksetPlanNode;
 import eu.stratosphere.compiler.util.NoOpUnaryUdfOp;
 
 public class JavaApiPostPass implements OptimizerPostPass {
-	
+
 	private final Set<PlanNode> alreadyDone = new HashSet<PlanNode>();
 
-	
+
 	@Override
 	public void postPass(OptimizedPlan plan) {
 		for (SinkPlanNode sink : plan.getDataSinks()) {
 			traverse(sink);
 		}
 	}
-	
+
 
 	protected void traverse(PlanNode node) {
 		if (!alreadyDone.add(node)) {
 			// already worked on that one
 			return;
 		}
-		
+
 		// distinguish the node types
 		if (node instanceof SinkPlanNode) {
 			// descend to the input channel
@@ -87,55 +104,55 @@ public class JavaApiPostPass implements OptimizerPostPass {
 		}
 		else if (node instanceof WorksetIterationPlanNode) {
 			WorksetIterationPlanNode iterationNode = (WorksetIterationPlanNode) node;
-			
+
 			if (iterationNode.getNextWorkSetPlanNode() instanceof NAryUnionPlanNode) {
 				throw new CompilerException("Optimizer cannot compile a workset iteration step function where the next workset is produced by a Union node.");
 			}
 			if (iterationNode.getSolutionSetDeltaPlanNode() instanceof NAryUnionPlanNode) {
 				throw new CompilerException("Optimizer cannot compile a workset iteration step function where the solution set delta is produced by a Union node.");
 			}
-			
+
 			PlanDeltaIterationOperator<?, ?> operator = (PlanDeltaIterationOperator<?, ?>) iterationNode.getPactContract();
-			
+
 			// set the serializers and comparators for the workset iteration
 			iterationNode.setSolutionSetSerializer(createSerializer(operator.getSolutionsetType()));
 			iterationNode.setWorksetSerializer(createSerializer(operator.getWorksetType()));
 			iterationNode.setSolutionSetComparator(createComparator(operator.getSolutionsetType(),
 					iterationNode.getSolutionSetKeyFields(), getSortOrders(iterationNode.getSolutionSetKeyFields(), null)));
-			
+
 			// traverse the inputs
 			traverseChannel(iterationNode.getInput1());
 			traverseChannel(iterationNode.getInput2());
-			
+
 			// traverse the step function
 			traverse(iterationNode.getSolutionSetDeltaPlanNode());
 			traverse(iterationNode.getNextWorkSetPlanNode());
 		}
 		else if (node instanceof SingleInputPlanNode) {
 			SingleInputPlanNode sn = (SingleInputPlanNode) node;
-			
+
 			if (!(sn.getOptimizerNode().getPactContract() instanceof UnaryJavaPlanNode)) {
-				
+
 				// Special case for delta iterations
 				if(sn.getOptimizerNode().getPactContract() instanceof NoOpUnaryUdfOp) {
 					traverseChannel(sn.getInput());
 					return;
+				} else {
+				throw new RuntimeException("Wrong operator type found in post pass.");
 				}
-				else
-					throw new RuntimeException("Wrong operator type found in post pass.");
 			}
-			
+
 			UnaryJavaPlanNode<?, ?> javaNode = (UnaryJavaPlanNode<?, ?>) sn.getOptimizerNode().getPactContract();
-			
+
 			// parameterize the node's driver strategy
 			if (sn.getDriverStrategy().requiresComparator()) {
-				sn.setComparator(createComparator(javaNode.getInputType(), sn.getKeys(), 
+				sn.setComparator(createComparator(javaNode.getInputType(), sn.getKeys(),
 					getSortOrders(sn.getKeys(), sn.getSortOrders())));
 			}
-			
+
 			// done, we can now propagate our info down
 			traverseChannel(sn.getInput());
-			
+
 			// don't forget the broadcast inputs
 			for (Channel c: sn.getBroadcastInputs()) {
 				traverseChannel(c);
@@ -143,37 +160,37 @@ public class JavaApiPostPass implements OptimizerPostPass {
 		}
 		else if (node instanceof DualInputPlanNode) {
 			DualInputPlanNode dn = (DualInputPlanNode) node;
-			
+
 			if (!(dn.getOptimizerNode().getPactContract() instanceof BinaryJavaPlanNode)) {
 				throw new RuntimeException("Wrong operator type found in post pass.");
 			}
-			
+
 			BinaryJavaPlanNode<?, ?, ?> javaNode = (BinaryJavaPlanNode<?, ?, ?>) dn.getOptimizerNode().getPactContract();
-			
+
 			// parameterize the node's driver strategy
 			if (dn.getDriverStrategy().requiresComparator()) {
-				dn.setComparator1(createComparator(javaNode.getInputType1(), dn.getKeysForInput1(), 
+				dn.setComparator1(createComparator(javaNode.getInputType1(), dn.getKeysForInput1(),
 					getSortOrders(dn.getKeysForInput1(), dn.getSortOrders())));
-				dn.setComparator2(createComparator(javaNode.getInputType2(), dn.getKeysForInput2(), 
+				dn.setComparator2(createComparator(javaNode.getInputType2(), dn.getKeysForInput2(),
 						getSortOrders(dn.getKeysForInput2(), dn.getSortOrders())));
 
 				dn.setPairComparator(createPairComparator(javaNode.getInputType1(), javaNode.getInputType2()));
-				
+
 			}
-						
+
 			traverseChannel(dn.getInput1());
 			traverseChannel(dn.getInput2());
-			
+
 			// don't forget the broadcast inputs
 			for (Channel c: dn.getBroadcastInputs()) {
 				traverseChannel(c);
 			}
-			
+
 		}
 		// catch the sources of the iterative step functions
 		else if (node instanceof BulkPartialSolutionPlanNode ||
-				 node instanceof SolutionSetPlanNode ||
-				 node instanceof WorksetPlanNode)
+				node instanceof SolutionSetPlanNode ||
+				node instanceof WorksetPlanNode)
 		{
 			// Do nothing :D
 		}
@@ -181,12 +198,12 @@ public class JavaApiPostPass implements OptimizerPostPass {
 			throw new CompilerPostPassException("Unknown node type encountered: " + node.getClass().getName());
 		}
 	}
-	
+
 	private void traverseChannel(Channel channel) {
-		
+
 		PlanNode source = channel.getSource();
 		Operator javaOp = source.getPactContract();
-		
+
 //		if (!(javaOp instanceof BulkIteration) && !(javaOp instanceof JavaPlanNode)) {
 //			throw new RuntimeException("Wrong operator type found in post pass: " + javaOp);
 //		}
@@ -215,31 +232,31 @@ public class JavaApiPostPass implements OptimizerPostPass {
 				type = javaNode.getReturnType();
 			}
 		}
-		
+
 		// the serializer always exists
 		channel.setSerializer(createSerializer(type));
-			
+
 		// parameterize the ship strategy
 		if (channel.getShipStrategy().requiresComparator()) {
-			channel.setShipStrategyComparator(createComparator(type, channel.getShipStrategyKeys(), 
+			channel.setShipStrategyComparator(createComparator(type, channel.getShipStrategyKeys(),
 				getSortOrders(channel.getShipStrategyKeys(), channel.getShipStrategySortOrder())));
 		}
-			
+
 		// parameterize the local strategy
 		if (channel.getLocalStrategy().requiresComparator()) {
 			channel.setLocalStrategyComparator(createComparator(type, channel.getLocalStrategyKeys(),
 				getSortOrders(channel.getLocalStrategyKeys(), channel.getLocalStrategySortOrder())));
 		}
-		
+
 		// descend to the channel's source
 		traverse(channel.getSource());
 	}
-	
-	
+
+
 	@SuppressWarnings("unchecked")
 	private static <T> TypeInformation<T> getTypeInfoFromSource(SourcePlanNode node) {
 		Operator op = node.getOptimizerNode().getPactContract();
-		
+
 		if (op instanceof PlanDataSource) {
 			return ((PlanDataSource<T>) op).getReturnType();
 		} else {
@@ -247,17 +264,17 @@ public class JavaApiPostPass implements OptimizerPostPass {
 		}
 	}
 
-	
+
 	private static <T> TypeSerializerFactory<?> createSerializer(TypeInformation<T> typeInfo) {
 		TypeSerializer<T> serializer = typeInfo.createSerializer();
-		
+
 		return new RuntimeSerializerFactory<T>(serializer, typeInfo.getTypeClass());
 	}
-	
-	
+
+
 	@SuppressWarnings("unchecked")
 	private static <T> TypeComparatorFactory<?> createComparator(TypeInformation<T> typeInfo, FieldList keys, boolean[] sortOrder) {
-		
+
 		TypeComparator<T> comparator;
 		if (typeInfo instanceof CompositeType) {
 			comparator = ((CompositeType<T>) typeInfo).createComparator(keys.toArray(), sortOrder);
@@ -272,11 +289,11 @@ public class JavaApiPostPass implements OptimizerPostPass {
 
 		return new RuntimeComparatorFactory<T>(comparator);
 	}
-	
+
 	private static <T1, T2> TypePairComparatorFactory<?,?> createPairComparator(TypeInformation<T1> typeInfo1, TypeInformation<T2> typeInfo2) {
 		return new RuntimePairComparatorFactory<T1,T2>();
 	}
-	
+
 	private static final boolean[] getSortOrders(FieldList keys, boolean[] orders) {
 		if (orders == null) {
 			orders = new boolean[keys.size()];

@@ -23,7 +23,7 @@ import com.google.common.collect.Maps;
 /**
  * Histogram for discrete-data. Let's you populate a histogram distributedly.
  * Implemented as a Integer->Integer HashMap
- * 
+ *
  * Could be extended to continuous values later, but then we need to dynamically
  * decide about the bin size in an online algorithm (or ask the user)
  */

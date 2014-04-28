@@ -22,12 +22,12 @@ import eu.stratosphere.types.IntValue;
 public class UniformIntegerDistribution implements DataDistribution {
 
 	private static final long serialVersionUID = 1L;
-	
-	private int min, max; 
 
-	
+	private int min, max;
+
+
 	public UniformIntegerDistribution() {}
-	
+
 	public UniformIntegerDistribution(int min, int max) {
 		this.min = min;
 		this.max = max;

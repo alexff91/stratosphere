@@ -26,13 +26,13 @@ import eu.stratosphere.nephele.topology.NetworkTopology;
  * provisioning available compute resources to the JobManager and keeping track of the availability of the utilized
  * compute resources in order
  * to report unexpected resource outages.
- * 
+ *
  */
 public interface InstanceManager {
 
 	/**
 	 * Requests an instance of the provided instance type from the instance manager.
-	 * 
+	 *
 	 * @param jobID
 	 *        the ID of the job this instance is requested for
 	 * @param conf
@@ -49,7 +49,7 @@ public interface InstanceManager {
 
 	/**
 	 * Releases an allocated resource from a job.
-	 * 
+	 *
 	 * @param jobID
 	 *        the ID of the job the instance has been used for
 	 * @param conf
@@ -64,7 +64,7 @@ public interface InstanceManager {
 
 	/**
 	 * Suggests a suitable instance type according to the provided hardware characteristics.
-	 * 
+	 *
 	 * @param minNumComputeUnits
 	 *        the minimum number of compute units
 	 * @param minNumCPUCores
@@ -83,7 +83,7 @@ public interface InstanceManager {
 
 	/**
 	 * Reports a heart beat message of an instance.
-	 * 
+	 *
 	 * @param instanceConnectionInfo
 	 *        the {@link InstanceConnectionInfo} object attached to the heart beat message
 	 * @param hardwareDescription
@@ -93,7 +93,7 @@ public interface InstanceManager {
 
 	/**
 	 * Translates the name of an instance type to the corresponding instance type object.
-	 * 
+	 *
 	 * @param instanceTypeName
 	 *        the name of the instance type
 	 * @return the instance type object matching the name or <code>null</code> if no such instance type exists
@@ -102,7 +102,7 @@ public interface InstanceManager {
 
 	/**
 	 * Returns the default instance type used by the instance manager.
-	 * 
+	 *
 	 * @return the default instance type
 	 */
 	InstanceType getDefaultInstanceType();
@@ -112,7 +112,7 @@ public interface InstanceManager {
 	 * for the job might only be an excerpt of the overall network topology. It only
 	 * includes those instances as leaf nodes which are really allocated for the
 	 * execution of the job.
-	 * 
+	 *
 	 * @param jobID
 	 *        the ID of the job to get the topology for
 	 * @return the network topology for the job
@@ -122,7 +122,7 @@ public interface InstanceManager {
 	/**
 	 * Sets the {@link InstanceListener} object which is supposed to be
 	 * notified about instance availability and deaths.
-	 * 
+	 *
 	 * @param instanceListener
 	 *        the instance listener to set for this instance manager
 	 */
@@ -134,14 +134,14 @@ public interface InstanceManager {
 	 * the actual hardware description as reported by task managers running on the individual instances. If available,
 	 * the map also contains the maximum number instances Nephele can allocate of each instance type (i.e. if no other
 	 * job occupies instances).
-	 * 
+	 *
 	 * @return a list of all instance types available to Nephele
 	 */
 	Map<InstanceType, InstanceTypeDescription> getMapOfAvailableInstanceTypes();
 
 	/**
 	 * Returns the {@link AbstractInstance} with the given name.
-	 * 
+	 *
 	 * @param name
 	 *        the name of the instance
 	 * @return the instance with the given name or <code>null</code> if no such instance could be found
@@ -150,7 +150,7 @@ public interface InstanceManager {
 
 	/**
 	 * Cancels all pending instance requests that might still exist for the job with the given ID.
-	 * 
+	 *
 	 * @param jobID
 	 *        the ID of the job to cancel the pending instance requests for
 	 */
@@ -162,7 +162,7 @@ public interface InstanceManager {
 	void shutdown();
 
 	/**
-	 * 
+	 *
 	 * @return the number of available (registered) TaskTrackers
 	 */
 	int getNumberOfTaskTrackers();

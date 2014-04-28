@@ -14,8 +14,8 @@
 package eu.stratosphere.nephele.multicast;
 
 public class TopologyInformationSupplier {
-	
-	
+
+
 	/**
 	 * Returns a float representing the network distance between two nodes.
 	 * @param node1

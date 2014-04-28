@@ -14,13 +14,13 @@
 package eu.stratosphere.api.common;
 
 public class InvalidProgramException extends RuntimeException {
-	
+
 	private static final long serialVersionUID = 3119881934024032887L;
-	
+
 	public InvalidProgramException() {
 		super();
 	}
-	
+
 	public InvalidProgramException(String message) {
 		super(message);
 	}

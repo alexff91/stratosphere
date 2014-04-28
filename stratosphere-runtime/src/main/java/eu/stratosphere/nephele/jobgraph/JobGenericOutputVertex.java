@@ -28,7 +28,7 @@ import eu.stratosphere.util.StringUtils;
  * A JobGenericOutputVertex is a specific subtype of a {@link JobOutputVertex} and is designed
  * for Nephele tasks which sink data in a not further specified way. As every job output vertex,
  * a JobGenericOutputVertex must not have any further output.
- * 
+ *
  */
 public class JobGenericOutputVertex extends JobOutputVertex {
 
@@ -40,7 +40,7 @@ public class JobGenericOutputVertex extends JobOutputVertex {
 
 	/**
 	 * Creates a new job file output vertex with the specified name.
-	 * 
+	 *
 	 * @param name
 	 *        the name of the new job file output vertex
 	 * @param id
@@ -54,7 +54,7 @@ public class JobGenericOutputVertex extends JobOutputVertex {
 
 	/**
 	 * Creates a new job file output vertex with the specified name.
-	 * 
+	 *
 	 * @param name
 	 *        the name of the new job file output vertex
 	 * @param jobGraph
@@ -66,7 +66,7 @@ public class JobGenericOutputVertex extends JobOutputVertex {
 
 	/**
 	 * Creates a new job file input vertex.
-	 * 
+	 *
 	 * @param jobGraph
 	 *        the job graph this vertex belongs to
 	 */
@@ -76,7 +76,7 @@ public class JobGenericOutputVertex extends JobOutputVertex {
 
 	/**
 	 * Sets the class of the vertex's output task.
-	 * 
+	 *
 	 * @param outputClass The class of the vertex's output task.
 	 */
 	public void setOutputClass(Class<? extends AbstractOutputTask> outputClass) {
@@ -85,7 +85,7 @@ public class JobGenericOutputVertex extends JobOutputVertex {
 
 	/**
 	 * Returns the class of the vertex's output task.
-	 * 
+	 *
 	 * @return The class of the vertex's output task or <code>null</code> if no task has yet been set.
 	 */
 	public Class<? extends AbstractOutputTask> getOutputClass() {
@@ -152,7 +152,7 @@ public class JobGenericOutputVertex extends JobOutputVertex {
 			throw icex; // simply forward
 		}
 		catch (Throwable t) {
-			throw new IllegalConfigurationException("Checking the invokable's configuration caused an error: " 
+			throw new IllegalConfigurationException("Checking the invokable's configuration caused an error: "
 				+ StringUtils.stringifyException(t));
 		}
 	}

@@ -22,13 +22,13 @@ import eu.stratosphere.core.fs.Path;
 
 
 public class TextInputFormat extends DelimitedInputFormat<String> {
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	private String charsetName = "UTF-8";
-	
+
 //	private boolean skipInvalidLines;
-	
+
 	private transient Charset charset;
 
 	/**
@@ -41,40 +41,41 @@ public class TextInputFormat extends DelimitedInputFormat<String> {
 	 */
 	private static final byte NEW_LINE = (byte) '\n';
 
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public TextInputFormat(Path filePath) {
 		super(filePath);
 	}
-	
-	// --------------------------------------------------------------------------------------------	
-	
+
+	// --------------------------------------------------------------------------------------------
+
 	public String getCharsetName() {
 		return charsetName;
 	}
-	
+
 	public void setCharsetName(String charsetName) {
-		if (charsetName == null)
-			throw new IllegalArgumentException("Charset must not be null.");
-		
+		if (charsetName == null) {
+		throw new IllegalArgumentException("Charset must not be null.");
+		}
+
 		this.charsetName = charsetName;
 	}
-	
+
 //	public boolean isSkipInvalidLines() {
 //		return skipInvalidLines;
 //	}
-//	
+//
 //	public void setSkipInvalidLines(boolean skipInvalidLines) {
 //		this.skipInvalidLines = skipInvalidLines;
 //	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	@Override
 	public void configure(Configuration parameters) {
 		super.configure(parameters);
-		
+
 		if (charsetName == null || !Charset.isSupported(charsetName)) {
 			throw new RuntimeException("Unsupported charset: " + charsetName);
 		}
@@ -86,17 +87,17 @@ public class TextInputFormat extends DelimitedInputFormat<String> {
 	@Override
 	public String readRecord(String reusable, byte[] bytes, int offset, int numBytes) {
 		//Check if \n is used as delimiter and the end of this line is a \r, then remove \r from the line
-		if (this.getDelimiter() != null && this.getDelimiter().length == 1 
-				&& this.getDelimiter()[0] == NEW_LINE && offset+numBytes >= 1 
+		if (this.getDelimiter() != null && this.getDelimiter().length == 1
+				&& this.getDelimiter()[0] == NEW_LINE && offset+numBytes >= 1
 				&& bytes[offset+numBytes-1] == CARRIAGE_RETURN){
 			numBytes -= 1;
 		}
-		
+
 		return new String(bytes, offset, numBytes, this.charset);
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public String toString() {
 		return "TextInputFormat (" + getFilePath() + ") - " + this.charsetName; // + (this.skipInvalidLines ? "(skipping invalid lines)" : "");

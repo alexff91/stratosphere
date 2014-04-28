@@ -25,7 +25,7 @@ import eu.stratosphere.nephele.util.ManagementTestUtils;
 
 /**
  * This class contains tests concerning the {@link ManagementGraph} and its components.
- * 
+ *
  */
 public class ManagementGraphTest {
 
@@ -78,7 +78,7 @@ public class ManagementGraphTest {
 
 	/**
 	 * Auxiliary method to test serialization/deserialization of management group vertices.
-	 * 
+	 *
 	 * @param origGroupVertex
 	 *        the original management group vertex
 	 * @param copyGroupVertex
@@ -119,7 +119,7 @@ public class ManagementGraphTest {
 
 	/**
 	 * Auxiliary method to test serialization/deserialization of management vertices.
-	 * 
+	 *
 	 * @param origVertex
 	 *        the original management vertex
 	 * @param copyVertex
@@ -154,7 +154,7 @@ public class ManagementGraphTest {
 
 	/**
 	 * Auxiliary method to test serialization/deserialization of management gates.
-	 * 
+	 *
 	 * @param origGate
 	 *        the original management gate
 	 * @param copyGate
@@ -186,7 +186,7 @@ public class ManagementGraphTest {
 
 	/**
 	 * Auxiliary method to test serialization/deserialization of management group edges.
-	 * 
+	 *
 	 * @param origGroupEdge
 	 *        the original management group edge
 	 * @param copyGroupEdge
@@ -201,7 +201,7 @@ public class ManagementGraphTest {
 
 	/**
 	 * Auxiliary method to test serialization/deserialization of management edges.
-	 * 
+	 *
 	 * @param origEdge
 	 *        the original management edge
 	 * @param copyEdge
@@ -216,7 +216,7 @@ public class ManagementGraphTest {
 
 	/**
 	 * Constructs a sample management graph that is used during the unit tests.
-	 * 
+	 *
 	 * @return the sample management graph used during the tests
 	 */
 	private static ManagementGraph constructTestManagementGraph() {
@@ -395,7 +395,7 @@ public class ManagementGraphTest {
 	/**
 	 * Auxiliary method to check if the order in which the management vertices are visited by the given iterator
 	 * corresponds to the one in the given array.
-	 * 
+	 *
 	 * @param it
 	 *        the iterator to be used to traverse the vertices
 	 * @param expectedOrder
@@ -416,7 +416,7 @@ public class ManagementGraphTest {
 	/**
 	 * Auxiliary method to check if the order in which the management group vertices are visited by the given iterator
 	 * corresponds to the one in the given array.
-	 * 
+	 *
 	 * @param it
 	 *        the iterator to be used to traverse the vertices
 	 * @param expectedOrder

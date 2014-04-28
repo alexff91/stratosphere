@@ -19,7 +19,7 @@ import eu.stratosphere.nephele.io.channels.ChannelType;
 /**
  * Objects of this class represent edges in the user's job graph.
  * The edges can be annotated by a specific channel and compression level.
- * 
+ *
  */
 public class JobEdge {
 
@@ -37,7 +37,7 @@ public class JobEdge {
 	 * The index of the consuming task's input gate.
 	 */
 	private final int indexOfInputGate;
-	
+
 	/**
 	 * The distribution pattern that should be used for this job edge.
 	 */
@@ -45,7 +45,7 @@ public class JobEdge {
 
 	/**
 	 * Constructs a new job edge.
-	 * 
+	 *
 	 * @param connectedVertex
 	 *        the vertex this edge should connect to
 	 * @param channelType
@@ -65,7 +65,7 @@ public class JobEdge {
 
 	/**
 	 * Returns the channel type assigned to this edge.
-	 * 
+	 *
 	 * @return the channel type assigned to this edge
 	 */
 	public ChannelType getChannelType() {
@@ -74,7 +74,7 @@ public class JobEdge {
 
 	/**
 	 * Returns the vertex this edge is connected to.
-	 * 
+	 *
 	 * @return the vertex this edge is connected to
 	 */
 	public AbstractJobVertex getConnectedVertex() {
@@ -83,16 +83,16 @@ public class JobEdge {
 
 	/**
 	 * Returns the index of the consuming task's input gate that this edge connects to.
-	 * 
+	 *
 	 * @return the index of the consuming task's input gate that this edge connects to
 	 */
 	public int getIndexOfInputGate() {
 		return this.indexOfInputGate;
 	}
-	
+
 	/**
 	 * Returns the distribution pattern used for this edge.
-	 * 
+	 *
 	 * @return
 	 */
 	public DistributionPattern getDistributionPattern(){

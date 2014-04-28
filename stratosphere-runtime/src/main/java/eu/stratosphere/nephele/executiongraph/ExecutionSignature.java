@@ -32,7 +32,7 @@ import eu.stratosphere.nephele.template.AbstractInvokable;
  * to recognize particular parts of a job. Execution signature objects are immutable and, consequently, thread-safe.
  * <p>
  * This class is thread-safe.
- * 
+ *
  */
 public final class ExecutionSignature {
 
@@ -58,7 +58,7 @@ public final class ExecutionSignature {
 
 	/**
 	 * Constructs a new execution signature object and passes the signature buffer.
-	 * 
+	 *
 	 * @param signature
 	 *        the byte buffer containing the signature.
 	 */
@@ -68,7 +68,7 @@ public final class ExecutionSignature {
 
 	/**
 	 * Calculates the execution signature from the given class name and job ID.
-	 * 
+	 *
 	 * @param invokableClass
 	 *        the name of the class to contain the task program
 	 * @param jobID

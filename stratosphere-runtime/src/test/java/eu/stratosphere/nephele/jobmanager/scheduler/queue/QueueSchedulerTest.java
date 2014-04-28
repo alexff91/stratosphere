@@ -48,7 +48,7 @@ public class QueueSchedulerTest {
 
 	/**
 	 * Test input task.
-	 * 
+	 *
 	 */
 	public static final class InputTask extends AbstractGenericInputTask {
 
@@ -72,7 +72,7 @@ public class QueueSchedulerTest {
 
 	/**
 	 * Test output task.
-	 * 
+	 *
 	 */
 	public static final class OutputTask extends AbstractOutputTask {
 
@@ -96,7 +96,7 @@ public class QueueSchedulerTest {
 
 	/**
 	 * Constructs a sample execution graph consisting of two vertices connected by a channel of the given type.
-	 * 
+	 *
 	 * @param channelType
 	 *        the channel type to connect the vertices with
 	 * @param instanceManager

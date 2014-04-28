@@ -31,10 +31,10 @@ import eu.stratosphere.pact.runtime.task.DriverStrategy;
  * The Optimizer representation of a <i>Match</i> contract node.
  */
 public class MatchNode extends TwoInputNode {
-	
+
 	/**
 	 * Creates a new MatchNode for the given contract.
-	 * 
+	 *
 	 * @param pactContract The match contract object.
 	 */
 	public MatchNode(JoinOperatorBase<?> pactContract) {
@@ -45,7 +45,7 @@ public class MatchNode extends TwoInputNode {
 
 	/**
 	 * Gets the contract object for this match node.
-	 * 
+	 *
 	 * @return The contract.
 	 */
 	@Override
@@ -90,14 +90,14 @@ public class MatchNode extends TwoInputNode {
 			return list;
 		}
 	}
-	
+
 	public void fixDriverStrategy(DriverStrategy strategy) {
 		if (strategy == DriverStrategy.MERGE) {
 			this.possibleProperties.clear();
 			this.possibleProperties.add(new SortMergeJoinDescriptor(this.keys1, this.keys2));
 		} else if (strategy == DriverStrategy.HYBRIDHASH_BUILD_FIRST) {
 			this.possibleProperties.clear();
-			this.possibleProperties.add(new HashJoinBuildFirstProperties(this.keys1, this.keys2));			
+			this.possibleProperties.add(new HashJoinBuildFirstProperties(this.keys1, this.keys2));
 		} else if (strategy == DriverStrategy.HYBRIDHASH_BUILD_SECOND) {
 			this.possibleProperties.clear();
 			this.possibleProperties.add(new HashJoinBuildSecondProperties(this.keys1, this.keys2));
@@ -105,7 +105,7 @@ public class MatchNode extends TwoInputNode {
 			throw new IllegalArgumentException("Incompatible driver strategy.");
 		}
 	}
-	
+
 	/**
 	 * The default estimates build on the principle of inclusion: The smaller input key domain is included in the larger
 	 * input key domain. We also assume that every key from the larger input has one join partner in the smaller input.
@@ -116,12 +116,12 @@ public class MatchNode extends TwoInputNode {
 		long card1 = getFirstPredecessorNode().getEstimatedNumRecords();
 		long card2 = getSecondPredecessorNode().getEstimatedNumRecords();
 		this.estimatedNumRecords = (card1 < 0 || card2 < 0) ? -1 : Math.max(card1, card2);
-		
+
 		if (this.estimatedNumRecords >= 0) {
 			float width1 = getFirstPredecessorNode().getEstimatedAvgWidthPerOutputRecord();
 			float width2 = getSecondPredecessorNode().getEstimatedAvgWidthPerOutputRecord();
 			float width = (width1 <= 0 || width2 <= 0) ? -1 : width1 + width2;
-			
+
 			if (width > 0) {
 				this.estimatedOutputSize = (long) (width * this.estimatedNumRecords);
 			}

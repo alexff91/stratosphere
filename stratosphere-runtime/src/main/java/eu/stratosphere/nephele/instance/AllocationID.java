@@ -20,7 +20,7 @@ import eu.stratosphere.nephele.io.AbstractID;
  * within an {@link AbstractInstance}. The ID is necessary if an {@link InstanceManager} decides to partition
  * {@link AbstractInstance}s
  * without the knowledge of Nephele's scheduler.
- * 
+ *
  */
 public class AllocationID extends AbstractID {
 }

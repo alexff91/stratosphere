@@ -21,7 +21,7 @@ import eu.stratosphere.nephele.template.AbstractTask;
  * A record writer connects the application to an output gate. It allows the application
  * of emit (send out) to the output gate. The broadcast record writer will make sure that each emitted record will be
  * transfered via all connected output channels.
- * 
+ *
  * @param <T>
  *        the type of the record that can be emitted with this record writer
  */
@@ -29,7 +29,7 @@ public class BroadcastRecordWriter<T extends IOReadableWritable> extends Abstrac
 
 	/**
 	 * Constructs a new broadcast record writer and registers a new output gate with the application's environment.
-	 * 
+	 *
 	 * @param taskBase
 	 *        the application that instantiated the record writer
 	 * @param outputClass
@@ -41,7 +41,7 @@ public class BroadcastRecordWriter<T extends IOReadableWritable> extends Abstrac
 
 	/**
 	 * Constructs a new broadcast record writer and registers a new output gate with the application's environment.
-	 * 
+	 *
 	 * @param inputBase
 	 *        the application that instantiated the record writer
 	 * @param outputClass

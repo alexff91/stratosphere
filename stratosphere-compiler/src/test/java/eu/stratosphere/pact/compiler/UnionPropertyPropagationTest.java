@@ -44,46 +44,46 @@ public class UnionPropertyPropagationTest extends CompilerTestBase {
 
 		FileDataSource sourceA = new FileDataSource(new DummyInputFormat(), IN_FILE);
 		FileDataSource sourceB = new FileDataSource(new DummyInputFormat(), IN_FILE);
-		
+
 		ReduceOperator redA = ReduceOperator.builder(new IdentityReduce(), IntValue.class, 0)
 			.input(sourceA)
 			.build();
 		ReduceOperator redB = ReduceOperator.builder(new IdentityReduce(), IntValue.class, 0)
 			.input(sourceB)
 			.build();
-		
+
 		ReduceOperator globalRed = ReduceOperator.builder(new IdentityReduce(), IntValue.class, 0).build();
 		globalRed.addInput(redA);
 		globalRed.addInput(redB);
-		
+
 		FileDataSink sink = new FileDataSink(new DummyOutputFormat(), OUT_FILE, globalRed);
-		
+
 		// return the PACT plan
 		Plan plan = new Plan(sink, "Union Property Propagation");
-		
+
 		OptimizedPlan oPlan = compileNoStats(plan);
-		
+
 		NepheleJobGraphGenerator jobGen = new NepheleJobGraphGenerator();
-		
+
 		//Compile plan to verify that no error is thrown
 		jobGen.compileJobGraph(oPlan);
-		
+
 		oPlan.accept(new Visitor<PlanNode>() {
-			
+
 			@Override
 			public boolean preVisit(PlanNode visitable) {
 				if (visitable instanceof SingleInputPlanNode && visitable.getPactContract() instanceof ReduceOperator) {
 					for (Iterator<Channel> inputs = visitable.getInputs(); inputs.hasNext();) {
 						final Channel inConn = inputs.next();
 						Assert.assertTrue("Reduce should just forward the input if it is already partitioned",
-								inConn.getShipStrategy() == ShipStrategyType.FORWARD); 
+								inConn.getShipStrategy() == ShipStrategyType.FORWARD);
 					}
 					//just check latest ReduceNode
 					return false;
 				}
 				return true;
 			}
-			
+
 			@Override
 			public void postVisit(PlanNode visitable) {
 				// DO NOTHING

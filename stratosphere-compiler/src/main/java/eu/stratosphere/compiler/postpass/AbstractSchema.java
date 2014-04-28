@@ -17,17 +17,17 @@ import java.util.Map;
 public abstract class AbstractSchema<X> implements Iterable<Map.Entry<Integer, X>> {
 
 	private int numConnectionsThatContributed;
-	
-	
+
+
 	public int getNumConnectionsThatContributed() {
 		return this.numConnectionsThatContributed;
 	}
-	
+
 	public void increaseNumConnectionsThatContributed() {
 		this.numConnectionsThatContributed++;
 	}
-	
+
 	public abstract void addType(int pos, X type) throws ConflictingFieldTypeInfoException;
-	
+
 	public abstract X getType(int field);
 }

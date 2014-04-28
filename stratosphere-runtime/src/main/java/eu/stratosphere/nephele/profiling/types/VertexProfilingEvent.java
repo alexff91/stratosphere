@@ -23,7 +23,7 @@ import eu.stratosphere.nephele.managementgraph.ManagementVertexID;
 /**
  * This interface is a base interface for profiling data which
  * pertains to the execution of tasks.
- * 
+ *
  */
 public abstract class VertexProfilingEvent extends ProfilingEvent {
 
@@ -46,7 +46,7 @@ public abstract class VertexProfilingEvent extends ProfilingEvent {
 	/**
 	 * Returns the ID of the vertex this profiling information
 	 * belongs to.
-	 * 
+	 *
 	 * @return the ID of the vertex this profiling information belongs to
 	 */
 	public ManagementVertexID getVertexID() {
@@ -56,7 +56,7 @@ public abstract class VertexProfilingEvent extends ProfilingEvent {
 	/**
 	 * The interval in milliseconds to which the rest
 	 * of the profiling data relates to.
-	 * 
+	 *
 	 * @return the profiling interval given in milliseconds
 	 */
 	public int getProfilingInterval() {

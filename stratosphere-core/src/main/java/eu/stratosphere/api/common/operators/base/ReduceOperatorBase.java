@@ -28,23 +28,23 @@ public class ReduceOperatorBase<T extends GenericReduce<?>> extends SingleInputO
 	public ReduceOperatorBase(UserCodeWrapper<T> udf, int[] keyPositions, String name) {
 		super(udf, keyPositions, name);
 	}
-	
+
 	public ReduceOperatorBase(T udf, int[] keyPositions, String name) {
 		super(new UserCodeObjectWrapper<T>(udf), keyPositions, name);
 	}
-	
+
 	public ReduceOperatorBase(Class<? extends T> udf, int[] keyPositions, String name) {
 		super(new UserCodeClassWrapper<T>(udf), keyPositions, name);
 	}
-	
+
 	public ReduceOperatorBase(UserCodeWrapper<T> udf, String name) {
 		super(udf, name);
 	}
-	
+
 	public ReduceOperatorBase(T udf, String name) {
 		super(new UserCodeObjectWrapper<T>(udf), name);
 	}
-	
+
 	public ReduceOperatorBase(Class<? extends T> udf, String name) {
 		super(new UserCodeClassWrapper<T>(udf), name);
 	}

@@ -15,16 +15,13 @@ package eu.stratosphere.addons.hbase;
 
 import java.io.IOException;
 
-import org.apache.hadoop.hbase.KeyValue;
-import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
-import org.apache.hadoop.hbase.mapreduce.HFileOutputFormat;
 import org.apache.hadoop.mapreduce.RecordWriter;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.TaskAttemptID;
 import org.apache.hadoop.mapreduce.TaskType;
 
-import eu.stratosphere.configuration.Configuration;
 import eu.stratosphere.api.common.io.OutputFormat;
+import eu.stratosphere.configuration.Configuration;
 import eu.stratosphere.types.Record;
 
 public abstract class GenericTableOutputFormat implements OutputFormat<Record> {
@@ -66,12 +63,12 @@ public abstract class GenericTableOutputFormat implements OutputFormat<Record> {
 	@Override
 	public void open(int taskNumber, int numTasks) throws IOException {
 		this.hadoopConfig = getHadoopConfig(this.config);
-		
+
 		/**
 		 * PLASE NOTE:
 		 * If you are a Eclipse+Maven Integration user and you have two (or more) warnings here, please
 		 * close the pact-hbase project OR set the maven profile to hadoop_yarn
-		 * 
+		 *
 		 * pact-hbase requires hadoop_yarn, but Eclipse is not able to parse maven profiles properly. Therefore,
 		 * it imports the pact-hbase project even if it is not included in the standard profile (hadoop_v1)
 		 */

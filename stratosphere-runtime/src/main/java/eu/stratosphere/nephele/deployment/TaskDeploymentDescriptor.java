@@ -31,7 +31,7 @@ import eu.stratosphere.util.StringUtils;
  * A task deployment descriptor contains all the information necessary to deploy a task on a task manager.
  * <p>
  * This class is not thread-safe in general.
- * 
+ *
  */
 public final class TaskDeploymentDescriptor implements IOReadableWritable {
 
@@ -88,7 +88,7 @@ public final class TaskDeploymentDescriptor implements IOReadableWritable {
 
 	/**
 	 * Constructs a task deployment descriptor.
-	 * 
+	 *
 	 * @param jobID
 	 *        the ID of the job the tasks belongs to
 	 * @param vertexID
@@ -112,7 +112,7 @@ public final class TaskDeploymentDescriptor implements IOReadableWritable {
 	 */
 	public TaskDeploymentDescriptor(final JobID jobID, final ExecutionVertexID vertexID, final String taskName,
 			final int indexInSubtaskGroup, final int currentNumberOfSubtasks, final Configuration jobConfiguration,
-			final Configuration taskConfiguration, 
+			final Configuration taskConfiguration,
 			final Class<? extends AbstractInvokable> invokableClass,
 			final SerializableArrayList<GateDeploymentDescriptor> outputGates,
 			final SerializableArrayList<GateDeploymentDescriptor> inputGates) {
@@ -267,7 +267,7 @@ public final class TaskDeploymentDescriptor implements IOReadableWritable {
 
 	/**
 	 * Returns the ID of the job the tasks belongs to.
-	 * 
+	 *
 	 * @return the ID of the job the tasks belongs to
 	 */
 	public JobID getJobID() {
@@ -277,7 +277,7 @@ public final class TaskDeploymentDescriptor implements IOReadableWritable {
 
 	/**
 	 * Returns the task's execution vertex ID.
-	 * 
+	 *
 	 * @return the task's execution vertex ID
 	 */
 	public ExecutionVertexID getVertexID() {
@@ -287,7 +287,7 @@ public final class TaskDeploymentDescriptor implements IOReadableWritable {
 
 	/**
 	 * Returns the task's name.
-	 * 
+	 *
 	 * @return the task's name
 	 */
 	public String getTaskName() {
@@ -297,7 +297,7 @@ public final class TaskDeploymentDescriptor implements IOReadableWritable {
 
 	/**
 	 * Returns the task's index in the subtask group.
-	 * 
+	 *
 	 * @return the task's index in the subtask group
 	 */
 	public int getIndexInSubtaskGroup() {
@@ -307,7 +307,7 @@ public final class TaskDeploymentDescriptor implements IOReadableWritable {
 
 	/**
 	 * Returns the current number of subtasks.
-	 * 
+	 *
 	 * @return the current number of subtasks
 	 */
 	public int getCurrentNumberOfSubtasks() {
@@ -317,7 +317,7 @@ public final class TaskDeploymentDescriptor implements IOReadableWritable {
 
 	/**
 	 * Returns the configuration of the job the task belongs to.
-	 * 
+	 *
 	 * @return the configuration of the job the tasks belongs to
 	 */
 	public Configuration getJobConfiguration() {
@@ -327,7 +327,7 @@ public final class TaskDeploymentDescriptor implements IOReadableWritable {
 
 	/**
 	 * Returns the task's configuration object.
-	 * 
+	 *
 	 * @return the task's configuration object
 	 */
 	public Configuration getTaskConfiguration() {
@@ -337,7 +337,7 @@ public final class TaskDeploymentDescriptor implements IOReadableWritable {
 
 	/**
 	 * Returns the class containing the task code to be executed.
-	 * 
+	 *
 	 * @return the class containing the task code to be executed
 	 */
 	public Class<? extends AbstractInvokable> getInvokableClass() {
@@ -347,7 +347,7 @@ public final class TaskDeploymentDescriptor implements IOReadableWritable {
 
 	/**
 	 * Returns the number of output gate deployment descriptors contained in this task deployment descriptor.
-	 * 
+	 *
 	 * @return the number of output gate deployment descriptors
 	 */
 	public int getNumberOfOutputGateDescriptors() {
@@ -357,7 +357,7 @@ public final class TaskDeploymentDescriptor implements IOReadableWritable {
 
 	/**
 	 * Returns the output gate descriptor with the given index
-	 * 
+	 *
 	 * @param index
 	 *        the index if the output gate descriptor to return
 	 * @return the output gate descriptor with the given index
@@ -369,7 +369,7 @@ public final class TaskDeploymentDescriptor implements IOReadableWritable {
 
 	/**
 	 * Returns the number of output gate deployment descriptors contained in this task deployment descriptor.
-	 * 
+	 *
 	 * @return the number of output gate deployment descriptors
 	 */
 	public int getNumberOfInputGateDescriptors() {
@@ -379,7 +379,7 @@ public final class TaskDeploymentDescriptor implements IOReadableWritable {
 
 	/**
 	 * Returns the input gate descriptor with the given index
-	 * 
+	 *
 	 * @param index
 	 *        the index if the input gate descriptor to return
 	 * @return the input gate descriptor with the given index

@@ -21,8 +21,8 @@ import org.apache.commons.logging.LogFactory;
 import eu.stratosphere.core.io.IOReadableWritable;
 import eu.stratosphere.nephele.event.task.AbstractEvent;
 import eu.stratosphere.nephele.event.task.AbstractTaskEvent;
-import eu.stratosphere.nephele.io.InputGate;
 import eu.stratosphere.nephele.io.InputChannelResult;
+import eu.stratosphere.nephele.io.InputGate;
 import eu.stratosphere.nephele.io.RecordDeserializer;
 import eu.stratosphere.nephele.io.channels.AbstractInputChannel;
 import eu.stratosphere.nephele.io.channels.Buffer;
@@ -49,7 +49,7 @@ public abstract class AbstractByteBufferedInputChannel<T extends IOReadableWrita
 	private Buffer dataBuffer;
 
 	private ByteBufferedInputChannelBroker inputChannelBroker;
-	
+
 	private AbstractTaskEvent currentEvent;
 
 	/**
@@ -62,13 +62,13 @@ public abstract class AbstractByteBufferedInputChannel<T extends IOReadableWrita
 	 * Stores the number of bytes read through this input channel since its instantiation.
 	 */
 	private long amountOfDataTransmitted;
-	
+
 
 	private volatile boolean brokerAggreedToCloseChannel;
 
 	/**
 	 * Creates a new input channel.
-	 * 
+	 *
 	 * @param inputGate
 	 *        the input gate this channel is wired to
 	 * @param channelIndex
@@ -95,11 +95,11 @@ public abstract class AbstractByteBufferedInputChannel<T extends IOReadableWrita
 
 			// get the next element we need to handle (buffer or event)
 			BufferOrEvent boe = this.inputChannelBroker.getNextBufferOrEvent();
-			
+
 			if (boe == null) {
 				throw new IllegalStateException("Input channel was queries for data even though none was announced available.");
 			}
-			
+
 			// handle events
 			if (boe.isEvent())
 			{
@@ -107,7 +107,7 @@ public abstract class AbstractByteBufferedInputChannel<T extends IOReadableWrita
 				if (this.deserializer.hasUnfinishedData()) {
 					throw new IOException("Channel received an event before completing the current partial record.");
 				}
-				
+
 				AbstractEvent evt = boe.getEvent();
 				if (evt.getClass() == ByteBufferedChannelCloseEvent.class) {
 					this.brokerAggreedToCloseChannel = true;
@@ -184,12 +184,12 @@ public abstract class AbstractByteBufferedInputChannel<T extends IOReadableWrita
 		transferEvent(new ByteBufferedChannelCloseEvent());
 	}
 
-	
+
 	private void releasedConsumedReadBuffer(Buffer buffer) {
 		this.amountOfDataTransmitted += buffer.size();
 		buffer.recycleBuffer();
 	}
-	
+
 
 	public void setInputChannelBroker(ByteBufferedInputChannelBroker inputChannelBroker) {
 		this.inputChannelBroker = inputChannelBroker;
@@ -200,18 +200,18 @@ public abstract class AbstractByteBufferedInputChannel<T extends IOReadableWrita
 		this.getInputGate().notifyRecordIsAvailable(getChannelIndex());
 	}
 
-	
+
 	@Override
 	public void transferEvent(AbstractEvent event) throws IOException, InterruptedException {
 		this.inputChannelBroker.transferEventToOutputChannel(event);
 	}
 
-	
+
 	public void reportIOException(IOException ioe) {
 		this.ioException = ioe;
 	}
 
-	
+
 	@Override
 	public void releaseAllResources() {
 		this.brokerAggreedToCloseChannel = true;
@@ -220,20 +220,20 @@ public abstract class AbstractByteBufferedInputChannel<T extends IOReadableWrita
 		// The buffers are recycled by the input channel wrapper
 	}
 
-	
+
 	@Override
 	public long getAmountOfDataTransmitted() {
 		return this.amountOfDataTransmitted;
 	}
 
-	
+
 	/**
 	 * Notify the channel that a data unit has been consumed.
 	 */
 	public void notifyDataUnitConsumed() {
 		this.getInputGate().notifyDataUnitConsumed(getChannelIndex());
 	}
-	
+
 	@Override
 	public AbstractTaskEvent getCurrentEvent() {
 		AbstractTaskEvent e = this.currentEvent;

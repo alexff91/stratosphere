@@ -22,7 +22,7 @@ import eu.stratosphere.core.fs.Path;
 /**
  * The class <code>LocalFileStatus</code> provides an implementation of the {@link FileStatus} interface
  * for the local file system.
- * 
+ *
  */
 public class LocalFileStatus implements FileStatus {
 
@@ -38,7 +38,7 @@ public class LocalFileStatus implements FileStatus {
 
 	/**
 	 * Creates a <code>LocalFileStatus</code> object from a given {@link File} object.
-	 * 
+	 *
 	 * @param f
 	 *        the {@link File} object this <code>LocalFileStatus</code> refers to
 	 * @param fs
@@ -90,7 +90,7 @@ public class LocalFileStatus implements FileStatus {
 	public Path getPath() {
 		return this.path;
 	}
-	
+
 	public File getFile() {
 		return this.file;
 	}

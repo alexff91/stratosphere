@@ -24,12 +24,12 @@ public interface CopyableValue<T> extends Value
 {
 	/**
 	 * Gets the length of the data type when it is serialized, in bytes.
-	 * 
+	 *
 	 * @return The length of the data type, or {@code -1}, if variable length.
 	 */
 	int getBinaryLength();
-	
+
 	void copyTo(T target);
-	
+
 	void copy(DataInputView source, DataOutputView target) throws IOException;
 }

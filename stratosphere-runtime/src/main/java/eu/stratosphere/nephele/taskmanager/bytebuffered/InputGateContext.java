@@ -19,6 +19,6 @@ import eu.stratosphere.nephele.taskmanager.bufferprovider.LocalBufferPoolOwner;
 public interface InputGateContext extends GateContext {
 
 	InputChannelContext createInputChannelContext(ChannelID channelID, InputChannelContext previousContext);
-	
+
 	LocalBufferPoolOwner getLocalBufferPoolOwner();
 }

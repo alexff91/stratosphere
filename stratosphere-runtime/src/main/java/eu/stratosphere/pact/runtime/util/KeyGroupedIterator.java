@@ -23,30 +23,30 @@ import eu.stratosphere.util.MutableObjectIterator;
 
 /**
  * The KeyValueIterator returns a key and all values that belong to the key (share the same key).
- * 
+ *
  */
 public final class KeyGroupedIterator<E>
 {
 	private final MutableObjectIterator<E> iterator;
 
 	private final TypeSerializer<E> serializer;
-	
+
 	private final TypeComparator<E> comparator;
-	
+
 	private E current;
-	
+
 	private E lookahead;
 
 	private ValuesIterator valuesIterator;
 
 	private boolean lookAheadHasNext;
-	
+
 	private boolean done;
 
 	/**
 	 * Initializes the KeyGroupedIterator. It requires an iterator which returns its result
 	 * sorted by the key fields.
-	 * 
+	 *
 	 * @param iterator An iterator over records, which are sorted by the key fields, in any order.
 	 * @param serializer The serializer for the data type iterated over.
 	 * @param comparator The comparator for the data type iterated over.
@@ -57,7 +57,7 @@ public final class KeyGroupedIterator<E>
 		if (iterator == null || serializer == null || comparator == null) {
 			throw new NullPointerException();
 		}
-		
+
 		this.iterator = iterator;
 		this.serializer = serializer;
 		this.comparator = comparator;
@@ -66,7 +66,7 @@ public final class KeyGroupedIterator<E>
 	/**
 	 * Moves the iterator to the next key. This method may skip any values that have not yet been returned by the
 	 * iterator created by the {@link #getValues()} method. Hence, if called multiple times it "removes" pairs.
-	 * 
+	 *
 	 * @return true if the input iterator has an other group of key-value pairs that share the same key.
 	 */
 	public boolean nextKey() throws IOException
@@ -123,11 +123,11 @@ public final class KeyGroupedIterator<E>
 			}
 		}
 	}
-	
+
 	public TypeComparator<E> getComparatorWithCurrentReference() {
 		return this.comparator;
 	}
-	
+
 	public E getCurrent() {
 		return this.current;
 	}
@@ -136,7 +136,7 @@ public final class KeyGroupedIterator<E>
 	 * Returns an iterator over all values that belong to the current key. The iterator is initially <code>null</code>
 	 * (before the first call to {@link #nextKey()} and after all keys are consumed. In general, this method returns
 	 * always a non-null value, if a previous call to {@link #nextKey()} return <code>true</code>.
-	 * 
+	 *
 	 * @return Iterator over all values that belong to the current key.
 	 */
 	public ValuesIterator getValues() {
@@ -144,15 +144,15 @@ public final class KeyGroupedIterator<E>
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	public final class ValuesIterator implements Iterator<E>
 	{
 		private final TypeSerializer<E> serializer = KeyGroupedIterator.this.serializer;
-		private final TypeComparator<E> comparator = KeyGroupedIterator.this.comparator; 
-		
+		private final TypeComparator<E> comparator = KeyGroupedIterator.this.comparator;
+
 		private E staging = this.serializer.createInstance();
 		private boolean currentIsUnconsumed = false;
-		
+
 		private ValuesIterator() {}
 
 		@Override
@@ -164,7 +164,7 @@ public final class KeyGroupedIterator<E>
 			if (this.currentIsUnconsumed) {
 				return true;
 			}
-			
+
 			try {
 				// read the next value into the staging record to make sure we keep the
 				// current as it is in case the key changed
@@ -183,7 +183,7 @@ public final class KeyGroupedIterator<E>
 						KeyGroupedIterator.this.lookAheadHasNext = true;
 						KeyGroupedIterator.this.lookahead = this.staging;
 						this.staging = KeyGroupedIterator.this.current;
-						return false;						
+						return false;
 					}
 				}
 				else {
@@ -193,7 +193,7 @@ public final class KeyGroupedIterator<E>
 				}
 			}
 			catch (IOException ioex) {
-				throw new RuntimeException("An error occurred while reading the next record: " + 
+				throw new RuntimeException("An error occurred while reading the next record: " +
 					ioex.getMessage(), ioex);
 			}
 		}

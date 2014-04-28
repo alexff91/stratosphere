@@ -18,10 +18,10 @@ package eu.stratosphere.types;
 public interface ArithmeticType<T> {
 
 	T add (T other);
-	
+
 	T subtract(T other);
-	
+
 	T scalarMultiply(int factor);
-	
+
 	T scalarDivide(int div);
 }

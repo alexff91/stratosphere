@@ -27,18 +27,18 @@ import eu.stratosphere.util.ReflectionUtil;
 /**
  * Generic list base type for PACT programs that implements the Value and List interfaces.
  * PactList encapsulates a Java ArrayList object.
- * 
+ *
  * @see eu.stratosphere.types.Value
  * @see java.util.List
  * @see java.util.ArrayList
- * 
+ *
  * @param <V> Type of the list elements.
- * 
- * 
+ *
+ *
  */
 public abstract class ListValue<V extends Value> implements Value, List<V> {
 	private static final long serialVersionUID = 1L;
-	
+
 	// Type of list elements
 	private final Class<V> valueClass;
 	// Encapsulated list
@@ -46,7 +46,7 @@ public abstract class ListValue<V extends Value> implements Value, List<V> {
 
 	/**
 	 * Initializes the encapsulated list with an empty ArrayList.
-	 * 
+	 *
 	 * @see java.util.ArrayList
 	 */
 	public ListValue() {
@@ -57,10 +57,10 @@ public abstract class ListValue<V extends Value> implements Value, List<V> {
 
 	/**
 	 * Initializes the encapsulated list with an ArrayList filled with all object contained in the specified Collection object.
-	 * 
+	 *
 	 * @see java.util.ArrayList
 	 * @see java.util.Collection
-	 * 
+	 *
 	 * @param c Collection of initial element of the encapsulated list.
 	 */
 	public ListValue(final Collection<V> c) {
@@ -108,8 +108,9 @@ public abstract class ListValue<V extends Value> implements Value, List<V> {
 	@Override
 	public void write(final DataOutput out) throws IOException {
 		out.writeInt(this.list.size());
-		for (final V value : this.list)
-			value.write(out);
+		for (final V value : this.list) {
+		value.write(out);
+		}
 	}
 
 	/*
@@ -130,18 +131,23 @@ public abstract class ListValue<V extends Value> implements Value, List<V> {
 	 */
 	@Override
 	public boolean equals(final Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (this.getClass() != obj.getClass())
-			return false;
+		if (this == obj) {
+		return true;
+		}
+		if (obj == null) {
+		return false;
+		}
+		if (this.getClass() != obj.getClass()) {
+		return false;
+		}
 		final ListValue<?> other = (ListValue<?>) obj;
 		if (this.list == null) {
-			if (other.list != null)
-				return false;
-		} else if (!this.list.equals(other.list))
+			if (other.list != null) {
 			return false;
+			}
+		} else if (!this.list.equals(other.list)) {
+		return false;
+		}
 		return true;
 	}
 
@@ -198,7 +204,7 @@ public abstract class ListValue<V extends Value> implements Value, List<V> {
 	public boolean contains(final Object o) {
 		return this.list.contains(o);
 	}
-	
+
 	@Override
 	public String toString() {
 		return this.list.toString();
@@ -256,7 +262,7 @@ public abstract class ListValue<V extends Value> implements Value, List<V> {
 	public ListIterator<V> listIterator() {
 		return this.list.listIterator();
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see java.util.List#listIterator(int)
@@ -319,7 +325,7 @@ public abstract class ListValue<V extends Value> implements Value, List<V> {
 	public int size() {
 		return this.list.size();
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see java.util.List#subList(int, int)

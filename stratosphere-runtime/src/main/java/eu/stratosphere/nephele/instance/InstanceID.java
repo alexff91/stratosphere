@@ -17,7 +17,7 @@ import eu.stratosphere.nephele.io.AbstractID;
 
 /**
  * Class for statistically unique instance IDs.
- * 
+ *
  */
 public class InstanceID extends AbstractID {
 

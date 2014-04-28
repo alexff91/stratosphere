@@ -52,7 +52,7 @@ import eu.stratosphere.util.StringUtils;
  * task managers and process the task in parallel.
  * <p>
  * This class is thread-safe.
- * 
+ *
  */
 public final class ExecutionVertex {
 
@@ -136,7 +136,7 @@ public final class ExecutionVertex {
 
 	/**
 	 * Create a new execution vertex and instantiates its environment.
-	 * 
+	 *
 	 * @param executionGraph
 	 *        the execution graph the new vertex belongs to
 	 * @param groupVertex
@@ -155,7 +155,7 @@ public final class ExecutionVertex {
 
 	/**
 	 * Private constructor used to duplicate execution vertices.
-	 * 
+	 *
 	 * @param vertexID
 	 *        the ID of the new execution vertex.
 	 * @param executionGraph
@@ -188,7 +188,7 @@ public final class ExecutionVertex {
 
 	/**
 	 * Returns the group vertex this execution vertex belongs to.
-	 * 
+	 *
 	 * @return the group vertex this execution vertex belongs to
 	 */
 	public ExecutionGroupVertex getGroupVertex() {
@@ -197,7 +197,7 @@ public final class ExecutionVertex {
 
 	/**
 	 * Returns the name of the execution vertex.
-	 * 
+	 *
 	 * @return the name of the execution vertex
 	 */
 	public String getName() {
@@ -206,7 +206,7 @@ public final class ExecutionVertex {
 
 	/**
 	 * Returns a duplicate of this execution vertex.
-	 * 
+	 *
 	 * @param preserveVertexID
 	 *        <code>true</code> to copy the vertex's ID to the duplicated vertex, <code>false</code> to create a new ID
 	 * @return a duplicate of this execution vertex
@@ -242,7 +242,7 @@ public final class ExecutionVertex {
 
 	/**
 	 * Inserts the output gate at the given position.
-	 * 
+	 *
 	 * @param pos
 	 *        the position to insert the output gate
 	 * @param outputGate
@@ -259,7 +259,7 @@ public final class ExecutionVertex {
 
 	/**
 	 * Inserts the input gate at the given position.
-	 * 
+	 *
 	 * @param pos
 	 *        the position to insert the input gate
 	 * @param outputGate
@@ -277,7 +277,7 @@ public final class ExecutionVertex {
 	/**
 	 * Returns a duplicate of this execution vertex. The duplicated vertex receives
 	 * a new vertex ID.
-	 * 
+	 *
 	 * @return a duplicate of this execution vertex.
 	 */
 	public ExecutionVertex splitVertex() {
@@ -287,7 +287,7 @@ public final class ExecutionVertex {
 
 	/**
 	 * Returns this execution vertex's current execution status.
-	 * 
+	 *
 	 * @return this execution vertex's current execution status
 	 */
 	public ExecutionState getExecutionState() {
@@ -296,7 +296,7 @@ public final class ExecutionVertex {
 
 	/**
 	 * Updates the vertex's current execution state through the job's executor service.
-	 * 
+	 *
 	 * @param newExecutionState
 	 *        the new execution state
 	 * @param optionalMessage
@@ -322,7 +322,7 @@ public final class ExecutionVertex {
 
 	/**
 	 * Updates the vertex's current execution state through the job's executor service.
-	 * 
+	 *
 	 * @param newExecutionState
 	 *        the new execution state
 	 */
@@ -333,7 +333,7 @@ public final class ExecutionVertex {
 
 	/**
 	 * Updates the vertex's current execution state.
-	 * 
+	 *
 	 * @param newExecutionState
 	 *        the new execution state
 	 */
@@ -343,7 +343,7 @@ public final class ExecutionVertex {
 
 	/**
 	 * Updates the vertex's current execution state.
-	 * 
+	 *
 	 * @param newExecutionState
 	 *        the new execution state
 	 * @param optionalMessage
@@ -437,7 +437,7 @@ public final class ExecutionVertex {
 
 	/**
 	 * Assigns the execution vertex with an {@link AllocatedResource}.
-	 * 
+	 *
 	 * @param allocatedResource
 	 *        the resources which are supposed to be allocated to this vertex
 	 */
@@ -463,7 +463,7 @@ public final class ExecutionVertex {
 
 	/**
 	 * Returns the allocated resources assigned to this execution vertex.
-	 * 
+	 *
 	 * @return the allocated resources assigned to this execution vertex
 	 */
 	public AllocatedResource getAllocatedResource() {
@@ -474,7 +474,7 @@ public final class ExecutionVertex {
 	/**
 	 * Returns the allocation ID which identifies the resources used
 	 * by this vertex within the assigned instance.
-	 * 
+	 *
 	 * @return the allocation ID which identifies the resources used
 	 *         by this vertex within the assigned instance or <code>null</code> if the instance is still assigned to a
 	 *         {@link eu.stratosphere.nephele.instance.DummyInstance}.
@@ -485,7 +485,7 @@ public final class ExecutionVertex {
 
 	/**
 	 * Returns the ID of this execution vertex.
-	 * 
+	 *
 	 * @return the ID of this execution vertex
 	 */
 	public ExecutionVertexID getID() {
@@ -495,7 +495,7 @@ public final class ExecutionVertex {
 	/**
 	 * Returns the number of predecessors, i.e. the number of vertices
 	 * which connect to this vertex.
-	 * 
+	 *
 	 * @return the number of predecessors
 	 */
 	public int getNumberOfPredecessors() {
@@ -512,7 +512,7 @@ public final class ExecutionVertex {
 	/**
 	 * Returns the number of successors, i.e. the number of vertices
 	 * this vertex is connected to.
-	 * 
+	 *
 	 * @return the number of successors
 	 */
 	public int getNumberOfSuccessors() {
@@ -574,7 +574,7 @@ public final class ExecutionVertex {
 	/**
 	 * Checks if this vertex is an input vertex in its stage, i.e. has either no
 	 * incoming connections or only incoming connections to group vertices in a lower stage.
-	 * 
+	 *
 	 * @return <code>true</code> if this vertex is an input vertex, <code>false</code> otherwise
 	 */
 	public boolean isInputVertex() {
@@ -585,7 +585,7 @@ public final class ExecutionVertex {
 	/**
 	 * Checks if this vertex is an output vertex in its stage, i.e. has either no
 	 * outgoing connections or only outgoing connections to group vertices in a higher stage.
-	 * 
+	 *
 	 * @return <code>true</code> if this vertex is an output vertex, <code>false</code> otherwise
 	 */
 	public boolean isOutputVertex() {
@@ -595,7 +595,7 @@ public final class ExecutionVertex {
 
 	/**
 	 * Returns the index of this vertex in the vertex group.
-	 * 
+	 *
 	 * @return the index of this vertex in the vertex group
 	 */
 	public int getIndexInVertexGroup() {
@@ -605,7 +605,7 @@ public final class ExecutionVertex {
 
 	/**
 	 * Sets the vertex' index in the vertex group.
-	 * 
+	 *
 	 * @param indexInVertexGroup
 	 *        the vertex' index in the vertex group
 	 */
@@ -616,7 +616,7 @@ public final class ExecutionVertex {
 
 	/**
 	 * Returns the number of output gates attached to this vertex.
-	 * 
+	 *
 	 * @return the number of output gates attached to this vertex
 	 */
 	public int getNumberOfOutputGates() {
@@ -626,7 +626,7 @@ public final class ExecutionVertex {
 
 	/**
 	 * Returns the output gate with the given index.
-	 * 
+	 *
 	 * @param index
 	 *        the index of the output gate to return
 	 * @return the output gate with the given index
@@ -638,7 +638,7 @@ public final class ExecutionVertex {
 
 	/**
 	 * Returns the number of input gates attached to this vertex.
-	 * 
+	 *
 	 * @return the number of input gates attached to this vertex
 	 */
 	public int getNumberOfInputGates() {
@@ -648,7 +648,7 @@ public final class ExecutionVertex {
 
 	/**
 	 * Returns the input gate with the given index.
-	 * 
+	 *
 	 * @param index
 	 *        the index of the input gate to return
 	 * @return the input gate with the given index
@@ -661,7 +661,7 @@ public final class ExecutionVertex {
 	/**
 	 * Deploys and starts the task represented by this vertex
 	 * on the assigned instance.
-	 * 
+	 *
 	 * @return the result of the task submission attempt
 	 */
 	public TaskSubmissionResult startTask() {
@@ -696,7 +696,7 @@ public final class ExecutionVertex {
 	 * corresponding task is not in the state <code>RUNNING</code>, this call will be ignored. If the call has been
 	 * executed
 	 * successfully, the task will change the state <code>FAILED</code>.
-	 * 
+	 *
 	 * @return the result of the task kill attempt
 	 */
 	public TaskKillResult killTask() {
@@ -731,7 +731,7 @@ public final class ExecutionVertex {
 	 * from the instance it is currently running on. If the task
 	 * is not currently running, its execution state is simply
 	 * updated to <code>CANCELLED</code>.
-	 * 
+	 *
 	 * @return the result of the task cancel attempt
 	 */
 	public TaskCancelResult cancelTask() {
@@ -811,7 +811,7 @@ public final class ExecutionVertex {
 
 	/**
 	 * Returns the {@link ExecutionGraph} this vertex belongs to.
-	 * 
+	 *
 	 * @return the {@link ExecutionGraph} this vertex belongs to
 	 */
 	public ExecutionGraph getExecutionGraph() {
@@ -837,7 +837,7 @@ public final class ExecutionVertex {
 	 * Returns the task represented by this vertex has
 	 * a retry attempt left in case of an execution
 	 * failure.
-	 * 
+	 *
 	 * @return <code>true</code> if the task has a retry attempt left, <code>false</code> otherwise
 	 */
 	@Deprecated
@@ -850,7 +850,7 @@ public final class ExecutionVertex {
 
 	/**
 	 * Decrements the number of retries left and checks whether another attempt to run the task is possible.
-	 * 
+	 *
 	 * @return <code>true</code>if the task represented by this vertex can be started at least once more,
 	 *         <code>false/<code> otherwise
 	 */
@@ -862,7 +862,7 @@ public final class ExecutionVertex {
 	/**
 	 * Registers the {@link VertexAssignmentListener} object for this vertex. This object
 	 * will be notified about reassignments of this vertex to another instance.
-	 * 
+	 *
 	 * @param vertexAssignmentListener
 	 *        the object to be notified about reassignments of this vertex to another instance
 	 */
@@ -874,7 +874,7 @@ public final class ExecutionVertex {
 	/**
 	 * Unregisters the {@link VertexAssignmentListener} object for this vertex. This object
 	 * will no longer be notified about reassignments of this vertex to another instance.
-	 * 
+	 *
 	 * @param vertexAssignmentListener
 	 *        the listener to be unregistered
 	 */
@@ -887,7 +887,7 @@ public final class ExecutionVertex {
 	/**
 	 * Registers the {@link ExecutionListener} object for this vertex. This object
 	 * will be notified about particular events during the vertex's lifetime.
-	 * 
+	 *
 	 * @param executionListener
 	 *        the object to be notified about particular events during the vertex's lifetime
 	 */
@@ -911,7 +911,7 @@ public final class ExecutionVertex {
 	/**
 	 * Unregisters the {@link ExecutionListener} object for this vertex. This object
 	 * will no longer be notified about particular events during the vertex's lifetime.
-	 * 
+	 *
 	 * @param executionListener
 	 *        the object to be unregistered
 	 */
@@ -923,7 +923,7 @@ public final class ExecutionVertex {
 
 	/**
 	 * Sets the {@link ExecutionPipeline} this vertex shall be part of.
-	 * 
+	 *
 	 * @param executionPipeline
 	 *        the execution pipeline this vertex shall be part of
 	 */
@@ -939,7 +939,7 @@ public final class ExecutionVertex {
 
 	/**
 	 * Returns the {@link ExecutionPipeline} this vertex is part of.
-	 * 
+	 *
 	 * @return the execution pipeline this vertex is part of
 	 */
 	public ExecutionPipeline getExecutionPipeline() {
@@ -949,7 +949,7 @@ public final class ExecutionVertex {
 
 	/**
 	 * Constructs a new task deployment descriptor for this vertex.
-	 * 
+	 *
 	 * @return a new task deployment descriptor for this vertex
 	 */
 	public TaskDeploymentDescriptor constructDeploymentDescriptor() {

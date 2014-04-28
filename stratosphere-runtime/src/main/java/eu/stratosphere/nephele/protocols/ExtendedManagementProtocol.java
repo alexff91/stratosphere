@@ -32,14 +32,14 @@ import eu.stratosphere.nephele.topology.NetworkTopology;
  * simple {@link JobManagementProtocol}. It can be used to retrieve
  * internal scheduling information, the network topology, or profiling
  * information about thread or instance utilization.
- * 
+ *
  */
 public interface ExtendedManagementProtocol extends JobManagementProtocol {
 
 	/**
 	 * Retrieves the management graph for the job
 	 * with the given ID.
-	 * 
+	 *
 	 * @param jobID
 	 *        the ID identifying the job
 	 * @return the management graph for the job
@@ -51,7 +51,7 @@ public interface ExtendedManagementProtocol extends JobManagementProtocol {
 	/**
 	 * Retrieves the current network topology for the job with
 	 * the given ID.
-	 * 
+	 *
 	 * @param jobID
 	 *        the ID identifying the job
 	 * @return the network topology for the job
@@ -62,7 +62,7 @@ public interface ExtendedManagementProtocol extends JobManagementProtocol {
 
 	/**
 	 * Retrieves a list of jobs which have either running or have been started recently.
-	 * 
+	 *
 	 * @return a (possibly) empty list of recent jobs
 	 * @throws IOException
 	 *         thrown if an error occurs while retrieving the job list
@@ -71,7 +71,7 @@ public interface ExtendedManagementProtocol extends JobManagementProtocol {
 
 	/**
 	 * Retrieves the collected events for the job with the given job ID.
-	 * 
+	 *
 	 * @param jobID
 	 *        the ID of the job to retrieve the events for
 	 * @return a (possibly empty) list of events which occurred for that event and which
@@ -83,7 +83,7 @@ public interface ExtendedManagementProtocol extends JobManagementProtocol {
 
 	/**
 	 * Kills the task with the given vertex ID.
-	 * 
+	 *
 	 * @param jobID
 	 *        the ID of the job the vertex to be killed belongs to
 	 * @param id
@@ -95,7 +95,7 @@ public interface ExtendedManagementProtocol extends JobManagementProtocol {
 
 	/**
 	 * Kills the instance with the given name (i.e. shuts down its task manager).
-	 * 
+	 *
 	 * @param instanceName
 	 *        the name of the instance to be killed
 	 * @throws IOException
@@ -109,7 +109,7 @@ public interface ExtendedManagementProtocol extends JobManagementProtocol {
 	 * the actual hardware description as reported by task managers running on the individual instances. If available,
 	 * the map also contains the maximum number instances Nephele can allocate of each instance type (i.e. if no other
 	 * job occupies instances).
-	 * 
+	 *
 	 * @return a list of all instance types available to Nephele
 	 * @throws IOException
 	 *         thrown if an error occurs while transmitting the list
@@ -119,7 +119,7 @@ public interface ExtendedManagementProtocol extends JobManagementProtocol {
 	/**
 	 * Triggers all task managers involved in processing the job with the given job ID to write the utilization of
 	 * their read and write buffers to their log files. This method is primarily for debugging purposes.
-	 * 
+	 *
 	 * @param jobID
 	 *        the ID of the job to print the buffer distribution for
 	 * @throws IOException

@@ -14,7 +14,7 @@
 /**
  * This file is based on source code from the Hadoop Project (http://hadoop.apache.org/), licensed by the Apache
  * Software Foundation (ASF) under the Apache License, Version 2.0. See the NOTICE file distributed with this work for
- * additional information regarding copyright ownership. 
+ * additional information regarding copyright ownership.
  */
 
 package eu.stratosphere.nephele.ipc;
@@ -42,17 +42,19 @@ public class RemoteException extends IOException {
 	 * then return this exception.
 	 * <p>
 	 * Unwraps any IOException.
-	 * 
+	 *
 	 * @param lookupTypes
 	 *        the desired exception class.
 	 * @return IOException, which is either the lookupClass exception or this.
 	 */
 	public IOException unwrapRemoteException(Class<?>... lookupTypes) {
-		if (lookupTypes == null)
-			return this;
+		if (lookupTypes == null) {
+		return this;
+		}
 		for (Class<?> lookupClass : lookupTypes) {
-			if (!lookupClass.getName().equals(getClassName()))
-				continue;
+			if (!lookupClass.getName().equals(getClassName())) {
+			continue;
+			}
 			try {
 				return instantiateException(lookupClass.asSubclass(IOException.class));
 			} catch (Exception e) {
@@ -69,7 +71,7 @@ public class RemoteException extends IOException {
 	 * <p>
 	 * This unwraps any <code>Throwable</code> that has a constructor taking a <code>String</code> as a parameter.
 	 * Otherwise it returns this.
-	 * 
+	 *
 	 * @return <code>Throwable
 	 */
 	public IOException unwrapRemoteException() {

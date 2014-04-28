@@ -18,11 +18,11 @@ import java.io.IOException;
 import eu.stratosphere.core.io.IOReadableWritable;
 
 public final class UnionRecordReader<T extends IOReadableWritable> extends AbstractUnionRecordReader<T> implements Reader<T> {
-	
+
 	private final Class<T> recordType;
-	
+
 	private T lookahead;
-	
+
 
 	public UnionRecordReader(MutableRecordReader<T>[] recordReaders, Class<T> recordType) {
 		super(recordReaders);
@@ -54,7 +54,7 @@ public final class UnionRecordReader<T extends IOReadableWritable> extends Abstr
 			return null;
 		}
 	}
-	
+
 	private T instantiateRecordType() {
 		try {
 			return this.recordType.newInstance();

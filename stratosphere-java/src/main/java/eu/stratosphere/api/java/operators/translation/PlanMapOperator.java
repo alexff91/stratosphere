@@ -27,16 +27,16 @@ public class PlanMapOperator<T, O> extends PlainMapOperatorBase<GenericMap<T, O>
 {
 
 	private final TypeInformation<T> inType;
-	
+
 	private final TypeInformation<O> outType;
-	
-	
+
+
 	public PlanMapOperator(MapFunction<T, O> udf, String name, TypeInformation<T> inType, TypeInformation<O> outType) {
 		super(udf, name);
 		this.inType = inType;
 		this.outType = outType;
 	}
-	
+
 	@Override
 	public TypeInformation<O> getReturnType() {
 		return this.outType;

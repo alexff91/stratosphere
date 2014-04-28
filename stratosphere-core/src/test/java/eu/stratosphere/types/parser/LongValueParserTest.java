@@ -25,7 +25,7 @@ public class LongValueParserTest extends ParserTestBase<LongValue> {
 			String.valueOf(Long.MAX_VALUE), String.valueOf(Long.MIN_VALUE), "7656"
 		};
 	}
-	
+
 	@Override
 	public LongValue[] getValidTestResults() {
 		return new LongValue[] {

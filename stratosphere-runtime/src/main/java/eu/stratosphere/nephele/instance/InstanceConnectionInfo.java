@@ -25,7 +25,7 @@ import eu.stratosphere.util.StringUtils;
 
 /**
  * This class encapsulates all connection information necessary to connect to the instance's task manager.
- * 
+ *
  */
 public class InstanceConnectionInfo implements IOReadableWritable, Comparable<InstanceConnectionInfo> {
 
@@ -57,7 +57,7 @@ public class InstanceConnectionInfo implements IOReadableWritable, Comparable<In
 	/**
 	 * Constructs a new instance connection info object. The constructor will attempt to retrieve the instance's
 	 * hostname and domain name through the operating system's lookup mechanisms.
-	 * 
+	 *
 	 * @param inetAddress
 	 *        the network address the instance's task manager binds its sockets to
 	 * @param ipcPort
@@ -106,7 +106,7 @@ public class InstanceConnectionInfo implements IOReadableWritable, Comparable<In
 
 	/**
 	 * Constructs a new instance connection info object.
-	 * 
+	 *
 	 * @param inetAddress
 	 *        the network address the instance's task manager binds its sockets to
 	 * @param hostName
@@ -152,7 +152,7 @@ public class InstanceConnectionInfo implements IOReadableWritable, Comparable<In
 
 	/**
 	 * Returns the port instance's task manager runs its IPC service on.
-	 * 
+	 *
 	 * @return the port instance's task manager runs its IPC service on
 	 */
 	public int getIPCPort() {
@@ -162,7 +162,7 @@ public class InstanceConnectionInfo implements IOReadableWritable, Comparable<In
 
 	/**
 	 * Returns the port instance's task manager expects to receive transfer envelopes on.
-	 * 
+	 *
 	 * @return the port instance's task manager expects to receive transfer envelopes on
 	 */
 	public int getDataPort() {
@@ -172,7 +172,7 @@ public class InstanceConnectionInfo implements IOReadableWritable, Comparable<In
 
 	/**
 	 * Returns the network address the instance's task manager binds its sockets to.
-	 * 
+	 *
 	 * @return the network address the instance's task manager binds its sockets to
 	 */
 	public InetAddress getAddress() {
@@ -183,7 +183,7 @@ public class InstanceConnectionInfo implements IOReadableWritable, Comparable<In
 	/**
 	 * Returns the host name of the instance. If the host name could not be determined, the return value will be a
 	 * textual representation of the instance's IP address.
-	 * 
+	 *
 	 * @return the host name of the instance
 	 */
 	public String getHostName() {
@@ -193,7 +193,7 @@ public class InstanceConnectionInfo implements IOReadableWritable, Comparable<In
 
 	/**
 	 * Returns the domain name of the instance.
-	 * 
+	 *
 	 * @return the domain name of the instance or <code>null</code> if the domain name could not be determined
 	 */
 	public String getDomainName() {

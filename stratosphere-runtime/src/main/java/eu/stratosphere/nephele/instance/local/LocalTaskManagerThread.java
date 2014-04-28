@@ -15,11 +15,9 @@ package eu.stratosphere.nephele.instance.local;
 
 import eu.stratosphere.nephele.taskmanager.TaskManager;
 
-import java.io.IOException;
-
 /**
  * This class represents the thread which runs the task manager when Nephele is executed in local mode.
- * 
+ *
  */
 public class LocalTaskManagerThread extends Thread {
 
@@ -43,7 +41,7 @@ public class LocalTaskManagerThread extends Thread {
 	}
 
 	@Override
-	public void run() {	
+	public void run() {
 		this.taskManager.runIOLoop();
 
 		// Wait until the task manager is shut down
@@ -58,7 +56,7 @@ public class LocalTaskManagerThread extends Thread {
 
 	/**
 	 * Checks if the task manager run by this thread is completely shut down.
-	 * 
+	 *
 	 * @return <code>true</code> if the task manager is completely shut down, <code>false</code> otherwise
 	 */
 	public boolean isShutDown() {

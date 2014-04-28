@@ -20,11 +20,11 @@ public class UniformIntPairGenerator implements MutableObjectIterator<IntPair>
 {
 	final int numKeys;
 	final int numVals;
-	
+
 	int keyCnt = 0;
 	int valCnt = 0;
 	boolean repeatKey;
-	
+
 	public UniformIntPairGenerator(int numKeys, int numVals, boolean repeatKey) {
 		this.numKeys = numKeys;
 		this.numVals = numVals;
@@ -37,10 +37,10 @@ public class UniformIntPairGenerator implements MutableObjectIterator<IntPair>
 			if(valCnt >= numVals) {
 				return null;
 			}
-			
+
 			target.setKey(keyCnt++);
 			target.setValue(valCnt);
-			
+
 			if(keyCnt == numKeys) {
 				keyCnt = 0;
 				valCnt++;
@@ -49,16 +49,16 @@ public class UniformIntPairGenerator implements MutableObjectIterator<IntPair>
 			if(keyCnt >= numKeys) {
 				return null;
 			}
-			
+
 			target.setKey(keyCnt);
 			target.setValue(valCnt++);
-			
+
 			if(valCnt == numVals) {
 				valCnt = 0;
 				keyCnt++;
 			}
 		}
-		
+
 		return target;
 	}
 }

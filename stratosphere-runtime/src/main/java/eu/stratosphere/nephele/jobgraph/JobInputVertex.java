@@ -19,7 +19,7 @@ public class JobInputVertex extends AbstractJobInputVertex {
 
 	/**
 	 * Creates a new job input vertex with the specified name.
-	 * 
+	 *
 	 * @param name
 	 *        The name of the new job file input vertex.
 	 * @param id
@@ -33,7 +33,7 @@ public class JobInputVertex extends AbstractJobInputVertex {
 
 	/**
 	 * Creates a new job file input vertex with the specified name.
-	 * 
+	 *
 	 * @param name
 	 *        The name of the new job file input vertex.
 	 * @param jobGraph
@@ -45,7 +45,7 @@ public class JobInputVertex extends AbstractJobInputVertex {
 
 	/**
 	 * Creates a new job file input vertex.
-	 * 
+	 *
 	 * @param jobGraph
 	 *        The job graph this vertex belongs to.
 	 */
@@ -55,7 +55,7 @@ public class JobInputVertex extends AbstractJobInputVertex {
 
 	/**
 	 * Sets the class of the vertex's input task.
-	 * 
+	 *
 	 * @param inputClass
 	 *        The class of the vertex's input task.
 	 */
@@ -65,7 +65,7 @@ public class JobInputVertex extends AbstractJobInputVertex {
 
 	/**
 	 * Returns the class of the vertex's input task.
-	 * 
+	 *
 	 * @return the class of the vertex's input task or <code>null</code> if no task has yet been set
 	 */
 	@SuppressWarnings("unchecked")

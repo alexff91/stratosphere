@@ -16,7 +16,7 @@ package eu.stratosphere.pact.runtime.iterative.concurrent;
 import eu.stratosphere.pact.runtime.iterative.task.RuntimeAggregatorRegistry;
 
 public class IterationAggregatorBroker extends Broker<RuntimeAggregatorRegistry> {
-	
+
 	/** single instance */
 	private static final IterationAggregatorBroker INSTANCE = new IterationAggregatorBroker();
 

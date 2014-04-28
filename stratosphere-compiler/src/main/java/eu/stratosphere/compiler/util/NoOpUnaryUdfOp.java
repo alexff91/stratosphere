@@ -12,16 +12,16 @@
  **********************************************************************************************************************/
 package eu.stratosphere.compiler.util;
 
+import eu.stratosphere.api.common.operators.RecordOperator;
 import eu.stratosphere.api.common.operators.SingleInputOperator;
 import eu.stratosphere.api.common.operators.util.UserCodeClassWrapper;
-import eu.stratosphere.api.common.operators.RecordOperator;
 import eu.stratosphere.types.Key;
 
 
 public class NoOpUnaryUdfOp extends SingleInputOperator<NoOpFunction> implements RecordOperator {
-	
+
 	public static final NoOpUnaryUdfOp INSTANCE = new NoOpUnaryUdfOp();
-	
+
 	private NoOpUnaryUdfOp() {
 		super(new UserCodeClassWrapper<NoOpFunction>(NoOpFunction.class), "");
 	}

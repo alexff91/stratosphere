@@ -18,13 +18,13 @@ import eu.stratosphere.nephele.instance.AllocatedResource;
 /**
  * Classes implementing the {@link VertexAssignmentListener} interface can register for notifications about changes in
  * the assignment of an {@link ExecutionVertex} to an {@link AllocatedResource}.
- * 
+ *
  */
 public interface VertexAssignmentListener {
 
 	/**
 	 * Called when an {@link ExecutionVertex} has been assigned to an {@link AllocatedResource}.
-	 * 
+	 *
 	 * @param id
 	 *        the ID of the vertex which has been reassigned
 	 * @param newAllocatedResource

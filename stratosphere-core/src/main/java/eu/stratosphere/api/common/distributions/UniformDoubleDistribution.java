@@ -22,12 +22,12 @@ import eu.stratosphere.types.DoubleValue;
 public class UniformDoubleDistribution implements DataDistribution {
 
 	private static final long serialVersionUID = 1L;
-	
-	private double min, max; 
 
-	
+	private double min, max;
+
+
 	public UniformDoubleDistribution() {}
-	
+
 	public UniformDoubleDistribution(double min, double max) {
 		this.min = min;
 		this.max = max;

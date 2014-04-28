@@ -37,41 +37,41 @@ import eu.stratosphere.util.LogUtils;
  * A class for executing a {@link Plan} on a local embedded Stratosphere instance.
  */
 public class LocalExecutor extends PlanExecutor {
-	
+
 	private static boolean DEFAULT_OVERWRITE = false;
 
 	private final Object lock = new Object();	// we lock to ensure singleton execution
-	
+
 	private NepheleMiniCluster nephele;
 
 	// ---------------------------------- config options ------------------------------------------
-	
+
 	private int jobManagerRpcPort = -1;
-	
+
 	private int taskManagerRpcPort = -1;
-	
+
 	private int taskManagerDataPort = -1;
-	
+
 	private String configDir;
 
 	private String hdfsConfigFile;
-	
+
 	private boolean defaultOverwriteFiles = DEFAULT_OVERWRITE;
-	
+
 	private boolean defaultAlwaysCreateDirectory = false;
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public LocalExecutor() {
 		if (System.getProperty("log4j.configuration") == null) {
 			setLoggingLevel(Level.INFO);
 		}
 	}
-	
+
 	public int getJobManagerRpcPort() {
 		return jobManagerRpcPort;
 	}
-	
+
 	public void setJobManagerRpcPort(int jobManagerRpcPort) {
 		this.jobManagerRpcPort = jobManagerRpcPort;
 	}
@@ -91,7 +91,7 @@ public class LocalExecutor extends PlanExecutor {
 	public void setTaskManagerDataPort(int taskManagerDataPort) {
 		this.taskManagerDataPort = taskManagerDataPort;
 	}
-	
+
 	public String getConfigDir() {
 		return configDir;
 	}
@@ -103,36 +103,36 @@ public class LocalExecutor extends PlanExecutor {
 	public String getHdfsConfig() {
 		return hdfsConfigFile;
 	}
-	
+
 	public void setHdfsConfig(String hdfsConfig) {
 		this.hdfsConfigFile = hdfsConfig;
 	}
-	
+
 	public boolean isDefaultOverwriteFiles() {
 		return defaultOverwriteFiles;
 	}
-	
+
 	public void setDefaultOverwriteFiles(boolean defaultOverwriteFiles) {
 		this.defaultOverwriteFiles = defaultOverwriteFiles;
 	}
-	
+
 	public boolean isDefaultAlwaysCreateDirectory() {
 		return defaultAlwaysCreateDirectory;
 	}
-	
+
 	public void setDefaultAlwaysCreateDirectory(boolean defaultAlwaysCreateDirectory) {
 		this.defaultAlwaysCreateDirectory = defaultAlwaysCreateDirectory;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public void start() throws Exception {
 		synchronized (this.lock) {
 			if (this.nephele == null) {
-				
+
 				// create the embedded runtime
 				this.nephele = new NepheleMiniCluster();
-				
+
 				// configure it, if values were changed. otherwise the embedded runtime uses the internal defaults
 				if (jobManagerRpcPort > 0) {
 					nephele.setJobManagerRpcPort(jobManagerRpcPort);
@@ -151,7 +151,7 @@ public class LocalExecutor extends PlanExecutor {
 				}
 				nephele.setDefaultOverwriteFiles(defaultOverwriteFiles);
 				nephele.setDefaultAlwaysCreateDirectory(defaultAlwaysCreateDirectory);
-				
+
 				// start it up
 				this.nephele.start();
 			} else {
@@ -177,22 +177,23 @@ public class LocalExecutor extends PlanExecutor {
 	/**
 	 * Execute the given plan on the local Nephele instance, wait for the job to
 	 * finish and return the runtime in milliseconds.
-	 * 
+	 *
 	 * @param plan The plan of the program to execute.
 	 * @return The net runtime of the program, in milliseconds.
-	 * 
+	 *
 	 * @throws Exception Thrown, if either the startup of the local execution context, or the execution
 	 *                   caused an exception.
 	 */
 	public JobExecutionResult executePlan(Plan plan) throws Exception {
-		if (plan == null)
-			throw new IllegalArgumentException("The plan may not be null.");
-		
+		if (plan == null) {
+		throw new IllegalArgumentException("The plan may not be null.");
+		}
+
 		ContextChecker checker = new ContextChecker();
 		checker.check(plan);
-		
+
 		synchronized (this.lock) {
-			
+
 			// check if we start a session dedicated for this execution
 			final boolean shutDownAtEnd;
 			if (this.nephele == null) {
@@ -207,10 +208,10 @@ public class LocalExecutor extends PlanExecutor {
 			try {
 				PactCompiler pc = new PactCompiler(new DataStatistics());
 				OptimizedPlan op = pc.compile(plan);
-				
+
 				NepheleJobGraphGenerator jgg = new NepheleJobGraphGenerator();
 				JobGraph jobGraph = jgg.compileJobGraph(op);
-				
+
 				JobClient jobClient = this.nephele.getJobClient(jobGraph);
 				JobExecutionResult result = jobClient.submitJobAndWait();
 				return result;
@@ -225,7 +226,7 @@ public class LocalExecutor extends PlanExecutor {
 
 	/**
 	 * Returns a JSON dump of the optimized plan.
-	 * 
+	 *
 	 * @param plan
 	 *            The program's plan.
 	 * @return JSON dump of the optimized plan.
@@ -233,7 +234,7 @@ public class LocalExecutor extends PlanExecutor {
 	 */
 	public String getOptimizerPlanAsJSON(Plan plan) throws Exception {
 		synchronized (this.lock) {
-			
+
 			// check if we start a session dedicated for this execution
 			final boolean shutDownAtEnd;
 			if (this.nephele == null) {
@@ -249,7 +250,7 @@ public class LocalExecutor extends PlanExecutor {
 				PactCompiler pc = new PactCompiler(new DataStatistics());
 				OptimizedPlan op = pc.compile(plan);
 				PlanJSONDumpGenerator gen = new PlanJSONDumpGenerator();
-		
+
 				return gen.getOptimizerPlanAsJSON(op);
 			}
 			finally {
@@ -259,31 +260,31 @@ public class LocalExecutor extends PlanExecutor {
 			}
 		}
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 	//  Static variants that internally bring up an instance and shut it down after the execution
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Executes the program described by the given plan assembler.
-	 * 
-	 * @param pa The program's plan assembler. 
+	 *
+	 * @param pa The program's plan assembler.
 	 * @param args The parameters.
 	 * @return The net runtime of the program, in milliseconds.
-	 * 
+	 *
 	 * @throws Exception Thrown, if either the startup of the local execution context, or the execution
 	 *                   caused an exception.
 	 */
 	public static JobExecutionResult execute(Program pa, String... args) throws Exception {
 		return execute(pa.getPlan(args));
 	}
-	
+
 	/**
 	 * Executes the program represented by the given Pact plan.
-	 * 
-	 * @param pa The program's plan. 
+	 *
+	 * @param pa The program's plan.
 	 * @return The net runtime of the program, in milliseconds.
-	 * 
+	 *
 	 * @throws Exception Thrown, if either the startup of the local execution context, or the execution
 	 *                   caused an exception.
 	 */
@@ -299,7 +300,7 @@ public class LocalExecutor extends PlanExecutor {
 
 	/**
 	 * Returns a JSON dump of the optimized plan.
-	 * 
+	 *
 	 * @param plan
 	 *            The program's plan.
 	 * @return JSON dump of the optimized plan.
@@ -328,20 +329,20 @@ public class LocalExecutor extends PlanExecutor {
 		List<DataSinkNode> sinks = PactCompiler.createPreOptimizedPlan(plan);
 		return gen.getPactPlanAsJSON(sinks);
 	}
-	
+
 	/**
 	 * Utility method for logging
 	 */
 	public static void setLoggingLevel(Level lvl) {
 		LogUtils.initializeDefaultConsoleLogger(lvl);
 	}
-	
+
 	/**
 	 * By default, local environments do not overwrite existing files.
-	 * 
-	 * NOTE: This method must be called prior to initializing the LocalExecutor or a 
+	 *
+	 * NOTE: This method must be called prior to initializing the LocalExecutor or a
 	 * {@link eu.stratosphere.api.java.LocalEnvironment}.
-	 * 
+	 *
 	 * @param overwriteByDefault True to overwrite by default, false to not overwrite by default.
 	 */
 	public static void setOverwriteFilesByDefault(boolean overwriteByDefault) {

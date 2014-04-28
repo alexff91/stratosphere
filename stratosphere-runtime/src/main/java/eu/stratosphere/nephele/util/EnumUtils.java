@@ -21,7 +21,7 @@ import eu.stratosphere.core.io.StringRecord;
 
 /**
  * Auxiliary class to (de)serialize enumeration values.
- * 
+ *
  */
 public final class EnumUtils {
 
@@ -33,7 +33,7 @@ public final class EnumUtils {
 
 	/**
 	 * Reads a value from the given enumeration from the specified input stream.
-	 * 
+	 *
 	 * @param <T>
 	 *        the type of the enumeration
 	 * @param in
@@ -55,7 +55,7 @@ public final class EnumUtils {
 
 	/**
 	 * Writes a value of an enumeration to the given output stream.
-	 * 
+	 *
 	 * @param out
 	 *        the output stream to write to
 	 * @param enumVal

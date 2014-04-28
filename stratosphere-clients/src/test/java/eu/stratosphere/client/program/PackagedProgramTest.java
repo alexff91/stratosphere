@@ -27,13 +27,13 @@ import org.junit.Test;
 public class PackagedProgramTest {
 
 	private static final String TEST_PROG_FILE_PATH = "/test.jar";
-	
+
 	@Test
 	public void testGetPreviewPlan() {
 		try {
-			
+
 			URL jarFileURL = getClass().getResource(TEST_PROG_FILE_PATH);
-			
+
 			PackagedProgram prog = new PackagedProgram(new File(jarFileURL.getFile()));
 			Assert.assertNotNull(prog.getPreviewPlan());
 		}
@@ -42,7 +42,7 @@ public class PackagedProgramTest {
 			e.printStackTrace();
 			Assert.fail("Test is erroneous: " + e.getMessage());
 		}
-		
+
 	}
 
 }

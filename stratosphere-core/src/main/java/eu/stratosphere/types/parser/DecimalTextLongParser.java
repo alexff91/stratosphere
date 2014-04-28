@@ -20,27 +20,27 @@ import eu.stratosphere.types.LongValue;
  * Only characters '1' to '0' and '-' are allowed.
  */
 public class DecimalTextLongParser extends FieldParser<LongValue> {
-	
+
 	private LongValue result;
-	
+
 	@Override
 	public int parseField(byte[] bytes, int startPos, int limit, char delimiter, LongValue reusable) {
 		long val = 0;
 		boolean neg = false;
-		
+
 		this.result = reusable;
-		
+
 		if (bytes[startPos] == '-') {
 			neg = true;
 			startPos++;
-			
+
 			// check for empty field with only the sign
 			if (startPos == limit || bytes[startPos] == delimiter) {
 				setErrorState(ParseErrorState.NUMERIC_VALUE_ORPHAN_SIGN);
 				return -1;
 			}
 		}
-		
+
 		for (int i = startPos; i < limit; i++) {
 			if (bytes[i] == delimiter) {
 				reusable.setValue(neg ? -val : val);
@@ -52,15 +52,15 @@ public class DecimalTextLongParser extends FieldParser<LongValue> {
 			}
 			val *= 10;
 			val += bytes[i] - 48;
-			
+
 			// check for overflow / underflow
 			if (val < 0) {
 				// this is an overflow/underflow, unless we hit exactly the Long.MIN_VALUE
 				if (neg && val == Long.MIN_VALUE) {
 					reusable.setValue(Long.MIN_VALUE);
-					
+
 					if (i+1 >= limit) {
-						return limit; 
+						return limit;
 					} else if (bytes[i+1] == delimiter) {
 						return i+2;
 					} else {
@@ -74,30 +74,30 @@ public class DecimalTextLongParser extends FieldParser<LongValue> {
 				}
 			}
 		}
-		
+
 		reusable.setValue(neg ? -val : val);
 		return limit;
 	}
-	
+
 	@Override
 	public LongValue createValue() {
 		return new LongValue();
 	}
-	
+
 	@Override
 	public LongValue getLastResult() {
 		return this.result;
 	}
-	
-	
-	
+
+
+
 	public static final long parseField(byte[] bytes, int startPos, int length, char delim) {
 		if (length <= 0) {
 			throw new NumberFormatException("Invalid input: Empty string");
 		}
 		long val = 0;
 		boolean neg = false;
-		
+
 		if (bytes[startPos] == '-') {
 			neg = true;
 			startPos++;
@@ -106,7 +106,7 @@ public class DecimalTextLongParser extends FieldParser<LongValue> {
 				throw new NumberFormatException("Orphaned minus sign.");
 			}
 		}
-		
+
 		for (; length > 0; startPos++, length--) {
 			if (bytes[startPos] == delim) {
 				return neg ? -val : val;

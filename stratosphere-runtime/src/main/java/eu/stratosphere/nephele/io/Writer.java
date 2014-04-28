@@ -19,10 +19,10 @@ import eu.stratosphere.core.io.IOReadableWritable;
 
 /**
  * A writer that sends records.
- * 
+ *
  * @param <T> The type of the record that can be emitted with this record writer.
  */
 public interface Writer<T extends IOReadableWritable> {
-	
+
 	void emit(T record) throws IOException, InterruptedException;
 }

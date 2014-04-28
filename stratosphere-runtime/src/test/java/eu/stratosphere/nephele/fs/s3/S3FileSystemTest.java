@@ -40,7 +40,7 @@ import eu.stratosphere.runtime.fs.s3.S3FileSystem;
 
 /**
  * This test checks the S3 implementation of the {@link FileSystem} interface.
- * 
+ *
  */
 public class S3FileSystemTest {
 
@@ -85,13 +85,15 @@ public class S3FileSystemTest {
 	public void initKeys() {
 		final String accessKey = System.getenv("AK");
 		final String secretKey = System.getenv("SK");
-		
+
 		if (accessKey != null || secretKey != null) {
 			Configuration conf = new Configuration();
-			if (accessKey != null)
-				conf.setString(S3FileSystem.S3_ACCESS_KEY_KEY, accessKey);
-			if (secretKey != null)
-				conf.setString(S3FileSystem.S3_SECRET_KEY_KEY, secretKey);
+			if (accessKey != null) {
+			conf.setString(S3FileSystem.S3_ACCESS_KEY_KEY, accessKey);
+			}
+			if (secretKey != null) {
+			conf.setString(S3FileSystem.S3_SECRET_KEY_KEY, secretKey);
+			}
 			GlobalConfiguration.includeConfiguration(conf);
 		}
 	}
@@ -310,7 +312,7 @@ public class S3FileSystemTest {
 	/**
 	 * Creates and reads a file with the given size in S3. The test file is generated according to a specific pattern.
 	 * During the read phase the incoming data stream is also checked against this pattern.
-	 * 
+	 *
 	 * @param fileSize
 	 *        the size of the file to be generated in bytes
 	 * @throws IOException
@@ -349,7 +351,7 @@ public class S3FileSystemTest {
 	/**
 	 * Receives test data from the given input stream and checks the size of the data as well as the pattern inside the
 	 * received data.
-	 * 
+	 *
 	 * @param inputStream
 	 *        the input stream to read the test data from
 	 * @param expectedSize
@@ -393,7 +395,7 @@ public class S3FileSystemTest {
 	/**
 	 * Generates test data of the given size according to some specific pattern and writes it to the provided output
 	 * stream.
-	 * 
+	 *
 	 * @param outputStream
 	 *        the output stream to write the data to
 	 * @param size
@@ -424,7 +426,7 @@ public class S3FileSystemTest {
 
 	/**
 	 * Generates a random name.
-	 * 
+	 *
 	 * @return a random name
 	 */
 	private String getRandomName() {
@@ -441,7 +443,7 @@ public class S3FileSystemTest {
 	/**
 	 * Checks whether the AWS access key and the AWS secret keys have been successfully loaded from the configuration
 	 * and whether the S3 tests shall be performed.
-	 * 
+	 *
 	 * @return <code>true</code> if the tests shall be performed, <code>false</code> if the tests shall be skipped
 	 *         because at least one AWS key is missing
 	 */

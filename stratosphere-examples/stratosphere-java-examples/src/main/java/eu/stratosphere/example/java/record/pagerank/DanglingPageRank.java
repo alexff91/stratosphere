@@ -25,11 +25,11 @@ import eu.stratosphere.types.LongValue;
 
 
 public class DanglingPageRank implements Program, ProgramDescription {
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	public static final String NUM_VERTICES_CONFIG_PARAM = "pageRank.numVertices";
-		
+
 	public Plan getPlan(String ... args) {
 		int dop = 1;
 		String pageWithRankInputPath = "";
@@ -48,23 +48,23 @@ public class DanglingPageRank implements Program, ProgramDescription {
 			numVertices = Long.parseLong(args[5]);
 			numDanglingVertices = Long.parseLong(args[6]);
 		}
-		
+
 		FileDataSource pageWithRankInput = new FileDataSource(new DanglingPageRankInputFormat(),
 			pageWithRankInputPath, "DanglingPageWithRankInput");
 		pageWithRankInput.getParameters().setLong(DanglingPageRankInputFormat.NUM_VERTICES_PARAMETER, numVertices);
-		
+
 		BulkIteration iteration = new BulkIteration("Page Rank Loop");
 		iteration.setInput(pageWithRankInput);
-		
+
 		FileDataSource adjacencyListInput = new FileDataSource(new ImprovedAdjacencyListInputFormat(),
 			adjacencyListInputPath, "AdjancencyListInput");
-		
+
 		JoinOperator join = JoinOperator.builder(new DotProductMatch(), LongValue.class, 0, 0)
 				.input1(iteration.getPartialSolution())
 				.input2(adjacencyListInput)
 				.name("Join with Edges")
 				.build();
-		
+
 		CoGroupOperator rankAggregation = CoGroupOperator.builder(new DotProductCoGroup(), LongValue.class, 0, 0)
 				.input1(iteration.getPartialSolution())
 				.input2(join)
@@ -72,11 +72,11 @@ public class DanglingPageRank implements Program, ProgramDescription {
 				.build();
 		rankAggregation.getParameters().setLong(DotProductCoGroup.NUM_VERTICES_PARAMETER, numVertices);
 		rankAggregation.getParameters().setLong(DotProductCoGroup.NUM_DANGLING_VERTICES_PARAMETER, numDanglingVertices);
-		
+
 		iteration.setNextPartialSolution(rankAggregation);
 		iteration.setMaximumNumberOfIterations(numIterations);
 		iteration.getAggregators().registerAggregationConvergenceCriterion(DotProductCoGroup.AGGREGATOR_NAME, PageRankStatsAggregator.class, DiffL1NormConvergenceCriterion.class);
-		
+
 		FileDataSink out = new FileDataSink(new PageWithRankOutFormat(), outputPath, iteration, "Final Ranks");
 
 		Plan p = new Plan(out, "Dangling PageRank");

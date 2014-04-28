@@ -25,9 +25,9 @@ import eu.stratosphere.core.memory.DataOutputView;
 public class ShortSerializer extends TypeSerializer<Short> implements ImmutableTypeUtil {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	public static final ShortSerializer INSTANCE = new ShortSerializer();
-	
+
 	private static final Short ZERO = Short.valueOf((short)0);
 
 

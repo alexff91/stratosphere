@@ -18,12 +18,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import eu.stratosphere.api.common.io.FileInputFormat;
 import eu.stratosphere.api.common.io.InputFormat;
 import eu.stratosphere.api.common.io.UnsplittableInput;
 import eu.stratosphere.api.common.io.statistics.BaseStatistics;
 import eu.stratosphere.api.common.operators.GenericDataSource;
 import eu.stratosphere.api.common.operators.Operator;
-import eu.stratosphere.api.common.io.FileInputFormat;
 import eu.stratosphere.compiler.DataStatistics;
 import eu.stratosphere.compiler.PactCompiler;
 import eu.stratosphere.compiler.costs.CostEstimator;
@@ -37,22 +37,22 @@ import eu.stratosphere.util.Visitor;
  * The optimizer's internal representation of a data source.
  */
 public class DataSourceNode extends OptimizerNode {
-	
+
 	private final boolean unsplittable;
 
 	/**
 	 * Creates a new DataSourceNode for the given contract.
-	 * 
+	 *
 	 * @param pactContract
 	 *        The data source contract object.
 	 */
 	public DataSourceNode(GenericDataSource<?> pactContract) {
 		super(pactContract);
-		
+
 		if (pactContract.getUserCodeWrapper().getUserCodeClass() == null) {
 			throw new IllegalArgumentException("Input format has not been set.");
 		}
-		
+
 		if (UnsplittableInput.class.isAssignableFrom(pactContract.getUserCodeWrapper().getUserCodeClass())) {
 			setDegreeOfParallelism(1);
 			setSubtasksPerInstance(1);
@@ -64,7 +64,7 @@ public class DataSourceNode extends OptimizerNode {
 
 	/**
 	 * Gets the contract object for this data source node.
-	 * 
+	 *
 	 * @return The contract.
 	 */
 	@Override
@@ -81,7 +81,7 @@ public class DataSourceNode extends OptimizerNode {
 	public boolean isMemoryConsumer() {
 		return false;
 	}
-	
+
 
 	@Override
 	public void setDegreeOfParallelism(int degreeOfParallelism) {
@@ -90,7 +90,7 @@ public class DataSourceNode extends OptimizerNode {
 			super.setDegreeOfParallelism(degreeOfParallelism);
 		}
 	}
-	
+
 
 	@Override
 	public void setSubtasksPerInstance(int instancesPerMachine) {
@@ -112,10 +112,10 @@ public class DataSourceNode extends OptimizerNode {
 	protected void computeOperatorSpecificDefaultEstimates(DataStatistics statistics) {
 		// see, if we have a statistics object that can tell us a bit about the file
 		if (statistics != null) {
-			// instantiate the input format, as this is needed by the statistics 
+			// instantiate the input format, as this is needed by the statistics
 			InputFormat<?, ?> format = null;
 			String inFormatDescription = "<unknown>";
-			
+
 			try {
 				format = getPactContract().getFormatWrapper().getUserCodeObject();
 				Configuration config = getPactContract().getParameters();
@@ -123,39 +123,42 @@ public class DataSourceNode extends OptimizerNode {
 				format.configure(config);
 			}
 			catch (Throwable t) {
-				if (PactCompiler.LOG.isWarnEnabled())
-					PactCompiler.LOG.warn("Could not instantiate InputFormat to obtain statistics."
-						+ " Limited statistics will be available.", t);
+				if (PactCompiler.LOG.isWarnEnabled()) {
+				PactCompiler.LOG.warn("Could not instantiate InputFormat to obtain statistics."
+					+ " Limited statistics will be available.", t);
+				}
 				return;
 			}
 			try {
 				inFormatDescription = format.toString();
 			}
 			catch (Throwable t) {}
-			
+
 			// first of all, get the statistics from the cache
 			final String statisticsKey = getPactContract().getStatisticsKey();
 			final BaseStatistics cachedStatistics = statistics.getBaseStatistics(statisticsKey);
-			
+
 			BaseStatistics bs = null;
 			try {
 				bs = format.getStatistics(cachedStatistics);
 			}
 			catch (Throwable t) {
-				if (PactCompiler.LOG.isWarnEnabled())
-					PactCompiler.LOG.warn("Error obtaining statistics from input format: " + t.getMessage(), t);
+				if (PactCompiler.LOG.isWarnEnabled()) {
+				PactCompiler.LOG.warn("Error obtaining statistics from input format: " + t.getMessage(), t);
+				}
 			}
-			
+
 			if (bs != null) {
 				final long len = bs.getTotalInputSize();
 				if (len == BaseStatistics.SIZE_UNKNOWN) {
-					if (PactCompiler.LOG.isInfoEnabled())
-						PactCompiler.LOG.info("Compiler could not determine the size of input '" + inFormatDescription + "'. Using default estimates.");
+					if (PactCompiler.LOG.isInfoEnabled()) {
+					PactCompiler.LOG.info("Compiler could not determine the size of input '" + inFormatDescription + "'. Using default estimates.");
+					}
 				}
 				else if (len >= 0) {
 					this.estimatedOutputSize = len;
 				}
-				
+
 				final long card = bs.getNumberOfRecords();
 				if (card != BaseStatistics.NUM_RECORDS_UNKNOWN) {
 					this.estimatedNumRecords = card;
@@ -180,10 +183,10 @@ public class DataSourceNode extends OptimizerNode {
 		if (this.cachedPlans != null) {
 			return this.cachedPlans;
 		}
-		
+
 		SourcePlanNode candidate = new SourcePlanNode(this, "DataSource("+this.getPactContract().getName()+")");
 		candidate.updatePropertiesWithUniqueSets(getUniqueFields());
-		
+
 		final Costs costs = new Costs();
 		if (FileInputFormat.class.isAssignableFrom(getPactContract().getFormatWrapper().getUserCodeClass()) &&
 				this.estimatedOutputSize >= 0)
@@ -204,7 +207,7 @@ public class DataSourceNode extends OptimizerNode {
 	public boolean isFieldConstant(int input, int fieldNumber) {
 		return false;
 	}
-	
+
 	@Override
 	public void accept(Visitor<OptimizerNode> visitor) {
 		if (visitor.preVisit(this)) {

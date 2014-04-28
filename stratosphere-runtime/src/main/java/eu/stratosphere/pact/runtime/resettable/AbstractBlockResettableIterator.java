@@ -35,91 +35,94 @@ import eu.stratosphere.pact.runtime.util.MemoryBlockIterator;
  * access to the data in that block.
  */
 abstract class AbstractBlockResettableIterator<T> implements MemoryBlockIterator {
-	
+
 	protected static final Log LOG = LogFactory.getLog(AbstractBlockResettableIterator.class);
-	
+
 	// ------------------------------------------------------------------------
-	
+
 	protected final RandomAccessInputView readView;
-	
+
 	protected final SimpleCollectingOutputView collectingView;
-	
+
 	protected final TypeSerializer<T> serializer;
-	
+
 	protected int numRecordsInBuffer;
-	
+
 	protected int numRecordsReturned;
-	
+
 	protected final ArrayList<MemorySegment> emptySegments;
-	
+
 	protected final ArrayList<MemorySegment> fullSegments;
-	
+
 	private final MemoryManager memoryManager;
-	
+
 	protected volatile boolean closed;		// volatile since it may be asynchronously set to abort after current block
-	
+
 	// ------------------------------------------------------------------------
-	
+
 	protected AbstractBlockResettableIterator(TypeSerializer<T> serializer, MemoryManager memoryManager,
 			int numPages, AbstractInvokable ownerTask)
 	throws MemoryAllocationException
 	{
-		if (numPages < 1)
-			throw new IllegalArgumentException("Block Resettable iterator requires at leat one page of memory");
-		
+		if (numPages < 1) {
+		throw new IllegalArgumentException("Block Resettable iterator requires at leat one page of memory");
+		}
+
 		this.memoryManager = memoryManager;
 		this.serializer = serializer;
-		
+
 		this.emptySegments = new ArrayList<MemorySegment>(numPages);
 		this.fullSegments = new ArrayList<MemorySegment>(numPages);
 		memoryManager.allocatePages(ownerTask, emptySegments, numPages);
-		
-		this.collectingView = new SimpleCollectingOutputView(this.fullSegments, 
+
+		this.collectingView = new SimpleCollectingOutputView(this.fullSegments,
 						new ListMemorySegmentSource(this.emptySegments), memoryManager.getPageSize());
 		this.readView = new RandomAccessInputView(this.fullSegments, memoryManager.getPageSize());
-		
-		if (LOG.isDebugEnabled())
-			LOG.debug("Iterator initalized using " + numPages + " memory buffers.");
+
+		if (LOG.isDebugEnabled()) {
+		LOG.debug("Iterator initalized using " + numPages + " memory buffers.");
+		}
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	public void open()
 	{
-		if (LOG.isDebugEnabled())
-			LOG.debug("Block Resettable Iterator opened.");
+		if (LOG.isDebugEnabled()) {
+		LOG.debug("Block Resettable Iterator opened.");
+		}
 	}
-	
+
 	/**
-	 * 
+	 *
 	 */
 	public void reset()
 	{
 		if (this.closed) {
 			throw new IllegalStateException("Iterator was closed.");
 		}
-		
+
 		this.readView.setReadPosition(0);
 		this.numRecordsReturned = 0;
 	}
-	
+
 
 	@Override
 	public boolean nextBlock() throws IOException
 	{
 		this.numRecordsInBuffer = 0;
-		
+
 		// add the full segments to the empty ones
 		for (int i = this.fullSegments.size() - 1; i >= 0; i--) {
 			this.emptySegments.add(this.fullSegments.remove(i));
 		}
-		
+
 		// reset the views
 		this.collectingView.reset();
 		this.readView.setReadPosition(0);
 		return true;
 	}
-	
+
 	/**
 	 * This method closes the iterator and releases all resources. This method works both as a regular
 	 * shutdown and as a canceling method. The method may be called multiple times and will not produce
@@ -133,25 +136,26 @@ abstract class AbstractBlockResettableIterator<T> implements MemoryBlockIterator
 			}
 			this.closed = true;
 		}
-		
+
 		this.numRecordsInBuffer = 0;
 		this.numRecordsReturned = 0;
-		
+
 		// add the full segments to the empty ones
 		for (int i = this.fullSegments.size() - 1; i >= 0; i--) {
 			this.emptySegments.add(this.fullSegments.remove(i));
 		}
-		
+
 		// release the memory segment
 		this.memoryManager.release(this.emptySegments);
 		this.emptySegments.clear();
-		
-		if (LOG.isDebugEnabled())
-			LOG.debug("Block Resettable Iterator closed.");
+
+		if (LOG.isDebugEnabled()) {
+		LOG.debug("Block Resettable Iterator closed.");
+		}
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	protected boolean writeNextRecord(T record) throws IOException
 	{
 		try {
@@ -162,7 +166,7 @@ abstract class AbstractBlockResettableIterator<T> implements MemoryBlockIterator
 			return false;
 		}
 	}
-	
+
 	protected T getNextRecord(T reuse) throws IOException
 	{
 		if (this.numRecordsReturned < this.numRecordsInBuffer) {

@@ -26,17 +26,17 @@ import eu.stratosphere.compiler.plan.SolutionSetPlanNode;
  * The optimizer's internal representation of the solution set of a workset iteration.
  */
 public class SolutionSetNode extends AbstractPartialSolutionNode {
-	
+
 	private final WorksetIterationNode iterationNode;
-	
-	
+
+
 	public SolutionSetNode(SolutionSetPlaceHolder psph, WorksetIterationNode iterationNode) {
 		super(psph);
 		this.iterationNode = iterationNode;
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	public void setCandidateProperties(GlobalProperties gProps, LocalProperties lProps) {
 		if (this.cachedPlans != null) {
 			throw new IllegalStateException();
@@ -44,7 +44,7 @@ public class SolutionSetNode extends AbstractPartialSolutionNode {
 			this.cachedPlans = Collections.<PlanNode>singletonList(new SolutionSetPlanNode(this, "SolutionSet("+this.getPactContract().getName()+")", gProps, lProps));
 		}
 	}
-	
+
 	public SolutionSetPlanNode getCurrentSolutionSetPlanNode() {
 		if (this.cachedPlans != null) {
 			return (SolutionSetPlanNode) this.cachedPlans.get(0);
@@ -52,21 +52,21 @@ public class SolutionSetNode extends AbstractPartialSolutionNode {
 			throw new IllegalStateException();
 		}
 	}
-	
+
 	public WorksetIterationNode getIterationNode() {
 		return this.iterationNode;
 	}
-	
+
 	@Override
 	public void computeOutputEstimates(DataStatistics statistics) {
 		copyEstimates(this.iterationNode.getInitialSolutionSetPredecessorNode());
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	/**
 	 * Gets the contract object for this data source node.
-	 * 
+	 *
 	 * @return The contract.
 	 */
 	@Override

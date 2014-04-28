@@ -15,11 +15,11 @@
 
 package eu.stratosphere.pact.runtime.iterative.io;
 
+import java.io.IOException;
+
 import eu.stratosphere.api.common.typeutils.TypeSerializer;
 import eu.stratosphere.pact.runtime.hash.MutableHashTable;
 import eu.stratosphere.util.Collector;
-
-import java.io.IOException;
 
 /**
  * A {@link Collector} to update the solution set of a workset iteration.
@@ -28,7 +28,7 @@ import java.io.IOException;
  * <p/>
  * Records will only be collected, if there is a match after probing the hash table. If the build side iterator is
  * already positioned for the update, use {@link SolutionSetFastUpdateOutputCollector} to the save re-probing.
- * 
+ *
  * @see SolutionSetFastUpdateOutputCollector
  */
 public class SolutionSetUpdateOutputCollector<T> implements Collector<T> {

@@ -26,7 +26,7 @@ import eu.stratosphere.nephele.io.channels.ChannelID;
  * periodically calling the method <code>cleanup</code>.
  * <p>
  * This class is thread-safe.
- * 
+ *
  */
 public final class CanceledChannelSet implements Set<ChannelID> {
 

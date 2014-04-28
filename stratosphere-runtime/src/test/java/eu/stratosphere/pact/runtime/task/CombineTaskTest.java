@@ -39,9 +39,9 @@ import eu.stratosphere.util.Collector;
 public class CombineTaskTest extends DriverTestBase<GenericGroupReduce<Record, ?>>
 {
 	private static final long COMBINE_MEM = 3 * 1024 * 1024;
-	
+
 	private final ArrayList<Record> outList = new ArrayList<Record>();
-	
+
 	@SuppressWarnings("unchecked")
 	private final RecordComparator comparator = new RecordComparator(
 		new int[]{0}, (Class<? extends Key>[])new Class[]{ IntValue.class });
@@ -49,58 +49,58 @@ public class CombineTaskTest extends DriverTestBase<GenericGroupReduce<Record, ?
 	public CombineTaskTest() {
 		super(COMBINE_MEM, 0);
 	}
-	
+
 	@Test
 	public void testCombineTask() {
 		int keyCnt = 100;
 		int valCnt = 20;
-		
+
 		addInput(new UniformRecordGenerator(keyCnt, valCnt, false));
 		addInputComparator(this.comparator);
 		setOutput(this.outList);
-		
+
 		getTaskConfig().setDriverStrategy(DriverStrategy.PARTIAL_GROUP);
 		getTaskConfig().setMemoryDriver(COMBINE_MEM);
 		getTaskConfig().setFilehandlesDriver(2);
-		
+
 		final CombineDriver<Record> testTask = new CombineDriver<Record>();
-		
+
 		try {
 			testDriver(testTask, MockCombiningReduceStub.class);
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail("Invoke method caused exception.");
 		}
-		
+
 		int expSum = 0;
 		for (int i = 1;i < valCnt; i++) {
 			expSum += i;
 		}
-		
+
 		Assert.assertTrue("Resultset size was "+this.outList.size()+". Expected was "+keyCnt, this.outList.size() == keyCnt);
-		
+
 		for(Record record : this.outList) {
 			Assert.assertTrue("Incorrect result", record.getField(1, IntValue.class).getValue() == expSum);
 		}
-		
+
 		this.outList.clear();
 	}
-	
+
 	@Test
 	public void testFailingCombineTask() {
 		int keyCnt = 100;
 		int valCnt = 20;
-		
+
 		addInput(new UniformRecordGenerator(keyCnt, valCnt, false));
 		addInputComparator(this.comparator);
 		setOutput(new DiscardingOutputCollector());
-		
+
 		getTaskConfig().setDriverStrategy(DriverStrategy.PARTIAL_GROUP);
 		getTaskConfig().setMemoryDriver(COMBINE_MEM);
 		getTaskConfig().setFilehandlesDriver(2);
-		
+
 		final CombineDriver<Record> testTask = new CombineDriver<Record>();
-		
+
 		try {
 			testDriver(testTask, MockFailingCombiningReduceStub.class);
 			Assert.fail("Exception not forwarded.");
@@ -111,22 +111,22 @@ public class CombineTaskTest extends DriverTestBase<GenericGroupReduce<Record, ?
 			Assert.fail("Test failed due to an exception.");
 		}
 	}
-	
+
 	@Test
 	public void testCancelCombineTaskSorting()
 	{
 		addInput(new DelayingInfinitiveInputIterator(100));
 		addInputComparator(this.comparator);
 		setOutput(new DiscardingOutputCollector());
-		
+
 		getTaskConfig().setDriverStrategy(DriverStrategy.PARTIAL_GROUP);
 		getTaskConfig().setMemoryDriver(COMBINE_MEM);
 		getTaskConfig().setFilehandlesDriver(2);
-		
+
 		final CombineDriver<Record> testTask = new CombineDriver<Record>();
-		
+
 		final AtomicBoolean success = new AtomicBoolean(false);
-		
+
 		Thread taskRunner = new Thread() {
 			@Override
 			public void run() {
@@ -139,24 +139,24 @@ public class CombineTaskTest extends DriverTestBase<GenericGroupReduce<Record, ?
 			}
 		};
 		taskRunner.start();
-		
+
 		TaskCancelThread tct = new TaskCancelThread(1, taskRunner, this);
 		tct.start();
-		
+
 		try {
 			tct.join();
-			taskRunner.join();		
+			taskRunner.join();
 		} catch(InterruptedException ie) {
 			Assert.fail("Joining threads failed");
 		}
-		
+
 		Assert.assertTrue("Exception was thrown despite proper canceling.", success.get());
 	}
-	
+
 	@Combinable
 	public static class MockCombiningReduceStub extends ReduceFunction {
 		private static final long serialVersionUID = 1L;
-		
+
 		private final IntValue theInteger = new IntValue();
 
 		@Override
@@ -167,26 +167,26 @@ public class CombineTaskTest extends DriverTestBase<GenericGroupReduce<Record, ?
 			while (records.hasNext()) {
 				element = records.next();
 				element.getField(1, this.theInteger);
-				
+
 				sum += this.theInteger.getValue();
 			}
 			this.theInteger.setValue(sum);
 			element.setField(1, this.theInteger);
 			out.collect(element);
 		}
-		
+
 		@Override
 		public void combine(Iterator<Record> records, Collector<Record> out) throws Exception {
 			reduce(records, out);
 		}
 	}
-	
+
 	@Combinable
 	public static final class MockFailingCombiningReduceStub extends ReduceFunction {
 		private static final long serialVersionUID = 1L;
-		
+
 		private int cnt = 0;
-		
+
 		private final IntValue key = new IntValue();
 		private final IntValue value = new IntValue();
 		private final IntValue combineValue = new IntValue();
@@ -199,7 +199,7 @@ public class CombineTaskTest extends DriverTestBase<GenericGroupReduce<Record, ?
 			while (records.hasNext()) {
 				element = records.next();
 				element.getField(1, this.value);
-				
+
 				sum += this.value.getValue();
 			}
 			element.getField(0, this.key);
@@ -207,7 +207,7 @@ public class CombineTaskTest extends DriverTestBase<GenericGroupReduce<Record, ?
 			element.setField(1, this.value);
 			out.collect(element);
 		}
-		
+
 		@Override
 		public void combine(Iterator<Record> records, Collector<Record> out)
 				throws Exception {
@@ -216,14 +216,14 @@ public class CombineTaskTest extends DriverTestBase<GenericGroupReduce<Record, ?
 			while (records.hasNext()) {
 				element = records.next();
 				element.getField(1, this.combineValue);
-				
+
 				sum += this.combineValue.getValue();
 			}
-			
+
 			if (++this.cnt >= 10) {
 				throw new ExpectedTestException();
 			}
-			
+
 			this.combineValue.setValue(sum);
 			element.setField(1, this.combineValue);
 			out.collect(element);

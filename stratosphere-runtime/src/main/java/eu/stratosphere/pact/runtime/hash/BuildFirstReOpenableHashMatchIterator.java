@@ -28,9 +28,9 @@ import eu.stratosphere.util.MutableObjectIterator;
 
 public class BuildFirstReOpenableHashMatchIterator<V1, V2, O> extends BuildFirstHashMatchIterator<V1, V2, O> {
 
-	
+
 	private final ReOpenableMutableHashTable<V1, V2> reopenHashTable;
-	
+
 	public BuildFirstReOpenableHashMatchIterator(
 			MutableObjectIterator<V1> firstInput,
 			MutableObjectIterator<V2> secondInput,
@@ -56,10 +56,10 @@ public class BuildFirstReOpenableHashMatchIterator<V1, V2, O> extends BuildFirst
 		final List<MemorySegment> memorySegments = memManager.allocatePages(ownerTask, numPages);
 		return new ReOpenableMutableHashTable<BT, PT>(buildSideSerializer, probeSideSerializer, buildSideComparator, probeSideComparator, pairComparator, memorySegments, ioManager);
 	}
-	
+
 	/**
 	 * Set new input for probe side
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public void reopenProbe(MutableObjectIterator<V2> probeInput) throws IOException {
 		reopenHashTable.reopenProbe(probeInput);

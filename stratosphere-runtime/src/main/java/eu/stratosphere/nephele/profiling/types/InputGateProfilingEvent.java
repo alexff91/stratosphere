@@ -25,7 +25,7 @@ import eu.stratosphere.nephele.managementgraph.ManagementVertexID;
  * which refer to particular input gates of a task.
  * <p>
  * This class is not thread-safe.
- * 
+ *
  */
 public final class InputGateProfilingEvent extends VertexProfilingEvent {
 
@@ -41,7 +41,7 @@ public final class InputGateProfilingEvent extends VertexProfilingEvent {
 
 	/**
 	 * Constructs a new input gate profiling event.
-	 * 
+	 *
 	 * @param gateIndex
 	 *        the index of the input gate at the corresponding management vertex
 	 * @param noRecordsAvailableCounter
@@ -76,7 +76,7 @@ public final class InputGateProfilingEvent extends VertexProfilingEvent {
 
 	/**
 	 * Returns the index of input gate.
-	 * 
+	 *
 	 * @return the index of the input gate
 	 */
 	public int getGateIndex() {
@@ -87,7 +87,7 @@ public final class InputGateProfilingEvent extends VertexProfilingEvent {
 	 * Returns the number of times no records were available
 	 * on any of the channels attached to the input gate in
 	 * the given profiling internval.
-	 * 
+	 *
 	 * @return the number of times no records were available
 	 */
 	public int getNoRecordsAvailableCounter() {

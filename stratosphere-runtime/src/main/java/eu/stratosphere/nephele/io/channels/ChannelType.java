@@ -15,10 +15,10 @@ package eu.stratosphere.nephele.io.channels;
 
 /**
  * An enumeration for declaring the type of channel.
- * 
+ *
  */
 public enum ChannelType {
-	
+
 	/**
 	 * Enumeration type for network channels.
 	 */

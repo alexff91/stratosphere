@@ -31,32 +31,32 @@ public final class TupleComparator<T extends Tuple> extends TypeComparator<T> im
 
 
 	private final int[] keyPositions;
-	
+
 	private final TypeComparator<Object>[] comparators;
-	
+
 	private final int[] normalizedKeyLengths;
-	
+
 	private final int numLeadingNormalizableKeys;
-	
+
 	private final int normalizableKeyPrefixLen;
-	
+
 	private final boolean invertNormKey;
-	
-		
+
+
 	@SuppressWarnings("unchecked")
 	public TupleComparator(int[] keyPositions, TypeComparator<?>[] comparators) {
 		this.keyPositions = keyPositions;
 		this.comparators = (TypeComparator<Object>[]) comparators;
-		
+
 		// set up auxiliary fields for normalized key support
 		this.normalizedKeyLengths = new int[keyPositions.length];
 		int nKeys = 0;
 		int nKeyLen = 0;
 		boolean inverted = false;
-		
+
 		for (int i = 0; i < this.comparators.length; i++) {
 			TypeComparator<?> k = this.comparators[i];
-			
+
 			// as long as the leading keys support normalized keys, we can build up the composite key
 			if (k.supportsNormalizedKey()) {
 				if (i == 0) {
@@ -67,7 +67,7 @@ public final class TupleComparator<T extends Tuple> extends TypeComparator<T> im
 					// if a successor does not agree on the invertion direction, it cannot be part of the normalized key
 					break;
 				}
-				
+
 				nKeys++;
 				final int len = k.getNormalizeKeyLen();
 				if (len < 0) {
@@ -75,43 +75,44 @@ public final class TupleComparator<T extends Tuple> extends TypeComparator<T> im
 				}
 				this.normalizedKeyLengths[i] = len;
 				nKeyLen += this.normalizedKeyLengths[i];
-				
+
 				if (nKeyLen < 0) {
 					// overflow, which means we are out of budget for normalized key space anyways
 					nKeyLen = Integer.MAX_VALUE;
 					break;
 				}
+			} else {
+			break;
 			}
-			else break;
 		}
 		this.numLeadingNormalizableKeys = nKeys;
 		this.normalizableKeyPrefixLen = nKeyLen;
 		this.invertNormKey = inverted;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private TupleComparator(TupleComparator<T> toClone) {
 		this.keyPositions = toClone.keyPositions;
 		this.comparators = new TypeComparator[toClone.comparators.length];
-		
+
 		for (int i = 0; i < toClone.comparators.length; i++) {
 			this.comparators[i] = toClone.comparators[i].duplicate();
 		}
-		
+
 		this.normalizedKeyLengths = toClone.normalizedKeyLengths;
 		this.numLeadingNormalizableKeys = toClone.numLeadingNormalizableKeys;
 		this.normalizableKeyPrefixLen = toClone.normalizableKeyPrefixLen;
 		this.invertNormKey = toClone.invertNormKey;
 	}
-	
+
 	public int[] getKeyPositions() {
 		return this.keyPositions;
 	}
-	
+
 	public TypeComparator<Object>[] getComparators() {
 		return this.comparators;
 	}
-	
+
 	@Override
 	public int hash(T value) {
 		int i = 0;
@@ -169,7 +170,7 @@ public final class TupleComparator<T extends Tuple> extends TypeComparator<T> im
 	@Override
 	public int compareToReference(TypeComparator<T> referencedComparator) {
 		TupleComparator<T> other = (TupleComparator<T>) referencedComparator;
-		
+
 		int i = 0;
 		try {
 			for (; i < this.keyPositions.length; i++) {
@@ -231,7 +232,7 @@ public final class TupleComparator<T extends Tuple> extends TypeComparator<T> im
 		try {
 			for (; i < this.numLeadingNormalizableKeys & numBytes > 0; i++)
 			{
-				int len = this.normalizedKeyLengths[i]; 
+				int len = this.normalizedKeyLengths[i];
 				len = numBytes >= len ? len : numBytes;
 				this.comparators[i].putNormalizedKey(value.getField(this.keyPositions[i]), target, offset, len);
 				numBytes -= len;
@@ -247,13 +248,13 @@ public final class TupleComparator<T extends Tuple> extends TypeComparator<T> im
 	public boolean invertNormalizedKey() {
 		return this.invertNormKey;
 	}
-	
-	
+
+
 	@Override
 	public boolean supportsSerializationWithKeyNormalization() {
 		return false;
 	}
-	
+
 	@Override
 	public void writeWithKeyNormalization(T record, DataOutputView target) throws IOException {
 		throw new UnsupportedOperationException();
@@ -268,20 +269,20 @@ public final class TupleComparator<T extends Tuple> extends TypeComparator<T> im
 	public TupleComparator<T> duplicate() {
 		return new TupleComparator<T>(this);
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * A sequence of prime numbers to be used for salting the computed hash values.
-	 * Based on some empirical evidence, we are using a 32-element subsequence of the  
+	 * Based on some empirical evidence, we are using a 32-element subsequence of the
 	 * OEIS sequence #A068652 (numbers such that every cyclic permutation is a prime).
-	 * 
+	 *
 	 * @see: http://en.wikipedia.org/wiki/List_of_prime_numbers
 	 * @see: http://oeis.org/A068652
 	 */
-	private static final int[] HASH_SALT = new int[] { 
-		73   , 79   , 97   , 113  , 131  , 197  , 199  , 311   , 
-		337  , 373  , 719  , 733  , 919  , 971  , 991  , 1193  , 
-		1931 , 3119 , 3779 , 7793 , 7937 , 9311 , 9377 , 11939 , 
+	private static final int[] HASH_SALT = new int[] {
+		73   , 79   , 97   , 113  , 131  , 197  , 199  , 311   ,
+		337  , 373  , 719  , 733  , 919  , 971  , 991  , 1193  ,
+		1931 , 3119 , 3779 , 7793 , 7937 , 9311 , 9377 , 11939 ,
 		19391, 19937, 37199, 39119, 71993, 91193, 93719, 93911 };
 }

@@ -25,9 +25,9 @@ import eu.stratosphere.types.BooleanValue;
 public class BooleanValueSerializer extends TypeSerializer<BooleanValue> {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	public static final BooleanValueSerializer INSTANCE = new BooleanValueSerializer();
-	
+
 	@Override
 	public BooleanValue createInstance() {
 		return new BooleanValue();

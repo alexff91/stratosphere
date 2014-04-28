@@ -19,7 +19,7 @@ import eu.stratosphere.nephele.io.AbstractID;
  * A management gate ID uniquely identifies a {@link ManagementGate}.
  * <p>
  * This class is not thread-safe.
- * 
+ *
  */
 public final class ManagementGateID extends AbstractID {
 

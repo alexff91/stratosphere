@@ -21,7 +21,7 @@ import eu.stratosphere.nephele.io.AbstractID;
  * A class for statistically unique job IDs.
  * <p>
  * This class is thread-safe.
- * 
+ *
  */
 public final class JobID extends AbstractID {
 
@@ -34,7 +34,7 @@ public final class JobID extends AbstractID {
 
 	/**
 	 * Constructs a new job ID.
-	 * 
+	 *
 	 * @param lowerPart
 	 *        the lower bytes of the ID
 	 * @param upperPart
@@ -46,7 +46,7 @@ public final class JobID extends AbstractID {
 
 	/**
 	 * Constructs a new job ID from the given bytes.
-	 * 
+	 *
 	 * @param bytes
 	 *        the bytes to initialize the job ID with
 	 */
@@ -56,7 +56,7 @@ public final class JobID extends AbstractID {
 
 	/**
 	 * Generates a new statistically unique job ID.
-	 * 
+	 *
 	 * @return a new statistically unique job ID
 	 */
 	public static JobID generate() {
@@ -69,7 +69,7 @@ public final class JobID extends AbstractID {
 
 	/**
 	 * Constructs a new job ID and initializes it with the given bytes.
-	 * 
+	 *
 	 * @param bytes
 	 *        the bytes to initialize the new job ID with
 	 * @return the new job ID
@@ -78,10 +78,10 @@ public final class JobID extends AbstractID {
 
 		return new JobID(bytes);
 	}
-	
+
 	/**
 	 * Constructs a new job ID and initializes it with the given bytes.
-	 * 
+	 *
 	 * @param bytes
 	 *        the bytes to initialize the new job ID with
 	 * @return the new job ID

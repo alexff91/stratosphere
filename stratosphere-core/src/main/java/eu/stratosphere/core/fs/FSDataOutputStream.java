@@ -17,7 +17,7 @@ import java.io.OutputStream;
 
 /**
  * Interface for a data output stream to a file on a {@link FileSystem}.
- * 
+ *
  */
 public abstract class FSDataOutputStream extends OutputStream {
 }

@@ -27,34 +27,34 @@ package eu.stratosphere.example.java.wordcount;
 //
 //
 //public class WordCount3 {
-//	
+//
 //	/**
 //	 * Bean style class with two fields.
 //	 */
 //	public static class WC {
-//		
+//
 //		private String word;
 //		private int count;
-//		
+//
 //		public WC() {}
-//		
+//
 //		public WC(String word, int count) {
 //			this.word = word;
 //			this.count = count;
 //		}
-//		
+//
 //		public String getWord() {
 //			return word;
 //		}
-//		
+//
 //		public void setWord(String word) {
 //			this.word = word;
 //		}
-//		
+//
 //		public int getCount() {
 //			return count;
 //		}
-//		
+//
 //		public void setCount(int count) {
 //			this.count = count;
 //		}
@@ -64,11 +64,11 @@ package eu.stratosphere.example.java.wordcount;
 //			return "(" + word + ", " + count + ")";
 //		}
 //	}
-//	
-//	
-//	
+//
+//
+//
 //	public static final class Tokenizer extends FlatMapFunction<String, WC> {
-//		
+//
 //		private static final long serialVersionUID = 1L;
 //
 //		@Override
@@ -79,24 +79,24 @@ package eu.stratosphere.example.java.wordcount;
 //			}
 //		}
 //	}
-//	
+//
 //	public static void main(String[] args) {
 //		if (args.length < 2) {
 //			System.out.println("Usage: <input path> <output path>");
 //			return;
 //		}
-//		
+//
 //		final String inputPath = args[0];
 //		final String outputPath = args[1];
-//		
+//
 //		final ExecutionEnvironment context = ExecutionEnvironment.getExecutionEnvironment();
-//		
+//
 //		DataSet<String> text = context.readTextFile(new Path(inputPath));
-//		
+//
 //		DataSet<WC> tokenized = text.flatMap(new Tokenizer());
-//		
+//
 //		DataSet<WC> result = tokenized.groupBy("word").aggregate(Aggregations.SUM, "count");
-//		
+//
 //		result.writeAsText(new Path(outputPath));
 //	}
 //}

@@ -30,30 +30,30 @@ import eu.stratosphere.util.LogUtils;
 public class AvroExternalJarProgramITCase {
 
 	private static final int TEST_JM_PORT = 43191;
-	
+
 	private static final String JAR_FILE = "/AvroTestProgram.jar";
-	
+
 	private static final String TEST_DATA_FILE = "/testdata.avro";
 
 	static {
 		LogUtils.initializeDefaultTestConsoleLogger();
 	}
-	
+
 	@Test
 	public void testExternalProgram() {
-		
+
 		NepheleMiniCluster testMiniCluster = null;
-		
+
 		try {
 			testMiniCluster = new NepheleMiniCluster();
 			testMiniCluster.setJobManagerRpcPort(TEST_JM_PORT);
 			testMiniCluster.start();
-			
+
 			String jarFile = getClass().getResource(JAR_FILE).getFile();
 			String testData = getClass().getResource(TEST_DATA_FILE).toString();
-			
+
 			PackagedProgram program = new PackagedProgram(new File(jarFile), new String[] { testData });
-						
+
 			Client c = new Client(new InetSocketAddress("localhost", TEST_JM_PORT), new Configuration());
 			c.run(program, true);
 		}

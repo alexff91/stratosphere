@@ -19,7 +19,7 @@ package eu.stratosphere.runtime.fs.s3;
  * refers to the S3 base directory.
  * <p>
  * This class is thread-safe.
- * 
+ *
  */
 public final class S3BucketObjectPair {
 
@@ -35,7 +35,7 @@ public final class S3BucketObjectPair {
 
 	/**
 	 * Creates a new S3 bucket-object pair.
-	 * 
+	 *
 	 * @param bucket
 	 *        the name of the S3 bucket this object refers to
 	 * @param object
@@ -48,7 +48,7 @@ public final class S3BucketObjectPair {
 
 	/**
 	 * Returns the name of the S3 bucket this object refers to.
-	 * 
+	 *
 	 * @return the name of the S3 bucket this object refers to or <code>null</code> if this object refers to the S3 base
 	 *         directory
 	 */
@@ -58,7 +58,7 @@ public final class S3BucketObjectPair {
 
 	/**
 	 * Returns the name of the S3 object this object refers to.
-	 * 
+	 *
 	 * @return the name of the S3 object this object refers to or <code>null</code> if this object refers to an S3
 	 *         bucket
 	 */
@@ -68,7 +68,7 @@ public final class S3BucketObjectPair {
 
 	/**
 	 * Checks whether this object refers to an S3 bucket.
-	 * 
+	 *
 	 * @return <code>true</code> if this object refers to an S3 bucket, <code>false</code> otherwise
 	 *         directory
 	 */
@@ -78,7 +78,7 @@ public final class S3BucketObjectPair {
 
 	/**
 	 * Checks whether this object refers to an S3 object.
-	 * 
+	 *
 	 * @return <code>true</code> if this object refers to an S3 object, <code>false</code> otherwise
 	 */
 	public boolean hasObject() {

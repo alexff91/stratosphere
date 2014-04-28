@@ -29,7 +29,7 @@ import eu.stratosphere.core.fs.Path;
  * Specialized subtype of {@link AbstractInputTask} for tasks which are supposed to generate input from
  * a file. In addition to {@link AbstractInputTask} this class includes a method to query file splits
  * which should be read during the task's execution.
- * 
+ *
  */
 public abstract class AbstractFileInputTask extends AbstractInputTask<FileInputSplit> {
 
@@ -45,7 +45,7 @@ public abstract class AbstractFileInputTask extends AbstractInputTask<FileInputS
 	/**
 	 * Returns an iterator to a (possible empty) list of file input splits which is expected to be consumed by this
 	 * instance of the {@link AbstractFileInputTask}.
-	 * 
+	 *
 	 * @return an iterator to a (possible empty) list of file input splits.
 	 */
 	public Iterator<FileInputSplit> getFileInputSplits() {
@@ -162,7 +162,7 @@ public abstract class AbstractFileInputTask extends AbstractInputTask<FileInputS
 	/**
 	 * Retrieves the index of the <tt>BlockLocation</tt> that contains the part of the file described by the given
 	 * offset.
-	 * 
+	 *
 	 * @param blocks
 	 *        The different blocks of the file. Must be ordered by their offset.
 	 * @param offset
@@ -173,7 +173,7 @@ public abstract class AbstractFileInputTask extends AbstractInputTask<FileInputS
 	 */
 	private final int getBlockIndexForPosition(final BlockLocation[] blocks, final long offset,
 			final long halfSplitSize, final int startIndex) {
-		
+
 		// go over all indexes after the startIndex
 		for (int i = startIndex; i < blocks.length; i++) {
 			long blockStart = blocks[i].getOffset();

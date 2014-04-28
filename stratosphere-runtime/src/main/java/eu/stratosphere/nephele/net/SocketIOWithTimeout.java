@@ -14,7 +14,7 @@
 /**
  * This file is based on source code from the Hadoop Project (http://hadoop.apache.org/), licensed by the Apache
  * Software Foundation (ASF) under the Apache License, Version 2.0. See the NOTICE file distributed with this work for
- * additional information regarding copyright ownership. 
+ * additional information regarding copyright ownership.
  */
 
 package eu.stratosphere.nephele.net;
@@ -102,7 +102,7 @@ abstract class SocketIOWithTimeout {
 
 	/**
 	 * Performs actual IO operations. This is not expected to block.
-	 * 
+	 *
 	 * @param buf
 	 * @return number of bytes (or some equivalent). 0 implies underlying
 	 *         channel is drained completely. We will wait if more IO is
@@ -115,7 +115,7 @@ abstract class SocketIOWithTimeout {
 	 * Performs one IO and returns number of bytes read or written.
 	 * It waits up to the specified timeout. If the channel is
 	 * not read before the timeout, SocketTimeoutException is thrown.
-	 * 
+	 *
 	 * @param buf
 	 *        buffer for IO
 	 * @param ops
@@ -175,7 +175,7 @@ abstract class SocketIOWithTimeout {
 
 	/**
 	 * The contract is similar to {@link SocketChannel#connect(SocketAddress)} with a timeout.
-	 * 
+	 *
 	 * @see SocketChannel#connect(SocketAddress)
 	 * @param channel
 	 *        - this should be a {@link SelectableChannel}
@@ -229,7 +229,7 @@ abstract class SocketIOWithTimeout {
 	 * This is similar to {@link #doIO(ByteBuffer, int)} except that it
 	 * does not perform any I/O. It just waits for the channel to be ready
 	 * for I/O as specified in ops.
-	 * 
+	 *
 	 * @param ops
 	 *        Selection Ops used for waiting
 	 * @throws SocketTimeoutException
@@ -309,7 +309,7 @@ abstract class SocketIOWithTimeout {
 		 * Waits on the channel with the given timeout using one of the
 		 * cached selectors. It also removes any cached selectors that are
 		 * idle for a few seconds.
-		 * 
+		 *
 		 * @param channel
 		 * @param ops
 		 * @param timeout
@@ -373,7 +373,7 @@ abstract class SocketIOWithTimeout {
 		 * Takes one selector from end of LRU list of free selectors.
 		 * If there are no selectors awailable, it creates a new selector.
 		 * Also invokes trimIdleSelectors().
-		 * 
+		 *
 		 * @param channel
 		 * @return
 		 * @throws IOException
@@ -415,7 +415,7 @@ abstract class SocketIOWithTimeout {
 		/**
 		 * puts selector back at the end of LRU list of free selectos.
 		 * Also invokes trimIdleSelectors().
-		 * 
+		 *
 		 * @param info
 		 */
 		private synchronized void release(SelectorInfo info) {

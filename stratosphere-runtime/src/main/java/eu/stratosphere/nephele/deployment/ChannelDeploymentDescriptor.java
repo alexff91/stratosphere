@@ -25,7 +25,7 @@ import eu.stratosphere.nephele.io.channels.ChannelID;
  * as part of a task on a task manager.
  * <p>
  * This class is not thread-safe in general.
- * 
+ *
  */
 public final class ChannelDeploymentDescriptor implements IOReadableWritable {
 
@@ -41,7 +41,7 @@ public final class ChannelDeploymentDescriptor implements IOReadableWritable {
 
 	/**
 	 * Constructs a new channel deployment descriptor.
-	 * 
+	 *
 	 * @param outputChannelID
 	 *        the ID of the output channel
 	 * @param inputChannelID
@@ -88,7 +88,7 @@ public final class ChannelDeploymentDescriptor implements IOReadableWritable {
 
 	/**
 	 * Returns the output channel ID attached to this deployment descriptor.
-	 * 
+	 *
 	 * @return the output channel ID attached to this deployment descriptor
 	 */
 	public ChannelID getOutputChannelID() {
@@ -98,7 +98,7 @@ public final class ChannelDeploymentDescriptor implements IOReadableWritable {
 
 	/**
 	 * Returns the input channel ID attached to this deployment descriptor.
-	 * 
+	 *
 	 * @return the input channel ID attached to this deployment descriptor
 	 */
 	public ChannelID getInputChannelID() {

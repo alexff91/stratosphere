@@ -16,13 +16,13 @@ package eu.stratosphere.nephele.taskmanager.bufferprovider;
 /**
  * A local buffer pool owner is an object which initially retrieves its buffers from the {@link GlobalBufferPool} and
  * manages its fraction of the overall buffer pool locally by means of a {@link LocalBufferPool}.
- * 
+ *
  */
 public interface LocalBufferPoolOwner {
 
 	/**
 	 * Returns the number of byte-buffered channels that will retrieve their buffers from the local buffer pool.
-	 * 
+	 *
 	 * @return the number of byte-buffered channels that will retrieve their buffers from the local buffer pool
 	 */
 	int getNumberOfChannels();
@@ -30,7 +30,7 @@ public interface LocalBufferPoolOwner {
 	/**
 	 * Sets the designated number of buffers the local buffer pool owner is allowed to fetch from the global buffer pool
 	 * and manage locally by means of the {@link LocalBufferPool}.
-	 * 
+	 *
 	 * @param numberOfBuffers
 	 *        the numberOfBuffers the local buffer pool owner is allowed to fetch from the global buffer pool
 	 */

@@ -39,7 +39,7 @@ import eu.stratosphere.util.StringUtils;
 
 /**
  * The queue scheduler mains of queue of all submitted jobs and executes one job at a time.
- * 
+ *
  */
 public class QueueScheduler extends AbstractScheduler implements JobStatusListener, ExecutionStageListener {
 
@@ -50,7 +50,7 @@ public class QueueScheduler extends AbstractScheduler implements JobStatusListen
 
 	/**
 	 * Constructs a new queue scheduler.
-	 * 
+	 *
 	 * @param deploymentManager
 	 *        the deployment manager assigned to this scheduler
 	 * @param instanceManager
@@ -62,7 +62,7 @@ public class QueueScheduler extends AbstractScheduler implements JobStatusListen
 
 	/**
 	 * Removes the job represented by the given {@link ExecutionGraph} from the scheduler.
-	 * 
+	 *
 	 * @param executionGraphToRemove
 	 *        the job to be removed
 	 */

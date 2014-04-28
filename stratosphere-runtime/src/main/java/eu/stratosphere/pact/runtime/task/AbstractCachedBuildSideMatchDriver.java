@@ -27,24 +27,24 @@ import eu.stratosphere.util.Collector;
 import eu.stratosphere.util.MutableObjectIterator;
 
 public abstract class AbstractCachedBuildSideMatchDriver<IT1, IT2, OT> extends MatchDriver<IT1, IT2, OT> implements ResettablePactDriver<GenericJoiner<IT1, IT2, OT>, OT> {
-	
+
 	/**
 	 * We keep it without generic parameters, because they vary depending on which input is the build side.
 	 */
 	protected volatile MutableHashTable<?, ?> hashJoin;
 
-	
+
 	private final int buildSideIndex;
-	
+
 	private final int probeSideIndex;
-	
+
 	protected AbstractCachedBuildSideMatchDriver(int buildSideIndex, int probeSideIndex) {
 		this.buildSideIndex = buildSideIndex;
 		this.probeSideIndex = probeSideIndex;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public boolean isInputResettable(int inputNum) {
 		if (inputNum < 0 || inputNum > 1) {
@@ -56,7 +56,7 @@ public abstract class AbstractCachedBuildSideMatchDriver<IT1, IT2, OT> extends M
 	@Override
 	public void initialize() throws Exception {
 		TaskConfig config = this.taskContext.getTaskConfig();
-		
+
 		TypeSerializer<IT1> serializer1 = this.taskContext.getInputSerializer(0);
 		TypeSerializer<IT2> serializer2 = this.taskContext.getInputSerializer(1);
 		TypeComparator<IT1> comparator1 = this.taskContext.getInputComparator(0);
@@ -64,7 +64,7 @@ public abstract class AbstractCachedBuildSideMatchDriver<IT1, IT2, OT> extends M
 		MutableObjectIterator<IT1> input1 = this.taskContext.getInput(0);
 		MutableObjectIterator<IT2> input2 = this.taskContext.getInput(1);
 
-		TypePairComparatorFactory<IT1, IT2> pairComparatorFactory = 
+		TypePairComparatorFactory<IT1, IT2> pairComparatorFactory =
 				this.taskContext.getTaskConfig().getPairComparatorFactory(this.taskContext.getUserCodeClassLoader());
 
 		int numMemoryPages = this.taskContext.getMemoryManager().computeNumberOfPages(config.getMemoryDriver());
@@ -96,11 +96,11 @@ public abstract class AbstractCachedBuildSideMatchDriver<IT1, IT2, OT> extends M
 
 		final GenericJoiner<IT1, IT2, OT> matchStub = this.taskContext.getStub();
 		final Collector<OT> collector = this.taskContext.getOutputCollector();
-		
+
 		if (buildSideIndex == 0) {
 			final TypeSerializer<IT1> buildSideSerializer = taskContext.<IT1> getInputSerializer(0);
 			final TypeSerializer<IT2> probeSideSerializer = taskContext.<IT2> getInputSerializer(1);
-			
+
 			IT1 buildSideRecordFirst;
 			IT1 buildSideRecordOther;
 			IT2 probeSideRecord;
@@ -109,15 +109,15 @@ public abstract class AbstractCachedBuildSideMatchDriver<IT1, IT2, OT> extends M
 			final IT1 buildSideRecordOtherReuse = buildSideSerializer.createInstance();
 			final IT2 probeSideRecordReuse = probeSideSerializer.createInstance();
 			final IT2 probeSideRecordCopyReuse = probeSideSerializer.createInstance();
-			
+
 			@SuppressWarnings("unchecked")
 			final MutableHashTable<IT1, IT2> join = (MutableHashTable<IT1, IT2>) this.hashJoin;
-			
+
 			final MutableObjectIterator<IT2> probeSideInput = taskContext.<IT2>getInput(1);
-			
+
 			while (this.running && ((probeSideRecord = probeSideInput.next(probeSideRecordReuse)) != null)) {
 				final MutableHashTable.HashBucketIterator<IT1, IT2> bucket = join.getMatchesFor(probeSideRecord);
-				
+
 				if ((buildSideRecordFirst = bucket.next(buildSideRecordFirstReuse)) != null) {
 					while ((buildSideRecordOther = bucket.next(buildSideRecordOtherReuse)) != null) {
 						probeSideRecordCopy = probeSideSerializer.copy(probeSideRecord, probeSideRecordCopyReuse);
@@ -129,7 +129,7 @@ public abstract class AbstractCachedBuildSideMatchDriver<IT1, IT2, OT> extends M
 		} else if (buildSideIndex == 1) {
 			final TypeSerializer<IT2> buildSideSerializer = taskContext.<IT2> getInputSerializer(1);
 			final TypeSerializer<IT1> probeSideSerializer = taskContext.<IT1> getInputSerializer(0);
-			
+
 			IT2 buildSideRecordFirst;
 			IT2 buildSideRecordOther;
 			IT1 probeSideRecord;
@@ -141,12 +141,12 @@ public abstract class AbstractCachedBuildSideMatchDriver<IT1, IT2, OT> extends M
 
 			@SuppressWarnings("unchecked")
 			final MutableHashTable<IT2, IT1> join = (MutableHashTable<IT2, IT1>) this.hashJoin;
-			
+
 			final MutableObjectIterator<IT1> probeSideInput = taskContext.<IT1>getInput(0);
-			
+
 			while (this.running && ((probeSideRecord = probeSideInput.next(probeSideRecordReuse)) != null)) {
 				final MutableHashTable.HashBucketIterator<IT2, IT1> bucket = join.getMatchesFor(probeSideRecord);
-				
+
 				if ((buildSideRecordFirst = bucket.next(buildSideRecordFirstReuse)) != null) {
 					while ((buildSideRecordOther = bucket.next(buildSideRecordOtherReuse)) != null) {
 						probeSideRecordCopy = probeSideSerializer.copy(probeSideRecord, probeSideRecordCopyReuse);
@@ -162,7 +162,7 @@ public abstract class AbstractCachedBuildSideMatchDriver<IT1, IT2, OT> extends M
 
 	@Override
 	public void cleanup() throws Exception {}
-	
+
 	@Override
 	public void reset() throws Exception {}
 

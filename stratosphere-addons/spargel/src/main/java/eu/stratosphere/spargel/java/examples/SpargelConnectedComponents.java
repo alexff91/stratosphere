@@ -27,19 +27,19 @@ public class SpargelConnectedComponents {
 
 	public static void main(String[] args) throws Exception {
 		ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
-		
+
 		DataSet<Long> vertexIds = env.generateSequence(0, 10);
 		DataSet<Tuple2<Long, Long>> edges = env.fromElements(new Tuple2<Long, Long>(0L, 2L), new Tuple2<Long, Long>(2L, 4L), new Tuple2<Long, Long>(4L, 8L),
 															new Tuple2<Long, Long>(1L, 5L), new Tuple2<Long, Long>(3L, 7L), new Tuple2<Long, Long>(3L, 9L));
-		
+
 		DataSet<Tuple2<Long, Long>> initialVertices = vertexIds.map(new IdAssigner());
-		
+
 		DataSet<Tuple2<Long, Long>> result = initialVertices.runOperation(VertexCentricIteration.withPlainEdges(edges, new CCUpdater(), new CCMessager(), 100));
-		
+
 		result.print();
 		env.execute("Spargel Connected Components");
 	}
-	
+
 	public static final class CCUpdater extends VertexUpdateFunction<Long, Long, Long> {
 		@Override
 		public void updateVertex(Long vertexKey, Long vertexValue, MessageIterator<Long> inMessages) {
@@ -52,14 +52,14 @@ public class SpargelConnectedComponents {
 			}
 		}
 	}
-	
+
 	public static final class CCMessager extends MessagingFunction<Long, Long, Long, NullValue> {
 		@Override
 		public void sendMessages(Long vertexId, Long componentId) {
 			sendMessageToAllNeighbors(componentId);
 		}
 	}
-	
+
 	/**
 	 * A map function that takes a Long value and creates a 2-tuple out of it:
 	 * <pre>(Long value) -> (value, value)</pre>

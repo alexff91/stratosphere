@@ -10,7 +10,7 @@
 		<version>0.5-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	
+
 	<artifactId>spargel</artifactId>
 	<name>spargel</name>
 

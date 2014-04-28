@@ -19,28 +19,28 @@ package eu.stratosphere.types.parser;
  * The parser does not check for the maximum value.
  */
 public class IntParser extends FieldParser<Integer> {
-	
+
 	private static final long OVERFLOW_BOUND = 0x7fffffffL;
 	private static final long UNDERFLOW_BOUND = 0x80000000L;
 
 	private int result;
-	
+
 	@Override
 	public int parseField(byte[] bytes, int startPos, int limit, char delimiter, Integer reusable) {
 		long val = 0;
 		boolean neg = false;
-		
+
 		if (bytes[startPos] == '-') {
 			neg = true;
 			startPos++;
-			
+
 			// check for empty field with only the sign
 			if (startPos == limit || bytes[startPos] == delimiter) {
 				setErrorState(ParseErrorState.NUMERIC_VALUE_ORPHAN_SIGN);
 				return -1;
 			}
 		}
-		
+
 		for (int i = startPos; i < limit; i++) {
 			if (bytes[i] == delimiter) {
 				this.result = (int) (neg ? -val : val);
@@ -52,17 +52,17 @@ public class IntParser extends FieldParser<Integer> {
 			}
 			val *= 10;
 			val += bytes[i] - 48;
-			
+
 			if (val > OVERFLOW_BOUND && (!neg || val > UNDERFLOW_BOUND)) {
 				setErrorState(ParseErrorState.NUMERIC_VALUE_OVERFLOW_UNDERFLOW);
 				return -1;
 			}
 		}
-		
+
 		this.result = (int) (neg ? -val : val);
 		return limit;
 	}
-	
+
 	@Override
 	public Integer createValue() {
 		return Integer.MIN_VALUE;

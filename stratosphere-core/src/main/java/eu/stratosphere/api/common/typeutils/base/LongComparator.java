@@ -25,7 +25,7 @@ public final class LongComparator extends BasicTypeComparator<Long> {
 
 	private static final long serialVersionUID = 1L;
 
-	
+
 	public LongComparator(boolean ascending) {
 		super(ascending);
 	}
@@ -56,7 +56,7 @@ public final class LongComparator extends BasicTypeComparator<Long> {
 	@Override
 	public void putNormalizedKey(Long lValue, MemorySegment target, int offset, int numBytes) {
 		long value = lValue.longValue() - Long.MIN_VALUE;
-		
+
 		// see IntValue for an explanation of the logic
 		if (numBytes == 8) {
 			// default case, full normalized key

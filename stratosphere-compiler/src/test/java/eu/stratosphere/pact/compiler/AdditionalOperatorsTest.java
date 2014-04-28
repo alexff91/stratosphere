@@ -47,25 +47,25 @@ public class AdditionalOperatorsTest extends CompilerTestBase {
 		// construct the plan
 		FileDataSource source1 = new FileDataSource(new DummyInputFormat(), IN_FILE, "Source 1");
 		FileDataSource source2 = new FileDataSource(new DummyInputFormat(), IN_FILE, "Source 2");
-		
+
 		CrossOperator cross = CrossWithSmallOperator.builder(new DummyCrossStub())
 				.input1(source1).input2(source2)
 				.name("Cross").build();
-	
+
 		FileDataSink sink = new FileDataSink(new DummyOutputFormat(), OUT_FILE, cross, "Sink");
-		
+
 		Plan plan = new Plan(sink);
 		plan.setDefaultParallelism(DEFAULT_PARALLELISM);
-		
-		
+
+
 		try {
 			OptimizedPlan oPlan = compileNoStats(plan);
 			OptimizerPlanNodeResolver resolver = new OptimizerPlanNodeResolver(oPlan);
-			
+
 			DualInputPlanNode crossPlanNode = resolver.getNode("Cross");
 			Channel in1 = crossPlanNode.getInput1();
 			Channel in2 = crossPlanNode.getInput2();
-			
+
 			assertEquals(ShipStrategyType.FORWARD, in1.getShipStrategy());
 			assertEquals(ShipStrategyType.BROADCAST, in2.getShipStrategy());
 		} catch(CompilerException ce) {
@@ -73,31 +73,31 @@ public class AdditionalOperatorsTest extends CompilerTestBase {
 			fail("The pact compiler is unable to compile this plan correctly.");
 		}
 	}
-	
+
 	@Test
 	public void testCrossWithLarge() {
 		// construct the plan
 		FileDataSource source1 = new FileDataSource(new DummyInputFormat(), IN_FILE, "Source 1");
 		FileDataSource source2 = new FileDataSource(new DummyInputFormat(), IN_FILE, "Source 2");
-		
+
 		CrossOperator cross= CrossWithLargeOperator.builder(new DummyCrossStub())
 				.input1(source1).input2(source2)
 				.name("Cross").build();
-	
+
 		FileDataSink sink = new FileDataSink(new DummyOutputFormat(), OUT_FILE, cross, "Sink");
-		
+
 		Plan plan = new Plan(sink);
 		plan.setDefaultParallelism(DEFAULT_PARALLELISM);
-		
-		
+
+
 		try {
 			OptimizedPlan oPlan = compileNoStats(plan);
 			OptimizerPlanNodeResolver resolver = new OptimizerPlanNodeResolver(oPlan);
-			
+
 			DualInputPlanNode crossPlanNode = resolver.getNode("Cross");
 			Channel in1 = crossPlanNode.getInput1();
 			Channel in2 = crossPlanNode.getInput2();
-			
+
 			assertEquals(ShipStrategyType.BROADCAST, in1.getShipStrategy());
 			assertEquals(ShipStrategyType.FORWARD, in2.getShipStrategy());
 		} catch(CompilerException ce) {

@@ -24,15 +24,15 @@ import eu.stratosphere.api.common.operators.util.UserCodeWrapper;
  * @see GenericCollectorMap
  */
 public class MapOperatorBase<T extends GenericCollectorMap<?, ?>> extends SingleInputOperator<T> {
-	
+
 	public MapOperatorBase(UserCodeWrapper<T> udf, String name) {
 		super(udf, name);
 	}
-	
+
 	public MapOperatorBase(T udf, String name) {
 		super(new UserCodeObjectWrapper<T>(udf), name);
 	}
-	
+
 	public MapOperatorBase(Class<? extends T> udf, String name) {
 		super(new UserCodeClassWrapper<T>(udf), name);
 	}

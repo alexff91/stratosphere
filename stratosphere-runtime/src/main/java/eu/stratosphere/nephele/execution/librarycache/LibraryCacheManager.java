@@ -43,7 +43,7 @@ import eu.stratosphere.util.StringUtils;
  * programming pattern, so there exists at most on library manager at a time.
  * <p>
  * This class is thread-safe.
- * 
+ *
  */
 public final class LibraryCacheManager {
 
@@ -104,7 +104,7 @@ public final class LibraryCacheManager {
 
 	/**
 	 * Returns the singleton instance of the library cache manager.
-	 * 
+	 *
 	 * @return the singleton instance of the library cache manager.
 	 * @throws IOException
 	 *         thrown if access to the file system can not be obtained or the requested hashing algorithm does not exist
@@ -121,7 +121,7 @@ public final class LibraryCacheManager {
 
 	/**
 	 * Constructs a new instance of the library cache manager.
-	 * 
+	 *
 	 * @throws IOException
 	 *         thrown if access to the file system can not be obtained or the requested hashing algorithm does not exist
 	 */
@@ -160,7 +160,7 @@ public final class LibraryCacheManager {
 
 	/**
 	 * Increments the reference counter for the library manager entry with the given job ID.
-	 * 
+	 *
 	 * @param jobID
 	 *        the job ID identifying the library manager entry
 	 * @return the increased reference counter
@@ -188,7 +188,7 @@ public final class LibraryCacheManager {
 
 	/**
 	 * Decrements the reference counter for the library manager entry with the given job ID.
-	 * 
+	 *
 	 * @param jobID
 	 *        the job ID identifying the library manager entry
 	 * @return the decremented reference counter
@@ -216,7 +216,7 @@ public final class LibraryCacheManager {
 	 * of client paths, so the method first translates the client paths into the corresponding internal cache names. For
 	 * every registered
 	 * job the library cache manager creates a class loader that is used to instantiate the job's environment later on.
-	 * 
+	 *
 	 * @param id
 	 *        the ID of the job to be registered
 	 * @param clientPaths
@@ -237,7 +237,7 @@ public final class LibraryCacheManager {
 	 * of client paths, so the method first translates the client paths into the corresponding internal cache names. For
 	 * every registered
 	 * job the library cache manager creates a class loader that is used to instantiate the job's environment later on.
-	 * 
+	 *
 	 * @param id
 	 *        the ID of the job to be registered.
 	 * @param clientPaths
@@ -264,7 +264,7 @@ public final class LibraryCacheManager {
 	/**
 	 * Registers a job ID with a set of library paths that are required to run the job. For every registered
 	 * job the library cache manager creates a class loader that is used to instantiate the job's environment later on.
-	 * 
+	 *
 	 * @param id
 	 *        the ID of the job to be registered.
 	 * @param clientPaths
@@ -283,7 +283,7 @@ public final class LibraryCacheManager {
 	 * Registers a job ID with a set of library paths that are required to run the job. For every registered
 	 * job the library cache manager creates a class loader that is used to instantiate the vertex's environment later
 	 * on.
-	 * 
+	 *
 	 * @param id
 	 *        the ID of the job to be registered.
 	 * @param clientPaths
@@ -294,8 +294,9 @@ public final class LibraryCacheManager {
 	private void registerInternal(final JobID id, final String[] requiredJarFiles) throws IOException {
 
 		// Use spin lock here
-		while (this.lockMap.putIfAbsent(id, LOCK_OBJECT) != null)
-			;
+		while (this.lockMap.putIfAbsent(id, LOCK_OBJECT) != null) {
+		;
+		}
 
 		try {
 			if (incrementReferenceCounter(id) > 1) {
@@ -339,7 +340,7 @@ public final class LibraryCacheManager {
 
 	/**
 	 * Unregisters a job ID and releases the resources associated with it.
-	 * 
+	 *
 	 * @param id
 	 *        the job ID to unregister
 	 * @throws IOException
@@ -353,15 +354,16 @@ public final class LibraryCacheManager {
 
 	/**
 	 * Unregisters a job ID and releases the resources associated with it.
-	 * 
+	 *
 	 * @param id
 	 *        the job ID to unregister
 	 */
 	private void unregisterInternal(final JobID id) {
 
 		// Use spin lock here
-		while (this.lockMap.putIfAbsent(id, LOCK_OBJECT) != null)
-			;
+		while (this.lockMap.putIfAbsent(id, LOCK_OBJECT) != null) {
+		;
+		}
 
 		if (decrementReferenceCounter(id) == 0) {
 			this.libraryManagerEntries.remove(id);
@@ -372,7 +374,7 @@ public final class LibraryCacheManager {
 
 	/**
 	 * Checks if the given library is in the local cache.
-	 * 
+	 *
 	 * @param cacheName
 	 *        The name of the library to be checked for.
 	 * @return the path object of the library if it is cached, <code>null</code> otherwise
@@ -388,7 +390,7 @@ public final class LibraryCacheManager {
 
 	/**
 	 * Checks if the given library is in the local cache.
-	 * 
+	 *
 	 * @param cacheName
 	 *        The name of the library to be checked for.
 	 * @return the path object of the library if it is cached, <code>null</code> otherwise
@@ -411,7 +413,7 @@ public final class LibraryCacheManager {
 
 	/**
 	 * Returns the class loader to the specified vertex.
-	 * 
+	 *
 	 * @param id
 	 *        the ID of the job to return the class loader for
 	 * @return the class loader of requested vertex or <code>null</code> if no class loader has been registered with the
@@ -431,7 +433,7 @@ public final class LibraryCacheManager {
 
 	/**
 	 * Returns the class loader to the specified vertex.
-	 * 
+	 *
 	 * @param id
 	 *        the ID of the job to return the class loader for
 	 * @return the class loader of requested vertex or <code>null</code> if no class loader has been registered with the
@@ -452,7 +454,7 @@ public final class LibraryCacheManager {
 
 	/**
 	 * Returns the names of the required libraries of the specified job.
-	 * 
+	 *
 	 * @param id
 	 *        the ID of the job to return the names of required libraries for.
 	 * @return the names of the required libraries or <code>null</code> if the specified job ID is unknown
@@ -472,7 +474,7 @@ public final class LibraryCacheManager {
 
 	/**
 	 * Returns the names of the required libraries of the specified job.
-	 * 
+	 *
 	 * @param id
 	 *        the ID of the job to return the names of required libraries for.
 	 * @return the names of the required libraries or <code>null</code> if the specified job ID is unknown
@@ -490,7 +492,7 @@ public final class LibraryCacheManager {
 
 	/**
 	 * Writes data from the library with the given file name to the specified stream.
-	 * 
+	 *
 	 * @param libraryFileName
 	 *        the name of the library
 	 * @param out
@@ -507,7 +509,7 @@ public final class LibraryCacheManager {
 
 	/**
 	 * Writes data from the library with the given file name to the specified stream.
-	 * 
+	 *
 	 * @param libraryFileName
 	 *        the name of the library
 	 * @param out
@@ -548,7 +550,7 @@ public final class LibraryCacheManager {
 
 	/**
 	 * Reads library data from the given stream.
-	 * 
+	 *
 	 * @param in
 	 *        the stream to read the library data from
 	 * @throws IOException
@@ -563,7 +565,7 @@ public final class LibraryCacheManager {
 
 	/**
 	 * Reads library data from the given stream.
-	 * 
+	 *
 	 * @param in
 	 *        the stream to read the library data from
 	 * @throws IOException
@@ -602,7 +604,7 @@ public final class LibraryCacheManager {
 	/**
 	 * Reads a library from the given input stream and adds it to the local library cache. The cache name of
 	 * the library is determined by the checksum of the received data and cannot be specified manually.
-	 * 
+	 *
 	 * @param jobID
 	 *        the ID of the job the library data belongs to
 	 * @param name
@@ -625,7 +627,7 @@ public final class LibraryCacheManager {
 	/**
 	 * Reads a library from the given input stream and adds it to the local library cache. The cache name of
 	 * the library is determined by the checksum of the received data and cannot be specified manually.
-	 * 
+	 *
 	 * @param jobID
 	 *        the ID of the job the library data belongs to
 	 * @param name
@@ -674,7 +676,7 @@ public final class LibraryCacheManager {
 	/**
 	 * Auxiliary class that stores the class loader object as well as the names of the required
 	 * libraries for a job vertex.
-	 * 
+	 *
 	 */
 	private static class LibraryManagerEntry {
 
@@ -691,7 +693,7 @@ public final class LibraryCacheManager {
 		/**
 		 * Constructs a <code>LibraryManagerEntry</code> object from the given job ID and array of required library
 		 * files.
-		 * 
+		 *
 		 * @param id
 		 *        the ID of the job to create a <code>LibraryManagerEntry</code> for.
 		 * @param requiredJarFiles
@@ -718,7 +720,7 @@ public final class LibraryCacheManager {
 
 		/**
 		 * Returns the class loader associated with this library manager entry.
-		 * 
+		 *
 		 * @return the class loader associated with this library manager entry
 		 */
 		public ClassLoader getClassLoader() {
@@ -727,7 +729,7 @@ public final class LibraryCacheManager {
 
 		/**
 		 * Returns a (possibly empty) array of library names required by the associated job vertex to run.
-		 * 
+		 *
 		 * @return a (possibly empty) array of library names required by the associated job vertex to run
 		 */
 		public String[] getRequiredJarFiles() {
@@ -739,7 +741,7 @@ public final class LibraryCacheManager {
 	 * Auxiliary class that acts as a key for the translation of the names a client uses to refer to required libraries
 	 * for a vertex
 	 * and the internal names used by the library cache manager.
-	 * 
+	 *
 	 */
 	private static class LibraryTranslationKey {
 
@@ -757,7 +759,7 @@ public final class LibraryCacheManager {
 		 * Construct a <code>LibraryTranslationKey</code> object from a fiven job ID and a client path that specifies
 		 * the name of
 		 * required library at the job client.
-		 * 
+		 *
 		 * @param jobID
 		 *        the job ID
 		 * @param clientPath
@@ -811,7 +813,7 @@ public final class LibraryCacheManager {
 
 		/**
 		 * Returns the client path associated with this object.
-		 * 
+		 *
 		 * @return the client path associated with this object
 		 */
 		public Path getClientPath() {
@@ -820,7 +822,7 @@ public final class LibraryCacheManager {
 
 		/**
 		 * Returns the job ID associated with this object.
-		 * 
+		 *
 		 * @return the job ID associated with this object
 		 */
 		public JobID getJobID() {

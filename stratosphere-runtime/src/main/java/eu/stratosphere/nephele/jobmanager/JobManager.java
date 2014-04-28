@@ -137,13 +137,13 @@ import eu.stratosphere.util.StringUtils;
  * the system and its address must be known the clients.
  * Task managers can discover the job manager by means of an UDP broadcast and afterwards advertise
  * themselves as new workers for tasks.
- * 
+ *
  */
 public class JobManager implements DeploymentManager, ExtendedManagementProtocol, InputSplitProviderProtocol,
 		JobManagerProtocol, ChannelLookupProtocol, JobStatusListener, AccumulatorProtocol {
-	
+
 	public static enum ExecutionMode { LOCAL, CLUSTER }
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	private static final Log LOG = LogFactory.getLog(JobManager.class);
@@ -153,7 +153,7 @@ public class JobManager implements DeploymentManager, ExtendedManagementProtocol
 	private final JobManagerProfiler profiler;
 
 	private final EventCollector eventCollector;
-	
+
 	private final ArchiveListener archive;
 
 	private final InputSplitManager inputSplitManager;
@@ -161,7 +161,7 @@ public class JobManager implements DeploymentManager, ExtendedManagementProtocol
 	private final AbstractScheduler scheduler;
 
 	private final MulticastManager multicastManager;
-	
+
 	private AccumulatorManager accumulatorManager;
 
 	private InstanceManager instanceManager;
@@ -177,9 +177,9 @@ public class JobManager implements DeploymentManager, ExtendedManagementProtocol
 	private final AtomicBoolean isShutdownInProgress = new AtomicBoolean(false);
 
 	private volatile boolean isShutDown = false;
-	
+
 	private WebInfoServer server;
-	
+
 	public JobManager(ExecutionMode executionMode) {
 
 		final String ipcAddressString = GlobalConfiguration
@@ -206,16 +206,16 @@ public class JobManager implements DeploymentManager, ExtendedManagementProtocol
 
 		// Load the job progress collector
 		this.eventCollector = new EventCollector(this.recommendedClientPollingInterval);
-		
+
 		// Register simple job archive
 		int archived_items = GlobalConfiguration.getInteger(
 				ConfigConstants.JOB_MANAGER_WEB_ARCHIVE_COUNT, ConfigConstants.DEFAULT_JOB_MANAGER_WEB_ARCHIVE_COUNT);
 		if(archived_items > 0) {
 			this.archive = new MemoryArchivist(archived_items);
 			this.eventCollector.registerArchivist(archive);
+		} else {
+		this.archive = null;
 		}
-		else
-			this.archive = null;
 
 		// Create the accumulator manager, with same archiving limit as web
 		// interface. We need to store the accumulators for at least one job.
@@ -365,7 +365,7 @@ public class JobManager implements DeploymentManager, ExtendedManagementProtocol
 	 */
 	private static void logVersionInformation() {
 		String version = JobManager.class.getPackage().getImplementationVersion();
-		
+
 		// if version == null, then the JobManager runs from inside the IDE (or somehow not from the maven build jar)
 		if (version != null) {
 			String revision = "<unknown>";
@@ -379,20 +379,20 @@ public class JobManager implements DeploymentManager, ExtendedManagementProtocol
 			} catch (IOException e) {
 				LOG.info("Cannot determine code revision. Unable ro read version property file.");
 			}
-			
+
 			LOG.info("Starting Stratosphere JobManager (Version: " + version + ", Rev:" + revision + ")");
 		}
 	}
-	
+
 	/**
 	 * Entry point for the program
-	 * 
+	 *
 	 * @param args
 	 *        arguments from the command line
 	 */
-	
+
 	public static void main(final String[] args) {
-		
+
 		// determine if a valid log4j config exists and initialize a default logger if not
 		if (System.getProperty("log4j.configuration") == null) {
 			Logger root = Logger.getRootLogger();
@@ -402,9 +402,9 @@ public class JobManager implements DeploymentManager, ExtendedManagementProtocol
 			root.addAppender(appender);
 			root.setLevel(Level.INFO);
 		}
-		
+
 		JobManager jobManager = initialize(args);
-				
+
 		// Start info server for jobmanager
 		jobManager.startInfoServer();
 
@@ -413,12 +413,12 @@ public class JobManager implements DeploymentManager, ExtendedManagementProtocol
 
 		// Clean up task are triggered through a shutdown hook
 	}
-	
+
 	@SuppressWarnings("static-access")
 	public static JobManager initialize(final String[] args) {
 		// output the version and revision information to the log
 		logVersionInformation();
-		
+
 		final Option configDirOpt = OptionBuilder.withArgName("config directory").hasArg()
 			.withDescription("Specify configuration directory.").create("configDir");
 
@@ -440,7 +440,7 @@ public class JobManager implements DeploymentManager, ExtendedManagementProtocol
 
 		final String configDir = line.getOptionValue(configDirOpt.getOpt(), null);
 		final String executionModeName = line.getOptionValue(executionModeOpt.getOpt(), "local");
-		
+
 		ExecutionMode executionMode = null;
 		if ("local".equals(executionModeName)) {
 			executionMode = ExecutionMode.LOCAL;
@@ -450,13 +450,13 @@ public class JobManager implements DeploymentManager, ExtendedManagementProtocol
 			System.err.println("Unrecognized execution mode: " + executionModeName);
 			System.exit(FAILURERETURNCODE);
 		}
-		
+
 		// First, try to load global configuration
 		GlobalConfiguration.loadConfiguration(configDir);
 
 		// Create a new job manager object
 		JobManager jobManager = new JobManager(executionMode);
-		
+
 		// Set base dir for info server
 		Configuration infoserverConfig = GlobalConfiguration.getConfiguration();
 		if (configDir != null && new File(configDir).isDirectory()) {
@@ -591,7 +591,7 @@ public class JobManager implements DeploymentManager, ExtendedManagementProtocol
 		// Return on success
 		return new JobSubmissionResult(AbstractJobResult.ReturnCode.SUCCESS, null);
 	}
-	
+
 
 	public InstanceManager getInstanceManager() {
 		return this.instanceManager;
@@ -601,7 +601,7 @@ public class JobManager implements DeploymentManager, ExtendedManagementProtocol
 	 * This method is a convenience method to unregister a job from all of
 	 * Nephele's monitoring, profiling and optimization components at once.
 	 * Currently, it is only being used to unregister from profiling (if activated).
-	 * 
+	 *
 	 * @param executionGraph
 	 *        the execution graph to remove from the job manager
 	 */
@@ -717,7 +717,7 @@ public class JobManager implements DeploymentManager, ExtendedManagementProtocol
 	/**
 	 * Cancels all the tasks in the current and upper stages of the
 	 * given execution graph.
-	 * 
+	 *
 	 * @param eg
 	 *        the execution graph representing the job to cancel.
 	 * @return <code>null</code> if no error occurred during the cancel attempt,
@@ -882,7 +882,7 @@ public class JobManager implements DeploymentManager, ExtendedManagementProtocol
 
 	/**
 	 * Returns current ManagementGraph from eventCollector and, if not current, from archive
-	 * 
+	 *
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -890,9 +890,10 @@ public class JobManager implements DeploymentManager, ExtendedManagementProtocol
 
 		ManagementGraph mg = this.eventCollector.getManagementGraph(jobID);
 		if (mg == null) {
-			if(this.archive != null)
-				mg = this.archive.getManagementGraph(jobID);
-			
+			if(this.archive != null) {
+			mg = this.archive.getManagementGraph(jobID);
+			}
+
 			if (mg == null) {
 				throw new IOException("Cannot find job with ID " + jobID);
 			}
@@ -1012,7 +1013,7 @@ public class JobManager implements DeploymentManager, ExtendedManagementProtocol
 
 	/**
 	 * Tests whether the job manager has been shut down completely.
-	 * 
+	 *
 	 * @return <code>true</code> if the job manager has been shut down completely, <code>false</code> otherwise
 	 */
 	public boolean isShutDown() {
@@ -1216,10 +1217,10 @@ public class JobManager implements DeploymentManager, ExtendedManagementProtocol
 
 		return new InputSplitWrapper(jobID, this.inputSplitManager.getNextInputSplit(vertex, sequenceNumber.getValue()));
 	}
-	
+
 	/**
 	 * Starts the Jetty Infoserver for the Jobmanager
-	 * 
+	 *
 	 */
 	public void startInfoServer() {
 		final Configuration config = GlobalConfiguration.getConfiguration();
@@ -1234,8 +1235,8 @@ public class JobManager implements DeploymentManager, ExtendedManagementProtocol
 			LOG.error("Cannot instantiate info server: " + StringUtils.stringifyException(e));
 		}
 	}
-	
-	
+
+
 	// TODO Add to RPC?
 	public List<RecentJobEvent> getOldJobs() throws IOException {
 
@@ -1249,7 +1250,7 @@ public class JobManager implements DeploymentManager, ExtendedManagementProtocol
 
 		return this.archive.getJobs();
 	}
-	
+
 	public ArchiveListener getArchive() {
 		return this.archive;
 	}

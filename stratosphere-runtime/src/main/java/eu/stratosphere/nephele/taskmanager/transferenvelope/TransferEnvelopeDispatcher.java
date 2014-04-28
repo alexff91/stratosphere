@@ -17,14 +17,14 @@ import java.io.IOException;
 
 /**
  * A transfer envelope dispatcher receives {@link TransferEnvelopes} and sends them to all of this destinations.
- * 
+ *
  */
 public interface TransferEnvelopeDispatcher {
 
 	/**
 	 * Processes a transfer envelope from an output channel. The method may block until the system has allocated enough
 	 * resources to further process the envelope.
-	 * 
+	 *
 	 * @param transferEnvelope
 	 *        the transfer envelope to be processed
 	 */

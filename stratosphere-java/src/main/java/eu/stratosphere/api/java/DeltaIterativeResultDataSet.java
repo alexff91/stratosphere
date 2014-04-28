@@ -20,28 +20,28 @@ import eu.stratosphere.api.java.typeutils.TypeInformation;
 public class DeltaIterativeResultDataSet<T, U> extends DataSet<T> {
 
 	private DeltaIterativeDataSet<T, U> iterationHead;
-	
+
 	private DeltaIterativeDataSet<T, U> iterationHeadSolutionSet;
 
 	private DataSet<T> nextSolutionSet;
-	
+
 	private DataSet<U> nextWorkset;
-	
+
 	private Keys<T> keys;
-	
+
 	private int maxIterations;
-	
+
 	private TypeInformation<U> typeWS;
 
 	DeltaIterativeResultDataSet(ExecutionEnvironment context,
-	                       TypeInformation<T> typeSS,
-	                       TypeInformation<U> typeWS,
-	                       DeltaIterativeDataSet<T, U> iterationHead,
-	                       DeltaIterativeDataSet<T, U> iterationHeadSolutionSet,
-	                       DataSet<T> nextSolutionSet,
-	                       DataSet<U> nextWorkset,
-	                       Keys<T> keys,
-	                       int maxIterations)
+			TypeInformation<T> typeSS,
+			TypeInformation<U> typeWS,
+			DeltaIterativeDataSet<T, U> iterationHead,
+			DeltaIterativeDataSet<T, U> iterationHeadSolutionSet,
+			DataSet<T> nextSolutionSet,
+			DataSet<U> nextWorkset,
+			Keys<T> keys,
+			int maxIterations)
 	{
 		super(context, typeSS);
 		this.iterationHead = iterationHead;
@@ -56,7 +56,7 @@ public class DeltaIterativeResultDataSet<T, U> extends DataSet<T> {
 	public DeltaIterativeDataSet<T, U> getIterationHead() {
 		return iterationHead;
 	}
-	
+
 	public DeltaIterativeDataSet<T, U> getIterationHeadSolutionSet() {
 		return iterationHeadSolutionSet;
 	}
@@ -68,15 +68,15 @@ public class DeltaIterativeResultDataSet<T, U> extends DataSet<T> {
 	public DataSet<U> getNextWorkset() {
 		return nextWorkset;
 	}
-	
+
 	public int [] getKeyPositions() {
 		return keys.computeLogicalKeyPositions();
 	}
-	
+
 	public int getMaxIterations() {
 		return maxIterations;
 	}
-	
+
 	public TypeInformation<U> getWorksetType() {
 		return typeWS;
 	}

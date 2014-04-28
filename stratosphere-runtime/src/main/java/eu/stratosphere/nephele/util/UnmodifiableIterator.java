@@ -20,7 +20,7 @@ import java.util.Iterator;
  * calling the remove method on this iterator will result in an {@link UnsupportedOperationException}.
  * <p>
  * This class is thread-safe.
- * 
+ *
  * @param <T>
  *        the type of the encapsulated iterator
  */
@@ -33,7 +33,7 @@ public final class UnmodifiableIterator<T> implements Iterator<T> {
 
 	/**
 	 * Constructs a new unmodifiable iterator.
-	 * 
+	 *
 	 * @param encapsulatedIterator
 	 *        the encapsulated iterator
 	 */

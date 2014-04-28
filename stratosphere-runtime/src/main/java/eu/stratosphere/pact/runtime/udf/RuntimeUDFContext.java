@@ -130,7 +130,7 @@ public class RuntimeUDFContext implements RuntimeContext {
 	@SuppressWarnings("unchecked")
 	public <RT> Collection<RT> getBroadcastVariable(String name) {
 		if (!this.broadcastVars.containsKey(name)) {
-			throw new IllegalArgumentException("Trying to access an unbound broadcast variable '" 
+			throw new IllegalArgumentException("Trying to access an unbound broadcast variable '"
 					+ name + "'.");
 		}
 		return (Collection<RT>) this.broadcastVars.get(name);

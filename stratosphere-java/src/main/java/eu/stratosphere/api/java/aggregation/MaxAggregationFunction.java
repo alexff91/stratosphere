@@ -39,24 +39,24 @@ public class MaxAggregationFunction<T extends Comparable<T>> extends Aggregation
 	public T getAggregate() {
 		return value;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "MAX";
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public static final class MaxAggregationFunctionFactory implements AggregationFunctionFactory {
 		private static final long serialVersionUID = 1L;
-		
+
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		@Override
 		public <T> AggregationFunction<T> createAggregationFunction(Class<T> type) {
 			if (Comparable.class.isAssignableFrom(type)) {
 				return (AggregationFunction<T>) new MaxAggregationFunction();
 			} else {
-				throw new UnsupportedAggregationTypeException("The type " + type.getName() + 
+				throw new UnsupportedAggregationTypeException("The type " + type.getName() +
 					" is not supported for maximum aggregation. " +
 					"Maximum aggregatable types must implement the Comparable interface.");
 			}

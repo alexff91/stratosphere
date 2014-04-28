@@ -15,13 +15,13 @@ package eu.stratosphere.nephele.jobgraph;
 
 /**
  * An abstract base class for input vertices in Nephele.
- * 
+ *
  */
 public abstract class AbstractJobInputVertex extends AbstractJobVertex {
 
 	/**
 	 * Constructs a new job input vertex with the given name.
-	 * 
+	 *
 	 * @param name
 	 *        the name of the new job input vertex
 	 * @param id

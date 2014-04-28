@@ -13,16 +13,15 @@
 
 package eu.stratosphere.core.memory;
 
-import eu.stratosphere.core.memory.MemorySegment;
 
 /**
  * Interface describing entities that can provide memory segments.
  */
 public interface MemorySegmentSource {
-	
+
 	/**
 	 * Gets the next memory segment. If no more segments are available, it returns null.
-	 * 
+	 *
 	 * @return The next memory segment, or null, if none is available.
 	 */
 	public MemorySegment nextSegment();

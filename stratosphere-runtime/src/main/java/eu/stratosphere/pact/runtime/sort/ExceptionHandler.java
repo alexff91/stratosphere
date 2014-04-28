@@ -15,13 +15,13 @@ package eu.stratosphere.pact.runtime.sort;
 
 /**
  * Interface to be implemented by classes that handle exceptions.
- * 
+ *
  * @param <E> The type of exception thrown.
  */
 public interface ExceptionHandler<E extends Throwable> {
 	/**
 	 * This method is called when the handler should deal with an exception.
-	 * 
+	 *
 	 * @param exception
 	 *        The exception to handle.
 	 */

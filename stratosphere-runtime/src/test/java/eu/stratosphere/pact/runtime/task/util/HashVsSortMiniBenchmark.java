@@ -45,14 +45,14 @@ import eu.stratosphere.util.MutableObjectIterator;
 
 
 public class HashVsSortMiniBenchmark {
-	
+
 	// total memory
 	private static final int MEMORY_SIZE = 1024 * 1024 * 32;
-	
+
 	private static final int PAGE_SIZE = 32 * 1024;
-	
+
 	private static final int MEMORY_PAGES_FOR_MERGE = 10;
-	
+
 	private static final int MEMORY_FOR_SORTER = (MEMORY_SIZE - PAGE_SIZE * MEMORY_PAGES_FOR_MERGE) / 2;
 
 	// the size of the left and right inputs
@@ -65,14 +65,14 @@ public class HashVsSortMiniBenchmark {
 
 	private static final long SEED2 = 231434613412342L;
 
-	
+
 	// dummy abstract task
 	private final AbstractTask parentTask = new DummyInvokable();
 
 	// memory and io manager
 	private IOManager ioManager;
 	private MemoryManager memoryManager;
-	
+
 	private TypeSerializer<Record> serializer1;
 	private TypeSerializer<Record> serializer2;
 	private TypeComparator<Record> comparator1;
@@ -88,7 +88,7 @@ public class HashVsSortMiniBenchmark {
 		this.comparator1 = new RecordComparator(new int[] {0}, new Class[] {TestData.Key.class});
 		this.comparator2 = new RecordComparator(new int[] {0}, new Class[] {TestData.Key.class});
 		this.pairComparator11 = new RecordPairComparator(new int[] {0}, new int[] {0}, new Class[] {TestData.Key.class});
-		
+
 		this.memoryManager = new DefaultMemoryManager(MEMORY_SIZE, PAGE_SIZE);
 		this.ioManager = new IOManager();
 	}
@@ -101,7 +101,7 @@ public class HashVsSortMiniBenchmark {
 			this.memoryManager.shutdown();
 			this.memoryManager = null;
 		}
-		
+
 		if (this.ioManager != null) {
 			this.ioManager.shutdown();
 			if (!this.ioManager.isProperlyShutDown()) {
@@ -110,50 +110,52 @@ public class HashVsSortMiniBenchmark {
 			this.ioManager = null;
 		}
 	}
-	
+
 	@Test
 	public void testSortBothMerge() {
 		try {
-			
+
 			Generator generator1 = new Generator(SEED1, INPUT_1_SIZE / 10, 100, KeyMode.RANDOM, ValueMode.RANDOM_LENGTH);
 			Generator generator2 = new Generator(SEED2, INPUT_2_SIZE, 100, KeyMode.RANDOM, ValueMode.RANDOM_LENGTH);
 
 			final TestData.GeneratorIterator input1 = new TestData.GeneratorIterator(generator1, INPUT_1_SIZE);
 			final TestData.GeneratorIterator input2 = new TestData.GeneratorIterator(generator2, INPUT_2_SIZE);
-			
+
 			final JoinFunction matcher = new NoOpMatcher();
 			final Collector<Record> collector = new DiscardingOutputCollector();
-			
+
 			long start = System.nanoTime();
-			
+
 			final UnilateralSortMerger<Record> sorter1 = new UnilateralSortMerger<Record>(
-					this.memoryManager, this.ioManager, input1, this.parentTask, this.serializer1, 
+					this.memoryManager, this.ioManager, input1, this.parentTask, this.serializer1,
 					this.comparator1.duplicate(), MEMORY_FOR_SORTER, 128, 0.8f);
-			
+
 			final UnilateralSortMerger<Record> sorter2 = new UnilateralSortMerger<Record>(
-					this.memoryManager, this.ioManager, input2, this.parentTask, this.serializer2, 
+					this.memoryManager, this.ioManager, input2, this.parentTask, this.serializer2,
 					this.comparator2.duplicate(), MEMORY_FOR_SORTER, 128, 0.8f);
-			
+
 			final MutableObjectIterator<Record> sortedInput1 = sorter1.getIterator();
 			final MutableObjectIterator<Record> sortedInput2 = sorter2.getIterator();
-			
+
 			// compare with iterator values
-			MergeMatchIterator<Record, Record, Record> iterator = 
-				new MergeMatchIterator<Record, Record, Record>(sortedInput1, sortedInput2, 
+			MergeMatchIterator<Record, Record, Record> iterator =
+				new MergeMatchIterator<Record, Record, Record>(sortedInput1, sortedInput2,
 						this.serializer1, this.comparator1, this.serializer2, this.comparator2, this.pairComparator11,
 						this.memoryManager, this.ioManager, MEMORY_PAGES_FOR_MERGE, this.parentTask);
-			
+
 			iterator.open();
-			
-			while (iterator.callWithNextKey(matcher, collector));
-			
+
+			while (iterator.callWithNextKey(matcher, collector)) {
+			;
+			}
+
 			iterator.close();
 			sorter1.close();
 			sorter2.close();
-			
+
 			long elapsed = System.nanoTime() - start;
 			double msecs = elapsed / (1000 * 1000);
-			
+
 			System.out.println("Sort-Merge Took " + msecs + " msecs.");
 		}
 		catch (Exception e) {
@@ -161,38 +163,40 @@ public class HashVsSortMiniBenchmark {
 			Assert.fail("An exception occurred during the test: " + e.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void testBuildFirst() {
 		try {
 			Generator generator1 = new Generator(SEED1, INPUT_1_SIZE / 10, 100, KeyMode.RANDOM, ValueMode.RANDOM_LENGTH);
 			Generator generator2 = new Generator(SEED2, INPUT_2_SIZE, 100, KeyMode.RANDOM, ValueMode.RANDOM_LENGTH);
-			
+
 			final TestData.GeneratorIterator input1 = new TestData.GeneratorIterator(generator1, INPUT_1_SIZE);
 			final TestData.GeneratorIterator input2 = new TestData.GeneratorIterator(generator2, INPUT_2_SIZE);
-			
+
 			final JoinFunction matcher = new NoOpMatcher();
-			
+
 			final Collector<Record> collector = new DiscardingOutputCollector();
-			
+
 			long start = System.nanoTime();
-			
+
 			// compare with iterator values
-			final BuildFirstHashMatchIterator<Record, Record, Record> iterator = 
+			final BuildFirstHashMatchIterator<Record, Record, Record> iterator =
 					new BuildFirstHashMatchIterator<Record, Record, Record>(
-						input1, input2, this.serializer1, this.comparator1, 
+						input1, input2, this.serializer1, this.comparator1,
 							this.serializer2, this.comparator2, this.pairComparator11,
 							this.memoryManager, this.ioManager, this.parentTask, MEMORY_SIZE);
-			
+
 			iterator.open();
-			
-			while (iterator.callWithNextKey(matcher, collector));
-			
+
+			while (iterator.callWithNextKey(matcher, collector)) {
+			;
+			}
+
 			iterator.close();
-			
+
 			long elapsed = System.nanoTime() - start;
 			double msecs = elapsed / (1000 * 1000);
-			
+
 			System.out.println("Hash Build First Took " + msecs + " msecs.");
 		}
 		catch (Exception e) {
@@ -200,38 +204,40 @@ public class HashVsSortMiniBenchmark {
 			Assert.fail("An exception occurred during the test: " + e.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void testBuildSecond() {
 		try {
 			Generator generator1 = new Generator(SEED1, INPUT_1_SIZE / 10, 100, KeyMode.RANDOM, ValueMode.RANDOM_LENGTH);
 			Generator generator2 = new Generator(SEED2, INPUT_2_SIZE, 100, KeyMode.RANDOM, ValueMode.RANDOM_LENGTH);
-			
+
 			final TestData.GeneratorIterator input1 = new TestData.GeneratorIterator(generator1, INPUT_1_SIZE);
 			final TestData.GeneratorIterator input2 = new TestData.GeneratorIterator(generator2, INPUT_2_SIZE);
-			
+
 			final JoinFunction matcher = new NoOpMatcher();
-			
+
 			final Collector<Record> collector = new DiscardingOutputCollector();
-			
+
 			long start = System.nanoTime();
-			
+
 			// compare with iterator values
-			BuildSecondHashMatchIterator<Record, Record, Record> iterator = 
+			BuildSecondHashMatchIterator<Record, Record, Record> iterator =
 					new BuildSecondHashMatchIterator<Record, Record, Record>(
-						input1, input2, this.serializer1, this.comparator1, 
+						input1, input2, this.serializer1, this.comparator1,
 						this.serializer2, this.comparator2, this.pairComparator11,
 						this.memoryManager, this.ioManager, this.parentTask, MEMORY_SIZE);
-			
+
 			iterator.open();
-			
-			while (iterator.callWithNextKey(matcher, collector));
-			
+
+			while (iterator.callWithNextKey(matcher, collector)) {
+			;
+			}
+
 			iterator.close();
-			
+
 			long elapsed = System.nanoTime() - start;
 			double msecs = elapsed / (1000 * 1000);
-			
+
 			System.out.println("Hash Build Second took " + msecs + " msecs.");
 		}
 		catch (Exception e) {
@@ -239,11 +245,11 @@ public class HashVsSortMiniBenchmark {
 			Assert.fail("An exception occurred during the test: " + e.getMessage());
 		}
 	}
-	
-	
+
+
 	private static final class NoOpMatcher extends JoinFunction {
 		private static final long serialVersionUID = 1L;
-		
+
 		@Override
 		public void join(Record rec1, Record rec2, Collector<Record> out) {}
 	}

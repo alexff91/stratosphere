@@ -19,13 +19,13 @@ import eu.stratosphere.core.io.IOReadableWritable;
 
 /**
  * Stores elements by serializing them with their regular serialization/deserialization functionality.
- * 
+ *
  * @see SerializedInputFormat
  */
 public class SerializedOutputFormat extends BinaryOutputFormat<IOReadableWritable> {
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	@Override
 	protected void serialize(IOReadableWritable record, DataOutput dataOutputStream) throws IOException {
 		record.write(dataOutputStream);

@@ -21,11 +21,11 @@ import eu.stratosphere.api.common.Program;
 import eu.stratosphere.api.common.ProgramDescription;
 import eu.stratosphere.api.common.operators.FileDataSink;
 import eu.stratosphere.api.common.operators.FileDataSource;
+import eu.stratosphere.api.java.record.functions.FunctionAnnotation.ConstantFields;
+import eu.stratosphere.api.java.record.functions.FunctionAnnotation.ConstantFieldsFirst;
 import eu.stratosphere.api.java.record.functions.JoinFunction;
 import eu.stratosphere.api.java.record.functions.MapFunction;
 import eu.stratosphere.api.java.record.functions.ReduceFunction;
-import eu.stratosphere.api.java.record.functions.FunctionAnnotation.ConstantFields;
-import eu.stratosphere.api.java.record.functions.FunctionAnnotation.ConstantFieldsFirst;
 import eu.stratosphere.api.java.record.io.CsvInputFormat;
 import eu.stratosphere.api.java.record.io.CsvOutputFormat;
 import eu.stratosphere.api.java.record.operators.JoinOperator;
@@ -44,16 +44,16 @@ import eu.stratosphere.util.Collector;
  * The TPC-H is a decision support benchmark on relational data.
  * Its documentation and the data generator (DBGEN) can be found
  * on http://www.tpc.org/tpch/ .This implementation is tested with
- * the DB2 data format.  
- * 
- * This program implements a modified version of the query 3 of 
+ * the DB2 data format.
+ *
+ * This program implements a modified version of the query 3 of
  * the TPC-H benchmark including one join, some filtering and an
  * aggregation.
- * 
+ *
  * SELECT l_orderkey, o_shippriority, sum(l_extendedprice) as revenue
  *   FROM orders, lineitem
  *   WHERE l_orderkey = o_orderkey
- *     AND o_orderstatus = "X" 
+ *     AND o_orderstatus = "X"
  *     AND YEAR(o_orderdate) > Y
  *     AND o_orderpriority LIKE "Z%"
  * GROUP BY l_orderkey, o_shippriority;
@@ -61,7 +61,7 @@ import eu.stratosphere.util.Collector;
 public class TPCHQuery3 implements Program, ProgramDescription {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	public static final String YEAR_FILTER = "parameter.YEAR_FILTER";
 	public static final String PRIO_FILTER = "parameter.PRIO_FILTER";
 
@@ -71,18 +71,18 @@ public class TPCHQuery3 implements Program, ProgramDescription {
 	@ConstantFields({0,1})
 	public static class FilterO extends MapFunction implements Serializable {
 		private static final long serialVersionUID = 1L;
-		
+
 		private String prioFilter;		// filter literal for the order priority
 		private int yearFilter;			// filter literal for the year
-		
+
 		// reusable objects for the fields touched in the mapper
 		private StringValue orderStatus;
 		private StringValue orderDate;
 		private StringValue orderPrio;
-		
+
 		/**
 		 * Reads the filter literals from the configuration.
-		 * 
+		 *
 		 * @see eu.stratosphere.api.common.functions.Function#open(eu.stratosphere.configuration.Configuration)
 		 */
 		@Override
@@ -90,32 +90,35 @@ public class TPCHQuery3 implements Program, ProgramDescription {
 			this.yearFilter = parameters.getInteger(YEAR_FILTER, 1990);
 			this.prioFilter = parameters.getString(PRIO_FILTER, "0");
 		}
-	
+
 		/**
 		 * Filters the orders table by year, order status and order priority.
 		 *
-		 *  o_orderstatus = "X" 
+		 *  o_orderstatus = "X"
 		 *  AND YEAR(o_orderdate) > Y
 		 *  AND o_orderpriority LIKE "Z"
-	 	 *  
-	 	 * Output Schema: 
-	 	 *   0:ORDERKEY, 
-	 	 *   1:SHIPPRIORITY
+		 *
+		 * Output Schema:
+		 *   0:ORDERKEY,
+		 *   1:SHIPPRIORITY
 		 */
 		@Override
 		public void map(final Record record, final Collector<Record> out) {
 			orderStatus = record.getField(2, StringValue.class);
-			if (!orderStatus.getValue().equals("F"))
-				return;
-			
+			if (!orderStatus.getValue().equals("F")) {
+			return;
+			}
+
 			orderPrio = record.getField(4, StringValue.class);
-			if(!orderPrio.getValue().startsWith(this.prioFilter))
-				return;
-			
+			if(!orderPrio.getValue().startsWith(this.prioFilter)) {
+			return;
+			}
+
 			orderDate = record.getField(3, StringValue.class);
-			if (!(Integer.parseInt(orderDate.getValue().substring(0, 4)) > this.yearFilter))
-				return;
-			
+			if (!(Integer.parseInt(orderDate.getValue().substring(0, 4)) > this.yearFilter)) {
+			return;
+			}
+
 			record.setNumFields(2);
 			out.collect(record);
 		}
@@ -128,10 +131,10 @@ public class TPCHQuery3 implements Program, ProgramDescription {
 	@ConstantFieldsFirst({0,1})
 	public static class JoinLiO extends JoinFunction implements Serializable {
 		private static final long serialVersionUID = 1L;
-		
+
 		/**
 		 * Implements the join between LineItem and Order table on the order key.
-		 * 
+		 *
 		 * Output Schema:
 		 *   0:ORDERKEY
 		 *   1:SHIPPRIORITY
@@ -145,7 +148,7 @@ public class TPCHQuery3 implements Program, ProgramDescription {
 	}
 
 	/**
-	 * Reduce PACT implements the sum aggregation. 
+	 * Reduce PACT implements the sum aggregation.
 	 * The Combinable annotation is set as the partial sums can be calculated
 	 * already in the combiner
 	 *
@@ -154,12 +157,12 @@ public class TPCHQuery3 implements Program, ProgramDescription {
 	@ConstantFields({0,1})
 	public static class AggLiO extends ReduceFunction implements Serializable {
 		private static final long serialVersionUID = 1L;
-		
+
 		private final DoubleValue extendedPrice = new DoubleValue();
-		
+
 		/**
 		 * Implements the sum aggregation.
-		 * 
+		 *
 		 * Output Schema:
 		 *   0:ORDERKEY
 		 *   1:SHIPPRIORITY
@@ -253,7 +256,7 @@ public class TPCHQuery3 implements Program, ProgramDescription {
 			.field(LongValue.class, 0)
 			.field(IntValue.class, 1)
 			.field(DoubleValue.class, 2);
-		
+
 		// assemble the PACT plan
 		Plan plan = new Plan(result, "TPCH Q3");
 		plan.setDefaultParallelism(numSubtasks);

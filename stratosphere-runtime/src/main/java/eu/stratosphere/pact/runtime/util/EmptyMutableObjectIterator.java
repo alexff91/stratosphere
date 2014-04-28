@@ -26,10 +26,10 @@ public final class EmptyMutableObjectIterator<E> implements MutableObjectIterato
 	 * The singleton instance.
 	 */
 	private static final EmptyMutableObjectIterator<Object> INSTANCE = new EmptyMutableObjectIterator<Object>();
-	
+
 	/**
 	 * Gets a singleton instance of the empty iterator.
-	 *  
+	 *
 	 * @param <E> The type of the objects (not) returned by the iterator.
 	 * @return An instance of the iterator.
 	 */
@@ -38,10 +38,10 @@ public final class EmptyMutableObjectIterator<E> implements MutableObjectIterato
 		MutableObjectIterator<E> iter = (MutableObjectIterator<E>) INSTANCE;
 		return iter;
 	}
-	
+
 	/**
 	 * Always returns null.
-	 *  
+	 *
 	 * @see MutableObjectIterator#next(Object)
 	 */
 	@Override

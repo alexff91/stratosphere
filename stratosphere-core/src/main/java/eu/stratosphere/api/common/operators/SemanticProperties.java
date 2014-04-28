@@ -27,45 +27,46 @@ public abstract class SemanticProperties implements Serializable {
 	 * Set of fields that are written in the destination record(s).
 	 */
 	private FieldSet writtenFields;
-	
+
 	/**
 	 * Adds, to the existing information, field(s) that are written in
 	 * the destination record(s).
-	 * 
+	 *
 	 * @param writtenFields the position(s) in the destination record(s)
 	 */
 	public void addWrittenFields(FieldSet writtenFields) {
-		if(this.writtenFields == null)
-			this.writtenFields = new FieldSet(writtenFields);
-		else
-			this.writtenFields.addAll(writtenFields);
+		if(this.writtenFields == null) {
+		this.writtenFields = new FieldSet(writtenFields);
+		} else {
+		this.writtenFields.addAll(writtenFields);
+		}
 	}
-	
+
 	/**
 	 * Sets the field(s) that are written in the destination record(s).
-	 * 
+	 *
 	 * @param writtenFields the position(s) in the destination record(s)
 	 */
 	public void setWrittenFields(FieldSet writtenFields) {
 		this.writtenFields = writtenFields;
 	}
-	
+
 	/**
 	 * Gets the field(s) in the destination record(s) that are written.
-	 * 
+	 *
 	 * @return the field(s) in the record, or null if they are not set
 	 */
 	public FieldSet getWrittenFields() {
 		return this.writtenFields;
 	}
-	
+
 	/**
 	 * Clears the object.
 	 */
 	public void clearProperties() {
 		this.init();
 	}
-	
+
 	private void init() {
 		this.writtenFields = null;
 	}

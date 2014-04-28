@@ -28,7 +28,7 @@ import org.apache.commons.logging.LogFactory;
  * search.
  * <p>
  * This class is not thread-safe.
- * 
+ *
  */
 public final class ManagementGraphIterator implements Iterator<ManagementVertex> {
 
@@ -74,7 +74,7 @@ public final class ManagementGraphIterator implements Iterator<ManagementVertex>
 
 	/**
 	 * Auxiliary class which stores which vertices have already been visited.
-	 * 
+	 *
 	 */
 	private static class TraversalEntry {
 
@@ -95,7 +95,7 @@ public final class ManagementGraphIterator implements Iterator<ManagementVertex>
 
 		/**
 		 * Constructs a new traversal entry.
-		 * 
+		 *
 		 * @param managementVertex
 		 *        the management vertex this entry belongs to
 		 * @param currentGate
@@ -111,7 +111,7 @@ public final class ManagementGraphIterator implements Iterator<ManagementVertex>
 
 		/**
 		 * Returns the management vertex this entry belongs to.
-		 * 
+		 *
 		 * @return the managenemt vertex this entry belongs to
 		 */
 		public ManagementVertex getManagementVertex() {
@@ -120,7 +120,7 @@ public final class ManagementGraphIterator implements Iterator<ManagementVertex>
 
 		/**
 		 * Returns the gate index to use to visit the next vertex.
-		 * 
+		 *
 		 * @return the gate index to use to visit the next vertex
 		 */
 		public int getCurrentGate() {
@@ -129,7 +129,7 @@ public final class ManagementGraphIterator implements Iterator<ManagementVertex>
 
 		/**
 		 * Returns the channel index to use to visit the next vertex.
-		 * 
+		 *
 		 * @return the channel index to use to visit the next vertex
 		 */
 		public int getCurrentChannel() {
@@ -161,7 +161,7 @@ public final class ManagementGraphIterator implements Iterator<ManagementVertex>
 
 	/**
 	 * Creates a new management graph iterator.
-	 * 
+	 *
 	 * @param managementGraph
 	 *        the management graph that should be traversed
 	 * @param forward
@@ -174,7 +174,7 @@ public final class ManagementGraphIterator implements Iterator<ManagementVertex>
 
 	/**
 	 * Creates a new management graph iterator.
-	 * 
+	 *
 	 * @param managementGraph
 	 *        the management graph that should be traversed
 	 * @param startStage
@@ -222,7 +222,7 @@ public final class ManagementGraphIterator implements Iterator<ManagementVertex>
 	 * traverse only specific parts of the graph starting at <code>startVertex</code>.
 	 * The iterator will not switch to the next input/output vertex of an output/input vertex
 	 * has been reached.
-	 * 
+	 *
 	 * @param managementGraph
 	 *        the management graph that should be traversed
 	 * @param startVertex
@@ -325,7 +325,7 @@ public final class ManagementGraphIterator implements Iterator<ManagementVertex>
 	/**
 	 * Returns a candidate vertex which could potentially be visited next because it is reachable from the
 	 * currently considered vertex.
-	 * 
+	 *
 	 * @param te
 	 *        the traversal entry for the current source vertex
 	 * @param forward
@@ -403,7 +403,7 @@ public final class ManagementGraphIterator implements Iterator<ManagementVertex>
 
 	/**
 	 * Checks if the current gate leads to another stage or not.
-	 * 
+	 *
 	 * @param te
 	 *        the current traversal entry
 	 * @param forward

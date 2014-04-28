@@ -15,7 +15,7 @@ package eu.stratosphere.nephele.util;
 
 /**
  * This is a utility class to deal with temporary files.
- * 
+ *
  */
 public final class FileUtils {
 
@@ -39,7 +39,7 @@ public final class FileUtils {
 	/**
 	 * Constructs a random filename with the given prefix and
 	 * a random part generated from hex characters.
-	 * 
+	 *
 	 * @param prefix
 	 *        the prefix to the filename to be constructed
 	 * @return the generated random filename with the given prefix

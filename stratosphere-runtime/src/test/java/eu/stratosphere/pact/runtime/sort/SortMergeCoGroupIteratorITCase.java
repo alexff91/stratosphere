@@ -62,8 +62,8 @@ public class SortMergeCoGroupIteratorITCase
 	private MutableObjectIterator<Record> reader1;
 
 	private MutableObjectIterator<Record> reader2;
-	
-	
+
+
 	private TypeSerializer<Record> serializer1;
 	private TypeSerializer<Record> serializer2;
 	private TypeComparator<Record> comparator1;
@@ -80,11 +80,11 @@ public class SortMergeCoGroupIteratorITCase
 		this.comparator2 = new RecordComparator(new int[] {0}, new Class[]{TestData.Key.class});
 		this.pairComparator = new RecordPairComparator(new int[] {0}, new int[] {0}, new Class[]{TestData.Key.class});
 	}
-	
+
 	@Test
 	public void testMerge() {
 		try {
-			
+
 			generator1 = new Generator(SEED1, 500, 4096, KeyMode.SORTED, ValueMode.RANDOM_LENGTH);
 			generator2 = new Generator(SEED2, 500, 2048, KeyMode.SORTED, ValueMode.RANDOM_LENGTH);
 
@@ -95,27 +95,27 @@ public class SortMergeCoGroupIteratorITCase
 			Map<TestData.Key, Collection<TestData.Value>> expectedValuesMap1 = collectData(generator1, INPUT_1_SIZE);
 			Map<TestData.Key, Collection<TestData.Value>> expectedValuesMap2 = collectData(generator2, INPUT_2_SIZE);
 			Map<TestData.Key, List<Collection<TestData.Value>>> expectedCoGroupsMap = coGroupValues(expectedValuesMap1, expectedValuesMap2);
-	
+
 			// reset the generators
 			generator1.reset();
 			generator2.reset();
-	
+
 			// compare with iterator values
 			SortMergeCoGroupIterator<Record, Record> iterator =	new SortMergeCoGroupIterator<Record, Record>(
 					this.reader1, this.reader2, this.serializer1, this.comparator1, this.serializer2, this.comparator2,
 					this.pairComparator);
-	
+
 			iterator.open();
-			
+
 			final TestData.Key key = new TestData.Key();
 			while (iterator.next())
 			{
 				Iterator<Record> iter1 = iterator.getValues1();
 				Iterator<Record> iter2 = iterator.getValues2();
-				
+
 				TestData.Value v1 = null;
 				TestData.Value v2 = null;
-				
+
 				if (iter1.hasNext()) {
 					Record rec = iter1.next();
 					rec.getFieldInto(0, key);
@@ -129,36 +129,36 @@ public class SortMergeCoGroupIteratorITCase
 				else {
 					Assert.fail("No input on both sides.");
 				}
-	
+
 				// assert that matches for this key exist
 				Assert.assertTrue("No matches for key " + key, expectedCoGroupsMap.containsKey(key));
-				
+
 				Collection<TestData.Value> expValues1 = expectedCoGroupsMap.get(key).get(0);
 				Collection<TestData.Value> expValues2 = expectedCoGroupsMap.get(key).get(1);
-				
+
 				if (v1 != null) {
 					expValues1.remove(v1);
 				}
 				else {
 					expValues2.remove(v2);
 				}
-				
+
 				while(iter1.hasNext()) {
 					Record rec = iter1.next();
 					Assert.assertTrue("Value not in expected set of first input", expValues1.remove(rec.getField(1, TestData.Value.class)));
 				}
 				Assert.assertTrue("Expected set of first input not empty", expValues1.isEmpty());
-				
+
 				while(iter2.hasNext()) {
 					Record rec = iter2.next();
 					Assert.assertTrue("Value not in expected set of second input", expValues2.remove(rec.getField(1, TestData.Value.class)));
 				}
 				Assert.assertTrue("Expected set of second input not empty", expValues2.isEmpty());
-	
+
 				expectedCoGroupsMap.remove(key);
 			}
 			iterator.close();
-	
+
 			Assert.assertTrue("Expected key set not empty", expectedCoGroupsMap.isEmpty());
 		}
 		catch (Exception e) {
@@ -168,7 +168,7 @@ public class SortMergeCoGroupIteratorITCase
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	private Map<TestData.Key, List<Collection<TestData.Value>>> coGroupValues(
 			Map<TestData.Key, Collection<TestData.Value>> leftMap,
 			Map<TestData.Key, Collection<TestData.Value>> rightMap)
@@ -177,24 +177,24 @@ public class SortMergeCoGroupIteratorITCase
 
 		Set<TestData.Key> keySet = new HashSet<TestData.Key>(leftMap.keySet());
 		keySet.addAll(rightMap.keySet());
-		
+
 		for (TestData.Key key : keySet) {
 			Collection<TestData.Value> leftValues = leftMap.get(key);
 			Collection<TestData.Value> rightValues = rightMap.get(key);
 			ArrayList<Collection<TestData.Value>> list = new ArrayList<Collection<TestData.Value>>(2);
-			
+
 			if (leftValues == null) {
 				list.add(new ArrayList<TestData.Value>(0));
 			} else {
 				list.add(leftValues);
 			}
-			
+
 			if (rightValues == null) {
 				list.add(new ArrayList<TestData.Value>(0));
 			} else {
 				list.add(rightValues);
 			}
-			
+
 			map.put(key, list);
 		}
 		return map;
@@ -205,11 +205,11 @@ public class SortMergeCoGroupIteratorITCase
 	{
 		Map<TestData.Key, Collection<TestData.Value>> map = new HashMap<TestData.Key, Collection<TestData.Value>>();
 		Record pair = new Record();
-		
+
 		for (int i = 0; i < num; i++) {
 			iter.next(pair);
 			TestData.Key key = pair.getField(0, TestData.Key.class);
-			
+
 			if (!map.containsKey(key)) {
 				map.put(new TestData.Key(key.getKey()), new ArrayList<TestData.Value>());
 			}

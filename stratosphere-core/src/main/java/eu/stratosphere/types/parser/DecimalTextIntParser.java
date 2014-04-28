@@ -20,30 +20,30 @@ import eu.stratosphere.types.IntValue;
  * Only characters '1' to '0' and '-' are allowed.
  */
 public class DecimalTextIntParser extends FieldParser<IntValue> {
-	
+
 	private static final long OVERFLOW_BOUND = 0x7fffffffL;
 	private static final long UNDERFLOW_BOUND = 0x80000000L;
 
 	private IntValue result;
-	
+
 	@Override
 	public int parseField(byte[] bytes, int startPos, int limit, char delimiter, IntValue reusable) {
 		long val = 0;
 		boolean neg = false;
-		
+
 		this.result = reusable;
-		
+
 		if (bytes[startPos] == '-') {
 			neg = true;
 			startPos++;
-			
+
 			// check for empty field with only the sign
 			if (startPos == limit || bytes[startPos] == delimiter) {
 				setErrorState(ParseErrorState.NUMERIC_VALUE_ORPHAN_SIGN);
 				return -1;
 			}
 		}
-		
+
 		for (int i = startPos; i < limit; i++) {
 			if (bytes[i] == delimiter) {
 				reusable.setValue((int) (neg ? -val : val));
@@ -55,17 +55,17 @@ public class DecimalTextIntParser extends FieldParser<IntValue> {
 			}
 			val *= 10;
 			val += bytes[i] - 48;
-			
+
 			if (val > OVERFLOW_BOUND && (!neg || val > UNDERFLOW_BOUND)) {
 				setErrorState(ParseErrorState.NUMERIC_VALUE_OVERFLOW_UNDERFLOW);
 				return -1;
 			}
 		}
-		
+
 		reusable.setValue((int) (neg ? -val : val));
 		return limit;
 	}
-	
+
 	@Override
 	public IntValue createValue() {
 		return new IntValue();

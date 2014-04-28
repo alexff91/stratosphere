@@ -25,7 +25,7 @@ public final class BooleanComparator extends BasicTypeComparator<Boolean> {
 
 	private static final long serialVersionUID = 1L;
 
-	
+
 	public BooleanComparator(boolean ascending) {
 		super(ascending);
 	}
@@ -57,7 +57,7 @@ public final class BooleanComparator extends BasicTypeComparator<Boolean> {
 	public void putNormalizedKey(Boolean value, MemorySegment target, int offset, int numBytes) {
 		if (numBytes > 0) {
 			target.put(offset, (byte) (value.booleanValue() ? 1 : 0));
-			
+
 			for (offset = offset + 1; numBytes > 1; numBytes--) {
 				target.put(offset++, (byte) 0);
 			}

@@ -25,10 +25,10 @@ public interface ResettableMutableObjectIterator<E> extends MutableObjectIterato
 {
 	/**
 	 * Resets the iterator.
-	 * 
+	 *
 	 * @throws IOException May be thrown when the serialization into buffers or the spilling to secondary
 	 *                     storage fails.
 	 */
 	public void reset() throws IOException;
-	
+
 }

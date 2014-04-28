@@ -28,29 +28,29 @@ import eu.stratosphere.api.java.tuple.Tuple3;
 import eu.stratosphere.util.Collector;
 
 public class SimpleDeltaPageRank {
-	
+
 	public static final class RankComparisonMatch extends JoinFunction<Tuple2<Long, Double>, Tuple2<Long, Double>, Tuple2<Long, Double>> {
-		
+
 		private static final long serialVersionUID = 1L;
-		
+
 		@Override
 		public Tuple2<Long, Double> join(Tuple2<Long, Double> vertexWithDelta,
 				Tuple2<Long, Double> vertexWithOldRank) throws Exception {
-			
+
 			return new Tuple2<Long, Double>(vertexWithOldRank.f0, vertexWithDelta.f1 + vertexWithOldRank.f1);
 		}
 	}
-	
+
 //	public static final class UpdateRankReduceDelta extends ReduceFunction<Tuple2<Long, Double>> {
-//		
+//
 //		private static final long serialVersionUID = 1L;
-//		
+//
 //		@Override
 //		public Tuple2<Long, Double> reduce(Tuple2<Long, Double> value1,
 //				Tuple2<Long, Double> value2) throws Exception {
-//			
+//
 //			double rankSum = value1.f1 + value2.f1;
-//			
+//
 //			// ignore small deltas
 //			if (Math.abs(rankSum) > 0.00001) {
 //				return new Tuple2<Long, Double>(value1.f0, rankSum);
@@ -58,9 +58,9 @@ public class SimpleDeltaPageRank {
 //			return null;
 //		}
 //	}
-	
+
 	public static final class UpdateRankReduceDelta extends GroupReduceFunction<Tuple2<Long, Double>, Tuple2<Long, Double>> {
-		
+
 		private static final long serialVersionUID = 1L;
 
 		@Override
@@ -74,15 +74,15 @@ public class SimpleDeltaPageRank {
 				currentTuple = values.next();
 				rankSum += currentTuple.f1;
 			}
-			
+
 			// ignore small deltas
 			if (Math.abs(rankSum) > 0.00001) {
 				out.collect(new Tuple2<Long, Double>(currentTuple.f0, rankSum));
 			}
 		}
 	}
-	
-	
+
+
 	public static final class PRDependenciesComputationMatchDelta extends JoinFunction<Tuple2<Long, Double>, Tuple3<Long, Long, Long>, Tuple2<Long, Double>> {
 
 		private static final long serialVersionUID = 1L;
@@ -97,7 +97,7 @@ public class SimpleDeltaPageRank {
 			return new Tuple2<Long, Double>(edgeWithWeight.f1, (Double) (vertexWithRank.f1 / edgeWithWeight.f2));
 		}
 	}
-	
+
 	public static final class Mapper extends MapFunction<Tuple2<Long, Double>, Tuple2<Long, Double>> {
 
 		private static final long serialVersionUID = 1L;
@@ -105,53 +105,53 @@ public class SimpleDeltaPageRank {
 		@Override
 		public Tuple2<Long, Double> map(Tuple2<Long, Double> value)
 				throws Exception {
-			
+
 			return value;
 		}
-		
+
 	}
-	
+
 	public static void main(String[] args) throws Exception {
-		
+
 		if (args.length < 5) {
 			System.err.println("Usage: SimpePageRank <DOP> <pageWithRankInputPath> <adjacencyListInputPath> <outputPath> <numIterations>");
 			return;
 		}
-		
+
 		final int dop = Integer.parseInt(args[0]);
 		final String solutionSetInputPath = args[1];
 		final String deltasInputPath = args[2];
 		final String dependencySetInputPath = args[3];
 		final String outputPath = args[4];
 		final int maxIterations = Integer.parseInt(args[5]);
-		
+
 		run(dop, solutionSetInputPath, deltasInputPath, dependencySetInputPath, outputPath, maxIterations, true);
-		
+
 	}
-	
+
 	public static void run(int dop, String solutionSetInputPath, String deltasInputPath, String dependencySetInputPath, String outputPath, int maxIterations, boolean terminationCriterion) throws Exception {
-		
+
 		final ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 		env.setDegreeOfParallelism(dop);
-		
+
 		DataSet<Tuple2<Long, Double>> initialSolutionSet = env.readCsvFile(solutionSetInputPath).fieldDelimiter(' ').types(Long.class, Double.class).map(new Mapper());
-		
+
 		DataSet<Tuple2<Long, Double>> initialDeltaSet = env.readCsvFile(deltasInputPath).fieldDelimiter(' ').types(Long.class, Double.class);
-		
+
 		DataSet<Tuple3<Long, Long, Long>> dependencySetInput = env.readCsvFile(dependencySetInputPath).fieldDelimiter(' ').types(Long.class, Long.class, Long.class);
-		
+
 		int keyPosition = 0;
 		DeltaIterativeDataSet<Tuple2<Long, Double>, Tuple2<Long, Double>> iteration = initialSolutionSet.iterateDelta(initialDeltaSet, maxIterations, keyPosition);
-		
+
 		DataSet<Tuple2<Long, Double>> updateRanks = iteration.join(dependencySetInput).where(0).equalTo(0).with(new PRDependenciesComputationMatchDelta())
 				.groupBy(0).reduceGroup(new UpdateRankReduceDelta());
-		
+
 		DataSet<Tuple2<Long, Double>> oldRankComparison = updateRanks.join(iteration.getSolutionSet()).where(0).equalTo(0).with(new RankComparisonMatch());
-		
+
 		iteration.closeWith(oldRankComparison, updateRanks).writeAsCsv(outputPath);
-		
+
 		env.execute();
-		
+
 	}
 
 }

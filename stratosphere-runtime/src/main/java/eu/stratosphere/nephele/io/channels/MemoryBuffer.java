@@ -18,7 +18,6 @@ import java.nio.ByteBuffer;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 
-
 import eu.stratosphere.core.memory.MemorySegment;
 
 public final class MemoryBuffer extends Buffer {
@@ -26,12 +25,12 @@ public final class MemoryBuffer extends Buffer {
 	private final MemoryBufferRecycler bufferRecycler;
 
 	private final MemorySegment internalMemorySegment;
-	
+
 	/**
 	 * Internal index that points to the next byte to write
 	 */
 	private int index = 0;
-	
+
 	/**
 	 * Internal limit to simulate ByteBuffer behavior of MemorySegment. index > limit is not allowed.
 	 */
@@ -74,14 +73,14 @@ public final class MemoryBuffer extends Buffer {
 		index += numBytes;
 		return numBytes;
 	}
-	
+
 
 	@Override
 	public int writeTo(WritableByteChannel writableByteChannel) throws IOException {
 		if (!this.hasRemaining()) {
 			return -1;
 		}
-		
+
 		final ByteBuffer wrapped = this.internalMemorySegment.wrap(index, limit-index);
 		final int written = writableByteChannel.write(wrapped);
 		position(wrapped.position());
@@ -104,7 +103,7 @@ public final class MemoryBuffer extends Buffer {
 
 	/**
 	 * Resets the memory buffer.
-	 * 
+	 *
 	 * @param bufferSize
 	 *        the size of buffer in bytes after the reset
 	 */
@@ -122,12 +121,12 @@ public final class MemoryBuffer extends Buffer {
 		}
 		index = i;
 	}
-	
+
 	@Override
 	public final int position() {
 		return index;
 	}
-	
+
 	public final void limit(final int l) {
 		if(limit > internalMemorySegment.size()) {
 			throw new RuntimeException("Limit is larger than MemoryBuffer size");
@@ -137,15 +136,15 @@ public final class MemoryBuffer extends Buffer {
 		}
 		limit = l;
 	}
-	
+
 	public final int limit() {
 		return limit;
 	}
-	
+
 	public final boolean hasRemaining() {
 		return index < limit;
-    }
-	
+}
+
 	public final int remaining() {
 		return limit - index;
 	}
@@ -164,13 +163,13 @@ public final class MemoryBuffer extends Buffer {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return Returns the size of the underlying MemorySegment
 	 */
 	public int getTotalSize() {
 		return this.internalMemorySegment.size();
 	}
-	
+
 	@Override
 	public final int size() {
 		return this.limit();
@@ -217,7 +216,7 @@ public final class MemoryBuffer extends Buffer {
 		destinationBuffer.flip();
 	}
 
-	 
+
 
 	@Override
 	public int write(final ByteBuffer src) throws IOException {

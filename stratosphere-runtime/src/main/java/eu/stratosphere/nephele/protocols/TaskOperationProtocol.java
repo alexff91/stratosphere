@@ -32,13 +32,13 @@ import eu.stratosphere.nephele.taskmanager.TaskSubmissionResult;
  * The task submission protocol is implemented by the task manager and allows the job manager
  * to submit and cancel tasks, as well as to query the task manager for cached libraries and submit
  * these if necessary.
- * 
+ *
  */
 public interface TaskOperationProtocol extends VersionedProtocol {
 
 	/**
 	 * Submits a list of tasks to the task manager.
-	 * 
+	 *
 	 * @param tasks
 	 *        the tasks to be submitted
 	 * @return the result of the task submission
@@ -49,7 +49,7 @@ public interface TaskOperationProtocol extends VersionedProtocol {
 
 	/**
 	 * Advises the task manager to cancel the task with the given ID.
-	 * 
+	 *
 	 * @param id
 	 *        the ID of the task to cancel
 	 * @return the result of the task cancel attempt
@@ -60,7 +60,7 @@ public interface TaskOperationProtocol extends VersionedProtocol {
 
 	/**
 	 * Advises the task manager to kill the task with the given ID.
-	 * 
+	 *
 	 * @param id
 	 *        the ID of the task to kill
 	 * @return the result of the task kill attempt
@@ -72,7 +72,7 @@ public interface TaskOperationProtocol extends VersionedProtocol {
 	/**
 	 * Queries the task manager about the cache status of the libraries stated in the {@link LibraryCacheProfileRequest}
 	 * object.
-	 * 
+	 *
 	 * @param request
 	 *        a {@link LibraryCacheProfileRequest} containing a list of libraries whose cache status is to be determined
 	 * @return a {@link LibraryCacheProfileResponse} containing the cache status for each library included in the
@@ -84,7 +84,7 @@ public interface TaskOperationProtocol extends VersionedProtocol {
 
 	/**
 	 * Updates the task manager's library cache.
-	 * 
+	 *
 	 * @param update
 	 *        a {@link LibraryCacheUpdate} object used to transmit the library data
 	 * @throws IOException
@@ -94,7 +94,7 @@ public interface TaskOperationProtocol extends VersionedProtocol {
 
 	/**
 	 * Invalidates the entries identified by the given channel IDs from the task manager's receiver lookup cache.
-	 * 
+	 *
 	 * @param channelIDs
 	 *        the channel IDs identifying the cache entries to invalidate
 	 * @throws IOException
@@ -105,7 +105,7 @@ public interface TaskOperationProtocol extends VersionedProtocol {
 	/**
 	 * Triggers the task manager write the current utilization of its read and write buffers to its logs.
 	 * This method is primarily for debugging purposes.
-	 * 
+	 *
 	 * @throws IOException
 	 *         thrown if an error occurs while transmitting the request
 	 */
@@ -113,7 +113,7 @@ public interface TaskOperationProtocol extends VersionedProtocol {
 
 	/**
 	 * Kills the task manager. This method is mainly intended to test and debug Nephele's fault tolerance mechanisms.
-	 * 
+	 *
 	 * @throws IOException
 	 *         thrown if an error occurs during this remote procedure call
 	 */

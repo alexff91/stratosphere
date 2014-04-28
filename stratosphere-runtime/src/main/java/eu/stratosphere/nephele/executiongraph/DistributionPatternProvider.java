@@ -19,7 +19,7 @@ public final class DistributionPatternProvider {
 
 	/**
 	 * Checks if two subtasks of different tasks should be wired.
-	 * 
+	 *
 	 * @param pattern
 	 *        the distribution pattern that should be used
 	 * @param nodeLowerStage

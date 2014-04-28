@@ -41,7 +41,7 @@ import eu.stratosphere.types.StringValue;
  * connection parameters or a complete database URL.{@link Configuration} The position of a value inside a Record is
  * determined by the table
  * returned.
- * 
+ *
  * @see Configuration
  * @see Record
  * @see DriverManager
@@ -49,10 +49,10 @@ import eu.stratosphere.types.StringValue;
 public class JDBCInputFormat extends GenericInputFormat implements UnsplittableInput {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	@SuppressWarnings("unused")
 	private static final Log LOG = LogFactory.getLog(JDBCInputFormat.class);
-	
+
 
 	public final String DRIVER_KEY = "driver";
 	public final String USERNAME_KEY = "username";
@@ -67,7 +67,7 @@ public class JDBCInputFormat extends GenericInputFormat implements UnsplittableI
 	private String dbURL;
 	private String query;
 
-	
+
 	private transient Connection dbConn;
 	private transient Statement statement;
 	private transient ResultSet resultSet;
@@ -81,7 +81,7 @@ public class JDBCInputFormat extends GenericInputFormat implements UnsplittableI
 
 	/**
 	 * Creates a JDBCInputFormat and configures it.
-	 * 
+	 *
 	 * @param driverName
 	 *        JDBC-Drivename
 	 * @param dbURL
@@ -101,7 +101,7 @@ public class JDBCInputFormat extends GenericInputFormat implements UnsplittableI
 
 	/**
 	 * Creates a JDBCInputFormat and configures it.
-	 * 
+	 *
 	 * @param driverName
 	 *        JDBC-Drivername
 	 * @param dbURL
@@ -115,7 +115,7 @@ public class JDBCInputFormat extends GenericInputFormat implements UnsplittableI
 
 	/**
 	 * Creates a JDBCInputFormat and configures it.
-	 * 
+	 *
 	 * @param parameters
 	 *        Configuration with all connection parameters.
 	 * @param query
@@ -129,12 +129,12 @@ public class JDBCInputFormat extends GenericInputFormat implements UnsplittableI
 		this.query = query;
 	}
 
-	
+
 	/**
 	 * Configures this JDBCInputFormat. This includes setting the connection
 	 * parameters (if necessary), establishing the connection and executing the
 	 * query.
-	 * 
+	 *
 	 * @param parameters
 	 *        Configuration containing all or no parameters.
 	 */
@@ -158,7 +158,7 @@ public class JDBCInputFormat extends GenericInputFormat implements UnsplittableI
 
 	/**
 	 * Enters data value from the current resultSet into a Record.
-	 * 
+	 *
 	 * @param pos
 	 *        Record position to be set.
 	 * @param type
@@ -263,7 +263,7 @@ public class JDBCInputFormat extends GenericInputFormat implements UnsplittableI
 
 	/**
 	 * Loads appropriate JDBC driver.
-	 * 
+	 *
 	 * @param dbType
 	 *        Type of the database.
 	 * @return boolean value, indication whether an appropriate driver could be
@@ -288,7 +288,7 @@ public class JDBCInputFormat extends GenericInputFormat implements UnsplittableI
 
 	/**
 	 * Establishes a connection to a database.
-	 * 
+	 *
 	 * @param dbURL
 	 *        Assembled URL containing all connection parameters.
 	 * @return boolean value, indicating whether a connection could be
@@ -300,7 +300,7 @@ public class JDBCInputFormat extends GenericInputFormat implements UnsplittableI
 
 	/**
 	 * Assembles the Database URL and establishes a connection.
-	 * 
+	 *
 	 * @param dbType
 	 *        Type of the database.
 	 * @param username
@@ -321,7 +321,7 @@ public class JDBCInputFormat extends GenericInputFormat implements UnsplittableI
 
 	/**
 	 * Checks whether all data has been read.
-	 * 
+	 *
 	 * @return boolean value indication whether all data has been read.
 	 */
 	@Override
@@ -344,7 +344,7 @@ public class JDBCInputFormat extends GenericInputFormat implements UnsplittableI
 
 	/**
 	 * Stores the next resultSet row in a Record
-	 * 
+	 *
 	 * @param record
 	 *        target Record
 	 * @return boolean value indicating that the operation was successful
@@ -371,7 +371,7 @@ public class JDBCInputFormat extends GenericInputFormat implements UnsplittableI
 			throw new IllegalArgumentException("Couldn't access resultSet:\t" + e.getMessage());
 		}
 	}
-	
+
 	public static class NotTransformableSQLFieldException extends Exception {
 
 		private static final long serialVersionUID = 1L;

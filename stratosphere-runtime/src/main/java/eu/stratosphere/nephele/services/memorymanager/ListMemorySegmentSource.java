@@ -20,16 +20,16 @@ import eu.stratosphere.core.memory.MemorySegmentSource;
 
 /**
  * Simple memory segment source that draws segments from a list.
- * 
+ *
  */
 public class ListMemorySegmentSource implements MemorySegmentSource
 {
 	private final List<MemorySegment> segments;
-	
+
 	public ListMemorySegmentSource(final List<MemorySegment> memorySegments) {
 		this.segments = memorySegments;
 	}
-	
+
 
 	@Override
 	public MemorySegment nextSegment() {

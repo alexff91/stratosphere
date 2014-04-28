@@ -28,24 +28,25 @@ import eu.stratosphere.compiler.plan.DualInputPlanNode;
 
 
 public abstract class CartesianProductDescriptor extends OperatorDescriptorDual {
-	
+
 	private final boolean allowBroadcastFirst;
 	private final boolean allowBroadcastSecond;
-	
-	
+
+
 	protected CartesianProductDescriptor(boolean allowBroadcastFirst, boolean allowBroadcastSecond) {
-		if (!(allowBroadcastFirst | allowBroadcastSecond))
-			throw new IllegalArgumentException();
+		if (!(allowBroadcastFirst | allowBroadcastSecond)) {
+		throw new IllegalArgumentException();
+		}
 
 		this.allowBroadcastFirst = allowBroadcastFirst;
 		this.allowBroadcastSecond = allowBroadcastSecond;
 	}
-	
-	
+
+
 	@Override
 	protected List<GlobalPropertiesPair> createPossibleGlobalProperties() {
 		ArrayList<GlobalPropertiesPair> pairs = new ArrayList<GlobalPropertiesPair>();
-		
+
 		if (this.allowBroadcastFirst) {
 			// replicate first
 			RequestedGlobalProperties replicated1 = new RequestedGlobalProperties();
@@ -53,7 +54,7 @@ public abstract class CartesianProductDescriptor extends OperatorDescriptorDual 
 			RequestedGlobalProperties any2 = new RequestedGlobalProperties();
 			pairs.add(new GlobalPropertiesPair(replicated1, any2));
 		}
-		
+
 		if (this.allowBroadcastSecond) {
 			// replicate second
 			RequestedGlobalProperties any1 = new RequestedGlobalProperties();
@@ -64,7 +65,7 @@ public abstract class CartesianProductDescriptor extends OperatorDescriptorDual 
 
 		return pairs;
 	}
-	
+
 	@Override
 	protected List<LocalPropertiesPair> createPossibleLocalProperties() {
 		// all properties are possible
@@ -77,12 +78,12 @@ public abstract class CartesianProductDescriptor extends OperatorDescriptorDual 
 			LocalProperties produced1, LocalProperties produced2) {
 		return true;
 	}
-	
+
 	@Override
 	public DualInputPlanNode instantiate(Channel in1, Channel in2, TwoInputNode node) {
 		return new DualInputPlanNode(node, "Cross("+node.getPactContract().getName()+")", in1, in2, getStrategy());
 	}
-	
+
 	@Override
 	public GlobalProperties computeGlobalProperties(GlobalProperties in1, GlobalProperties in2) {
 		GlobalProperties gp = GlobalProperties.combine(in1, in2);

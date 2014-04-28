@@ -25,18 +25,18 @@ import eu.stratosphere.types.StringValue;
 public final class StringComparator extends BasicTypeComparator<String> {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private static final int HIGH_BIT = 0x1 << 7;
-	
+
 	private static final int HIGH_BIT2 = 0x1 << 13;
-	
+
 	private static final int HIGH_BIT2_MASK = 0x3 << 6;
 
-	
+
 	private final StringValue holder1 = new StringValue();
 	private final StringValue holder2 = new StringValue();
-	
-	
+
+
 	public StringComparator(boolean ascending) {
 		super(ascending);
 	}
@@ -76,7 +76,7 @@ public final class StringComparator extends BasicTypeComparator<String> {
 		final int limit = offset + len;
 		final int end = record.length();
 		int pos = 0;
-		
+
 		while (pos < end && offset < limit) {
 			char c = record.charAt(pos++);
 			if (c < HIGH_BIT) {
@@ -84,15 +84,18 @@ public final class StringComparator extends BasicTypeComparator<String> {
 			}
 			else if (c < HIGH_BIT2) {
 				target.put(offset++, (byte) ((c >>> 7) | HIGH_BIT));
-				if (offset < limit)
-					target.put(offset++, (byte) c);
+				if (offset < limit) {
+				target.put(offset++, (byte) c);
+				}
 			}
 			else {
 				target.put(offset++, (byte) ((c >>> 10) | HIGH_BIT2_MASK));
-				if (offset < limit)
-					target.put(offset++, (byte) (c >>> 2));
-				if (offset < limit)
-					target.put(offset++, (byte) c);
+				if (offset < limit) {
+				target.put(offset++, (byte) (c >>> 2));
+				}
+				if (offset < limit) {
+				target.put(offset++, (byte) c);
+				}
 			}
 		}
 		while (offset < limit) {

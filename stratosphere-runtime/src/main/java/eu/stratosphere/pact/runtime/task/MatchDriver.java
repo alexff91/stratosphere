@@ -34,21 +34,21 @@ import eu.stratosphere.util.MutableObjectIterator;
  * Match task which is executed by a Nephele task manager. The task has two inputs and one or multiple outputs.
  * It is provided with a JoinFunction implementation.
  * <p>
- * The MatchTask matches all pairs of records that share the same key and come from different inputs. Each pair of 
+ * The MatchTask matches all pairs of records that share the same key and come from different inputs. Each pair of
  * matching records is handed to the <code>match()</code> method of the JoinFunction.
- * 
+ *
  * @see GenericJoiner
  */
 public class MatchDriver<IT1, IT2, OT> implements PactDriver<GenericJoiner<IT1, IT2, OT>, OT> {
-	
+
 	protected static final Log LOG = LogFactory.getLog(MatchDriver.class);
-	
+
 	protected PactTaskContext<GenericJoiner<IT1, IT2, OT>, OT> taskContext;
-	
+
 	private volatile JoinTaskIterator<IT1, IT2, OT> matchIterator;		// the iterator that does the actual matching
-	
+
 	protected volatile boolean running;
-	
+
 	// ------------------------------------------------------------------------
 
 	@Override
@@ -68,7 +68,7 @@ public class MatchDriver<IT1, IT2, OT> implements PactDriver<GenericJoiner<IT1, 
 		final Class<GenericJoiner<IT1, IT2, OT>> clazz = (Class<GenericJoiner<IT1, IT2, OT>>) (Class<?>) GenericJoiner.class;
 		return clazz;
 	}
-	
+
 	@Override
 	public boolean requiresComparatorOnInput() {
 		return true;
@@ -77,27 +77,27 @@ public class MatchDriver<IT1, IT2, OT> implements PactDriver<GenericJoiner<IT1, 
 	@Override
 	public void prepare() throws Exception{
 		final TaskConfig config = this.taskContext.getTaskConfig();
-		
+
 		// obtain task manager's memory manager and I/O manager
 		final MemoryManager memoryManager = this.taskContext.getMemoryManager();
 		final IOManager ioManager = this.taskContext.getIOManager();
-		
+
 		// set up memory and I/O parameters
 		final long availableMemory = config.getMemoryDriver();
 		final int numPages = memoryManager.computeNumberOfPages(availableMemory);
-		
+
 		// test minimum memory requirements
 		final DriverStrategy ls = config.getDriverStrategy();
-		
+
 		final MutableObjectIterator<IT1> in1 = this.taskContext.getInput(0);
 		final MutableObjectIterator<IT2> in2 = this.taskContext.getInput(1);
-		
+
 		// get the key positions and types
 		final TypeSerializer<IT1> serializer1 = this.taskContext.getInputSerializer(0);
 		final TypeSerializer<IT2> serializer2 = this.taskContext.getInputSerializer(1);
 		final TypeComparator<IT1> comparator1 = this.taskContext.getInputComparator(0);
 		final TypeComparator<IT2> comparator2 = this.taskContext.getInputComparator(1);
-		
+
 		final TypePairComparatorFactory<IT1, IT2> pairComparatorFactory = config.getPairComparatorFactory(
 				this.taskContext.getUserCodeClassLoader());
 		if (pairComparatorFactory == null) {
@@ -124,13 +124,14 @@ public class MatchDriver<IT1, IT2, OT> implements PactDriver<GenericJoiner<IT1, 
 		default:
 			throw new Exception("Unsupported driver strategy for Match driver: " + ls.name());
 		}
-		
+
 		// open MatchTaskIterator - this triggers the sorting or hash-table building
 		// and blocks until the iterator is ready
 		this.matchIterator.open();
-		
-		if (LOG.isDebugEnabled())
-			LOG.debug(this.taskContext.formatLogString("Match task iterator ready."));
+
+		if (LOG.isDebugEnabled()) {
+		LOG.debug(this.taskContext.formatLogString("Match task iterator ready."));
+		}
 	}
 
 	@Override
@@ -138,8 +139,10 @@ public class MatchDriver<IT1, IT2, OT> implements PactDriver<GenericJoiner<IT1, 
 		final GenericJoiner<IT1, IT2, OT> matchStub = this.taskContext.getStub();
 		final Collector<OT> collector = this.taskContext.getOutputCollector();
 		final JoinTaskIterator<IT1, IT2, OT> matchIterator = this.matchIterator;
-		
-		while (this.running && matchIterator.callWithNextKey(matchStub, collector));
+
+		while (this.running && matchIterator.callWithNextKey(matchStub, collector)) {
+		;
+		}
 	}
 
 	@Override
@@ -149,7 +152,7 @@ public class MatchDriver<IT1, IT2, OT> implements PactDriver<GenericJoiner<IT1, 
 			this.matchIterator = null;
 		}
 	}
-	
+
 	@Override
 	public void cancel() {
 		this.running = false;

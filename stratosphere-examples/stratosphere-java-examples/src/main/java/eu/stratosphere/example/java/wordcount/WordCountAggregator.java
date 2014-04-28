@@ -14,19 +14,18 @@
  **********************************************************************************************************************/
 package eu.stratosphere.example.java.wordcount;
 
+import static eu.stratosphere.api.java.aggregation.Aggregations.SUM;
 import eu.stratosphere.api.java.DataSet;
 import eu.stratosphere.api.java.ExecutionEnvironment;
 import eu.stratosphere.api.java.functions.FlatMapFunction;
-import eu.stratosphere.api.java.tuple.*;
+import eu.stratosphere.api.java.tuple.Tuple2;
 import eu.stratosphere.util.Collector;
-
-import static eu.stratosphere.api.java.aggregation.Aggregations.*;
 
 
 public class WordCountAggregator {
-	
+
 	public static final class Tokenizer extends FlatMapFunction<String, Tuple2<String, Integer>> {
-		
+
 		private static final long serialVersionUID = 1L;
 
 		@Override
@@ -37,22 +36,22 @@ public class WordCountAggregator {
 			}
 		}
 	}
-	
+
 	public static void main(String[] args) {
 		if (args.length < 2) {
 			System.out.println("Usage: <input path> <output path>");
 			return;
 		}
-		
+
 		final String inputPath = args[0];
 		final String outputPath = args[1];
-		
+
 		final ExecutionEnvironment context = ExecutionEnvironment.getExecutionEnvironment();
-		
+
 		DataSet<String> text = context.readTextFile(inputPath);
-		
+
 		DataSet<Tuple2<String, Integer>> result = text.flatMap(new Tokenizer()).groupBy(0).aggregate(SUM, 1);
-		
+
 		result.writeAsText(outputPath);
 	}
 }

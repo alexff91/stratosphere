@@ -55,12 +55,12 @@ public final class TeraSort implements Program, ProgramDescription {
 		final String output = (args.length > 2 ? args[2] : "");
 
 		// This task will read the input data and generate the key/value pairs
-		final FileDataSource source = 
+		final FileDataSource source =
 				new FileDataSource(new TeraInputFormat(), input, "Data Source");
 		source.setDegreeOfParallelism(numSubTasks);
 
 		// This task writes the sorted data back to disk
-		final FileDataSink sink = 
+		final FileDataSink sink =
 				new FileDataSink(new TeraOutputFormat(), output, "Data Sink");
 		sink.setDegreeOfParallelism(numSubTasks);
 		sink.setGlobalOrder(new Ordering(0, TeraKey.class, Order.ASCENDING), new TeraDistribution());

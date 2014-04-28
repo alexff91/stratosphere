@@ -24,27 +24,27 @@ import eu.stratosphere.core.memory.DataOutputView;
 
 
 public class SerializationDelegate<T> implements IOReadableWritable {
-	
+
 	private T instance;
-	
+
 	private final TypeSerializer<T> serializer;
-	
+
 	private final OutputViewWrapper wrapper;
-	
-	
+
+
 	public SerializationDelegate(TypeSerializer<T> serializer) {
 		this.serializer = serializer;
 		this.wrapper = new OutputViewWrapper();
 	}
-	
+
 	public void setInstance(T instance) {
 		this.instance = instance;
 	}
-	
+
 	public T getInstance() {
 		return this.instance;
 	}
-	
+
 	@Override
 	public void write(DataOutput out) throws IOException {
 		this.wrapper.setDelegate(out);
@@ -56,16 +56,16 @@ public class SerializationDelegate<T> implements IOReadableWritable {
 	public void read(DataInput in) throws IOException {
 		throw new IllegalStateException("Deserialization method called on SerializationDelegate.");
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Utility class that wraps a {@link DataOutput} as a {@link DataOutputView}.
 	 */
 	private static final class OutputViewWrapper implements DataOutputView {
-		
+
 		private DataOutput delegate;
-		
+
 		public void setDelegate(DataOutput delegate) {
 			this.delegate = delegate;
 		}

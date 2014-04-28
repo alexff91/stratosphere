@@ -44,56 +44,56 @@ import eu.stratosphere.util.Visitor;
  * extra information about estimates, hints and data properties.
  */
 public abstract class OptimizerNode implements Visitable<OptimizerNode>, EstimateProvider, DumpableNode<OptimizerNode> {
-	
+
 	public static final int MAX_DYNAMIC_PATH_COST_WEIGHT = 100;
-	
+
 	// --------------------------------------------------------------------------------------------
 	//                                      Members
 	// --------------------------------------------------------------------------------------------
 
 	private final Operator pactContract; // The operator (Reduce / Join / DataSource / ...)
-	
+
 	private List<String> broadcastConnectionNames = new ArrayList<String>(); // the broadcast inputs names of this node
-	
+
 	private List<PactConnection> broadcastConnections = new ArrayList<PactConnection>(); // the broadcast inputs of this node
-	
+
 	private List<PactConnection> outgoingConnections; // The links to succeeding nodes
 
 	private InterestingProperties intProps; // the interesting properties of this node
-	
+
 	// --------------------------------- Branch Handling ------------------------------------------
 
 	protected List<UnclosedBranchDescriptor> openBranches; // stack of branches in the sub-graph that are not joined
-	
+
 	protected Set<OptimizerNode> closedBranchingNodes; 	// stack of branching nodes which have already been closed
-	
+
 	protected List<OptimizerNode> hereJoinedBranchers;	// the branching nodes (node with multiple outputs)
 														// that at least two children share and that are at least partially joined
 
 	// ---------------------------- Estimates and Annotations -------------------------------------
-	
+
 	protected long estimatedOutputSize = -1; // the estimated size of the output (bytes)
 
 	protected long estimatedNumRecords = -1; // the estimated number of key/value pairs in the output
-	
+
 	protected Set<FieldSet> uniqueFields; // set of attributes that will always be unique after this node
 
 	// --------------------------------- General Parameters ---------------------------------------
-	
+
 	private int degreeOfParallelism = -1; // the number of parallel instances of this node
 
 	private int subtasksPerInstance = -1; // the number of parallel instance that will run on the same machine
-	
+
 	private long minimalMemoryPerSubTask = -1;
 
 	protected int id = -1; 				// the id for this node.
-	
+
 	protected int costWeight = 1;		// factor to weight the costs for dynamic paths
-	
+
 	protected boolean onDynamicPath;
-	
+
 	protected List<PlanNode> cachedPlans;	// cache candidates, because the may be accessed repeatedly
-	
+
 	protected int[][] remappedKeys;
 
 	// ------------------------------------------------------------------------
@@ -102,13 +102,13 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 
 	/**
 	 * Creates a new node for the optimizer plan.
-	 * 
+	 *
 	 * @param op The operator that the node represents.
 	 */
 	public OptimizerNode(Operator op) {
 		this.pactContract = op;
 		readStubAnnotations();
-		
+
 		if (this.pactContract instanceof AbstractUdfOperator) {
 			final AbstractUdfOperator<?> pact = (AbstractUdfOperator<?>) this.pactContract;
 			this.remappedKeys = new int[pact.getNumberOfInputs()][];
@@ -120,24 +120,24 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 			}
 		}
 	}
-	
+
 	protected OptimizerNode(OptimizerNode toCopy) {
 		this.pactContract = toCopy.pactContract;
-		
+
 		this.intProps = toCopy.intProps;
-		
+
 		this.remappedKeys = toCopy.remappedKeys;
-		
+
 		this.openBranches = toCopy.openBranches;
 		this.closedBranchingNodes = toCopy.closedBranchingNodes;
-		
+
 		this.estimatedOutputSize = toCopy.estimatedOutputSize;
 		this.estimatedNumRecords = toCopy.estimatedNumRecords;
-		
+
 		this.degreeOfParallelism = toCopy.degreeOfParallelism;
 		this.subtasksPerInstance = toCopy.subtasksPerInstance;
 		this.minimalMemoryPerSubTask = toCopy.minimalMemoryPerSubTask;
-		
+
 		this.id = toCopy.id;
 		this.costWeight = toCopy.costWeight;
 		this.onDynamicPath = toCopy.onDynamicPath;
@@ -151,7 +151,7 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 	/**
 	 * Gets the name of this node. This returns either the name of the PACT, or
 	 * a string marking the node as a data source or a data sink.
-	 * 
+	 *
 	 * @return The node name.
 	 */
 	public abstract String getName();
@@ -162,7 +162,7 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 	 * The method should then create a <tt>PactConnection</tt> for each of those inputs.
 	 * <p>
 	 * In addition, the nodes must set the shipping strategy of the connection, if a suitable optimizer hint is found.
-	 * 
+	 *
 	 * @param contractToNode
 	 *        The map to translate the contracts to their corresponding optimizer nodes.
 	 */
@@ -173,14 +173,14 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 	 * for each one of the broadcast inputs associated with the {@code Operator} referenced by this node.
 	 * <p>
 	 * The {@code PactConnections} must set its shipping strategy type to BROADCAST.
-	 * 
+	 *
 	 * @param operatorToNode
 	 *        The map associating operators with their corresponding optimizer nodes.
 	 * @throws CompilerException
 	 */
 	public void setBroadcastInputs(Map<Operator, OptimizerNode> operatorToNode) throws CompilerException {
 
-		// skip for Operators that don't support broadcast variables 
+		// skip for Operators that don't support broadcast variables
 		if (!(getPactContract() instanceof AbstractUdfOperator<?>)) {
 			return;
 		}
@@ -199,7 +199,7 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 
 	/**
 	 * This method needs to be overridden by subclasses to return the children.
-	 * 
+	 *
 	 * @return The list of incoming links.
 	 */
 	public abstract List<PactConnection> getIncomingConnections();
@@ -208,7 +208,7 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 	 * Tells the node to compute the interesting properties for its inputs. The interesting properties
 	 * for the node itself must have been computed before.
 	 * The node must then see how many of interesting properties it preserves and add its own.
-	 * 
+	 *
 	 * @param estimator	The {@code CostEstimator} instance to use for plan cost estimation.
 	 */
 	public abstract void computeInterestingPropertiesForInputs(CostEstimator estimator);
@@ -221,21 +221,21 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 	 * no matter if there have been more branches to different paths in the meantime.
 	 */
 	public abstract void computeUnclosedBranchStack();
-	
-	
+
+
 	protected List<UnclosedBranchDescriptor> computeUnclosedBranchStackForBroadcastInputs(List<UnclosedBranchDescriptor> branchesSoFar) {
 		// handle the data flow branching for the broadcast inputs
 		for (PactConnection broadcastInput : getBroadcastConnections()) {
 			OptimizerNode bcSource = broadcastInput.getSource();
 			addClosedBranches(bcSource.closedBranchingNodes);
-			
+
 			List<UnclosedBranchDescriptor> bcBranches = bcSource.getBranchesForParent(broadcastInput);
-			
+
 			ArrayList<UnclosedBranchDescriptor> mergedBranches = new ArrayList<UnclosedBranchDescriptor>();
 			mergeLists(branchesSoFar, bcBranches, mergedBranches);
 			branchesSoFar = mergedBranches.isEmpty() ? Collections.<UnclosedBranchDescriptor>emptyList() : mergedBranches;
 		}
-		
+
 		return branchesSoFar;
 	}
 
@@ -244,7 +244,7 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 	 * this node. This method must determine for each alternative the global and local properties
 	 * and the costs. This method may recursively call <code>getAlternatives()</code> on its children
 	 * to get their plan alternatives, and build its own alternatives on top of those.
-	 * 
+	 *
 	 * @param estimator
 	 *        The cost estimator used to estimate the costs of each plan alternative.
 	 * @return A list containing all plan alternatives.
@@ -255,7 +255,7 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 	 * This method implements the visit of a depth-first graph traversing visitor. Implementors must first
 	 * call the <code>preVisit()</code> method, then hand the visitor to their children, and finally call
 	 * the <code>postVisit()</code> method.
-	 * 
+	 *
 	 * @param visitor
 	 *        The graph traversing visitor.
 	 * @see eu.stratosphere.util.Visitable#accept(eu.stratosphere.util.Visitor)
@@ -265,17 +265,17 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 
 	/**
 	 * Checks, whether this node requires memory for its tasks or not.
-	 * 
+	 *
 	 * @return True, if this node contains logic that requires memory usage, false otherwise.
 	 */
 	public abstract boolean isMemoryConsumer();
-	
+
 	/**
 	 * Checks whether a field is modified by the user code or whether it is kept unchanged.
-	 * 
+	 *
 	 * @param input The input number.
 	 * @param fieldNumber The position of the field.
-	 * 
+	 *
 	 * @return True if the field is not changed by the user function, false otherwise.
 	 */
 	public abstract boolean isFieldConstant(int input, int fieldNumber);
@@ -287,21 +287,21 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 	@Override
 	public Iterator<OptimizerNode> getPredecessors() {
 		List<OptimizerNode> allPredecessors = new ArrayList<OptimizerNode>();
-		
+
 		for (Iterator<PactConnection> inputs = getIncomingConnections().iterator(); inputs.hasNext(); ){
 			allPredecessors.add(inputs.next().getSource());
 		}
-		
+
 		for (PactConnection conn : getBroadcastConnections()) {
 			allPredecessors.add(conn.getSource());
 		}
-		
+
 		return allPredecessors.iterator();
 	}
-	
+
 	/**
 	 * Gets the ID of this node. If the id has not yet been set, this method returns -1;
-	 * 
+	 *
 	 * @return This node's id, or -1, if not yet set.
 	 */
 	public int getId() {
@@ -310,14 +310,15 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 
 	/**
 	 * Sets the ID of this node.
-	 * 
+	 *
 	 * @param id
 	 *        The id for this node.
 	 */
 	public void initId(int id) {
-		if (id <= 0)
-			throw new IllegalArgumentException();
-		
+		if (id <= 0) {
+		throw new IllegalArgumentException();
+		}
+
 		if (this.id == -1) {
 			this.id = id;
 		} else {
@@ -327,7 +328,7 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 
 	/**
 	 * Adds the broadcast connection identified by the given {@code name} to this node.
-	 * 
+	 *
 	 * @param broadcastConnection
 	 *        The connection to add.
 	 */
@@ -352,7 +353,7 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 
 	/**
 	 * Adds a new outgoing connection to this node.
-	 * 
+	 *
 	 * @param pactConnection
 	 *        The connection to add.
 	 */
@@ -370,7 +371,7 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 
 	/**
 	 * The list of outgoing connections from this node to succeeding tasks.
-	 * 
+	 *
 	 * @return The list of outgoing connections.
 	 */
 	public List<PactConnection> getOutgoingConnections() {
@@ -379,7 +380,7 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 
 	/**
 	 * Gets the object that specifically describes the contract of this node.
-	 * 
+	 *
 	 * @return This node's contract.
 	 */
 	public Operator getPactContract() {
@@ -391,7 +392,7 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 	 * The degree of parallelism denotes how many parallel instances of the user function will be
 	 * spawned during the execution. If this value is <code>-1</code>, then the system will take
 	 * the default number of parallel instances.
-	 * 
+	 *
 	 * @return The degree of parallelism.
 	 */
 	public int getDegreeOfParallelism() {
@@ -403,7 +404,7 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 	 * The degree of parallelism denotes how many parallel instances of the user function will be
 	 * spawned during the execution. If this value is set to <code>-1</code>, then the system will take
 	 * the default number of parallel instances.
-	 * 
+	 *
 	 * @param degreeOfParallelism
 	 *        The degree of parallelism to set.
 	 * @throws IllegalArgumentException
@@ -419,7 +420,7 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 	/**
 	 * Gets the number of parallel instances of the contract that are
 	 * to be executed on the same compute instance (logical machine).
-	 * 
+	 *
 	 * @return The number of subtask instances per machine.
 	 */
 	public int getSubtasksPerInstance() {
@@ -429,7 +430,7 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 	/**
 	 * Sets the number of parallel task instances of the contract that are
 	 * to be executed on the same computing instance (logical machine).
-	 * 
+	 *
 	 * @param instancesPerMachine The instances per machine.
 	 * @throws IllegalArgumentException If the number of instances per machine is smaller than one.
 	 */
@@ -439,7 +440,7 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 		}
 		this.subtasksPerInstance = instancesPerMachine;
 	}
-	
+
 	/**
 	 * Gets the minimal guaranteed memory per subtask for tasks represented by this OptimizerNode.
 	 *
@@ -448,7 +449,7 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 	public long getMinimalMemoryPerSubTask() {
 		return this.minimalMemoryPerSubTask;
 	}
-	
+
 	/**
 	 * Sets the minimal guaranteed memory per subtask for tasks represented by this OptimizerNode.
 	 *
@@ -457,36 +458,36 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 	public void setMinimalMemoryPerSubTask(long minimalGuaranteedMemory) {
 		this.minimalMemoryPerSubTask = minimalGuaranteedMemory;
 	}
-	
+
 	/**
 	 * Gets the amount of memory that all subtasks of this task have jointly available.
-	 * 
+	 *
 	 * @return The total amount of memory across all subtasks.
 	 */
 	public long getMinimalMemoryAcrossAllSubTasks() {
 		return this.minimalMemoryPerSubTask == -1 ? -1 : this.minimalMemoryPerSubTask * this.degreeOfParallelism;
 	}
-	
+
 	public boolean isOnDynamicPath() {
 		return this.onDynamicPath;
 	}
-	
+
 	public void identifyDynamicPath(int costWeight) {
 		boolean anyDynamic = false;
 		boolean allDynamic = true;
-		
+
 		for (PactConnection conn : getIncomingConnections()) {
 			boolean dynamicIn = conn.isOnDynamicPath();
 			anyDynamic |= dynamicIn;
 			allDynamic &= dynamicIn;
 		}
-		
+
 		for (PactConnection conn : getBroadcastConnections()) {
 			boolean dynamicIn = conn.isOnDynamicPath();
 			anyDynamic |= dynamicIn;
 			allDynamic &= dynamicIn;
 		}
-		
+
 		if (anyDynamic) {
 			this.onDynamicPath = true;
 			this.costWeight = costWeight;
@@ -498,17 +499,17 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 						conn.setMaterializationMode(conn.getMaterializationMode().makeCached());
 					}
 				}
-				
+
 				// broadcast variables are always cached, because they stay unchanged available in the
 				// runtime context of the functions
 			}
 		}
 	}
-	
+
 	public int getCostWeight() {
 		return this.costWeight;
 	}
-	
+
 	public int getMaxDepth() {
 		int maxDepth = 0;
 		for (PactConnection conn : getIncomingConnections()) {
@@ -517,20 +518,20 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 		for (PactConnection conn : getBroadcastConnections()) {
 			maxDepth = Math.max(maxDepth, conn.getMaxDepth());
 		}
-		
+
 		return maxDepth;
 	}
 
 	/**
 	 * Gets the properties that are interesting for this node to produce.
-	 * 
+	 *
 	 * @return The interesting properties for this node, or null, if not yet computed.
 	 */
 	public InterestingProperties getInterestingProperties() {
 		return this.intProps;
 	}
-	
-	
+
+
 	public long getEstimatedOutputSize() {
 		return this.estimatedOutputSize;
 	}
@@ -538,7 +539,7 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 	public long getEstimatedNumRecords() {
 		return this.estimatedNumRecords;
 	}
-	
+
 	public float getEstimatedAvgWidthPerOutputRecord() {
 		if (this.estimatedOutputSize > 0 && this.estimatedNumRecords > 0) {
 			return ((float) this.estimatedOutputSize) / this.estimatedNumRecords;
@@ -550,7 +551,7 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 	/**
 	 * Checks whether this node has branching output. A node's output is branched, if it has more
 	 * than one output connection.
-	 * 
+	 *
 	 * @return True, if the node's output branches. False otherwise.
 	 */
 	public boolean isBranching() {
@@ -563,7 +564,7 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 
 	/**
 	 * Checks, if all outgoing connections have their interesting properties set from their target nodes.
-	 * 
+	 *
 	 * @return True, if on all outgoing connections, the interesting properties are set. False otherwise.
 	 */
 	public boolean haveAllOutputConnectionInterestingProperties() {
@@ -597,7 +598,7 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 		}
 		this.intProps.dropTrivials();
 	}
-	
+
 	public void clearInterestingProperties() {
 		this.intProps = null;
 		for (PactConnection conn : getIncomingConnections()) {
@@ -607,13 +608,13 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 			conn.clearInterestingProperties();
 		}
 	}
-	
+
 	/**
 	 * Causes this node to compute its output estimates (such as number of rows, size in bytes)
 	 * based on the inputs and the compiler hints. The compiler hints are instantiated with conservative
 	 * default values which are used if no other values are provided. Nodes may access the statistics to
 	 * determine relevant information.
-	 * 
+	 *
 	 * @param statistics
 	 *        The statistics object which may be accessed to get statistical information.
 	 *        The parameter may be null, if no statistics are available.
@@ -625,28 +626,28 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 				throw new CompilerException("Bug: Estimate computation called before inputs have been set.");
 			}
 		}
-		
+
 		// let every operator do its computation
 		computeOperatorSpecificDefaultEstimates(statistics);
-		
+
 		// overwrite default estimates with hints, if given
 		if (getPactContract() == null || getPactContract().getCompilerHints() == null) {
 			return ;
 		}
-		
+
 		CompilerHints hints = getPactContract().getCompilerHints();
 		if (hints.getOutputSize() >= 0) {
 			this.estimatedOutputSize = hints.getOutputSize();
 		}
-		
+
 		if (hints.getOutputCardinality() >= 0) {
 			this.estimatedNumRecords = hints.getOutputCardinality();
 		}
-		
+
 		if (hints.getFilterFactor() >= 0.0f) {
 			if (this.estimatedNumRecords >= 0) {
 				this.estimatedNumRecords = (long) (this.estimatedNumRecords * hints.getFilterFactor());
-				
+
 				if (this.estimatedOutputSize >= 0) {
 					this.estimatedOutputSize = (long) (this.estimatedOutputSize * hints.getFilterFactor());
 				}
@@ -658,7 +659,7 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 				}
 			}
 		}
-		
+
 		// use the width to infer the cardinality (given size) and vice versa
 		if (hints.getAvgOutputRecordSize() >= 1) {
 			// the estimated number of rows based on size
@@ -670,13 +671,13 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 			}
 		}
 	}
-	
+
 	protected abstract void computeOperatorSpecificDefaultEstimates(DataStatistics statistics);
-	
+
 	// ------------------------------------------------------------------------
 	// Reading of stub annotations
 	// ------------------------------------------------------------------------
-	
+
 	/**
 	 * Reads all stub annotations, i.e. which fields remain constant, what cardinality bounds the
 	 * functions have, which fields remain unique.
@@ -684,7 +685,7 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 	protected void readStubAnnotations() {
 		readUniqueFieldsAnnotation();
 	}
-	
+
 	protected void readUniqueFieldsAnnotation() {
 		if (this.pactContract.getCompilerHints() != null) {
 			Set<FieldSet> uniqueFieldSets = pactContract.getCompilerHints().getUniqueFields();
@@ -696,15 +697,15 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 			}
 		}
 	}
-	
+
 	// ------------------------------------------------------------------------
 	// Access of stub annotations
 	// ------------------------------------------------------------------------
-	
+
 	/**
 	 * Returns the key columns for the specific input, if all keys are preserved
 	 * by this node. Null, otherwise.
-	 * 
+	 *
 	 * @param input
 	 * @return
 	 */
@@ -719,7 +720,7 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 				}
 				for (int keyColumn : keyColumns) {
 					if (!isFieldConstant(input, keyColumn)) {
-						return null;	
+						return null;
 					}
 				}
 				return keyColumns;
@@ -727,7 +728,7 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 		}
 		return null;
 	}
-	
+
 	/**
 	 * An optional method where nodes can describe which fields will be unique in their output.
 	 * @return
@@ -735,32 +736,32 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 	public List<FieldSet> createUniqueFieldsForNode() {
 		return null;
 	}
-	
+
 	/**
-	 * Gets the FieldSets which are unique in the output of the node. 
-	 * 
+	 * Gets the FieldSets which are unique in the output of the node.
+	 *
 	 * @return
 	 */
 	public Set<FieldSet> getUniqueFields() {
 		return this.uniqueFields == null ? Collections.<FieldSet>emptySet() : this.uniqueFields;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 	//  Miscellaneous
 	// --------------------------------------------------------------------------------------------
-	
+
 	public BinaryUnionNode createdUnionCascade(List<Operator> children, Map<Operator, OptimizerNode> contractToNode, ShipStrategyType preSet) {
 		if (children.size() < 2) {
 			throw new IllegalArgumentException();
 		}
-		
+
 		BinaryUnionNode lastUnion = null;
-		
+
 		for (int i = 1; i < children.size(); i++) {
 			if (i == 1) {
 				OptimizerNode in1 = contractToNode.get(children.get(0));
 				OptimizerNode in2 = contractToNode.get(children.get(1));
-				
+
 				lastUnion = new BinaryUnionNode(in1, in2, preSet);
 			} else {
 				OptimizerNode nextIn = contractToNode.get(children.get(i));
@@ -770,18 +771,18 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 					lastUnion.getSecondIncomingConnection().setShipStrategy(preSet);
 				}
 			}
-			
+
 			lastUnion.setDegreeOfParallelism(getDegreeOfParallelism());
 			lastUnion.setSubtasksPerInstance(getSubtasksPerInstance());
 		}
-		
+
 		return lastUnion;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 	//                                    Pruning
 	// --------------------------------------------------------------------------------------------
-	
+
 	protected void prunePlanAlternatives(List<PlanNode> plans) {
 		if (plans.isEmpty()) {
 			throw new CompilerException("No plan meeting the requirements could be created @ " + this + ". Most likely reason: Too restrictive plan hints.");
@@ -790,35 +791,35 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 		if (plans.size() == 1) {
 			return;
 		}
-		
+
 		// we can only compare plan candidates that made equal choices
 		// at the branching points. for each choice at a branching point,
 		// we need to keep the cheapest (wrt. interesting properties).
 		// if we do not keep candidates for each branch choice, we might not
 		// find branch compatible candidates when joining the branches back.
-		
+
 		// for pruning, we are quasi AFTER the node, so in the presence of
 		// branches, we need form the per-branch-choice groups by the choice
 		// they made at the latest unjoined branching node. Note that this is
 		// different from the check for branch compatibility of candidates, as
 		// this happens on the input sub-plans and hence BEFORE the node (therefore
 		// it is relevant to find the latest (partially) joined branch point.
-		
+
 		if (this.openBranches == null || this.openBranches.isEmpty()) {
 			prunePlanAlternativesWithCommonBranching(plans);
 		} else {
 			// partition the candidates into groups that made the same sub-plan candidate
 			// choice at the latest unclosed branch point
-			
+
 			final OptimizerNode[] branchDeterminers = new OptimizerNode[this.openBranches.size()];
-			
+
 			for (int i = 0; i < branchDeterminers.length; i++) {
 				branchDeterminers[i] = this.openBranches.get(this.openBranches.size() - 1 - i).getBranchingNode();
 			}
-			
+
 			// this sorter sorts by the candidate choice at the branch point
 			Comparator<PlanNode> sorter = new Comparator<PlanNode>() {
-				
+
 				@Override
 				public int compare(PlanNode o1, PlanNode o2) {
 					for (int i = 0; i < branchDeterminers.length; i++) {
@@ -826,7 +827,7 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 						PlanNode n2 = o2.getCandidateAtBranchPoint(branchDeterminers[i]);
 						int hash1 = System.identityHashCode(n1);
 						int hash2 = System.identityHashCode(n2);
-						
+
 						if (hash1 != hash2) {
 							return hash1 - hash2;
 						}
@@ -835,10 +836,10 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 				}
 			};
 			Collections.sort(plans, sorter);
-			
+
 			List<PlanNode> result = new ArrayList<PlanNode>();
 			List<PlanNode> turn = new ArrayList<PlanNode>();
-			
+
 			final PlanNode[] determinerChoice = new PlanNode[branchDeterminers.length];
 
 			while (!plans.isEmpty()) {
@@ -846,7 +847,7 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 				turn.clear();
 				PlanNode determiner = plans.remove(plans.size() - 1);
 				turn.add(determiner);
-				
+
 				for (int i = 0; i < determinerChoice.length; i++) {
 					determinerChoice[i] = determiner.getCandidateAtBranchPoint(branchDeterminers[i]);
 				}
@@ -855,17 +856,17 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 				boolean stillEqual = true;
 				for (int k = plans.size() - 1; k >= 0 && stillEqual; k--) {
 					PlanNode toCheck = plans.get(k);
-					
+
 					for (int i = 0; i < branchDeterminers.length; i++) {
 						PlanNode checkerChoice = toCheck.getCandidateAtBranchPoint(branchDeterminers[i]);
-					
+
 						if (checkerChoice != determinerChoice[i]) {
 							// not the same anymore
 							stillEqual = false;
 							break;
 						}
 					}
-					
+
 					if (stillEqual) {
 						// the same
 						plans.remove(k);
@@ -885,16 +886,16 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 			plans.addAll(result);
 		}
 	}
-	
+
 	protected void prunePlanAlternativesWithCommonBranching(List<PlanNode> plans) {
 		// for each interesting property, which plans are cheapest
 		final RequestedGlobalProperties[] gps = (RequestedGlobalProperties[]) this.intProps.getGlobalProperties().toArray(new RequestedGlobalProperties[this.intProps.getGlobalProperties().size()]);
 		final RequestedLocalProperties[] lps = (RequestedLocalProperties[]) this.intProps.getLocalProperties().toArray(new RequestedLocalProperties[this.intProps.getLocalProperties().size()]);
-		
+
 		final PlanNode[][] toKeep = new PlanNode[gps.length][];
 		final PlanNode[] cheapestForGlobal = new PlanNode[gps.length];
-		
-		
+
+
 		PlanNode cheapest = null; // the overall cheapest plan
 
 		// go over all plans from the list
@@ -910,11 +911,11 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 					// the candidate meets the global property requirements. That means
 					// it has a chance that its local properties are re-used (they would be
 					// destroyed if global properties need to be established)
-					
+
 					if (cheapestForGlobal[i] == null || (cheapestForGlobal[i].getCumulativeCosts().compareTo(candidate.getCumulativeCosts()) > 0)) {
 						cheapestForGlobal[i] = candidate;
 					}
-					
+
 					final PlanNode[] localMatches;
 					if (toKeep[i] == null) {
 						localMatches = new PlanNode[lps.length];
@@ -922,7 +923,7 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 					} else {
 						localMatches = toKeep[i];
 					}
-					
+
 					for (int k = 0; k < lps.length; k++) {
 						if (lps[k].isMetBy(candidate.getLocalProperties())) {
 							final PlanNode previous = localMatches[k];
@@ -944,7 +945,7 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 			plans.add(cheapest);
 			cheapest.setPruningMarker(); // remember that that plan is in the set
 		}
-		
+
 		// skip the top down delta cost check for now (TODO: implement this)
 		// add all others, which are optimal for some interesting properties
 		for (int i = 0; i < gps.length; i++) {
@@ -967,8 +968,8 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 			}
 		}
 	}
-	
-	
+
+
 	// --------------------------------------------------------------------------------------------
 	//                       Handling of branches
 	// --------------------------------------------------------------------------------------------
@@ -976,7 +977,7 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 	public boolean hasUnclosedBranches() {
 		return this.openBranches != null && !this.openBranches.isEmpty();
 	}
-	
+
 	public List<OptimizerNode> getJoinedBranchers() {
 		return this.hereJoinedBranchers;
 	}
@@ -984,26 +985,27 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 	public Set<OptimizerNode> getClosedBranchingNodes() {
 		return this.closedBranchingNodes;
 	}
-	
+
 	public List<UnclosedBranchDescriptor> getOpenBranches() {
 		return this.openBranches;
 	}
-	
+
 	/**
 	 * Checks whether to candidate plans for the sub-plan of this node are comparable. The two
 	 * alternative plans are comparable, if
-	 * 
+	 *
 	 * a) There is no branch in the sub-plan of this node
-	 * b) Both candidates have the same candidate as the child at the last open branch. 
-	 * 
+	 * b) Both candidates have the same candidate as the child at the last open branch.
+	 *
 	 * @param subPlan1
 	 * @param subPlan2
 	 * @return
 	 */
 	protected boolean areBranchCompatible(PlanNode plan1, PlanNode plan2) {
-		if (plan1 == null || plan2 == null)
-			throw new NullPointerException();
-		
+		if (plan1 == null || plan2 == null) {
+		throw new NullPointerException();
+		}
+
 		// if there is no open branch, the children are always compatible.
 		// in most plans, that will be the dominant case
 		if (this.hereJoinedBranchers == null || this.hereJoinedBranchers.isEmpty()) {
@@ -1027,10 +1029,11 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 	protected List<UnclosedBranchDescriptor> getBranchesForParent(PactConnection toParent) {
 		if (this.outgoingConnections.size() == 1) {
 			// return our own stack of open branches, because nothing is added
-			if (this.openBranches == null || this.openBranches.isEmpty())
-				return Collections.emptyList();
-			else
-				return new ArrayList<UnclosedBranchDescriptor>(this.openBranches);
+			if (this.openBranches == null || this.openBranches.isEmpty()) {
+			return Collections.emptyList();
+			} else {
+			return new ArrayList<UnclosedBranchDescriptor>(this.openBranches);
+			}
 		}
 		else if (this.outgoingConnections.size() > 1) {
 			// we branch add a branch info to the stack
@@ -1062,11 +1065,12 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 		}
 	}
 
-	
+
 	protected void removeClosedBranches(List<UnclosedBranchDescriptor> openList) {
-		if (openList == null || openList.isEmpty() || this.closedBranchingNodes == null || this.closedBranchingNodes.isEmpty())
-			return;
-		
+		if (openList == null || openList.isEmpty() || this.closedBranchingNodes == null || this.closedBranchingNodes.isEmpty()) {
+		return;
+		}
+
 		Iterator<UnclosedBranchDescriptor> it = openList.iterator();
 		while (it.hasNext()) {
 			if (this.closedBranchingNodes.contains(it.next().getBranchingNode())) {
@@ -1075,26 +1079,26 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 			}
 		}
 	}
-	
+
 	protected void addClosedBranches(Set<OptimizerNode> alreadyClosed) {
 		if (alreadyClosed == null || alreadyClosed.isEmpty()) {
 			return;
 		}
-		
-		if (this.closedBranchingNodes == null) { 
+
+		if (this.closedBranchingNodes == null) {
 			this.closedBranchingNodes = new HashSet<OptimizerNode>(alreadyClosed);
 		} else {
 			this.closedBranchingNodes.addAll(alreadyClosed);
 		}
 	}
-	
+
 	protected void addClosedBranch(OptimizerNode alreadyClosed) {
-		if (this.closedBranchingNodes == null) { 
+		if (this.closedBranchingNodes == null) {
 			this.closedBranchingNodes = new HashSet<OptimizerNode>();
 		}
 		this.closedBranchingNodes.add(alreadyClosed);
 	}
-	
+
 	/**
 	 * The node IDs are assigned in graph-traversal order (pre-order), hence, each list is sorted by ID in ascending order and
 	 * all consecutive lists start with IDs in ascending order.
@@ -1104,19 +1108,20 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 		//remove branches which have already been closed
 		removeClosedBranches(child1open);
 		removeClosedBranches(child2open);
-		
+
 		result.clear();
-		
+
 		// check how many open branches we have. the cases:
 		// 1) if both are null or empty, the result is null
 		// 2) if one side is null (or empty), the result is the other side.
 		// 3) both are set, then we need to merge.
 		if (child1open == null || child1open.isEmpty()) {
-			if(child2open != null && !child2open.isEmpty())
-				result.addAll(child2open);
+			if(child2open != null && !child2open.isEmpty()) {
+			result.addAll(child2open);
+			}
 			return false;
 		}
-		
+
 		if (child2open == null || child2open.isEmpty()) {
 			result.addAll(child1open);
 			return false;
@@ -1124,7 +1129,7 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 
 		int index1 = child1open.size() - 1;
 		int index2 = child2open.size() - 1;
-		
+
 		boolean didCloseABranch = false;
 
 		// as both lists (child1open and child2open) are sorted in ascending ID order
@@ -1146,13 +1151,13 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 			// match: they share a common branching child
 			if (id1 == id2) {
 				didCloseABranch = true;
-				
+
 				// if this is the latest common child, remember it
 				OptimizerNode currBanchingNode = child1open.get(index1).getBranchingNode();
-				
+
 				long vector1 = child1open.get(index1).getJoinedPathsVector();
 				long vector2 = child2open.get(index2).getJoinedPathsVector();
-				
+
 				// check if this is the same descriptor, (meaning that it contains the same paths)
 				// if it is the same, add it only once, otherwise process the join of the paths
 				if (vector1 == vector2) {
@@ -1187,7 +1192,7 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 		Collections.reverse(result);
 		return didCloseABranch;
 	}
-	
+
 	/**
 	 *
 	 */
@@ -1214,7 +1219,7 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 		public long getJoinedPathsVector() {
 			return this.joinedPathsVector;
 		}
-		
+
 		@Override
 		public String toString() {
 			return "(" + this.branchingNode.getPactContract() + ") [" + this.joinedPathsVector + "]";
@@ -1225,22 +1230,22 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 	public OptimizerNode getOptimizerNode() {
 		return this;
 	}
-	
+
 	@Override
 	public PlanNode getPlanNode() {
 		return null;
 	}
-	
+
 	@Override
 	public Iterator<DumpableConnection<OptimizerNode>> getDumpableInputs() {
 		List<DumpableConnection<OptimizerNode>> allInputs = new ArrayList<DumpableConnection<OptimizerNode>>();
-		
+
 		allInputs.addAll(getIncomingConnections());
 		allInputs.addAll(getBroadcastConnections());
-		
+
 		return allInputs.iterator();
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder bld = new StringBuilder();
@@ -1248,7 +1253,7 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 		bld.append(getName());
 		bld.append(" (").append(getPactContract().getName()).append(") ");
 
-		int i = 1; 
+		int i = 1;
 		for (PactConnection conn : getIncomingConnections()) {
 			bld.append('(').append(i++).append(":").append(conn.getShipStrategy() == null ? "null" : conn.getShipStrategy().name()).append(')');
 		}

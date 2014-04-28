@@ -28,7 +28,7 @@ import java.util.Map;
  * instances.
  * <p>
  * This class is not thread-safe.
- * 
+ *
  */
 public final class InstanceRequestMap {
 
@@ -44,7 +44,7 @@ public final class InstanceRequestMap {
 
 	/**
 	 * Sets the minimum number of instances to be requested from the given instance type.
-	 * 
+	 *
 	 * @param instanceType
 	 *        the type of instance to request
 	 * @param number
@@ -57,7 +57,7 @@ public final class InstanceRequestMap {
 
 	/**
 	 * Sets the maximum number of instances to be requested from the given instance type.
-	 * 
+	 *
 	 * @param instanceType
 	 *        the type of instance to request
 	 * @param number
@@ -70,7 +70,7 @@ public final class InstanceRequestMap {
 
 	/**
 	 * Sets both the minimum and the maximum number of instances to be requested from the given instance type.
-	 * 
+	 *
 	 * @param instanceType
 	 *        the type of instance to request
 	 * @param number
@@ -84,7 +84,7 @@ public final class InstanceRequestMap {
 
 	/**
 	 * Returns the minimum number of instances to be requested from the given instance type.
-	 * 
+	 *
 	 * @param instanceType
 	 *        the type of instance to request
 	 * @return the minimum number of instances to be requested from the given instance type
@@ -101,7 +101,7 @@ public final class InstanceRequestMap {
 
 	/**
 	 * Returns the maximum number of instances to be requested from the given instance type.
-	 * 
+	 *
 	 * @param instanceType
 	 *        the type of instance to request
 	 * @return the maximum number of instances to be requested from the given instance type
@@ -119,7 +119,7 @@ public final class InstanceRequestMap {
 	/**
 	 * Checks if this instance request map is empty, i.e. neither contains an entry for the minimum or maximum number of
 	 * instances to be requested for any instance type.
-	 * 
+	 *
 	 * @return <code>true</code> if the map is empty, <code>false</code> otherwise
 	 */
 	public boolean isEmpty() {
@@ -138,7 +138,7 @@ public final class InstanceRequestMap {
 	/**
 	 * Returns an {@link Iterator} object which allows to traverse the minimum number of instances to be requested for
 	 * each instance type.
-	 * 
+	 *
 	 * @return an iterator to traverse the minimum number of instances to be requested for each instance type
 	 */
 	public Iterator<Map.Entry<InstanceType, Integer>> getMaximumIterator() {
@@ -149,7 +149,7 @@ public final class InstanceRequestMap {
 	/**
 	 * Returns an {@link Iterator} object which allows to traverse the maximum number of instances to be requested for
 	 * each instance type.
-	 * 
+	 *
 	 * @return an iterator to traverse the maximum number of instances to be requested for each instance type
 	 */
 	public Iterator<Map.Entry<InstanceType, Integer>> getMinimumIterator() {
@@ -159,7 +159,7 @@ public final class InstanceRequestMap {
 
 	/**
 	 * Returns the number of different instance types stored in this request map.
-	 * 
+	 *
 	 * @return the number of different instance types stored in this request map
 	 */
 	public int size() {

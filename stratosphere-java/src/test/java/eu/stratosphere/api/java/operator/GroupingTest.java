@@ -34,10 +34,10 @@ import eu.stratosphere.api.java.typeutils.TupleTypeInfo;
 public class GroupingTest {
 
 	// TUPLE DATA
-	private final List<Tuple5<Integer, Long, String, Long, Integer>> emptyTupleData = 
+	private final List<Tuple5<Integer, Long, String, Long, Integer>> emptyTupleData =
 			new ArrayList<Tuple5<Integer, Long, String, Long, Integer>>();
-	
-	private final TupleTypeInfo<Tuple5<Integer, Long, String, Long, Integer>> tupleTypeInfo = new 
+
+	private final TupleTypeInfo<Tuple5<Integer, Long, String, Long, Integer>> tupleTypeInfo = new
 			TupleTypeInfo<Tuple5<Integer, Long, String, Long, Integer>>(
 					BasicTypeInfo.INT_TYPE_INFO,
 					BasicTypeInfo.LONG_TYPE_INFO,
@@ -45,15 +45,15 @@ public class GroupingTest {
 					BasicTypeInfo.LONG_TYPE_INFO,
 					BasicTypeInfo.INT_TYPE_INFO
 			);
-	
+
 	// LONG DATA
 	private final List<Long> emptyLongData = new ArrayList<Long>();
-	
+
 	private final List<CustomType> customTypeData = new ArrayList<CustomType>();
-	
-	@Test  
+
+	@Test
 	public void testGroupByKeyFields1() {
-		
+
 		final ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 		DataSet<Tuple5<Integer, Long, String, Long, Integer>> tupleDs = env.fromCollection(emptyTupleData, tupleTypeInfo);
 
@@ -64,73 +64,73 @@ public class GroupingTest {
 			Assert.fail();
 		}
 	}
-	
-	@Test(expected = InvalidProgramException.class)  
+
+	@Test(expected = InvalidProgramException.class)
 	public void testGroupByKeyFields2() {
-		
+
 		final ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 
 		DataSet<Long> longDs = env.fromCollection(emptyLongData, BasicTypeInfo.LONG_TYPE_INFO);
 		// should not work: groups on basic type
 		longDs.groupBy(0);
 	}
-	
-	@Test(expected = InvalidProgramException.class)  
+
+	@Test(expected = InvalidProgramException.class)
 	public void testGroupByKeyFields3() {
-		
+
 		final ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
-		
+
 		this.customTypeData.add(new CustomType());
-		
+
 		DataSet<CustomType> customDs = env.fromCollection(customTypeData);
 		// should not work: groups on custom type
 		customDs.groupBy(0);
-		
+
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
 	public void testGroupByKeyFields4() {
-		
+
 		final ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 		DataSet<Tuple5<Integer, Long, String, Long, Integer>> tupleDs = env.fromCollection(emptyTupleData, tupleTypeInfo);
 
 		// should not work, empty key group
 		tupleDs.groupBy();
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
 	public void testGroupByKeyFields5() {
-		
+
 		final ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 		DataSet<Tuple5<Integer, Long, String, Long, Integer>> tupleDs = env.fromCollection(emptyTupleData, tupleTypeInfo);
 
 		// should not work, key out of tuple bounds
 		tupleDs.groupBy(5);
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
 	public void testGroupByKeyFields6() {
-		
+
 		final ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 		DataSet<Tuple5<Integer, Long, String, Long, Integer>> tupleDs = env.fromCollection(emptyTupleData, tupleTypeInfo);
 
 		// should not work, negative field position
 		tupleDs.groupBy(-1);
 	}
-	
+
 	@Test
 	@SuppressWarnings("serial")
 	public void testGroupByKeySelector1() {
-		
+
 		final ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 		this.customTypeData.add(new CustomType());
-		
+
 		try {
 			DataSet<CustomType> customDs = env.fromCollection(customTypeData);
 			// should work
 			customDs.groupBy(
 					new KeySelector<GroupingTest.CustomType, Long>() {
-	
+
 						@Override
 						public Long getKey(CustomType value) {
 							return value.myLong;
@@ -139,12 +139,12 @@ public class GroupingTest {
 		} catch(Exception e) {
 			Assert.fail();
 		}
-		
+
 	}
-	
+
 	@Test
 	public void testGroupSortKeyFields1() {
-		
+
 		final ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 		DataSet<Tuple5<Integer, Long, String, Long, Integer>> tupleDs = env.fromCollection(emptyTupleData, tupleTypeInfo);
 
@@ -155,24 +155,24 @@ public class GroupingTest {
 			Assert.fail();
 		}
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
 	public void testGroupSortKeyFields2() {
-		
+
 		final ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 		DataSet<Tuple5<Integer, Long, String, Long, Integer>> tupleDs = env.fromCollection(emptyTupleData, tupleTypeInfo);
 
 		// should not work, field index out of bounds
 		tupleDs.groupBy(0).sortGroup(5, Order.ASCENDING);
-		
+
 	}
-	
+
 	@Test(expected = InvalidProgramException.class)
 	public void testGroupSortKeyFields3() {
-		
+
 		final ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 		DataSet<Long> longDs = env.fromCollection(emptyLongData, BasicTypeInfo.LONG_TYPE_INFO);
-		
+
 		// should not work: sorted groups on groupings by key selectors
 		longDs.groupBy(new KeySelector<Long, Long>() {
 			private static final long serialVersionUID = 1L;
@@ -181,14 +181,14 @@ public class GroupingTest {
 			public Long getKey(Long value) {
 				return value;
 			}
-			
+
 		}).sortGroup(0, Order.ASCENDING);
-		
+
 	}
-	
+
 	@Test
 	public void testChainedGroupSortKeyFields() {
-		
+
 		final ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 		DataSet<Tuple5<Integer, Long, String, Long, Integer>> tupleDs = env.fromCollection(emptyTupleData, tupleTypeInfo);
 
@@ -199,28 +199,28 @@ public class GroupingTest {
 			Assert.fail();
 		}
 	}
-	
+
 
 	public static class CustomType implements Serializable {
-		
+
 		private static final long serialVersionUID = 1L;
-		
+
 		public int myInt;
 		public long myLong;
 		public String myString;
-		
+
 		public CustomType() {};
-		
+
 		public CustomType(int i, long l, String s) {
 			myInt = i;
 			myLong = l;
 			myString = s;
 		}
-		
+
 		@Override
 		public String toString() {
 			return myInt+","+myLong+","+myString;
 		}
 	}
-	
+
 }

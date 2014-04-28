@@ -20,13 +20,13 @@ import eu.stratosphere.nephele.jobgraph.JobID;
  * job.
  * <p>
  * This class is not thread-safe.
- * 
+ *
  */
 public final class InstanceSummaryProfilingEvent extends InstanceProfilingEvent {
 
 	/**
 	 * Constructs a new instance summary profiling event.
-	 * 
+	 *
 	 * @param profilingInterval
 	 *        the interval of time this profiling event covers in milliseconds
 	 * @param ioWaitCPU

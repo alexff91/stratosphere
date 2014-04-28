@@ -29,7 +29,7 @@ import eu.stratosphere.util.StringUtils;
  * with Nephele's RPC system.
  * <p>
  * This class is not thread-safe.
- * 
+ *
  * @param <T>
  *        the type used in this hash set
  */

@@ -25,7 +25,7 @@ public final class FloatComparator extends BasicTypeComparator<Float> {
 
 	private static final long serialVersionUID = 1L;
 
-	
+
 	public FloatComparator(boolean ascending) {
 		super(ascending);
 	}

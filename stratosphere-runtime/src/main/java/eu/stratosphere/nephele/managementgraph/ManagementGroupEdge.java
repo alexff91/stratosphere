@@ -20,7 +20,7 @@ import eu.stratosphere.nephele.io.channels.ChannelType;
  * a group edge of the actual execution graph.
  * <p>
  * This class is not thread-safe.
- * 
+ *
  */
 public final class ManagementGroupEdge extends ManagementAttachment {
 
@@ -51,7 +51,7 @@ public final class ManagementGroupEdge extends ManagementAttachment {
 
 	/**
 	 * Constructs a new management group edge.
-	 * 
+	 *
 	 * @param source
 	 *        the source vertex of the new group edge
 	 * @param sourceIndex
@@ -79,7 +79,7 @@ public final class ManagementGroupEdge extends ManagementAttachment {
 
 	/**
 	 * Returns the type of the channels represented by this group edge.
-	 * 
+	 *
 	 * @return the type of the channels represented by this group edge
 	 */
 	public ChannelType getChannelType() {
@@ -89,7 +89,7 @@ public final class ManagementGroupEdge extends ManagementAttachment {
 
 	/**
 	 * Returns the source vertex of this group edge.
-	 * 
+	 *
 	 * @return the source vertex of this group edge
 	 */
 	public ManagementGroupVertex getSource() {
@@ -98,7 +98,7 @@ public final class ManagementGroupEdge extends ManagementAttachment {
 
 	/**
 	 * Returns the target vertex of this group edge.
-	 * 
+	 *
 	 * @return the target vertex of this group edge
 	 */
 	public ManagementGroupVertex getTarget() {
@@ -107,7 +107,7 @@ public final class ManagementGroupEdge extends ManagementAttachment {
 
 	/**
 	 * Returns the edge's index at the source vertex.
-	 * 
+	 *
 	 * @return the edge's index at the source vertex
 	 */
 	public int getSourceIndex() {
@@ -116,7 +116,7 @@ public final class ManagementGroupEdge extends ManagementAttachment {
 
 	/**
 	 * Returns the edge's index at the target vertex.
-	 * 
+	 *
 	 * @return the edges's index at the target vertex
 	 */
 	public int getTargetIndex() {

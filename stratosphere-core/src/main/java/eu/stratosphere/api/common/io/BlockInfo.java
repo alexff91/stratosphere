@@ -32,7 +32,7 @@ public class BlockInfo implements IOReadableWritable {
 
 	/**
 	 * Returns the firstRecordStart.
-	 * 
+	 *
 	 * @return the firstRecordStart
 	 */
 	public long getFirstRecordStart() {
@@ -41,7 +41,7 @@ public class BlockInfo implements IOReadableWritable {
 
 	/**
 	 * Sets the firstRecordStart to the specified value.
-	 * 
+	 *
 	 * @param firstRecordStart
 	 *        the firstRecordStart to set
 	 */
@@ -65,7 +65,7 @@ public class BlockInfo implements IOReadableWritable {
 
 	/**
 	 * Returns the recordCount.
-	 * 
+	 *
 	 * @return the recordCount
 	 */
 	public long getRecordCount() {
@@ -74,7 +74,7 @@ public class BlockInfo implements IOReadableWritable {
 
 	/**
 	 * Returns the accumulated record count.
-	 * 
+	 *
 	 * @return the accumulated record count
 	 */
 	public long getAccumulatedRecordCount() {
@@ -83,7 +83,7 @@ public class BlockInfo implements IOReadableWritable {
 
 	/**
 	 * Sets the accumulatedRecordCount to the specified value.
-	 * 
+	 *
 	 * @param accumulatedRecordCount
 	 *        the accumulatedRecordCount to set
 	 */
@@ -93,7 +93,7 @@ public class BlockInfo implements IOReadableWritable {
 
 	/**
 	 * Sets the recordCount to the specified value.
-	 * 
+	 *
 	 * @param recordCount
 	 *        the recordCount to set
 	 */

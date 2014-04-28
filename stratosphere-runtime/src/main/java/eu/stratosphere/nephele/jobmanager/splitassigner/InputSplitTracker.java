@@ -36,7 +36,7 @@ import eu.stratosphere.nephele.executiongraph.ExecutionVertexID;
  * sequence of input splits as in its original run up to the point that it crashed.
  * <p>
  * This class is thread-safe.
- * 
+ *
  */
 final class InputSplitTracker {
 
@@ -58,7 +58,7 @@ final class InputSplitTracker {
 
 	/**
 	 * Registers a new job with the input split tracker.
-	 * 
+	 *
 	 * @param eg
 	 *        the execution graph of the job to be registered
 	 */
@@ -89,7 +89,7 @@ final class InputSplitTracker {
 
 	/**
 	 * Unregisters a job from the input split tracker.
-	 * 
+	 *
 	 * @param eg
 	 *        the execution graph of the job to be unregistered
 	 */
@@ -104,7 +104,7 @@ final class InputSplitTracker {
 	/**
 	 * Returns the input split with the given sequence number from the specified vertex's log or <code>null</code> if no
 	 * such input split exists.
-	 * 
+	 *
 	 * @param vertex
 	 *        the vertex for which the input split shall be returned from the log
 	 * @param sequenceNumber
@@ -132,7 +132,7 @@ final class InputSplitTracker {
 
 	/**
 	 * Adds the given input split to the vertex's log and stores it under the specified sequence number.
-	 * 
+	 *
 	 * @param vertex
 	 *        the vertex for which the input split shall be stored
 	 * @param sequenceNumber

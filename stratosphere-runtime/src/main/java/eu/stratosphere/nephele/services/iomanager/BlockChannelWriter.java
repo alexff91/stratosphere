@@ -22,14 +22,14 @@ import eu.stratosphere.core.memory.MemorySegment;
 
 
 /**
- * A writer that writes data in blocks to a file channel. The writer receives the data blocks in the form of 
+ * A writer that writes data in blocks to a file channel. The writer receives the data blocks in the form of
  * {@link eu.stratosphere.core.memory.MemorySegment}, which it writes entirely to the channel,
  * regardless of how space in the segment is used. The writing happens in an asynchronous fashion. That is, a write
  * request is not processed by the thread that issues it, but by an asynchronous writer thread. Once the request
  * is done, the asynchronous writer adds the MemorySegment to a <i>return queue</i> where it can be popped by the
  * worker thread, to be reused. The return queue is in this case a
  * {@link java.util.concurrent.LinkedBlockingQueue}, such that the working thread blocks until the request has been served,
- * if the request is still pending when the it requires the segment back. 
+ * if the request is still pending when the it requires the segment back.
  * <p>
  * Typical write behind is realized, by having a small set of segments in the return queue at all times. When a
  * memory segment must be written, the request is issued to the writer and a new segment is immediately popped from
@@ -40,7 +40,7 @@ public class BlockChannelWriter extends BlockChannelAccess<WriteRequest, LinkedB
 {
 	/**
 	 * Creates a new block channel writer for the given channel.
-	 *  
+	 *
 	 * @param channelID The ID of the channel to write to.
 	 * @param requestQueue The request queue of the asynchronous writer thread, to which the I/O requests
 	 *                     are added.
@@ -56,16 +56,16 @@ public class BlockChannelWriter extends BlockChannelAccess<WriteRequest, LinkedB
 
 	/**
 	 * Issues a asynchronous write request to the writer.
-	 * 
+	 *
 	 * @param segment The segment to be written.
 	 * @throws IOException Thrown, when the writer encounters an I/O error. Due to the asynchronous nature of the
-	 *                     writer, the exception thrown here may have been caused by an earlier write request. 
+	 *                     writer, the exception thrown here may have been caused by an earlier write request.
 	 */
 	public void writeBlock(MemorySegment segment) throws IOException
 	{
 		// check the error state of this channel
 		checkErroneous();
-		
+
 		// write the current buffer and get the next one
 		this.requestsNotReturned.incrementAndGet();
 		if (this.closed || this.requestQueue.isClosed()) {
@@ -76,7 +76,7 @@ public class BlockChannelWriter extends BlockChannelAccess<WriteRequest, LinkedB
 		}
 		this.requestQueue.add(new SegmentWriteRequest(this, segment));
 	}
-	
+
 	/**
 	 * Gets the next memory segment that has been written and is available again.
 	 * This method blocks until such a segment is available, or until an error occurs in the writer, or the
@@ -85,7 +85,7 @@ public class BlockChannelWriter extends BlockChannelAccess<WriteRequest, LinkedB
 	 * WARNING: If this method is invoked without any segment ever returning (for example, because the
 	 * {@link #writeBlock(MemorySegment)} method has not been invoked appropriately), the method may block
 	 * forever.
-	 * 
+	 *
 	 * @return The next memory segment from the writers's return queue.
 	 * @throws IOException Thrown, if an I/O error occurs in the writer while waiting for the request to return.
 	 */

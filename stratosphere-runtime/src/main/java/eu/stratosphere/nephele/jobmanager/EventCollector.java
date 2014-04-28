@@ -57,7 +57,7 @@ import eu.stratosphere.nephele.topology.NetworkTopology;
  * the event collector removes all intervals which are older than the interval.
  * <p>
  * This class is thread-safe.
- * 
+ *
  */
 public final class EventCollector extends TimerTask implements ProfilingListener {
 
@@ -67,7 +67,7 @@ public final class EventCollector extends TimerTask implements ProfilingListener
 	 * the data provided by the <code>executionStateChanged</code> callback method.
 	 * However, these IDs are needed to create the construct the {@link VertexEvent} and the
 	 * {@link ExecutionStateChangeEvent}.
-	 * 
+	 *
 	 */
 	private static final class ExecutionListenerWrapper implements ExecutionListener {
 
@@ -83,7 +83,7 @@ public final class EventCollector extends TimerTask implements ProfilingListener
 
 		/**
 		 * Constructs a new execution listener object.
-		 * 
+		 *
 		 * @param eventCollector
 		 *        the event collector to forward the created event to
 		 * @param vertex
@@ -153,7 +153,7 @@ public final class EventCollector extends TimerTask implements ProfilingListener
 	 * because the job name cannot be accessed from the data provided by the <code>jobStatusHasChanged</code> callback
 	 * method. However, this job name
 	 * is needed to create the construct the {@link RecentJobEvent}.
-	 * 
+	 *
 	 */
 	private static final class JobStatusListenerWrapper implements JobStatusListener {
 
@@ -179,7 +179,7 @@ public final class EventCollector extends TimerTask implements ProfilingListener
 
 		/**
 		 * Constructs a new job status listener wrapper.
-		 * 
+		 *
 		 * @param eventCollector
 		 *        the event collector to forward the events to
 		 * @param jobName
@@ -229,7 +229,7 @@ public final class EventCollector extends TimerTask implements ProfilingListener
 	 * The vertex assignment listener wrapper is an auxiliary class. It is required
 	 * because the job ID cannot be accessed from the data provided by the <code>vertexAssignmentChanged</code> callback
 	 * method. However, this job ID is needed to prepare the {@link VertexAssignmentEvent} for transmission.
-	 * 
+	 *
 	 */
 	private static final class VertexAssignmentListenerWrapper implements VertexAssignmentListener {
 
@@ -245,7 +245,7 @@ public final class EventCollector extends TimerTask implements ProfilingListener
 
 		/**
 		 * Constructs a new vertex assignment listener wrapper.
-		 * 
+		 *
 		 * @param eventCollector
 		 *        the event collector to forward the events to
 		 * @param jobID
@@ -315,13 +315,13 @@ public final class EventCollector extends TimerTask implements ProfilingListener
 	 * The timer used to trigger the cleanup routine.
 	 */
 	private final Timer timer;
-	
+
 	private List<ArchiveListener> archivists = new ArrayList<ArchiveListener>();
 
 	/**
 	 * Constructs a new event collector and starts
 	 * its background cleanup routine.
-	 * 
+	 *
 	 * @param clientQueryInterval
 	 *        the interval with which clients query for events
 	 */
@@ -336,7 +336,7 @@ public final class EventCollector extends TimerTask implements ProfilingListener
 
 	/**
 	 * Retrieves and adds the collected events for the job with the given job ID to the provided list.
-	 * 
+	 *
 	 * @param jobID
 	 *        the ID of the job to retrieve the events for
 	 * @param eventList
@@ -398,7 +398,7 @@ public final class EventCollector extends TimerTask implements ProfilingListener
 
 	/**
 	 * Adds an event to the job's event list.
-	 * 
+	 *
 	 * @param jobID
 	 *        the ID of the job the event belongs to
 	 * @param event
@@ -420,7 +420,7 @@ public final class EventCollector extends TimerTask implements ProfilingListener
 
 	/**
 	 * Creates a {@link RecentJobEvent} and adds it to the list of recent jobs.
-	 * 
+	 *
 	 * @param jobID
 	 *        the ID of the new job
 	 * @param jobName
@@ -451,7 +451,7 @@ public final class EventCollector extends TimerTask implements ProfilingListener
 	 * to state changes of the individual subtasks. A separate
 	 * deregistration is not necessary since the job progress collector
 	 * periodically discards outdated progress information.
-	 * 
+	 *
 	 * @param executionGraph
 	 *        the execution graph representing the job
 	 * @param profilingAvailable
@@ -559,7 +559,7 @@ public final class EventCollector extends TimerTask implements ProfilingListener
 
 	/**
 	 * Adds a {@link ManagementGraph} to the map of recently created management graphs.
-	 * 
+	 *
 	 * @param jobID
 	 *        the ID of the job the management graph belongs to
 	 * @param managementGraph
@@ -575,7 +575,7 @@ public final class EventCollector extends TimerTask implements ProfilingListener
 	/**
 	 * Returns the {@link ManagementGraph} object for the job with the given ID from the map of recently created
 	 * management graphs.
-	 * 
+	 *
 	 * @param jobID
 	 *        the ID of the job the management graph shall be retrieved for
 	 * @return the management graph for the job with the given ID or <code>null</code> if no such graph exists
@@ -589,7 +589,7 @@ public final class EventCollector extends TimerTask implements ProfilingListener
 
 	/**
 	 * Applies changes in the vertex assignment to the stored management graph.
-	 * 
+	 *
 	 * @param jobID
 	 *        the ID of the job whose management graph shall be updated
 	 * @param vertexAssignmentEvent
@@ -615,7 +615,7 @@ public final class EventCollector extends TimerTask implements ProfilingListener
 
 	/**
 	 * Applies changes in the state of an execution vertex to the stored management graph.
-	 * 
+	 *
 	 * @param jobID
 	 *        the ID of the job whose management graph shall be updated
 	 * @param executionStateChangeEvent
@@ -637,32 +637,32 @@ public final class EventCollector extends TimerTask implements ProfilingListener
 			vertex.setExecutionState(executionStateChangeEvent.getNewExecutionState());
 		}
 	}
-	
+
 	/**
-	 * Register Archivist to archive 
+	 * Register Archivist to archive
 	 */
 	public void registerArchivist(ArchiveListener al) {
 		this.archivists.add(al);
 	}
-	
+
 	private void archiveEvent(JobID jobId, AbstractEvent event) {
 		for(ArchiveListener al : archivists) {
 			al.archiveEvent(jobId, event);
 		}
 	}
-	
+
 	private void archiveJobevent(JobID jobId, RecentJobEvent event) {
 		for(ArchiveListener al : archivists) {
 			al.archiveJobevent(jobId, event);
 		}
 	}
-	
+
 	private void archiveManagementGraph(JobID jobId, ManagementGraph graph) {
 		for(ArchiveListener al : archivists) {
 			al.archiveManagementGraph(jobId, graph);
 		}
 	}
-	
+
 	private void archiveNetworkTopology(JobID jobId, NetworkTopology topology) {
 		for(ArchiveListener al : archivists) {
 			al.archiveNetworkTopology(jobId, topology);

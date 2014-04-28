@@ -25,13 +25,13 @@ import eu.stratosphere.nephele.util.EnumUtils;
  * A <code>AbstractJobResult</code> is the super class of all results
  * to report the job operation. It contains a return code and an
  * optional description.
- * 
+ *
  */
 public abstract class AbstractJobResult implements IOReadableWritable {
 
 	/**
 	 * The possible return codes for a job operation.
-	 * 
+	 *
 	 */
 	public enum ReturnCode {
 
@@ -58,7 +58,7 @@ public abstract class AbstractJobResult implements IOReadableWritable {
 
 	/**
 	 * Constructs a new abstract job result object and sets the description.
-	 * 
+	 *
 	 * @param returnCode
 	 *        the return code that shall be carried by this result object
 	 * @param description
@@ -100,7 +100,7 @@ public abstract class AbstractJobResult implements IOReadableWritable {
 
 	/**
 	 * Returns the return code of the job operation.
-	 * 
+	 *
 	 * @return the return code of the job operation
 	 */
 	public ReturnCode getReturnCode() {
@@ -109,7 +109,7 @@ public abstract class AbstractJobResult implements IOReadableWritable {
 
 	/**
 	 * Returns the description containing further details in case of an error.
-	 * 
+	 *
 	 * @return the description of the job operation, possibly <code>null</code>
 	 */
 	public String getDescription() {
@@ -142,7 +142,7 @@ public abstract class AbstractJobResult implements IOReadableWritable {
 		if (this.description == null) {
 
 			// Do nothing.
-			
+
 		} else {
 
 			if (!this.description.equals(ajr.getDescription())) {

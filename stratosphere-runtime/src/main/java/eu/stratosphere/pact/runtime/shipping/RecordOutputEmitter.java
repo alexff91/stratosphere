@@ -21,23 +21,23 @@ import eu.stratosphere.types.Record;
 
 
 public class RecordOutputEmitter implements ChannelSelector<Record> {
-	
+
 	// ------------------------------------------------------------------------
 	// Fields
 	// ------------------------------------------------------------------------
 
 	private static final byte[] DEFAULT_SALT = new byte[] { 17, 31, 47, 51, 83, 1 };
-	
+
 	private final ShipStrategyType strategy;			// the shipping strategy used by this output emitter
-	
+
 	private final RecordComparator comparator;	// the comparator for hashing / sorting
-	
+
 	private int[] channels;							// the reused array defining target channels
-	
+
 	private Key[][] partitionBoundaries;		// the partition boundaries for range partitioning
-	
+
 	private final DataDistribution distribution; // the data distribution to create the partition boundaries for range partitioning
-	
+
 	private int nextChannelToSendTo;				// counter to go over channels round robin
 
 	// ------------------------------------------------------------------------
@@ -46,17 +46,17 @@ public class RecordOutputEmitter implements ChannelSelector<Record> {
 
 	/**
 	 * Creates a new channel selector that uses the given strategy (broadcasting, partitioning, ...).
-	 * 
+	 *
 	 * @param strategy The distribution strategy to be used.
 	 */
 	public RecordOutputEmitter(ShipStrategyType strategy) {
 		this(strategy, null);
-	}	
-	
+	}
+
 	/**
 	 * Creates a new channel selector that uses the given strategy (broadcasting, partitioning, ...)
 	 * and uses the supplied comparator to hash / compare records for partitioning them deterministically.
-	 * 
+	 *
 	 * @param strategy The distribution strategy to be used.
 	 * @param comparator The comparator used to hash / compare the records.
 	 */
@@ -67,20 +67,20 @@ public class RecordOutputEmitter implements ChannelSelector<Record> {
 	/**
 	 * Creates a new channel selector that uses the given strategy (broadcasting, partitioning, ...)
 	 * and uses the supplied comparator to hash / compare records for partitioning them deterministically.
-	 * 
+	 *
 	 * @param strategy The distribution strategy to be used.
 	 * @param comparator The comparator used to hash / compare the records.
 	 * @param distr The distribution pattern used in the case of a range partitioning.
 	 */
 	public RecordOutputEmitter(ShipStrategyType strategy, RecordComparator comparator, DataDistribution distr) {
-		if (strategy == null) { 
+		if (strategy == null) {
 			throw new NullPointerException();
 		}
-		
+
 		this.strategy = strategy;
 		this.comparator = comparator;
 		this.distribution = distr;
-		
+
 		switch (strategy) {
 		case FORWARD:
 		case PARTITION_HASH:
@@ -94,9 +94,10 @@ public class RecordOutputEmitter implements ChannelSelector<Record> {
 		default:
 			throw new IllegalArgumentException("Invalid shipping strategy for OutputEmitter: " + strategy.name());
 		}
-		
-		if ((strategy == ShipStrategyType.PARTITION_RANGE) && distr == null)
-			throw new NullPointerException("Data distribution must not be null when the ship strategy is range partitioning.");
+
+		if ((strategy == ShipStrategyType.PARTITION_RANGE) && distr == null) {
+		throw new NullPointerException("Data distribution must not be null when the ship strategy is range partitioning.");
+		}
 	}
 
 	// ------------------------------------------------------------------------
@@ -120,7 +121,7 @@ public class RecordOutputEmitter implements ChannelSelector<Record> {
 			throw new UnsupportedOperationException("Unsupported distribution strategy: " + strategy.name());
 		}
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	private final int[] robin(int numberOfChannels) {
@@ -137,7 +138,7 @@ public class RecordOutputEmitter implements ChannelSelector<Record> {
 				this.channels[i] = i;
 			}
 		}
-		
+
 		return this.channels;
 	}
 
@@ -149,7 +150,7 @@ public class RecordOutputEmitter implements ChannelSelector<Record> {
 		this.channels[0] = (hash < 0) ? -hash % numberOfChannels : hash % numberOfChannels;
 		return this.channels;
 	}
-	
+
 	private final int[] rangePartition(final Record record, int numberOfChannels) {
 		if (this.partitionBoundaries == null) {
 			this.partitionBoundaries = new Key[numberOfChannels - 1][];
@@ -157,19 +158,19 @@ public class RecordOutputEmitter implements ChannelSelector<Record> {
 				this.partitionBoundaries[i] = this.distribution.getBucketBoundary(i, numberOfChannels);
 			}
 		}
-		
+
 		if (numberOfChannels == this.partitionBoundaries.length + 1) {
 			final Key[][] boundaries = this.partitionBoundaries;
 			this.comparator.setReference(record);
-			
+
 			// bin search the bucket
 			int low = 0;
 			int high = this.partitionBoundaries.length - 1;
-			
+
 			while (low <= high) {
 				final int mid = (low + high) >>> 1;
 				final int result = this.comparator.compareAgainstReference(boundaries[mid]);
-				
+
 				if (result < 0) {
 					low = mid + 1;
 				} else if (result > 0) {

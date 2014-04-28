@@ -24,19 +24,19 @@ import eu.stratosphere.types.Record;
 public class RecordSerializerFactory implements TypeSerializerFactory<Record>
 {
 	private static final RecordSerializerFactory INSTANCE = new RecordSerializerFactory();
-	
+
 	/**
 	 * Gets an instance of the serializer factory. The instance is shared, since the factory is a
-	 * stateless class. 
-	 * 
+	 * stateless class.
+	 *
 	 * @return An instance of the serializer factory.
 	 */
 	public static final RecordSerializerFactory get() {
 		return INSTANCE;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 
 	@Override
 	public void writeParametersToConfig(Configuration config)
@@ -48,7 +48,7 @@ public class RecordSerializerFactory implements TypeSerializerFactory<Record>
 	@Override
 	public void readParametersFromConfig(Configuration config, ClassLoader cl) throws ClassNotFoundException
 	{}
-	
+
 
 	@Override
 	public TypeSerializer<Record> getSerializer() {

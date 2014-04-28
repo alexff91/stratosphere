@@ -24,18 +24,18 @@ import eu.stratosphere.pact.runtime.task.DriverStrategy;
 import eu.stratosphere.util.Visitor;
 
 /**
- * 
+ *
  */
 public class NAryUnionPlanNode extends PlanNode {
-	
+
 	private final List<Channel> inputs;
-	
+
 	/**
 	 * @param template
 	 */
 	public NAryUnionPlanNode(BinaryUnionNode template, List<Channel> inputs, GlobalProperties gProps) {
 		super(template, "Union", DriverStrategy.NONE);
-		
+
 		this.inputs = inputs;
 		this.globalProps = gProps;
 		this.localProps = new LocalProperties();
@@ -49,7 +49,7 @@ public class NAryUnionPlanNode extends PlanNode {
 		}
 		visitor.postVisit(this);
 	}
-	
+
 	public List<Channel> getListOfInputs() {
 		return this.inputs;
 	}

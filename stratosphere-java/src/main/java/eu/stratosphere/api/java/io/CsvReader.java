@@ -20,7 +20,29 @@ import org.apache.commons.lang3.Validate;
 
 import eu.stratosphere.api.java.ExecutionEnvironment;
 import eu.stratosphere.api.java.operators.DataSource;
-import eu.stratosphere.api.java.tuple.*;
+import eu.stratosphere.api.java.tuple.Tuple;
+import eu.stratosphere.api.java.tuple.Tuple1;
+import eu.stratosphere.api.java.tuple.Tuple10;
+import eu.stratosphere.api.java.tuple.Tuple11;
+import eu.stratosphere.api.java.tuple.Tuple12;
+import eu.stratosphere.api.java.tuple.Tuple13;
+import eu.stratosphere.api.java.tuple.Tuple14;
+import eu.stratosphere.api.java.tuple.Tuple15;
+import eu.stratosphere.api.java.tuple.Tuple16;
+import eu.stratosphere.api.java.tuple.Tuple17;
+import eu.stratosphere.api.java.tuple.Tuple18;
+import eu.stratosphere.api.java.tuple.Tuple19;
+import eu.stratosphere.api.java.tuple.Tuple2;
+import eu.stratosphere.api.java.tuple.Tuple20;
+import eu.stratosphere.api.java.tuple.Tuple21;
+import eu.stratosphere.api.java.tuple.Tuple22;
+import eu.stratosphere.api.java.tuple.Tuple3;
+import eu.stratosphere.api.java.tuple.Tuple4;
+import eu.stratosphere.api.java.tuple.Tuple5;
+import eu.stratosphere.api.java.tuple.Tuple6;
+import eu.stratosphere.api.java.tuple.Tuple7;
+import eu.stratosphere.api.java.tuple.Tuple8;
+import eu.stratosphere.api.java.tuple.Tuple9;
 import eu.stratosphere.api.java.typeutils.TupleTypeInfo;
 import eu.stratosphere.core.fs.Path;
 
@@ -29,63 +51,63 @@ import eu.stratosphere.core.fs.Path;
  *
  */
 public class CsvReader {
-	
+
 	private static final int MAX_FIELDS = Tuple.MAX_ARITY;
 
 	private final Path path;
-	
+
 	private final ExecutionEnvironment executionContext;
-	
-	
+
+
 	private boolean[] includedMask;
-	
+
 	private String lineDelimiter = "\n";
-	
+
 	private char fieldDelimiter = ',';
 
 	private boolean skipFirstLineAsHeader = false;
-	
-	
+
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public CsvReader(Path filePath, ExecutionEnvironment executionContext) {
 		Validate.notNull(filePath, "The file path may not be null.");
 		Validate.notNull(executionContext, "The execution context may not be null.");
-		
+
 		this.path = filePath;
 		this.executionContext = executionContext;
 	}
-	
+
 	public CsvReader(String filePath, ExecutionEnvironment executionContext) {
 		this(new Path(Validate.notNull(filePath, "The file path may not be null.")), executionContext);
 	}
-	
+
 	public Path getFilePath() {
 		return this.path;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public CsvReader lineDelimiter(String delimiter) {
 		if (delimiter == null || delimiter.length() == 0) {
 			throw new IllegalArgumentException("The delimiter must not be null or an empty string");
 		}
-		
+
 		this.lineDelimiter = delimiter;
 		return this;
 	}
-	
+
 	public CsvReader fieldDelimiter(char delimiter) {
 		this.fieldDelimiter = delimiter;
 		return this;
 	}
-	
-	
+
+
 	public CsvReader includeFields(boolean ... fields) {
 		if (fields == null || fields.length == 0) {
 			throw new IllegalArgumentException("The set of included fields must not be null or empty.");
 		}
-		
+
 		this.includedMask = fields;
 		return this;
 	}
@@ -94,13 +116,13 @@ public class CsvReader {
 		if (fields == null || fields.length == 0) {
 			throw new IllegalArgumentException("The set of included fields must not be null or empty.");
 		}
-		
+
 		return null;
 	}
-	
+
 	public CsvReader includeFields(String mask) {
 		this.includedMask = new boolean[mask.length()];
-		
+
 		for (int i = 0; i < mask.length(); i++) {
 			char c = mask.charAt(i);
 			if (c == '1' || c == 'T') {
@@ -109,13 +131,13 @@ public class CsvReader {
 				throw new IllegalArgumentException("Mask string may contain only '0' and '1'.");
 			}
 		}
-		
+
 		return this;
 	}
-	
+
 	public CsvReader includeFields(long mask) {
 		ArrayList<Boolean> fields = new ArrayList<Boolean>();
-		
+
 		int highestNum = 0;
 		for (int i = 0; i < 64; i++) {
 			long bitMask = 0x1l << i;
@@ -126,12 +148,12 @@ public class CsvReader {
 				fields.add(false);
 			}
 		}
-		
+
 		this.includedMask = new boolean[highestNum + 1];
 		for (int i = 0; i < highestNum; i++) {
 			this.includedMask[i] = fields.get(i);
 		}
-		
+
 		return this;
 	}
 
@@ -139,11 +161,11 @@ public class CsvReader {
 		skipFirstLineAsHeader = true;
 		return this;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 	// Miscellaneous
 	// --------------------------------------------------------------------------------------------
-	
+
 	private void configureInputFormat(CsvInputFormat<?> format, Class<?>... types) {
 		format.setDelimiter(this.lineDelimiter);
 		format.setFieldDelimiter(this.fieldDelimiter);
@@ -154,10 +176,10 @@ public class CsvReader {
 			format.setFields(this.includedMask, types);
 		}
 	}
-	
-	// --------------------------------------------------------------------------------------------	
+
+	// --------------------------------------------------------------------------------------------
 	// The following lines are generated.
-	// --------------------------------------------------------------------------------------------	
+	// --------------------------------------------------------------------------------------------
 	// BEGIN_OF_TUPLE_DEPENDENT_CODE
 	// GENERATED FROM eu.stratosphere.api.java.tuple.TupleGenerator.
 

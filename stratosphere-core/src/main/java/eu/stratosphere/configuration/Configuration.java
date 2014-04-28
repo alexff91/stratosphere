@@ -32,7 +32,7 @@ import eu.stratosphere.core.io.StringRecord;
  * can be extracted from or integrated into the {@link GlobalConfiguration} object. They can
  * be transported via Nephele's IPC system to distribute configuration data at runtime.
  * This class is thread-safe.
- * 
+ *
  */
 public class Configuration implements IOReadableWritable {
 
@@ -55,15 +55,15 @@ public class Configuration implements IOReadableWritable {
 
 	/**
 	 * Constructs a new configuration object.
-	 * 
+	 *
 	 * @param classLoader
 	 *        the class loader to be use for the <code>getClass</code> method
 	 */
 	public Configuration(final ClassLoader classLoader) {
 		this.classLoader = classLoader;
 	}
-	
-	
+
+
 	/**
 	 * @return the class loader that knows where to locate user classes
 	 */
@@ -73,7 +73,7 @@ public class Configuration implements IOReadableWritable {
 
 	/**
 	 * Sets the class loader that knows where to locate user classes
-	 * 
+	 *
 	 * @param classLoader
 	 *        the class loader to be use for the <code>getClass</code> method
 	 */
@@ -85,7 +85,7 @@ public class Configuration implements IOReadableWritable {
 
 	/**
 	 * Returns the class associated with the given key as a string.
-	 * 
+	 *
 	 * @param <T>
 	 *        the ancestor of both the default value and the potential value
 	 * @param key
@@ -115,7 +115,7 @@ public class Configuration implements IOReadableWritable {
 
 	/**
 	 * Returns the class associated with the given key as a string.
-	 * 
+	 *
 	 * @param key
 	 *        the key pointing to the associated value
 	 * @param defaultValue
@@ -132,7 +132,7 @@ public class Configuration implements IOReadableWritable {
 	/**
 	 * Adds the given key/value pair to the configuration object. The class can be retrieved by invoking
 	 * {@link #getClass(String, Class, Class)} if it is in the scope of the class loader on the caller.
-	 * 
+	 *
 	 * @param key
 	 *        the key of the pair to be added
 	 * @param klazz
@@ -146,7 +146,7 @@ public class Configuration implements IOReadableWritable {
 
 	/**
 	 * Returns the value associated with the given key as a string.
-	 * 
+	 *
 	 * @param key
 	 *        the key pointing to the associated value
 	 * @param defaultValue
@@ -157,10 +157,10 @@ public class Configuration implements IOReadableWritable {
 		String val = getStringInternal(key);
 		return val == null ? defaultValue : val;
 	}
-	
+
 	/**
 	 * Adds the given key/value pair to the configuration object.
-	 * 
+	 *
 	 * @param key
 	 *        the key of the key/value pair to be added
 	 * @param value
@@ -172,7 +172,7 @@ public class Configuration implements IOReadableWritable {
 
 	/**
 	 * Returns the value associated with the given key as an integer.
-	 * 
+	 *
 	 * @param key
 	 *        the key pointing to the associated value
 	 * @param defaultValue
@@ -190,7 +190,7 @@ public class Configuration implements IOReadableWritable {
 
 	/**
 	 * Adds the given key/value pair to the configuration object.
-	 * 
+	 *
 	 * @param key
 	 *        the key of the key/value pair to be added
 	 * @param value
@@ -202,7 +202,7 @@ public class Configuration implements IOReadableWritable {
 
 	/**
 	 * Returns the value associated with the given key as a long.
-	 * 
+	 *
 	 * @param key
 	 *        the key pointing to the associated value
 	 * @param defaultValue
@@ -220,7 +220,7 @@ public class Configuration implements IOReadableWritable {
 
 	/**
 	 * Adds the given key/value pair to the configuration object.
-	 * 
+	 *
 	 * @param key
 	 *        the key of the key/value pair to be added
 	 * @param value
@@ -232,7 +232,7 @@ public class Configuration implements IOReadableWritable {
 
 	/**
 	 * Returns the value associated with the given key as a boolean.
-	 * 
+	 *
 	 * @param key
 	 *        the key pointing to the associated value
 	 * @param defaultValue
@@ -250,7 +250,7 @@ public class Configuration implements IOReadableWritable {
 
 	/**
 	 * Adds the given key/value pair to the configuration object.
-	 * 
+	 *
 	 * @param key
 	 *        the key of the key/value pair to be added
 	 * @param value
@@ -262,7 +262,7 @@ public class Configuration implements IOReadableWritable {
 
 	/**
 	 * Returns the value associated with the given key as a float.
-	 * 
+	 *
 	 * @param key
 	 *        the key pointing to the associated value
 	 * @param defaultValue
@@ -280,7 +280,7 @@ public class Configuration implements IOReadableWritable {
 
 	/**
 	 * Adds the given key/value pair to the configuration object.
-	 * 
+	 *
 	 * @param key
 	 *        the key of the key/value pair to be added
 	 * @param value
@@ -289,10 +289,10 @@ public class Configuration implements IOReadableWritable {
 	public void setFloat(String key, float value) {
 		setStringInternal(key, Float.toString(value));
 	}
-	
+
 	/**
 	 * Returns the value associated with the given key as a double.
-	 * 
+	 *
 	 * @param key
 	 *        the key pointing to the associated value
 	 * @param defaultValue
@@ -310,7 +310,7 @@ public class Configuration implements IOReadableWritable {
 
 	/**
 	 * Adds the given key/value pair to the configuration object.
-	 * 
+	 *
 	 * @param key
 	 *        the key of the key/value pair to be added
 	 * @param value
@@ -319,10 +319,10 @@ public class Configuration implements IOReadableWritable {
 	public void setDouble(String key, double value) {
 		setStringInternal(key, Double.toString(value));
 	}
-	
+
 	/**
 	 * Returns the value associated with the given key as a byte array.
-	 * 
+	 *
 	 * @param key
 	 *        The key pointing to the associated value.
 	 * @param defaultValue
@@ -337,10 +337,10 @@ public class Configuration implements IOReadableWritable {
 			return Base64.decodeBase64(encoded.getBytes());
 		}
 	}
-	
+
 	/**
 	 * Adds the given byte array to the configuration object. If key is <code>null</code> then nothing is added.
-	 * 
+	 *
 	 * @param key
 	 *        The key under which the bytes are added.
 	 * @param bytes
@@ -354,7 +354,7 @@ public class Configuration implements IOReadableWritable {
 	/**
 	 * Returns the keys of all key/value pairs stored inside this
 	 * configuration object.
-	 * 
+	 *
 	 * @return the keys of all key/value pairs stored inside this configuration object
 	 */
 	public Set<String> keySet() {
@@ -380,11 +380,11 @@ public class Configuration implements IOReadableWritable {
 			}
 		}
 	}
-	
+
 	/**
 	 * Adds all entries from the given configuration into this configuration. The keys
 	 * are prepended with the given prefix.
-	 * 
+	 *
 	 * @param other
 	 *        The configuration whose entries are added to this configuration.
 	 * @param prefix
@@ -405,30 +405,33 @@ public class Configuration implements IOReadableWritable {
 			}
 		}
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	private String getStringInternal(String key) {
-		if (key == null)
-			throw new NullPointerException("Key must not be null.");
-		
+		if (key == null) {
+		throw new NullPointerException("Key must not be null.");
+		}
+
 		synchronized (this.confData) {
 			return this.confData.get(key);
 		}
 	}
-	
+
 	private void setStringInternal(String key, String value) {
-		if (key == null)
-			throw new NullPointerException("Key must not be null.");
-		if (value == null)
-			throw new NullPointerException("Value must not be null.");
-			
-		
+		if (key == null) {
+		throw new NullPointerException("Key must not be null.");
+		}
+		if (value == null) {
+		throw new NullPointerException("Value must not be null.");
+		}
+
+
 		synchronized (this.confData) {
 			this.confData.put(key, value);
 		}
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
 
@@ -487,7 +490,7 @@ public class Configuration implements IOReadableWritable {
 		final Configuration other = (Configuration) obj;
 		return confData.equals(other.confData);
 	}
-	
+
 	@Override
 	public String toString() {
 		return this.confData.toString();

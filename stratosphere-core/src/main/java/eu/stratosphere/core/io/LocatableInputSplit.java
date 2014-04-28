@@ -35,7 +35,7 @@ public class LocatableInputSplit implements InputSplit {
 
 	/**
 	 * Creates a new locatable input split.
-	 * 
+	 *
 	 * @param splitNumber
 	 *        the number of the split
 	 * @param hostnames
@@ -54,7 +54,7 @@ public class LocatableInputSplit implements InputSplit {
 
 	/**
 	 * Returns the names of the hosts storing the data this input split refers to
-	 * 
+	 *
 	 * @return the names of the hosts storing the data this input split refers to
 	 */
 	public String[] getHostnames() {

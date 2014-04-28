@@ -21,7 +21,7 @@ import eu.stratosphere.types.Record;
 public class HistogramPartitionFunction implements PartitionFunction {
 	private final Record[] splitBorders;
 	private final Order partitionOrder;
-	
+
 	public HistogramPartitionFunction(Record[] splitBorders, Order partitionOrder) {
 		this.splitBorders = splitBorders;
 		this.partitionOrder = partitionOrder;
@@ -33,16 +33,16 @@ public class HistogramPartitionFunction implements PartitionFunction {
 		int pos = Arrays.binarySearch(splitBorders, data);
 
 		/*
-		 * 
+		 *
 		 * TODO CHECK ONLY FOR KEYS NOT FOR WHOLE RECORD
-		 * 
+		 *
 		 */
-		
+
 		if(pos < 0) {
 			pos++;
 			pos = -pos;
 		}
-		
+
 		if(partitionOrder == Order.ASCENDING || partitionOrder == Order.ANY) {
 			channels[0] = pos;
 		} else {

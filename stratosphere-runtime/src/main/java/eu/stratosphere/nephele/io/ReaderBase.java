@@ -24,20 +24,20 @@ import eu.stratosphere.nephele.event.task.EventListener;
 public interface ReaderBase {
 
 	boolean isInputClosed();
-	
+
 	/**
 	 * Subscribes the listener object to receive events of the given type.
-	 * 
+	 *
 	 * @param eventListener
 	 *        the listener object to register
 	 * @param eventType
 	 *        the type of event to register the listener for
 	 */
 	void subscribeToEvent(EventListener eventListener, Class<? extends AbstractTaskEvent> eventType);
-	
+
 	/**
 	 * Removes the subscription for events of the given type for the listener object.
-	 * 
+	 *
 	 * @param eventListener
 	 *        the listener object to cancel the subscription for
 	 * @param eventType
@@ -47,7 +47,7 @@ public interface ReaderBase {
 
 	/**
 	 * Publishes an event.
-	 * 
+	 *
 	 * @param event
 	 *        the event to be published
 	 * @throws IOException
@@ -56,12 +56,12 @@ public interface ReaderBase {
 	 *         thrown if the thread is interrupted while waiting for the event to be published
 	 */
 	void publishEvent(AbstractTaskEvent event) throws IOException, InterruptedException;
-	
-	
+
+
 	void setIterative(int numEventsUntilEndOfSuperstep);
 
-	
+
 	void startNextSuperstep();
-	
+
 	boolean hasReachedEndOfSuperstep();
 }

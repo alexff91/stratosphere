@@ -22,7 +22,7 @@ import java.util.Iterator;
  *
  */
 public class FieldSet implements Iterable<Integer> {
-	
+
 	protected final Collection<Integer> collection;
 
 	// --------------------------------------------------------------------------------------------
@@ -30,35 +30,35 @@ public class FieldSet implements Iterable<Integer> {
 	public FieldSet() {
 		this.collection = initCollection();
 	}
-	
+
 	public FieldSet(int columnIndex) {
 		this();
 		add(columnIndex);
 	}
-	
+
 	public FieldSet(int[] columnIndexes) {
 		this();
 		addAll(columnIndexes);
 	}
-	
+
 	public FieldSet(Collection<Integer> o) {
 		this();
 		addAll(o);
 	}
-	
+
 	public FieldSet(Collection<Integer> o1, Collection<Integer> o2) {
 		this();
 		addAll(o1);
 		addAll(o2);
 	}
-	
+
 	public FieldSet(FieldSet toCopy) {
 		this();
 		addAll(toCopy);
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public void add(Integer columnIndex) {
 		this.collection.add(columnIndex);
 	}
@@ -72,33 +72,33 @@ public class FieldSet implements Iterable<Integer> {
 	public void addAll(Collection<Integer> columnIndexes) {
 		this.collection.addAll(columnIndexes);
 	}
-	
+
 	public void addAll(FieldSet set) {
 		for (Integer i : set) {
 			add(i);
 		}
 	}
-	
+
 	public boolean contains(Integer columnIndex) {
 		return this.collection.contains(columnIndex);
 	}
-	
+
 	public int size() {
 		return this.collection.size();
 	}
-	
+
 
 	@Override
 	public Iterator<Integer> iterator() {
 		return this.collection.iterator();
 	}
-	
+
 	public FieldList toFieldList() {
 		int[] pos = toArray();
 		Arrays.sort(pos);
 		return new FieldList(pos);
 	}
-	
+
 	public int[] toArray() {
 		int[] a = new int[this.collection.size()];
 		int i = 0;
@@ -107,16 +107,16 @@ public class FieldSet implements Iterable<Integer> {
 		}
 		return a;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Checks if the given set of fields is a valid subset of this set of fields. For unordered
 	 * sets, this is the case if all of the given set's fields are also part of this field.
 	 * <p>
 	 * Subclasses that describe field sets where the field order matters must override this method
 	 * to implement a field ordering sensitive check.
-	 * 
+	 *
 	 * @param set The set that is a candidate subset.
 	 * @return True, if the given set is a subset of this set, false otherwise.
 	 */
@@ -131,9 +131,9 @@ public class FieldSet implements Iterable<Integer> {
 		}
 		return true;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 
 	@Override
 	public int hashCode() {
@@ -169,27 +169,27 @@ public class FieldSet implements Iterable<Integer> {
 		bld.append(getDescriptionSuffix());
 		return bld.toString();
 	}
-	
+
 
 	public FieldSet clone() {
 		FieldSet set = new FieldSet();
 		set.addAll(this.collection);
 		return set;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	protected Collection<Integer> initCollection() {
 		return new HashSet<Integer>();
 	}
-	
+
 	protected String getDescriptionPrefix() {
 		return "(";
 	}
-	
+
 	protected String getDescriptionSuffix() {
 		return ")";
 	}
-	
+
 	public static final FieldSet EMPTY_SET = new FieldSet();
 }

@@ -46,7 +46,7 @@ public class LocalScheduler extends AbstractScheduler implements JobStatusListen
 
 	/**
 	 * Constructs a new local scheduler.
-	 * 
+	 *
 	 * @param deploymentManager
 	 *        the deployment manager assigned to this scheduler
 	 * @param instanceManager

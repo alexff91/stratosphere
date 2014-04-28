@@ -24,27 +24,27 @@ import eu.stratosphere.util.Collector;
 
 @SuppressWarnings("serial")
 public class WordCountCustomType {
-	
+
 	public static class WC {
-		
+
 		public String word;
 		public int count;
-		
+
 		public WC() {}
 
 		public WC(String word, int count) {
 			this.word = word;
 			this.count = count;
 		}
-		
+
 		@Override
 		public String toString() {
 			return "(" + word + ", " + count + ")";
 		}
 	}
-	
+
 	public static final class Tokenizer extends FlatMapFunction<String, WC> {
-		
+
 		@Override
 		public void flatMap(String value, Collector<WC> out) {
 			String[] tokens = value.toLowerCase().split("\\W");
@@ -53,31 +53,31 @@ public class WordCountCustomType {
 			}
 		}
 	}
-	
-	
+
+
 	public static void main(String[] args) throws Exception {
-		
+
 		final ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 		env.setDegreeOfParallelism(4);
-		
+
 		DataSet<String> text = env.fromElements("To be", "or not to be", "or to be still", "and certainly not to be not at all", "is that the question?");
-		
+
 		DataSet<WC> tokenized = text.flatMap(new Tokenizer());
 
-		
+
 		DataSet<WC> result = tokenized
-				
+
 				.groupBy(new KeySelector<WC, String>() { public String getKey(WC v) { return v.word; } })
-				
+
 				.reduce(new ReduceFunction<WC>() {
 					public WC reduce(WC value1, WC value2) {
 						return new WC(value1.word, value1.count + value2.count);
 					}
 				});
-		
-		
+
+
 		result.print();
-		
+
 		env.execute();
 	}
 }

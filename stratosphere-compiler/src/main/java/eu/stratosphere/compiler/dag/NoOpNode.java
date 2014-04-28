@@ -21,15 +21,15 @@ import eu.stratosphere.compiler.operators.NoOpDescriptor;
  * The optimizer's internal representation of a <i>No Operation</i> node.
  */
 public class NoOpNode extends UnaryOperatorNode {
-	
+
 	public NoOpNode() {
 		super("No Op", new FieldSet(), new NoOpDescriptor());
 	}
-	
+
 	public NoOpNode(String name) {
 		super(name, new FieldSet(), new NoOpDescriptor());
 	}
-	
+
 	@Override
 	protected void computeOperatorSpecificDefaultEstimates(DataStatistics statistics) {
 		this.estimatedNumRecords = getPredecessorNode().getEstimatedNumRecords();

@@ -21,7 +21,7 @@ import eu.stratosphere.nephele.jobgraph.JobID;
  * An allocated slice is a part of an instance which is assigned to a job.
  * <p>
  * This class is thread-safe.
- * 
+ *
  */
 class AllocatedSlice {
 
@@ -52,7 +52,7 @@ class AllocatedSlice {
 
 	/**
 	 * Creates a new allocated slice on the given hosting instance.
-	 * 
+	 *
 	 * @param hostingInstance
 	 *        the instance hosting the slice
 	 * @param type
@@ -74,7 +74,7 @@ class AllocatedSlice {
 
 	/**
 	 * Returns the allocation ID of this slice.
-	 * 
+	 *
 	 * @return the allocation ID of this slice
 	 */
 	public AllocationID getAllocationID() {
@@ -84,7 +84,7 @@ class AllocatedSlice {
 	/**
 	 * The type describing the characteristics of
 	 * this allocated slice.
-	 * 
+	 *
 	 * @return the type describing the characteristics of the slice
 	 */
 	public InstanceType getType() {
@@ -93,7 +93,7 @@ class AllocatedSlice {
 
 	/**
 	 * Returns the time the instance was allocated.
-	 * 
+	 *
 	 * @return the time the instance was allocated
 	 */
 	public long getAllocationTime() {
@@ -102,7 +102,7 @@ class AllocatedSlice {
 
 	/**
 	 * Returns the ID of the job this allocated slice belongs to.
-	 * 
+	 *
 	 * @return the ID of the job this allocated slice belongs to
 	 */
 	public JobID getJobID() {
@@ -111,7 +111,7 @@ class AllocatedSlice {
 
 	/**
 	 * Returns the instance hosting this slice.
-	 * 
+	 *
 	 * @return the instance hosting this slice
 	 */
 	public ClusterInstance getHostingInstance() {

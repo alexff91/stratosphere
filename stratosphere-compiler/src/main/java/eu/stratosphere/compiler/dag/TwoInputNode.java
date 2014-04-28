@@ -59,22 +59,22 @@ import eu.stratosphere.util.Visitor;
  * The two inputs are not substitutable in their sides.
  */
 public abstract class TwoInputNode extends OptimizerNode {
-	
+
 	protected final FieldList keys1; // The set of key fields for the first input
-	
+
 	protected final FieldList keys2; // The set of key fields for the second input
-	
+
 	protected final List<OperatorDescriptorDual> possibleProperties;
-	
+
 	protected PactConnection input1; // The first input edge
 
 	protected PactConnection input2; // The second input edge
-		
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Creates a new node with a single input for the optimizer plan.
-	 * 
+	 *
 	 * @param pactContract
 	 *        The PACT that the node represents.
 	 */
@@ -83,10 +83,10 @@ public abstract class TwoInputNode extends OptimizerNode {
 
 		int[] k1 = pactContract.getKeyColumns(0);
 		int[] k2 = pactContract.getKeyColumns(1);
-		
+
 		this.keys1 = k1 == null || k1.length == 0 ? null : new FieldList(k1);
 		this.keys2 = k2 == null || k2.length == 0 ? null : new FieldList(k2);
-		
+
 		if (this.keys1 != null) {
 			if (this.keys2 != null) {
 				if (this.keys1.size() != this.keys2.size()) {
@@ -98,7 +98,7 @@ public abstract class TwoInputNode extends OptimizerNode {
 		} else if (this.keys2 != null) {
 			throw new CompilerException("Keys are set on second input, but not on first.");
 		}
-		
+
 		this.possibleProperties = getPossibleProperties();
 	}
 
@@ -111,7 +111,7 @@ public abstract class TwoInputNode extends OptimizerNode {
 
 	/**
 	 * Gets the <tt>PactConnection</tt> through which this node receives its <i>first</i> input.
-	 * 
+	 *
 	 * @return The first input connection.
 	 */
 	public PactConnection getFirstIncomingConnection() {
@@ -120,25 +120,27 @@ public abstract class TwoInputNode extends OptimizerNode {
 
 	/**
 	 * Gets the <tt>PactConnection</tt> through which this node receives its <i>second</i> input.
-	 * 
+	 *
 	 * @return The second input connection.
 	 */
 	public PactConnection getSecondIncomingConnection() {
 		return this.input2;
 	}
-	
+
 	public OptimizerNode getFirstPredecessorNode() {
-		if(this.input1 != null)
-			return this.input1.getSource();
-		else
-			return null;
+		if(this.input1 != null) {
+		return this.input1.getSource();
+		} else {
+		return null;
+		}
 	}
 
 	public OptimizerNode getSecondPredecessorNode() {
-		if(this.input2 != null)
-			return this.input2.getSource();
-		else
-			return null;
+		if(this.input2 != null) {
+		return this.input2.getSource();
+		} else {
+		return null;
+		}
 	}
 
 	@Override
@@ -156,7 +158,7 @@ public abstract class TwoInputNode extends OptimizerNode {
 		final Configuration conf = getPactContract().getParameters();
 		ShipStrategyType preSet1 = null;
 		ShipStrategyType preSet2 = null;
-		
+
 		String shipStrategy = conf.getString(PactCompiler.HINT_SHIP_STRATEGY, null);
 		if (shipStrategy != null) {
 			if (PactCompiler.HINT_SHIP_STRATEGY_FORWARD.equals(shipStrategy)) {
@@ -209,13 +211,13 @@ public abstract class TwoInputNode extends OptimizerNode {
 				throw new CompilerException("Unknown hint for shipping strategy of input two: " + shipStrategy);
 			}
 		}
-		
+
 		// get the predecessors
 		DualInputOperator<?> contr = (DualInputOperator<?>) getPactContract();
-		
+
 		List<Operator> leftPreds = contr.getFirstInputs();
 		List<Operator> rightPreds = contr.getSecondInputs();
-		
+
 		OptimizerNode pred1;
 		PactConnection conn1;
 		if (leftPreds.size() == 0) {
@@ -234,7 +236,7 @@ public abstract class TwoInputNode extends OptimizerNode {
 		// create the connection and add it
 		this.input1 = conn1;
 		pred1.addOutgoingConnection(conn1);
-		
+
 		OptimizerNode pred2;
 		PactConnection conn2;
 		if (rightPreds.size() == 0) {
@@ -254,9 +256,9 @@ public abstract class TwoInputNode extends OptimizerNode {
 		this.input2 = conn2;
 		pred2.addOutgoingConnection(conn2);
 	}
-	
+
 	protected abstract List<OperatorDescriptorDual> getPossibleProperties();
-	
+
 	@Override
 	public boolean isMemoryConsumer() {
 		for (OperatorDescriptorDual dpd : this.possibleProperties) {
@@ -275,30 +277,30 @@ public abstract class TwoInputNode extends OptimizerNode {
 
 	@Override
 	public void computeInterestingPropertiesForInputs(CostEstimator estimator) {
-		// get what we inherit and what is preserved by our user code 
+		// get what we inherit and what is preserved by our user code
 		final InterestingProperties props1 = getInterestingProperties().filterByCodeAnnotations(this, 0);
 		final InterestingProperties props2 = getInterestingProperties().filterByCodeAnnotations(this, 1);
-		
+
 		// add all properties relevant to this node
 		for (OperatorDescriptorDual dpd : this.possibleProperties) {
 			for (GlobalPropertiesPair gp : dpd.getPossibleGlobalProperties()) {
 				// input 1
 				props1.addGlobalProperties(gp.getProperties1());
-				
+
 				// input 2
 				props2.addGlobalProperties(gp.getProperties2());
 			}
 			for (LocalPropertiesPair lp : dpd.getPossibleLocalProperties()) {
 				// input 1
 				props1.addLocalProperties(lp.getProperties1());
-				
+
 				// input 2
 				props2.addLocalProperties(lp.getProperties2());
 			}
 		}
 		this.input1.setInterestingProperties(props1);
 		this.input2.setInterestingProperties(props2);
-		
+
 		for (PactConnection conn : getBroadcastConnections()) {
 			conn.setInterestingProperties(new InterestingProperties());
 		}
@@ -318,7 +320,7 @@ public abstract class TwoInputNode extends OptimizerNode {
 		// calculate alternative sub-plans for predecessor
 		final Set<RequestedGlobalProperties> intGlobal1 = this.input1.getInterestingProperties().getGlobalProperties();
 		final Set<RequestedGlobalProperties> intGlobal2 = this.input2.getInterestingProperties().getGlobalProperties();
-		
+
 		// calculate alternative sub-plans for broadcast inputs
 		final List<Set<? extends NamedChannel>> broadcastPlanChannels = new ArrayList<Set<? extends NamedChannel>>();
 		List<PactConnection> broadcastConnections = getBroadcastConnections();
@@ -327,7 +329,7 @@ public abstract class TwoInputNode extends OptimizerNode {
 			PactConnection broadcastConnection = broadcastConnections.get(i);
 			String broadcastConnectionName = broadcastConnectionNames.get(i);
 			List<PlanNode> broadcastPlanCandidates = broadcastConnection.getSource().getAlternativePlans(estimator);
-			// wrap the plan candidates in named channels 
+			// wrap the plan candidates in named channels
 			HashSet<NamedChannel> broadcastChannels = new HashSet<NamedChannel>(broadcastPlanCandidates.size());
 			for (PlanNode plan: broadcastPlanCandidates) {
 				final NamedChannel c = new NamedChannel(broadcastConnectionName, plan);
@@ -336,7 +338,7 @@ public abstract class TwoInputNode extends OptimizerNode {
 			}
 			broadcastPlanChannels.add(broadcastChannels);
 		}
-		
+
 		final GlobalPropertiesPair[] allGlobalPairs;
 		final LocalPropertiesPair[] allLocalPairs;
 		{
@@ -349,9 +351,9 @@ public abstract class TwoInputNode extends OptimizerNode {
 			allGlobalPairs = (GlobalPropertiesPair[]) pairsGlob.toArray(new GlobalPropertiesPair[pairsGlob.size()]);
 			allLocalPairs = (LocalPropertiesPair[]) pairsLoc.toArray(new LocalPropertiesPair[pairsLoc.size()]);
 		}
-		
+
 		final ArrayList<PlanNode> outputPlans = new ArrayList<PlanNode>();
-		
+
 		final int dop = getDegreeOfParallelism();
 		final int subPerInstance = getSubtasksPerInstance();
 		final int numInstances = dop / subPerInstance + (dop % subPerInstance == 0 ? 0 : 1);
@@ -361,38 +363,38 @@ public abstract class TwoInputNode extends OptimizerNode {
 		final int inDop2 = getSecondPredecessorNode().getDegreeOfParallelism();
 		final int inSubPerInstance2 = getSecondPredecessorNode().getSubtasksPerInstance();
 		final int inNumInstances2 = inDop2 / inSubPerInstance2 + (inDop2 % inSubPerInstance2 == 0 ? 0 : 1);
-		
+
 		final boolean globalDopChange1 = numInstances != inNumInstances1;
 		final boolean globalDopChange2 = numInstances != inNumInstances2;
 		final boolean localDopChange1 = numInstances == inNumInstances1 & subPerInstance != inSubPerInstance1;
 		final boolean localDopChange2 = numInstances == inNumInstances2 & subPerInstance != inSubPerInstance2;
-		
+
 		// enumerate all pairwise combination of the children's plans together with
 		// all possible operator strategy combination
-		
+
 		// create all candidates
 		for (PlanNode child1 : subPlans1) {
 			for (PlanNode child2 : subPlans2) {
-				
+
 				// check that the children go together. that is the case if they build upon the same
-				// candidate at the joined branch plan. 
+				// candidate at the joined branch plan.
 				if (!areBranchCompatible(child1, child2)) {
 					continue;
 				}
-				
+
 				for (RequestedGlobalProperties igps1: intGlobal1) {
 					// create a candidate channel for the first input. mark it cached, if the connection says so
 					final Channel c1 = new Channel(child1, this.input1.getMaterializationMode());
 					if (this.input1.getShipStrategy() == null) {
 						// free to choose the ship strategy
 						igps1.parameterizeChannel(c1, globalDopChange1, localDopChange1);
-						
+
 						// if the DOP changed, make sure that we cancel out properties, unless the
 						// ship strategy preserves/establishes them even under changing DOPs
 						if (globalDopChange1 && !c1.getShipStrategy().isNetworkStrategy()) {
 							c1.getGlobalProperties().reset();
 						}
-						if (localDopChange1 && !(c1.getShipStrategy().isNetworkStrategy() || 
+						if (localDopChange1 && !(c1.getShipStrategy().isNetworkStrategy() ||
 									c1.getShipStrategy().compensatesForLocalDOPChanges())) {
 							c1.getGlobalProperties().reset();
 						}
@@ -403,27 +405,27 @@ public abstract class TwoInputNode extends OptimizerNode {
 						} else {
 							c1.setShipStrategy(this.input1.getShipStrategy());
 						}
-						
+
 						if (globalDopChange1) {
 							c1.adjustGlobalPropertiesForFullParallelismChange();
 						} else if (localDopChange1) {
 							c1.adjustGlobalPropertiesForLocalParallelismChange();
 						}
 					}
-					
+
 					for (RequestedGlobalProperties igps2: intGlobal2) {
 						// create a candidate channel for the first input. mark it cached, if the connection says so
 						final Channel c2 = new Channel(child2, this.input2.getMaterializationMode());
 						if (this.input2.getShipStrategy() == null) {
 							// free to choose the ship strategy
 							igps2.parameterizeChannel(c2, globalDopChange2, localDopChange2);
-							
+
 							// if the DOP changed, make sure that we cancel out properties, unless the
 							// ship strategy preserves/establishes them even under changing DOPs
 							if (globalDopChange2 && !c2.getShipStrategy().isNetworkStrategy()) {
 								c2.getGlobalProperties().reset();
 							}
-							if (localDopChange2 && !(c2.getShipStrategy().isNetworkStrategy() || 
+							if (localDopChange2 && !(c2.getShipStrategy().isNetworkStrategy() ||
 										c2.getShipStrategy().compensatesForLocalDOPChanges())) {
 								c2.getGlobalProperties().reset();
 							}
@@ -434,22 +436,22 @@ public abstract class TwoInputNode extends OptimizerNode {
 							} else {
 								c2.setShipStrategy(this.input2.getShipStrategy());
 							}
-							
+
 							if (globalDopChange2) {
 								c2.adjustGlobalPropertiesForFullParallelismChange();
 							} else if (localDopChange2) {
 								c2.adjustGlobalPropertiesForLocalParallelismChange();
 							}
 						}
-						
+
 						/* ********************************************************************
 						 * NOTE: Depending on how we proceed with different partitionings,
 						 *       we might at some point need a compatibility check between
 						 *       the pairs of global properties.
 						 * *******************************************************************/
-						
+
 						for (GlobalPropertiesPair gpp : allGlobalPairs) {
-							if (gpp.getProperties1().isMetBy(c1.getGlobalProperties()) && 
+							if (gpp.getProperties1().isMetBy(c1.getGlobalProperties()) &&
 								gpp.getProperties2().isMetBy(c2.getGlobalProperties()) )
 							{
 								// we form a valid combination, so create the local candidates
@@ -458,7 +460,7 @@ public abstract class TwoInputNode extends OptimizerNode {
 								break;
 							}
 						}
-						
+
 						// break the loop over input2's possible global properties, if the property
 						// is fixed via a hint. All the properties are overridden by the hint anyways,
 						// so we can stop after the first
@@ -466,7 +468,7 @@ public abstract class TwoInputNode extends OptimizerNode {
 							break;
 						}
 					}
-					
+
 					// break the loop over input1's possible global properties, if the property
 					// is fixed via a hint. All the properties are overridden by the hint anyways,
 					// so we can stop after the first
@@ -487,14 +489,14 @@ public abstract class TwoInputNode extends OptimizerNode {
 		this.cachedPlans = outputPlans;
 		return outputPlans;
 	}
-	
-	protected void addLocalCandidates(Channel template1, Channel template2, List<Set<? extends NamedChannel>> broadcastPlanChannels, 
+
+	protected void addLocalCandidates(Channel template1, Channel template2, List<Set<? extends NamedChannel>> broadcastPlanChannels,
 			RequestedGlobalProperties rgps1, RequestedGlobalProperties rgps2,
 			List<PlanNode> target, LocalPropertiesPair[] validLocalCombinations, CostEstimator estimator)
 	{
 		final LocalProperties lp1 = template1.getLocalPropertiesAfterShippingOnly();
 		final LocalProperties lp2 = template2.getLocalPropertiesAfterShippingOnly();
-		
+
 		for (RequestedLocalProperties ilp1 : this.input1.getInterestingProperties().getLocalProperties()) {
 			final Channel in1 = template1.clone();
 			if (ilp1.isMetBy(lp1)) {
@@ -502,7 +504,7 @@ public abstract class TwoInputNode extends OptimizerNode {
 			} else {
 				ilp1.parameterizeChannel(in1);
 			}
-			
+
 			for (RequestedLocalProperties ilp2 : this.input2.getInterestingProperties().getLocalProperties()) {
 				final Channel in2 = template2.clone();
 				if (ilp2.isMetBy(lp2)) {
@@ -510,7 +512,7 @@ public abstract class TwoInputNode extends OptimizerNode {
 				} else {
 					ilp2.parameterizeChannel(in2);
 				}
-				
+
 				allPossibleLoop:
 				for (OperatorDescriptorDual dps: this.possibleProperties) {
 					for (LocalPropertiesPair lpp : dps.getPossibleLocalProperties()) {
@@ -520,7 +522,7 @@ public abstract class TwoInputNode extends OptimizerNode {
 							// valid combination
 							// for non trivial local properties, we need to check that they are co compatible
 							// (such as when some sort order is requested, that both are the same sort order
-							if (dps.areCoFulfilled(lpp.getProperties1(), lpp.getProperties2(), 
+							if (dps.areCoFulfilled(lpp.getProperties1(), lpp.getProperties2(),
 								in1.getLocalProperties(), in2.getLocalProperties()))
 							{
 								// all right, co compatible
@@ -536,7 +538,7 @@ public abstract class TwoInputNode extends OptimizerNode {
 			}
 		}
 	}
-	
+
 	protected void instantiate(OperatorDescriptorDual operator, Channel in1, Channel in2,
 			List<Set<? extends NamedChannel>> broadcastPlanChannels, List<PlanNode> target, CostEstimator estimator,
 			RequestedGlobalProperties globPropsReq1, RequestedGlobalProperties globPropsReq2,
@@ -548,17 +550,17 @@ public abstract class TwoInputNode extends OptimizerNode {
 				PlanNode bcSource = nc.getSource();
 				PlanNode inputSource1 = in1.getSource();
 				PlanNode inputSource2 = in2.getSource();
-				
+
 				if (!(areBranchCompatible(bcSource, inputSource1) || areBranchCompatible(bcSource, inputSource2))) {
 					return;
 				}
 			}
-			
+
 			placePipelineBreakersIfNecessary(operator.getStrategy(), in1, in2);
-			
+
 			DualInputPlanNode node = operator.instantiate(in1, in2, this);
 			node.setBroadcastInputs(broadcastChannelsCombination);
-			
+
 			GlobalProperties gp1 = in1.getGlobalProperties().clone().filterByNodesConstantSet(this, 0);
 			GlobalProperties gp2 = in2.getGlobalProperties().clone().filterByNodesConstantSet(this, 1);
 			GlobalProperties combined = operator.computeGlobalProperties(gp1, gp2);
@@ -566,13 +568,13 @@ public abstract class TwoInputNode extends OptimizerNode {
 			LocalProperties lp1 = in1.getLocalProperties().clone().filterByNodesConstantSet(this, 0);
 			LocalProperties lp2 = in2.getLocalProperties().clone().filterByNodesConstantSet(this, 1);
 			LocalProperties locals = operator.computeLocalProperties(lp1, lp2);
-			
+
 			node.initProperties(combined, locals);
 			node.updatePropertiesWithUniqueSets(getUniqueFields());
 			target.add(node);
 		}
 	}
-	
+
 	protected void placePipelineBreakersIfNecessary(DriverStrategy strategy, Channel in1, Channel in2) {
 		// before we instantiate, check for deadlocks by tracing back to the open branches and checking
 		// whether either no input, or all of them have a dam
@@ -581,7 +583,7 @@ public abstract class TwoInputNode extends OptimizerNode {
 			boolean damOnAllLeftPaths = true;
 			boolean someDamOnRightPaths = false;
 			boolean damOnAllRightPaths = true;
-			
+
 			if (strategy.firstDam() == DamBehavior.FULL_DAM || in1.getLocalStrategy().dams() || in1.getTempMode().breaksPipeline()) {
 				someDamOnLeftPaths = true;
 			} else {
@@ -599,7 +601,7 @@ public abstract class TwoInputNode extends OptimizerNode {
 					}
 				}
 			}
-			
+
 			if (strategy.secondDam() == DamBehavior.FULL_DAM || in2.getLocalStrategy().dams() || in2.getTempMode().breaksPipeline()) {
 				someDamOnRightPaths = true;
 			} else {
@@ -617,7 +619,7 @@ public abstract class TwoInputNode extends OptimizerNode {
 					}
 				}
 			}
-			
+
 			// okay combinations are both all dam or both no dam
 			if ( (damOnAllLeftPaths & damOnAllRightPaths) | (!someDamOnLeftPaths & !someDamOnRightPaths) ) {
 				// good, either both materialize already on the way, or both fully pipeline
@@ -626,7 +628,7 @@ public abstract class TwoInputNode extends OptimizerNode {
 					// right needs a pipeline breaker
 					in2.setTempMode(in2.getTempMode().makePipelineBreaker());
 				}
-				
+
 				if (someDamOnRightPaths & !damOnAllLeftPaths) {
 					// right needs a pipeline breaker
 					in1.setTempMode(in1.getTempMode().makePipelineBreaker());
@@ -634,12 +636,12 @@ public abstract class TwoInputNode extends OptimizerNode {
 			}
 		}
 	}
-	
+
 	/**
 	 * Checks if the subPlan has a valid outputSize estimation.
-	 * 
+	 *
 	 * @param subPlan The subPlan to check.
-	 * 
+	 *
 	 * @return {@code True}, if all values are valid, {@code false} otherwise
 	 */
 	protected boolean haveValidOutputEstimates(OptimizerNode subPlan) {
@@ -655,22 +657,22 @@ public abstract class TwoInputNode extends OptimizerNode {
 		// handle the data flow branching for the regular inputs
 		addClosedBranches(getFirstPredecessorNode().closedBranchingNodes);
 		addClosedBranches(getSecondPredecessorNode().closedBranchingNodes);
-		
+
 		List<UnclosedBranchDescriptor> result1 = getFirstPredecessorNode().getBranchesForParent(getFirstIncomingConnection());
 		List<UnclosedBranchDescriptor> result2 = getSecondPredecessorNode().getBranchesForParent(getSecondIncomingConnection());
 
 		ArrayList<UnclosedBranchDescriptor> inputsMerged = new ArrayList<UnclosedBranchDescriptor>();
 		mergeLists(result1, result2, inputsMerged);
-		
+
 		// handle the data flow branching for the broadcast inputs
 		List<UnclosedBranchDescriptor> result = computeUnclosedBranchStackForBroadcastInputs(inputsMerged);
-		
+
 		this.openBranches = (result == null || result.isEmpty()) ? Collections.<UnclosedBranchDescriptor>emptyList() : result;
 	}
 
 	/**
 	 * Returns the key fields of the given input.
-	 * 
+	 *
 	 * @param input The input for which key fields must be returned.
 	 * @return the key fields of the given input.
 	 */
@@ -682,12 +684,12 @@ public abstract class TwoInputNode extends OptimizerNode {
 		}
 	}
 
-	
+
 	@Override
 	public boolean isFieldConstant(int input, int fieldNumber) {
 		DualInputOperator<?> c = getPactContract();
 		DualInputSemanticProperties semanticProperties = c.getSemanticProperties();
-		
+
 		switch(input) {
 		case 0:
 			if (semanticProperties != null) {
@@ -708,28 +710,29 @@ public abstract class TwoInputNode extends OptimizerNode {
 		default:
 			throw new IndexOutOfBoundsException();
 		}
-		
+
 		return false;
 	}
-	
-	
+
+
 	// --------------------------------------------------------------------------------------------
 	//                                     Miscellaneous
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public void accept(Visitor<OptimizerNode> visitor) {
 		if (visitor.preVisit(this)) {
-			if (this.input1 == null || this.input2 == null)
-				throw new CompilerException();
-			
+			if (this.input1 == null || this.input2 == null) {
+			throw new CompilerException();
+			}
+
 			getFirstPredecessorNode().accept(visitor);
 			getSecondPredecessorNode().accept(visitor);
-			
+
 			for (PactConnection connection : getBroadcastConnections()) {
 				connection.getSource().accept(visitor);
 			}
-			
+
 			visitor.postVisit(this);
 		}
 	}

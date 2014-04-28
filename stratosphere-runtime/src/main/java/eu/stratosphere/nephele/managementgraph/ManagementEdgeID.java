@@ -20,7 +20,7 @@ import eu.stratosphere.nephele.io.channels.ChannelID;
  * A management edge ID uniquely identifies a {@link ManagementEdge}.
  * <p>
  * This class is not thread-safe.
- * 
+ *
  */
 public class ManagementEdgeID extends AbstractID {
 
@@ -33,7 +33,7 @@ public class ManagementEdgeID extends AbstractID {
 	/**
 	 * A ManagementEdgeID is derived from the #{@link ChannelID} of the corresponding
 	 * output channel in the execution graph.
-	 * 
+	 *
 	 * @param source
 	 *        ID of the corresponding output channel
 	 */
@@ -44,7 +44,7 @@ public class ManagementEdgeID extends AbstractID {
 
 	/**
 	 * Converts the management edge ID into a {@link ChannelID}.
-	 * 
+	 *
 	 * @return the corresponding channelID.
 	 */
 	public ChannelID toChannelID() {

@@ -18,6 +18,6 @@ import eu.stratosphere.util.Collector;
 
 
 public interface GenericFlatMap<T, O> extends Function {
-	
+
 	void flatMap(T record, Collector<O> out) throws Exception;
 }

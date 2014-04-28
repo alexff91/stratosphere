@@ -28,7 +28,7 @@ import org.apache.commons.logging.LogFactory;
  * search.
  * <p>
  * This class is not thread-safe.
- * 
+ *
  */
 public class ExecutionGraphIterator implements Iterator<ExecutionVertex> {
 
@@ -74,7 +74,7 @@ public class ExecutionGraphIterator implements Iterator<ExecutionVertex> {
 
 	/**
 	 * Auxiliary class which stores which vertices have already been visited.
-	 * 
+	 *
 	 */
 	private static class TraversalEntry {
 
@@ -95,7 +95,7 @@ public class ExecutionGraphIterator implements Iterator<ExecutionVertex> {
 
 		/**
 		 * Constructs a new traversal entry.
-		 * 
+		 *
 		 * @param executionVertex
 		 *        the execution vertex this entry belongs to
 		 * @param currentGate
@@ -111,7 +111,7 @@ public class ExecutionGraphIterator implements Iterator<ExecutionVertex> {
 
 		/**
 		 * Returns the execution vertex this entry belongs to.
-		 * 
+		 *
 		 * @return the execution vertex this entry belongs to
 		 */
 		public ExecutionVertex getExecutionVertex() {
@@ -120,7 +120,7 @@ public class ExecutionGraphIterator implements Iterator<ExecutionVertex> {
 
 		/**
 		 * Returns the gate index to use to visit the next vertex.
-		 * 
+		 *
 		 * @return the gate index to use to visit the next vertex
 		 */
 		public int getCurrentGate() {
@@ -129,7 +129,7 @@ public class ExecutionGraphIterator implements Iterator<ExecutionVertex> {
 
 		/**
 		 * Returns the channel index to use to visit the next vertex.
-		 * 
+		 *
 		 * @return the channel index to use to visit the next vertex
 		 */
 		public int getCurrentChannel() {
@@ -161,7 +161,7 @@ public class ExecutionGraphIterator implements Iterator<ExecutionVertex> {
 
 	/**
 	 * Creates a new execution graph iterator.
-	 * 
+	 *
 	 * @param executionGraph
 	 *        the execution graph that should be traversed
 	 * @param forward
@@ -174,7 +174,7 @@ public class ExecutionGraphIterator implements Iterator<ExecutionVertex> {
 
 	/**
 	 * Creates a new execution graph iterator.
-	 * 
+	 *
 	 * @param executionGraph
 	 *        the execution graph that should be traversed
 	 * @param startStage
@@ -222,7 +222,7 @@ public class ExecutionGraphIterator implements Iterator<ExecutionVertex> {
 	 * traverse only specific parts of the graph starting at <code>startVertex</code>.
 	 * The iterator will not switch to the next input/output vertex of an output/input vertex
 	 * has been reached.
-	 * 
+	 *
 	 * @param executionGraph
 	 *        the execution graph that should be traversed
 	 * @param startVertex
@@ -327,7 +327,7 @@ public class ExecutionGraphIterator implements Iterator<ExecutionVertex> {
 	/**
 	 * Returns a candidate vertex which could potentially be visited next because it is reachable from the
 	 * currently considered vertex.
-	 * 
+	 *
 	 * @param te
 	 *        the traversal entry for the current source vertex
 	 * @param forward

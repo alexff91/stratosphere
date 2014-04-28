@@ -49,7 +49,7 @@ public class AnonymousWordCount implements Program {
 		FileDataSource source = new FileDataSource(new TextInputFormat(), inputPath);
 
 		MapOperator mapper = MapOperator.builder(new MapFunction() {
-			
+
 			private static final long serialVersionUID = 1L;
 
 			public void map(Record record, Collector<Record> collector) throws Exception {
@@ -94,7 +94,7 @@ public class AnonymousWordCount implements Program {
 			.fieldDelimiter(' ')
 			.field(StringValue.class, 0)
 			.field(IntValue.class, 1);
-		
+
 		Plan plan = new Plan(out, "WordCount Example", defaultParallelism);
 		return plan;
 	}

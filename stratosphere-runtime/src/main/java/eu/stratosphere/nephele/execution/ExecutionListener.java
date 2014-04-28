@@ -19,7 +19,7 @@ import eu.stratosphere.nephele.jobgraph.JobID;
 /**
  * This interface must be implemented by classes which should be able to receive notifications about
  * changes of a task's execution state.
- * 
+ *
  */
 public interface ExecutionListener {
 
@@ -27,7 +27,7 @@ public interface ExecutionListener {
 	 * Returns the priority of the execution listener object. If multiple execution listener objects are registered for
 	 * a given vertex, the priority determines in which order they will be called. Priorities are expressed as
 	 * non-negative integer values. The lower the integer value, the higher the call priority.
-	 * 
+	 *
 	 * @return the priority of this execution listener
 	 */
 	int getPriority();
@@ -38,7 +38,7 @@ public interface ExecutionListener {
 	 * value of <code>newExecutionState</code> may be out-dated by the time a particular execution listener is called.
 	 * To determine the most recent state of the respective task, it is recommended to store a reference on the
 	 * execution that represents it and then call <code>getExecutionState()</code> on the vertex within this method.
-	 * 
+	 *
 	 * @param jobID
 	 *        the ID of the job the task belongs to
 	 * @param vertexID
@@ -53,7 +53,7 @@ public interface ExecutionListener {
 
 	/**
 	 * Called when the user task has started a new thread.
-	 * 
+	 *
 	 * @param jobID
 	 *        the ID of the job the task belongs to
 	 * @param vertexID
@@ -65,7 +65,7 @@ public interface ExecutionListener {
 
 	/**
 	 * Called when a thread spawn by a user task has finished.
-	 * 
+	 *
 	 * @param jobID
 	 *        the ID of the job the task belongs to
 	 * @param vertexID

@@ -21,20 +21,20 @@ import eu.stratosphere.compiler.operators.OperatorDescriptorSingle;
 
 
 public class UnaryOperatorNode extends SingleInputNode {
-	
+
 	private final List<OperatorDescriptorSingle> operator;
-	
+
 	private final String name;
 
 
-	
+
 	public UnaryOperatorNode(String name, FieldSet keys, OperatorDescriptorSingle ... operators) {
 		this(name, keys, Arrays.asList(operators));
 	}
-	
+
 	public UnaryOperatorNode(String name, FieldSet keys, List<OperatorDescriptorSingle> operators) {
 		super(keys);
-		
+
 		this.operator = operators;
 		this.name = name;
 	}
@@ -48,7 +48,7 @@ public class UnaryOperatorNode extends SingleInputNode {
 	public String getName() {
 		return this.name;
 	}
-	
+
 	public boolean isFieldConstant(int input, int fieldNumber) {
 		if (input != 0) {
 			throw new IndexOutOfBoundsException();

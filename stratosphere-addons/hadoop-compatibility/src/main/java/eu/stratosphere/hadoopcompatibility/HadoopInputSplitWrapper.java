@@ -29,24 +29,24 @@ public class HadoopInputSplitWrapper implements InputSplit {
 	public JobConf jobConf;
 	private int splitNumber;
 	private String hadoopInputSplitTypeName;
-	
-	
+
+
 	public org.apache.hadoop.mapred.InputSplit getHadoopInputSplit() {
 		return hadoopInputSplit;
 	}
-	
-	
+
+
 	public HadoopInputSplitWrapper() {
 		super();
 	}
-	
-	
+
+
 	public HadoopInputSplitWrapper(org.apache.hadoop.mapred.InputSplit hInputSplit, JobConf jobconf) {
 		this.hadoopInputSplit = hInputSplit;
 		this.hadoopInputSplitTypeName = hInputSplit.getClass().getCanonicalName();
 		this.jobConf=jobconf;
 	}
-	
+
 	@Override
 	public void write(DataOutput out) throws IOException {
 		out.writeInt(splitNumber);
@@ -77,7 +77,7 @@ public class HadoopInputSplitWrapper implements InputSplit {
 	public void setSplitNumber(int splitNumber) {
 		this.splitNumber = splitNumber;
 	}
-	
+
 	public void setHadoopInputSplit(
 			org.apache.hadoop.mapred.InputSplit hadoopInputSplit) {
 		this.hadoopInputSplit = hadoopInputSplit;

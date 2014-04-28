@@ -69,7 +69,7 @@ import eu.stratosphere.util.StringUtils;
  * instancemanager.cluster.type. = m1.large,4,2,2048,10,10
  * instancemanager.cluster.type. = m1.xlarge,8,4,8192,20,20
  * instancemanager.cluster.type. = c1.xlarge,8,4,16384,20,40
- * 
+ *
  * # default instance type
  * instancemanager.cluster.defaulttype = 1 (pointing to m1.small)
  * </code> Each instance is expected to run exactly one {@link eu.stratosphere.nephele.taskmanager.TaskManager}. When
@@ -80,7 +80,7 @@ import eu.stratosphere.util.StringUtils;
  * partitioning larger instances (compute nodes) into smaller, less powerful instances.
  * <p>
  * This class is thread-safe.
- * 
+ *
  */
 public class ClusterManager implements InstanceManager {
 
@@ -406,7 +406,7 @@ public class ClusterManager implements InstanceManager {
 	/**
 	 * Attempts to load the current network topology from the slave file. If locating or reading the slave file fails,
 	 * the method will return an empty network topology.
-	 * 
+	 *
 	 * @return the network topology as read from the slave file
 	 */
 	private NetworkTopology loadNetworkTopology() {
@@ -451,7 +451,7 @@ public class ClusterManager implements InstanceManager {
 	 * format of the key is <code>instancemanager.cluster.type.X</code> where X is an ongoing integer number starting at
 	 * 1. The format of the value follows the pattern
 	 * "instancename,numComputeUnits,numCores,memorySize,diskCapacity,pricePerHour" (see {@link InstanceType}).
-	 * 
+	 *
 	 * @return list of available instance types sorted by price (cheapest to
 	 *         most expensive)
 	 */
@@ -566,7 +566,7 @@ public class ClusterManager implements InstanceManager {
 	/**
 	 * Creates a new {@link ClusterInstance} object to manage instances that can
 	 * be executed on that host.
-	 * 
+	 *
 	 * @param instanceConnectionInfo
 	 *        the connection information for the instance
 	 * @param hardwareDescription
@@ -650,7 +650,7 @@ public class ClusterManager implements InstanceManager {
 	 * Attempts to match the hardware characteristics provided by the {@link HardwareDescription} object with one
 	 * of the instance types set in the configuration. The matching is pessimistic, i.e. the hardware characteristics of
 	 * the chosen instance type never exceed the actually reported characteristics from the hardware description.
-	 * 
+	 *
 	 * @param hardwareDescription
 	 *        the hardware description as reported by the instance
 	 * @return the best matching instance type or <code>null</code> if no matching instance type can be found
@@ -784,7 +784,7 @@ public class ClusterManager implements InstanceManager {
 	 * Attempts to allocate a slice of the given type for the given job. The method first attempts to allocate this
 	 * slice by finding a physical host which exactly matches the given instance type. If this attempt failed, it tries
 	 * to allocate the slice by partitioning the resources of a more powerful host.
-	 * 
+	 *
 	 * @param jobID
 	 *        the ID of the job the slice shall be allocated for
 	 * @param instanceType
@@ -1030,7 +1030,7 @@ public class ClusterManager implements InstanceManager {
 	/**
 	 * Calculates the instance accommodation matrix which stores how many times a particular instance type can be
 	 * accommodated inside another instance type based on the list of available instance types.
-	 * 
+	 *
 	 * @return the instance accommodation matrix
 	 */
 	private int[][] calculateInstanceAccommodationMatrix() {
@@ -1071,7 +1071,7 @@ public class ClusterManager implements InstanceManager {
 	/**
 	 * Returns how many times the instance type stored at index <code>sourceTypeIndex</code> can be accommodated inside
 	 * the instance type stored at index <code>targetTypeIndex</code> in the list of available instance types.
-	 * 
+	 *
 	 * @param sourceTypeIndex
 	 *        the index of the source instance type in the list of available instance types
 	 * @param targetTypeIndex

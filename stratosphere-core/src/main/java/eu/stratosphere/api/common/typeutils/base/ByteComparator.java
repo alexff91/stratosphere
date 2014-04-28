@@ -25,7 +25,7 @@ public final class ByteComparator extends BasicTypeComparator<Byte> {
 
 	private static final long serialVersionUID = 1L;
 
-	
+
 	public ByteComparator(boolean ascending) {
 		super(ascending);
 	}

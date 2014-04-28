@@ -19,11 +19,11 @@ import eu.stratosphere.types.Record;
 
 
 /**
- * 
+ *
  */
 public final class EdgeWithDegreesOutputFormat extends DelimitedOutputFormat {
 	private static final long serialVersionUID = 1L;
-	
+
 	private final StringBuilder line = new StringBuilder();
 
 	/* (non-Javadoc)
@@ -35,7 +35,7 @@ public final class EdgeWithDegreesOutputFormat extends DelimitedOutputFormat {
 		final int e2 = rec.getField(1, IntValue.class).getValue();
 		final int e3 = rec.getField(2, IntValue.class).getValue();
 		final int e4 = rec.getField(3, IntValue.class).getValue();
-		
+
 		this.line.setLength(0);
 		this.line.append(e1);
 		this.line.append(',');
@@ -44,7 +44,7 @@ public final class EdgeWithDegreesOutputFormat extends DelimitedOutputFormat {
 		this.line.append(e2);
 		this.line.append(',');
 		this.line.append(e4);
-		
+
 		if (target.length >= line.length()) {
 			for (int i = 0; i < line.length(); i++) {
 				target[i] = (byte) line.charAt(i);

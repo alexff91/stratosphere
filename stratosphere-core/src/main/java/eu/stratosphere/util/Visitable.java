@@ -25,7 +25,7 @@ package eu.stratosphere.util;
  * @see Visitor
  */
 public interface Visitable<T extends Visitable<T>> {
-	
+
 	/**
 	 * Contains the logic to invoke the visitor and continue the traversal.
 	 * Typically invokes the pre-visit method of the visitor, then sends the visitor to the children (or predecessors)
@@ -34,7 +34,7 @@ public interface Visitable<T extends Visitable<T>> {
 	 * A typical code example is the following:
 	 * <code>
 	 * public void accept(Visitor<Operator> visitor) {
-	 *     boolean descend = visitor.preVisit(this);	
+	 *     boolean descend = visitor.preVisit(this);
 	 *     if (descend) {
 	 *         if (this.input != null) {
 	 *             this.input.accept(visitor);
@@ -43,9 +43,9 @@ public interface Visitable<T extends Visitable<T>> {
 	 *     }
 	 * }
 	 * </code>
-	 * 
+	 *
 	 * @param visitor The visitor to be called with this object as the parameter.
-	 * 
+	 *
 	 * @see Visitor#preVisit(Visitable)
 	 * @see Visitor#postVisit(Visitable)
 	 */

@@ -31,11 +31,11 @@ public interface JoinTaskIterator<V1, V2, O>
 	/**
 	 * General-purpose open method. Initializes the internal strategy (for example triggers the
 	 * sorting of the inputs or starts building hash tables).
-	 * 
+	 *
 	 * @throws IOException Thrown, if an I/O error occurred while preparing the data. An example is a failing
 	 *                     external sort.
 	 * @throws MemoryAllocationException Thrown, if the internal strategy could not allocate the memory it needs.
-	 * @throws InterruptedException Thrown, if the thread was interrupted during the initialization process. 
+	 * @throws InterruptedException Thrown, if the thread was interrupted during the initialization process.
 	 */
 	void open() throws IOException, MemoryAllocationException, InterruptedException;
 
@@ -48,14 +48,14 @@ public interface JoinTaskIterator<V1, V2, O>
 	/**
 	 * Moves the internal pointer to the next key that both inputs share. It calls the match stub with the
 	 * cross product of all values that share the same key.
-	 * 
+	 *
 	 * @param matchFunction The match stub containing the match function which is called with the keys.
 	 * @param collector The collector to pass the match function.
 	 * @return True, if a next key exists, false if no more keys exist.
 	 * @throws Exception Exceptions from the user code are forwarded.
 	 */
 	boolean callWithNextKey(GenericJoiner<V1, V2, O> matchFunction, Collector<O> collector) throws Exception;
-	
+
 	/**
 	 * Aborts the matching process. This extra abort method is supplied, because a significant time may pass while
 	 * calling the match stub with the cross product of all values that share the same key. A call to this abort

@@ -25,9 +25,9 @@ import eu.stratosphere.types.ShortValue;
 public class ShortValueSerializer extends TypeSerializer<ShortValue> {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	public static final ShortValueSerializer INSTANCE = new ShortValueSerializer();
-	
+
 	@Override
 	public ShortValue createInstance() {
 		return new ShortValue();

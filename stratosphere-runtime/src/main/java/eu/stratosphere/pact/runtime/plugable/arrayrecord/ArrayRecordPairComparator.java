@@ -28,10 +28,10 @@ import eu.stratosphere.util.InstantiationUtil;
 public class ArrayRecordPairComparator extends TypePairComparator<Value[], Value[]>
 {
 	private final int[] keyFields1, keyFields2;			// arrays with the positions of the keys in the records
-	
+
 	private final Key[] keyHolders1;					// arrays with mutable objects for the key types
-	
-	
+
+
 	public ArrayRecordPairComparator(int[] keyFieldsReference, int[] keyFieldsCandidate,
 			Class<? extends Key>[] keyTypes)
 	{
@@ -41,10 +41,10 @@ public class ArrayRecordPairComparator extends TypePairComparator<Value[], Value
 		}
 		this.keyFields1 = keyFieldsReference;
 		this.keyFields2 = keyFieldsCandidate;
-		
+
 		// instantiate fields to extract keys into
 		this.keyHolders1 = new Key[keyTypes.length];
-		
+
 		for (int i = 0; i < keyTypes.length; i++) {
 			if (keyTypes[i] == null) {
 				throw new NullPointerException("Key type " + i + " is null.");
@@ -52,7 +52,7 @@ public class ArrayRecordPairComparator extends TypePairComparator<Value[], Value
 			this.keyHolders1[i] = InstantiationUtil.instantiate(keyTypes[i], Key.class);
 		}
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
 
@@ -69,10 +69,11 @@ public class ArrayRecordPairComparator extends TypePairComparator<Value[], Value
 	public boolean equalToReference(Value[] candidate) {
 		for (int i = 0; i < this.keyFields2.length; i++) {
 			final Value k = candidate[this.keyFields2[i]];
-			if (k == null)
-				throw new NullKeyFieldException(this.keyFields2[i]);
-			else if (!k.equals(this.keyHolders1[i]))
-				return false;
+			if (k == null) {
+			throw new NullKeyFieldException(this.keyFields2[i]);
+			} else if (!k.equals(this.keyHolders1[i])) {
+			return false;
+			}
 		}
 		return true;
 	}
@@ -82,9 +83,9 @@ public class ArrayRecordPairComparator extends TypePairComparator<Value[], Value
 	public int compareToReference(Value[] candidate) {
 		for (int i = 0; i < this.keyFields2.length; i++) {
 			final Key k = (Key) candidate[this.keyFields2[i]];
-			if (k == null)
-				throw new NullKeyFieldException(this.keyFields2[i]);
-			else {
+			if (k == null) {
+			throw new NullKeyFieldException(this.keyFields2[i]);
+			} else {
 				final int comp = k.compareTo(this.keyHolders1[i]);
 				if (comp != 0) {
 					return comp;

@@ -51,7 +51,7 @@ public class ContextChecker implements Visitor<Operator> {
 	 * all contracts have the correct number of inputs and all inputs are of the
 	 * expected type. In case of an invalid plan an extended RuntimeException is
 	 * thrown.
-	 * 
+	 *
 	 * @param plan
 	 *        The PACT plan to check.
 	 */
@@ -96,7 +96,7 @@ public class ContextChecker implements Visitor<Operator> {
 	/**
 	 * Checks if DataSinkContract is correctly connected. In case that the
 	 * contract is incorrectly connected a RuntimeException is thrown.
-	 * 
+	 *
 	 * @param dataSinkContract
 	 *        DataSinkContract that is checked.
 	 */
@@ -107,11 +107,11 @@ public class ContextChecker implements Visitor<Operator> {
 			throw new MissingChildException();
 		}
 	}
-	
+
 	/**
 	 * Checks if FileDataSink is correctly connected. In case that the
 	 * contract is incorrectly connected a RuntimeException is thrown.
-	 * 
+	 *
 	 * @param fileSink
 	 *        FileDataSink that is checked.
 	 */
@@ -123,11 +123,11 @@ public class ContextChecker implements Visitor<Operator> {
 		if (path.length() == 0) {
 			throw new InvalidProgramException("File path of FileDataSink is empty string.");
 		}
-		
+
 		try {
 			Path p = new Path(path);
 			String scheme = p.toUri().getScheme();
-			
+
 			if (scheme == null) {
 				throw new InvalidProgramException("File path \"" + path + "\" of FileDataSink has no file system scheme (like 'file:// or hdfs://').");
 			}
@@ -136,11 +136,11 @@ public class ContextChecker implements Visitor<Operator> {
 		}
 		checkDataSink(fileSink);
 	}
-	
+
 	/**
 	 * Checks if FileDataSource is correctly connected. In case that the
 	 * contract is incorrectly connected a RuntimeException is thrown.
-	 * 
+	 *
 	 * @param fileSource
 	 *        FileDataSource that is checked.
 	 */
@@ -152,11 +152,11 @@ public class ContextChecker implements Visitor<Operator> {
 		if (path.length() == 0) {
 			throw new InvalidProgramException("File path of FileDataSource is empty string.");
 		}
-		
+
 		try {
 			Path p = new Path(path);
 			String scheme = p.toUri().getScheme();
-			
+
 			if (scheme == null) {
 				throw new InvalidProgramException("File path \"" + path + "\" of FileDataSource has no file system scheme (like 'file:// or hdfs://').");
 			}
@@ -168,7 +168,7 @@ public class ContextChecker implements Visitor<Operator> {
 	/**
 	 * Checks whether a SingleInputOperator is correctly connected. In case that
 	 * the contract is incorrectly connected a RuntimeException is thrown.
-	 * 
+	 *
 	 * @param singleInputContract
 	 *        SingleInputOperator that is checked.
 	 */
@@ -183,7 +183,7 @@ public class ContextChecker implements Visitor<Operator> {
 	/**
 	 * Checks whether a DualInputOperator is correctly connected. In case that
 	 * the contract is incorrectly connected a RuntimeException is thrown.
-	 * 
+	 *
 	 * @param dualInputContract
 	 *        DualInputOperator that is checked.
 	 */
@@ -195,7 +195,7 @@ public class ContextChecker implements Visitor<Operator> {
 			throw new MissingChildException();
 		}
 	}
-	
+
 	private void checkBulkIteration(BulkIteration iter) {
 		iter.validate();
 		checkSingleInputContract(iter);

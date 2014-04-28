@@ -22,7 +22,7 @@ import eu.stratosphere.nephele.io.channels.MemoryBufferPoolConnector;
  * This is a simple implementation of a {@link MemoryBufferPoolConnector} used for the server unit tests.
  * <p>
  * This class is thread-safe.
- * 
+ *
  */
 public final class BufferPoolConnector implements MemoryBufferPoolConnector {
 
@@ -33,7 +33,7 @@ public final class BufferPoolConnector implements MemoryBufferPoolConnector {
 
 	/**
 	 * Constructs a new buffer pool connector
-	 * 
+	 *
 	 * @param bufferPool
 	 *        a reference to the memory pool the byte buffer was originally taken from
 	 */

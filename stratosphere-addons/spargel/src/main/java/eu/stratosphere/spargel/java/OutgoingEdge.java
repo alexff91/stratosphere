@@ -24,32 +24,32 @@ package eu.stratosphere.spargel.java;
  *                    value, this type may be arbitrary.
  */
 public final class OutgoingEdge<VertexKey extends Comparable<VertexKey>, EdgeValue> implements java.io.Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	private VertexKey target;
-	
+
 	private EdgeValue edgeValue;
-	
+
 	void set(VertexKey target, EdgeValue edgeValue) {
 		this.target = target;
 		this.edgeValue = edgeValue;
 	}
-	
+
 	/**
 	 * Gets the target vertex id.
-	 * 
+	 *
 	 * @return The target vertex id.
 	 */
 	public VertexKey target() {
 		return target;
 	}
-	
+
 	/**
 	 * Gets the value associated with the edge. The value may be null if the iteration was initialized with
 	 * an edge data set without edge values.
 	 * Typical examples of edge values are weights or distances of the path represented by the edge.
-	 *  
+	 *
 	 * @return The value associated with the edge.
 	 */
 	public EdgeValue edgeValue() {

@@ -166,7 +166,7 @@ public final class LocalBufferPool implements BufferProvider {
 
 	/**
 	 * Sets the designated number of buffers for this local buffer cache.
-	 * 
+	 *
 	 * @param designatedNumberOfBuffers
 	 *        the designated number of buffers for this local buffer cache
 	 */

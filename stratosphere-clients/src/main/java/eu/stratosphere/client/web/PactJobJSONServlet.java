@@ -29,10 +29,10 @@ import eu.stratosphere.client.program.PackagedProgram;
 
 
 public class PactJobJSONServlet extends HttpServlet {
-	
+
 	/** Serial UID for serialization interoperability. */
 	private static final long serialVersionUID = 558077298726449201L;
-	
+
 	private static final Log LOG = LogFactory.getLog(PactJobJSONServlet.class);
 
 	// ------------------------------------------------------------------------
@@ -77,24 +77,24 @@ public class PactJobJSONServlet extends HttpServlet {
 			resp.getWriter().print(t.getMessage());
 			return;
 		}
-		
+
 		String jsonPlan = null;
 		String programDescription = null;
-		
+
 		try {
 			jsonPlan = pactProgram.getPreviewPlan();
 		}
 		catch (Throwable t) {
 			LOG.error("Failed to create json dump of pact program.", t);
 		}
-		
+
 		try {
 			programDescription = pactProgram.getDescription();
 		}
 		catch (Throwable t) {
 			LOG.error("Failed to create description of pact program.", t);
 		}
-			
+
 		if (jsonPlan == null && programDescription == null) {
 			resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
@@ -112,7 +112,7 @@ public class PactJobJSONServlet extends HttpServlet {
 				wrt.print(escapeString(programDescription));
 				wrt.print("\"");
 			}
-			
+
 			wrt.println("}");
 		}
 	}
@@ -128,21 +128,21 @@ public class PactJobJSONServlet extends HttpServlet {
 				sb.append('\\');
 				sb.append(c);
 			}
-			else if (c == '\b')
-				sb.append("\\b");
-			else if (c == '\t')
-				sb.append("\\t");
-			else if (c == '\n')
-				sb.append("<br>");
-			else if (c == '\f')
-				sb.append("\\f");
-			else if (c == '\r')
-				sb.append("\\r");
-			else if (c == '>')
-				sb.append("&gt;");
-			else if (c == '<')
-				sb.append("&lt;");
-			else {
+			else if (c == '\b') {
+			sb.append("\\b");
+			} else if (c == '\t') {
+			sb.append("\\t");
+			} else if (c == '\n') {
+			sb.append("<br>");
+			} else if (c == '\f') {
+			sb.append("\\f");
+			} else if (c == '\r') {
+			sb.append("\\r");
+			} else if (c == '>') {
+			sb.append("&gt;");
+			} else if (c == '<') {
+			sb.append("&lt;");
+			} else {
 				if (c < ' ') {
 					// Unreadable throw away
 				} else {

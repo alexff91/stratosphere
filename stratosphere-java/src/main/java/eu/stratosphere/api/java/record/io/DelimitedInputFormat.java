@@ -23,18 +23,18 @@ import eu.stratosphere.types.Record;
  * The default delimiter is the newline character {@code '\n'}.
  */
 public abstract class DelimitedInputFormat extends eu.stratosphere.api.common.io.DelimitedInputFormat<Record> {
-	
+
 	private static final long serialVersionUID = -2297199268758915692L;
 
 	// --------------------------------------------------------------------------------------------
 	//  User-defined behavior
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * This function parses the given byte array which represents a serialized key/value
 	 * pair. The parsed content is then returned by setting the pair variables. If the
 	 * byte array contains invalid content the record can be skipped by returning <tt>false</tt>.
-	 * 
+	 *
 	 * @param reuse The optional reusable holder for the line that is read.
 	 * @param bytes The serialized record.
 	 * @return returns whether the record was successfully deserialized

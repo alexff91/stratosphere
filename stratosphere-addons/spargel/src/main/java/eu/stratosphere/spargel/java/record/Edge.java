@@ -18,19 +18,19 @@ import eu.stratosphere.types.Value;
 
 
 public final class Edge<VertexKey extends Key, EdgeValue extends Value> {
-	
+
 	private VertexKey target;
 	private EdgeValue edgeValue;
-	
+
 	void set(VertexKey target, EdgeValue edgeValue) {
 		this.target = target;
 		this.edgeValue = edgeValue;
 	}
-	
+
 	public VertexKey target() {
 		return target;
 	}
-	
+
 	public EdgeValue edgeValue() {
 		return edgeValue;
 	}

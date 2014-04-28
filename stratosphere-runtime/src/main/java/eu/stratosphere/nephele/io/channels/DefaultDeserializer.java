@@ -28,7 +28,7 @@ import eu.stratosphere.nephele.io.RecordDeserializer;
 /**
  * A class for deserializing a portion of binary data into records of type <code>T</code>. The internal
  * buffer grows dynamically to the size that is required for deserialization.
- * 
+ *
  * @param <T>
  *        The type of the record this deserialization buffer can be used for.
  */
@@ -74,7 +74,7 @@ public class DefaultDeserializer<T extends IOReadableWritable> implements Record
 
 	/**
 	 * Constructs a new deserialization buffer with the specified type.
-	 * 
+	 *
 	 * @param recordType
 	 *        The type of the record to be deserialized.
 	 */
@@ -84,7 +84,7 @@ public class DefaultDeserializer<T extends IOReadableWritable> implements Record
 
 	/**
 	 * Constructs a new deserialization buffer with the specified type.
-	 * 
+	 *
 	 * @param recordType
 	 *        The type of the record to be deserialized.
 	 * @param propagateEndOfStream
@@ -705,8 +705,9 @@ public class DefaultDeserializer<T extends IOReadableWritable> implements Record
 
 			while (count < utfLimit) {
 				c = (int) bytearr[count] & 0xff;
-				if (c > 127)
-					break;
+				if (c > 127) {
+				break;
+				}
 				count++;
 				chararr[chararr_count++] = (char) c;
 			}
@@ -730,22 +731,26 @@ public class DefaultDeserializer<T extends IOReadableWritable> implements Record
 				case 13:
 					/* 110x xxxx 10xx xxxx */
 					count += 2;
-					if (count > utfLimit)
-						throw new UTFDataFormatException("Malformed input: partial character at end");
+					if (count > utfLimit) {
+					throw new UTFDataFormatException("Malformed input: partial character at end");
+					}
 					char2 = (int) bytearr[count - 1];
-					if ((char2 & 0xC0) != 0x80)
-						throw new UTFDataFormatException("Malformed input around byte " + count);
+					if ((char2 & 0xC0) != 0x80) {
+					throw new UTFDataFormatException("Malformed input around byte " + count);
+					}
 					chararr[chararr_count++] = (char) (((c & 0x1F) << 6) | (char2 & 0x3F));
 					break;
 				case 14:
 					/* 1110 xxxx 10xx xxxx 10xx xxxx */
 					count += 3;
-					if (count > utfLimit)
-						throw new UTFDataFormatException("Malformed input: partial character at end");
+					if (count > utfLimit) {
+					throw new UTFDataFormatException("Malformed input: partial character at end");
+					}
 					char2 = (int) bytearr[count - 2];
 					char3 = (int) bytearr[count - 1];
-					if (((char2 & 0xC0) != 0x80) || ((char3 & 0xC0) != 0x80))
-						throw new UTFDataFormatException("Malformed input around byte " + (count - 1));
+					if (((char2 & 0xC0) != 0x80) || ((char3 & 0xC0) != 0x80)) {
+					throw new UTFDataFormatException("Malformed input around byte " + (count - 1));
+					}
 					chararr[chararr_count++] = (char) (((c & 0x0F) << 12) | ((char2 & 0x3F) << 6) | ((char3 & 0x3F) << 0));
 					break;
 				default:

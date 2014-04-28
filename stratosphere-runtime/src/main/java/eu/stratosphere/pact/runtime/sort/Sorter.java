@@ -18,7 +18,7 @@ import eu.stratosphere.util.MutableObjectIterator;
 
 /**
  * The SortMerger interface representing the public interface to all specific Sort-Merge implementations.
- * 
+ *
  */
 public interface Sorter<E> extends CloseableInputProvider<E>
 {

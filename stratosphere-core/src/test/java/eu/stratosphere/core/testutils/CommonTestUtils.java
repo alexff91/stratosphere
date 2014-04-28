@@ -28,14 +28,14 @@ import eu.stratosphere.core.io.IOReadableWritable;
 
 /**
  * This class contains auxiliary methods for unit tests in the Nephele common module.
- * 
+ *
  */
 public class CommonTestUtils {
 
 	/**
 	 * Constructs a random filename. The filename is a string of 16 hex characters followed by a <code>.dat</code>
 	 * prefix.
-	 * 
+	 *
 	 * @return the random filename
 	 */
 	public static String getRandomFilename() {
@@ -53,7 +53,7 @@ public class CommonTestUtils {
 	/**
 	 * Constructs a random directory name. The directory is a string of 16 hex characters
 	 * prefix.
-	 * 
+	 *
 	 * @return the random directory name
 	 */
 	public static String getRandomDirectoryName() {
@@ -70,7 +70,7 @@ public class CommonTestUtils {
 
 	/**
 	 * Reads the path to the directory for temporary files from the configuration and returns it.
-	 * 
+	 *
 	 * @return the path to the directory for temporary files
 	 */
 	public static String getTempDir() {
@@ -82,7 +82,7 @@ public class CommonTestUtils {
 	/**
 	 * Creates a copy of the given {@link IOReadableWritable} object by an in-memory serialization and subsequent
 	 * deserialization.
-	 * 
+	 *
 	 * @param original
 	 *        the original object to be copied
 	 * @return the copy of original object created by the original object's serialization/deserialization methods

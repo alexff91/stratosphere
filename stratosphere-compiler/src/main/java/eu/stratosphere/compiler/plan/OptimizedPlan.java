@@ -25,7 +25,7 @@ import eu.stratosphere.util.Visitor;
  * for the nephele runtime system.
  */
 public class OptimizedPlan implements Visitable<PlanNode> {
-	
+
 	/**
 	 * The data sources in the plan.
 	 */
@@ -40,7 +40,7 @@ public class OptimizedPlan implements Visitable<PlanNode> {
 	 * All nodes in the optimizer plan.
 	 */
 	private final Collection<PlanNode> allNodes;
-	
+
 	/**
 	 * The original pact plan.
 	 */
@@ -55,12 +55,12 @@ public class OptimizedPlan implements Visitable<PlanNode> {
 	 * The name of the instance type that is to be used.
 	 */
 	private String instanceTypeName;
-	
-	
+
+
 	/**
 	 * Creates a new instance of this optimizer plan container. The plan is given and fully
 	 * described by the data sources, sinks and the collection of all nodes.
-	 * 
+	 *
 	 * @param sources
 	 *        The nodes describing the data sources.
 	 * @param sinks
@@ -82,7 +82,7 @@ public class OptimizedPlan implements Visitable<PlanNode> {
 
 	/**
 	 * Gets the data sources from this OptimizedPlan.
-	 * 
+	 *
 	 * @return The data sources.
 	 */
 	public Collection<SourcePlanNode> getDataSources() {
@@ -91,7 +91,7 @@ public class OptimizedPlan implements Visitable<PlanNode> {
 
 	/**
 	 * Gets the data sinks from this OptimizedPlan.
-	 * 
+	 *
 	 * @return The data sinks.
 	 */
 	public Collection<SinkPlanNode> getDataSinks() {
@@ -100,7 +100,7 @@ public class OptimizedPlan implements Visitable<PlanNode> {
 
 	/**
 	 * Gets all the nodes from this OptimizedPlan.
-	 * 
+	 *
 	 * @return All nodes.
 	 */
 	public Collection<PlanNode> getAllNodes() {
@@ -109,16 +109,16 @@ public class OptimizedPlan implements Visitable<PlanNode> {
 
 	/**
 	 * Returns the name of the optimized PACT job.
-	 * 
+	 *
 	 * @return The name of the optimized PACT job.
 	 */
 	public String getJobName() {
 		return this.jobName;
 	}
-	
+
 	/**
 	 * Gets the original pact plan from which this optimized plan was created.
-	 * 
+	 *
 	 * @return The original pact plan.
 	 */
 	public Plan getOriginalPactPlan() {
@@ -127,7 +127,7 @@ public class OptimizedPlan implements Visitable<PlanNode> {
 
 	/**
 	 * Gets the name of the instance type that should be used for this PACT job.
-	 * 
+	 *
 	 * @return The instance-type name.
 	 */
 	public String getInstanceTypeName() {
@@ -136,7 +136,7 @@ public class OptimizedPlan implements Visitable<PlanNode> {
 
 	/**
 	 * Sets the name of the instance type that should be used for this PACT job.
-	 * 
+	 *
 	 * @param instanceTypeName
 	 *        The name of the instance type.
 	 */
@@ -148,7 +148,7 @@ public class OptimizedPlan implements Visitable<PlanNode> {
 
 	/**
 	 * Takes the given visitor and applies it top down to all nodes, starting at the sinks.
-	 * 
+	 *
 	 * @param visitor
 	 *        The visitor to apply to the nodes in this plan.
 	 * @see eu.stratosphere.util.Visitable#accept(eu.stratosphere.util.Visitor)

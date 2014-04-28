@@ -31,7 +31,7 @@ public class CompilerException extends RuntimeException {
 
 	/**
 	 * Creates a compiler exception with the given message and no cause.
-	 * 
+	 *
 	 * @param message
 	 *        The message for the exception.
 	 */
@@ -41,7 +41,7 @@ public class CompilerException extends RuntimeException {
 
 	/**
 	 * Creates a compiler exception with the given cause and no message.
-	 * 
+	 *
 	 * @param cause
 	 *        The <tt>Throwable</tt> that caused this exception.
 	 */
@@ -51,7 +51,7 @@ public class CompilerException extends RuntimeException {
 
 	/**
 	 * Creates a compiler exception with the given message and cause.
-	 * 
+	 *
 	 * @param message
 	 *        The message for the exception.
 	 * @param cause

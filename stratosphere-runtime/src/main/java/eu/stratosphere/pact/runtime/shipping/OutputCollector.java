@@ -28,18 +28,18 @@ import eu.stratosphere.util.Collector;
  * The OutputCollector tracks to which writers a deep-copy must be given and which not.
  */
 public class OutputCollector<T> implements Collector<T>
-{	
+{
 	// list of writers
-	protected AbstractRecordWriter<SerializationDelegate<T>>[] writers; 
+	protected AbstractRecordWriter<SerializationDelegate<T>>[] writers;
 
 	private final SerializationDelegate<T> delegate;
 
-	
+
 	/**
-	 * Initializes the output collector with a set of writers. 
-	 * To specify for a writer that it must be fed with a deep-copy, set the bit in the copy flag bit mask to 1 that 
+	 * Initializes the output collector with a set of writers.
+	 * To specify for a writer that it must be fed with a deep-copy, set the bit in the copy flag bit mask to 1 that
 	 * corresponds to the position of the writer within the {@link List}.
-	 * 
+	 *
 	 * @param writers List of all writers.
 	 */
 	@SuppressWarnings("unchecked")
@@ -48,10 +48,10 @@ public class OutputCollector<T> implements Collector<T>
 		this.delegate = new SerializationDelegate<T>(serializer);
 		this.writers = (AbstractRecordWriter<SerializationDelegate<T>>[]) writers.toArray(new AbstractRecordWriter[writers.size()]);
 	}
-	
+
 	/**
 	 * Adds a writer to the OutputCollector.
-	 * 
+	 *
 	 * @param writer The writer to add.
 	 */
 
@@ -79,7 +79,7 @@ public class OutputCollector<T> implements Collector<T>
 		this.delegate.setInstance(record);
 		try {
 			for (int i = 0; i < writers.length; i++) {
-				this.writers[i].emit(this.delegate);	
+				this.writers[i].emit(this.delegate);
 			}
 		}
 		catch (IOException e) {

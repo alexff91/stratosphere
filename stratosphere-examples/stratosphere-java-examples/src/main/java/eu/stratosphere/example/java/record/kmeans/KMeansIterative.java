@@ -50,11 +50,11 @@ public class KMeansIterative implements Program, ProgramDescription {
 		// create DataSourceContract for cluster center input
 		FileDataSource initialClusterPoints = new FileDataSource(new PointInFormat(), clusterInput, "Centers");
 		initialClusterPoints.setDegreeOfParallelism(1);
-		
+
 		BulkIteration iteration = new BulkIteration("K-Means Loop");
 		iteration.setInput(initialClusterPoints);
 		iteration.setMaximumNumberOfIterations(numIterations);
-		
+
 		// create DataSourceContract for data point input
 		FileDataSource dataPoints = new FileDataSource(new PointInFormat(), dataPointInput, "Data Points");
 
@@ -77,11 +77,11 @@ public class KMeansIterative implements Program, ProgramDescription {
 				.name("Recompute Center Positions")
 				.build();
 		iteration.setNextPartialSolution(recomputeClusterCenter);
-		
+
 		// create DataSourceContract for data point input
 		FileDataSource dataPoints2 = new FileDataSource(new PointInFormat(), dataPointInput, "Data Points 2");
-		
-		// compute distance of points to final clusters 
+
+		// compute distance of points to final clusters
 		CrossOperator computeFinalDistance = CrossOperator.builder(new ComputeDistance())
 				.input1(dataPoints2)
 				.input2(iteration)
@@ -99,11 +99,11 @@ public class KMeansIterative implements Program, ProgramDescription {
 
 		// write assigned clusters
 		FileDataSink clusterAssignments = new FileDataSink(new PointOutFormat(), output+"/points", findNearestFinalCluster, "Cluster Assignments");
-		
+
 		List<GenericDataSink> sinks = new ArrayList<GenericDataSink>();
 		sinks.add(finalClusters);
 		sinks.add(clusterAssignments);
-		
+
 		// return the PACT plan
 		Plan plan = new Plan(sinks, "Iterative KMeans");
 		plan.setDefaultParallelism(numSubTasks);
@@ -114,17 +114,17 @@ public class KMeansIterative implements Program, ProgramDescription {
 	public String getDescription() {
 		return "Parameters: <numSubStasks> <dataPoints> <clusterCenters> <output> <numIterations>";
 	}
-	
+
 	public static void main(String[] args) throws Exception {
 		KMeansIterative kmi = new KMeansIterative();
-		
+
 		if (args.length < 5) {
 			System.err.println(kmi.getDescription());
 			System.exit(1);
 		}
-		
+
 		Plan plan = kmi.getPlan(args);
-		
+
 		// This will execute the kMeans clustering job embedded in a local context.
 		LocalExecutor.execute(plan);
 

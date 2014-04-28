@@ -22,7 +22,7 @@ import eu.stratosphere.nephele.jobmanager.scheduler.AbstractExecutionListener;
  * to scheduled jobs.
  * <p>
  * This class is thread-safe.
- * 
+ *
  */
 public class LocalExecutionListener extends AbstractExecutionListener {
 

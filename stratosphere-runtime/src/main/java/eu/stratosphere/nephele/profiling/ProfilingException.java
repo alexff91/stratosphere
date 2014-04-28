@@ -15,7 +15,7 @@ package eu.stratosphere.nephele.profiling;
 
 /**
  * A profiling exception is thrown if an error occur during profiling execution.
- * 
+ *
  */
 public class ProfilingException extends Exception {
 
@@ -26,7 +26,7 @@ public class ProfilingException extends Exception {
 
 	/**
 	 * Constructs a new profiling exception with the given error message.
-	 * 
+	 *
 	 * @param errorMsg
 	 *        The error message to be included in the exception.
 	 */

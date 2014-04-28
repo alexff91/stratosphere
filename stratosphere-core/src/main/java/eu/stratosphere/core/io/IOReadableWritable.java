@@ -28,7 +28,7 @@ public interface IOReadableWritable {
 
 	/**
 	 * Writes the object's internal data to the given data output stream.
-	 * 
+	 *
 	 * @param out
 	 *        the output stream to receive the data.
 	 * @throws IOException
@@ -38,7 +38,7 @@ public interface IOReadableWritable {
 
 	/**
 	 * Reads the object's internal data from the given data input stream.
-	 * 
+	 *
 	 * @param in
 	 *        the input stream to read the data from
 	 * @throws IOException

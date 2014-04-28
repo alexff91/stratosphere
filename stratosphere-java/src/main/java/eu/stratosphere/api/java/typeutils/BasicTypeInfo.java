@@ -18,8 +18,8 @@ import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 
-import eu.stratosphere.api.common.typeutils.TypeSerializer;
 import eu.stratosphere.api.common.typeutils.TypeComparator;
+import eu.stratosphere.api.common.typeutils.TypeSerializer;
 import eu.stratosphere.api.common.typeutils.base.BooleanComparator;
 import eu.stratosphere.api.common.typeutils.base.BooleanSerializer;
 import eu.stratosphere.api.common.typeutils.base.ByteComparator;
@@ -54,24 +54,24 @@ public class BasicTypeInfo<T> extends TypeInformation<T> implements AtomicType<T
 	public static final BasicTypeInfo<Float> FLOAT_TYPE_INFO = new BasicTypeInfo<Float>(Float.class, FloatSerializer.INSTANCE, FloatComparator.class);
 	public static final BasicTypeInfo<Double> DOUBLE_TYPE_INFO = new BasicTypeInfo<Double>(Double.class, DoubleSerializer.INSTANCE, DoubleComparator.class);
 	public static final BasicTypeInfo<Character> CHAR_TYPE_INFO = new BasicTypeInfo<Character>(Character.class, CharSerializer.INSTANCE, CharComparator.class);
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	private final Class<T> clazz;
-	
+
 	private final TypeSerializer<T> serializer;
-	
+
 	private final Class<? extends TypeComparator<T>> comparatorClass;
-	
-	
+
+
 	private BasicTypeInfo(Class<T> clazz, TypeSerializer<T> serializer, Class<? extends TypeComparator<T>> comparatorClass) {
 		this.clazz = clazz;
 		this.serializer = serializer;
 		this.comparatorClass = comparatorClass;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public boolean isBasicType() {
 		return true;
@@ -91,17 +91,17 @@ public class BasicTypeInfo<T> extends TypeInformation<T> implements AtomicType<T
 	public Class<T> getTypeClass() {
 		return this.clazz;
 	}
-	
+
 	@Override
 	public boolean isKeyType() {
 		return true;
 	}
-	
+
 	@Override
 	public TypeSerializer<T> createSerializer() {
 		return this.serializer;
 	}
-	
+
 	@Override
 	public TypeComparator<T> createComparator(boolean sortOrderAscending) {
 		return instantiateComparator(comparatorClass, sortOrderAscending);
@@ -111,18 +111,19 @@ public class BasicTypeInfo<T> extends TypeInformation<T> implements AtomicType<T
 	public String toString() {
 		return clazz.getSimpleName();
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public static <X> BasicTypeInfo<X> getInfoFor(Class<X> type) {
-		if (type == null)
-			throw new NullPointerException();
-		
+		if (type == null) {
+		throw new NullPointerException();
+		}
+
 		@SuppressWarnings("unchecked")
 		BasicTypeInfo<X> info = (BasicTypeInfo<X>) TYPES.get(type);
 		return info;
 	}
-	
+
 	private static <X> TypeComparator<X> instantiateComparator(Class<? extends TypeComparator<X>> comparatorClass, boolean ascendingOrder) {
 		try {
 			Constructor<? extends TypeComparator<X>> constructor = comparatorClass.getConstructor(boolean.class);
@@ -132,9 +133,9 @@ public class BasicTypeInfo<T> extends TypeInformation<T> implements AtomicType<T
 			throw new RuntimeException("Could not initialize basic comparator " + comparatorClass.getName(), e);
 		}
 	}
-	
+
 	private static final Map<Class<?>, BasicTypeInfo<?>> TYPES = new HashMap<Class<?>, BasicTypeInfo<?>>();
-	
+
 	static {
 		TYPES.put(String.class, STRING_TYPE_INFO);
 		TYPES.put(Boolean.class, BOOLEAN_TYPE_INFO);

@@ -26,48 +26,48 @@ import eu.stratosphere.compiler.plan.Channel;
 import eu.stratosphere.compiler.plan.SingleInputPlanNode;
 
 /**
- * 
+ *
  */
 public abstract class OperatorDescriptorSingle implements AbstractOperatorDescriptor {
-	
+
 	protected final FieldSet keys;			// the set of key fields
 	protected final FieldList keyList;		// the key fields with ordered field positions
-	
+
 	private List<RequestedGlobalProperties> globalProps;
 	private List<RequestedLocalProperties> localProps;
-	
-	
+
+
 	protected OperatorDescriptorSingle() {
 		this(null);
 	}
-	
+
 	protected OperatorDescriptorSingle(FieldSet keys) {
 		this.keys = keys;
 		this.keyList = keys == null ? null : keys.toFieldList();
 	}
-	
-	
+
+
 	public List<RequestedGlobalProperties> getPossibleGlobalProperties() {
 		if (this.globalProps == null) {
 			this.globalProps = createPossibleGlobalProperties();
 		}
 		return this.globalProps;
 	}
-	
+
 	public List<RequestedLocalProperties> getPossibleLocalProperties() {
 		if (this.localProps == null) {
 			this.localProps = createPossibleLocalProperties();
 		}
 		return this.localProps;
 	}
-	
+
 	protected abstract List<RequestedGlobalProperties> createPossibleGlobalProperties();
-	
+
 	protected abstract List<RequestedLocalProperties> createPossibleLocalProperties();
-	
+
 	public abstract SingleInputPlanNode instantiate(Channel in, SingleInputNode node);
-	
+
 	public abstract GlobalProperties computeGlobalProperties(GlobalProperties in);
-	
+
 	public abstract LocalProperties computeLocalProperties(LocalProperties in);
 }

@@ -24,27 +24,27 @@ import eu.stratosphere.util.Visitor;
  * Abstract superclass for for all operators that have one input like "map" or "reduce".
  */
 public abstract class SingleInputOperator<T extends Function> extends AbstractUdfOperator<T> {
-	
+
 	/**
 	 * The input which produces the data consumed by this operator.
 	 */
 	protected final List<Operator> input = new ArrayList<Operator>();
-	
+
 	/**
 	 * The positions of the keys in the tuple.
 	 */
 	private final int[] keyFields;
-	
+
 	/**
 	 * Semantic properties of the associated function.
 	 */
 	private SingleInputSemanticProperties semanticProperties;
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	/**
 	 * Creates a new abstract single-input operator with the given name wrapping the given user function.
-	 * 
+	 *
 	 * @param stub The object containing the user function.
 	 * @param keyPositions The field positions of the input records that act as keys.
 	 * @param name The given name for the operator, used in plans, logs and progress messages.
@@ -53,11 +53,11 @@ public abstract class SingleInputOperator<T extends Function> extends AbstractUd
 		super(stub, name);
 		this.keyFields = keyPositions;
 	}
-	
+
 	/**
 	 * Creates a new abstract single-input operator with the given name wrapping the given user function.
 	 * This constructor is specialized only for operators that require no keys for their processing.
-	 * 
+	 *
 	 * @param stub The object containing the user function.
 	 * @param name The given name for the operator, used in plans, logs and progress messages.
 	 */
@@ -70,13 +70,13 @@ public abstract class SingleInputOperator<T extends Function> extends AbstractUd
 
 	/**
 	 * Returns the input, or null, if none is set.
-	 * 
+	 *
 	 * @return The contract's input contract.
 	 */
 	public List<Operator> getInputs() {
 		return this.input;
 	}
-	
+
 	/**
 	 * Removes all inputs from this contract.
 	 */
@@ -86,7 +86,7 @@ public abstract class SingleInputOperator<T extends Function> extends AbstractUd
 
 	/**
 	 * Connects the input to the task wrapped in this contract
-	 * 
+	 *
 	 * @param input The contract will be set as input.
 	 */
 	public void addInput(Operator ... input) {
@@ -98,10 +98,10 @@ public abstract class SingleInputOperator<T extends Function> extends AbstractUd
 			}
 		}
 	}
-	
+
 	/**
 	 * Connects the inputs to the task wrapped in this contract
-	 * 
+	 *
 	 * @param inputs The contracts will be set as input.
 	 */
 	public void addInputs(List<Operator> inputs) {
@@ -117,39 +117,39 @@ public abstract class SingleInputOperator<T extends Function> extends AbstractUd
 	/**
 	 * Clears all previous connections and sets the given contract as
 	 * single input of this contract.
-	 * 
+	 *
 	 * @param input The contract will be set as input.
 	 */
 	public void setInput(Operator ... input) {
 		this.input.clear();
 		addInput(input);
 	}
-	
+
 	/**
 	 * Clears all previous connections and sets the given contracts as
 	 * inputs of this contract.
-	 * 
+	 *
 	 * @param inputs The contracts will be set as inputs.
 	 */
 	public void setInputs(List<Operator> inputs) {
 		this.input.clear();
 		addInputs(inputs);
 	}
-	
+
 
 	// --------------------------------------------------------------------------------------------
 
 	public SingleInputSemanticProperties getSemanticProperties() {
 		return this.semanticProperties;
 	}
-	
+
 	public void setSemanticProperties(SingleInputSemanticProperties semanticProperties) {
 		this.semanticProperties = semanticProperties;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
-	
+
 	@Override
 	public final int getNumberOfInputs() {
 		return 1;
@@ -159,19 +159,20 @@ public abstract class SingleInputOperator<T extends Function> extends AbstractUd
 	public int[] getKeyColumns(int inputNum) {
 		if (inputNum == 0) {
 			return this.keyFields;
+		} else {
+		throw new IndexOutOfBoundsException();
 		}
-		else throw new IndexOutOfBoundsException();
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
-	 * Accepts the visitor and applies it this instance. The visitors pre-visit method is called and, if returning 
+	 * Accepts the visitor and applies it this instance. The visitors pre-visit method is called and, if returning
 	 * <tt>true</tt>, the visitor is recursively applied on the single input. After the recursion returned,
 	 * the post-visit method is called.
-	 * 
+	 *
 	 * @param visitor The visitor.
-	 *  
+	 *
 	 * @see eu.stratosphere.util.Visitable#accept(eu.stratosphere.util.Visitor)
 	 */
 	@Override

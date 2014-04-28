@@ -23,7 +23,7 @@ import eu.stratosphere.core.io.IOReadableWritable;
  * An instance type description provides details of instance type. Is can comprise both the hardware description from
  * the instance type description (as provided by the operator/administrator of the instance) as well as the actual
  * hardware description which has been determined on the compute instance itself.
- * 
+ *
  */
 public final class InstanceTypeDescription implements IOReadableWritable {
 
@@ -50,7 +50,7 @@ public final class InstanceTypeDescription implements IOReadableWritable {
 
 	/**
 	 * Constructs a new instance type description.
-	 * 
+	 *
 	 * @param instanceType
 	 *        the instance type
 	 * @param hardwareDescription
@@ -108,7 +108,7 @@ public final class InstanceTypeDescription implements IOReadableWritable {
 
 	/**
 	 * Returns the hardware description as created by the {@link InstanceManager}.
-	 * 
+	 *
 	 * @return the instance's hardware description or <code>null</code> if no description is available
 	 */
 	public HardwareDescription getHardwareDescription() {
@@ -117,7 +117,7 @@ public final class InstanceTypeDescription implements IOReadableWritable {
 
 	/**
 	 * Returns the instance type as determined by the {@link InstanceManager}.
-	 * 
+	 *
 	 * @return the instance type
 	 */
 	public InstanceType getInstanceType() {
@@ -127,7 +127,7 @@ public final class InstanceTypeDescription implements IOReadableWritable {
 	/**
 	 * Returns the maximum number of instances the {@link InstanceManager} can at most allocate of this instance type
 	 * (i.e. when no other jobs are occupying any resources).
-	 * 
+	 *
 	 * @return the maximum number of instances of this type or <code>-1</code> if the number is unknown to the
 	 *         {@link InstanceManager}
 	 */

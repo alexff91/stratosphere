@@ -37,7 +37,7 @@ import eu.stratosphere.nephele.topology.NetworkTopology;
 
 /**
  * An abstract instance represents a resource a {@link eu.stratosphere.nephele.taskmanager.TaskManager} runs on.
- * 
+ *
  */
 public abstract class AbstractInstance extends NetworkNode {
 
@@ -63,7 +63,7 @@ public abstract class AbstractInstance extends NetworkNode {
 
 	/**
 	 * Constructs an abstract instance object.
-	 * 
+	 *
 	 * @param instanceType
 	 *        the type of the instance
 	 * @param instanceConnectionInfo
@@ -86,7 +86,7 @@ public abstract class AbstractInstance extends NetworkNode {
 
 	/**
 	 * Creates or returns the RPC stub object for the instance's task manager.
-	 * 
+	 *
 	 * @return the RPC stub object for the instance's task manager
 	 * @throws IOException
 	 *         thrown if the RPC stub object for the task manager cannot be created
@@ -116,7 +116,7 @@ public abstract class AbstractInstance extends NetworkNode {
 
 	/**
 	 * Returns the type of the instance.
-	 * 
+	 *
 	 * @return the type of the instance
 	 */
 	public final InstanceType getType() {
@@ -125,7 +125,7 @@ public abstract class AbstractInstance extends NetworkNode {
 
 	/**
 	 * Returns the instance's connection information object.
-	 * 
+	 *
 	 * @return the instance's connection information object
 	 */
 	public final InstanceConnectionInfo getInstanceConnectionInfo() {
@@ -134,7 +134,7 @@ public abstract class AbstractInstance extends NetworkNode {
 
 	/**
 	 * Returns the instance's hardware description as reported by the instance itself.
-	 * 
+	 *
 	 * @return the instance's hardware description
 	 */
 	public HardwareDescription getHardwareDescription() {
@@ -145,7 +145,7 @@ public abstract class AbstractInstance extends NetworkNode {
 	 * Checks if all the libraries required to run the job with the given
 	 * job ID are available on this instance. Any libary that is missing
 	 * is transferred to the instance as a result of this call.
-	 * 
+	 *
 	 * @param jobID
 	 *        the ID of the job whose libraries are to be checked for
 	 * @throws IOException
@@ -156,8 +156,9 @@ public abstract class AbstractInstance extends NetworkNode {
 		// Now distribute the required libraries for the job
 		String[] requiredLibraries = LibraryCacheManager.getRequiredJarFiles(jobID);
 
-		if (requiredLibraries == null)
-			throw new IOException("No entry of required libraries for job " + jobID);
+		if (requiredLibraries == null) {
+		throw new IOException("No entry of required libraries for job " + jobID);
+		}
 
 		LibraryCacheProfileRequest request = new LibraryCacheProfileRequest();
 		request.setRequiredLibraries(requiredLibraries);
@@ -177,7 +178,7 @@ public abstract class AbstractInstance extends NetworkNode {
 
 	/**
 	 * Submits a list of tasks to the instance's {@link eu.stratosphere.nephele.taskmanager.TaskManager}.
-	 * 
+	 *
 	 * @param tasks
 	 *        the list of tasks to be submitted
 	 * @return the result of the submission attempt
@@ -193,7 +194,7 @@ public abstract class AbstractInstance extends NetworkNode {
 	/**
 	 * Cancels the task identified by the given ID at the instance's
 	 * {@link eu.stratosphere.nephele.taskmanager.TaskManager}.
-	 * 
+	 *
 	 * @param id
 	 *        the ID identifying the task to be canceled
 	 * @throws IOException
@@ -208,7 +209,7 @@ public abstract class AbstractInstance extends NetworkNode {
 	/**
 	 * Kills the task identified by the given ID at the instance's
 	 * {@link eu.stratosphere.nephele.taskmanager.TaskManager}.
-	 * 
+	 *
 	 * @param id
 	 *        the ID identifying the task to be killed
 	 * @throws IOException
@@ -252,7 +253,7 @@ public abstract class AbstractInstance extends NetworkNode {
 
 	/**
 	 * Triggers the remote task manager to print out the current utilization of its read and write buffers to its logs.
-	 * 
+	 *
 	 * @throws IOException
 	 *         thrown if an error occurs while transmitting the request
 	 */
@@ -264,7 +265,7 @@ public abstract class AbstractInstance extends NetworkNode {
 	/**
 	 * Kills the task manager running on this instance. This method is mainly intended to test and debug Nephele's fault
 	 * tolerance mechanisms.
-	 * 
+	 *
 	 * @throws IOException
 	 *         thrown if an error occurs while transmitting the request
 	 */
@@ -275,7 +276,7 @@ public abstract class AbstractInstance extends NetworkNode {
 
 	/**
 	 * Invalidates the entries identified by the given channel IDs from the remote task manager's receiver lookup cache.
-	 * 
+	 *
 	 * @param channelIDs
 	 *        the channel IDs identifying the cache entries to invalidate
 	 * @throws IOException

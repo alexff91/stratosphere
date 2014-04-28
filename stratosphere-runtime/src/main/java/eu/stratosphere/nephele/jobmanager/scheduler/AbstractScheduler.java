@@ -20,8 +20,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -57,7 +57,7 @@ import eu.stratosphere.util.StringUtils;
  * {@link eu.stratosphere.nephele.jobmanager.JobManager} is responsible for requesting the required instances for the
  * job at the {@link eu.stratosphere.nephele.instance.InstanceManager}, the scheduler is in charge of assigning the
  * individual tasks to the instances.
- * 
+ *
  */
 public abstract class AbstractScheduler implements InstanceListener {
 
@@ -83,7 +83,7 @@ public abstract class AbstractScheduler implements InstanceListener {
 
 	/**
 	 * Constructs a new abstract scheduler.
-	 * 
+	 *
 	 * @param deploymentManager
 	 *        the deployment manager assigned to this scheduler
 	 * @param instanceManager
@@ -99,7 +99,7 @@ public abstract class AbstractScheduler implements InstanceListener {
 	/**
 	 * Adds a job represented by an {@link ExecutionGraph} object to the scheduler. The job is then executed according
 	 * to the strategies of the concrete scheduler implementation.
-	 * 
+	 *
 	 * @param executionGraph
 	 *        the job to be added to the scheduler
 	 * @throws SchedulingException
@@ -109,7 +109,7 @@ public abstract class AbstractScheduler implements InstanceListener {
 
 	/**
 	 * Returns the execution graph which is associated with the given job ID.
-	 * 
+	 *
 	 * @param jobID
 	 *        the job ID to search the execution graph for
 	 * @return the execution graph which belongs to the given job ID or <code>null</code if no such execution graph
@@ -119,7 +119,7 @@ public abstract class AbstractScheduler implements InstanceListener {
 
 	/**
 	 * Returns the {@link InstanceManager} object which is used by the current scheduler.
-	 * 
+	 *
 	 * @return the {@link InstanceManager} object which is used by the current scheduler
 	 */
 	public InstanceManager getInstanceManager() {
@@ -136,7 +136,7 @@ public abstract class AbstractScheduler implements InstanceListener {
 	/**
 	 * Collects the instances required to run the job from the given {@link ExecutionStage} and requests them at the
 	 * loaded instance manager.
-	 * 
+	 *
 	 * @param executionStage
 	 *        the execution stage to collect the required instances from
 	 * @throws InstanceException
@@ -232,7 +232,7 @@ public abstract class AbstractScheduler implements InstanceListener {
 	/**
 	 * Collects all execution vertices with the state ASSIGNED starting from the given start vertex and
 	 * deploys them on the assigned {@link AllocatedResource} objects.
-	 * 
+	 *
 	 * @param startVertex
 	 *        the execution vertex to start the deployment from
 	 */
@@ -262,7 +262,7 @@ public abstract class AbstractScheduler implements InstanceListener {
 	/**
 	 * Collects all execution vertices with the state ASSIGNED from the given pipeline and deploys them on the assigned
 	 * {@link AllocatedResource} objects.
-	 * 
+	 *
 	 * @param pipeline
 	 *        the execution pipeline to be deployed
 	 */
@@ -295,7 +295,7 @@ public abstract class AbstractScheduler implements InstanceListener {
 	/**
 	 * Collects all execution vertices with the state ASSIGNED starting from the given collection of start vertices and
 	 * deploys them on the assigned {@link AllocatedResource} objects.
-	 * 
+	 *
 	 * @param startVertices
 	 *        the collection of execution vertices to start the deployment from
 	 */
@@ -332,7 +332,7 @@ public abstract class AbstractScheduler implements InstanceListener {
 	/**
 	 * Collects all execution vertices with the state ASSIGNED starting from the input vertices of the current execution
 	 * stage and deploys them on the assigned {@link AllocatedResource} objects.
-	 * 
+	 *
 	 * @param executionGraph
 	 *        the execution graph to collect the vertices from
 	 */
@@ -482,7 +482,7 @@ public abstract class AbstractScheduler implements InstanceListener {
 	 * execution of the given execution graph. If the resource is no longer
 	 * assigned to a vertex that is either currently running or about to run
 	 * the given resource is returned to the instance manager for deallocation.
-	 * 
+	 *
 	 * @param executionGraph
 	 *        the execution graph the provided resource has been used for so far
 	 * @param allocatedResource
@@ -550,7 +550,7 @@ public abstract class AbstractScheduler implements InstanceListener {
 
 	/**
 	 * Returns a map of vertices to be restarted once they have switched to their <code>CANCELED</code> state.
-	 * 
+	 *
 	 * @return the map of vertices to be restarted
 	 */
 	Map<ExecutionVertexID, ExecutionVertex> getVerticesToBeRestarted() {

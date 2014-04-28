@@ -19,10 +19,10 @@ import eu.stratosphere.api.common.operators.base.JoinOperatorBase;
 import eu.stratosphere.api.java.functions.JoinFunction;
 import eu.stratosphere.api.java.typeutils.TypeInformation;
 
-public class PlanJoinOperator<IN1, IN2, OUT> 
+public class PlanJoinOperator<IN1, IN2, OUT>
 	extends JoinOperatorBase<GenericJoiner<IN1, IN2, OUT>>
 	implements BinaryJavaPlanNode<IN1, IN2, OUT> {
-	
+
 	private final TypeInformation<IN1> inType1;
 	private final TypeInformation<IN2> inType2;
 	private final TypeInformation<OUT> outType;
@@ -31,12 +31,12 @@ public class PlanJoinOperator<IN1, IN2, OUT>
 			JoinFunction<IN1, IN2, OUT> udf,
 			int[] keyPositions1, int[] keyPositions2, String name, TypeInformation<IN1> inType1, TypeInformation<IN2> inType2, TypeInformation<OUT> outType) {
 		super(udf, keyPositions1, keyPositions2, name);
-		
+
 		this.inType1 = inType1;
 		this.inType2 = inType2;
 		this.outType = outType;
 	}
-	
+
 	@Override
 	public TypeInformation<OUT> getReturnType() {
 		return this.outType;

@@ -29,43 +29,43 @@ import eu.stratosphere.util.MutableObjectIterator;
  * <p>
  * In contract to the {@link AsynchronousPartialSorter}, this class has no dedicated reading thread that
  * pulls records from an iterator, but offers a collector into which data to be sorted is pushed.
- * 
+ *
  */
 public class AsynchronousPartialSorterCollector<E> extends AsynchronousPartialSorter<E>
 {
 	private InputDataCollector<E> collector;
-	
+
 	// ------------------------------------------------------------------------
 	// Constructor
 	// ------------------------------------------------------------------------
-	
+
 	/**
-	 * 
-	 * 
+	 *
+	 *
 	 * @param memoryManager The memory manager from which to allocate the memory.
 	 * @param parentTask The parent task, which owns all resources used by this sorter.
 	 * @param serializer The type serializer.
 	 * @param comparator The type comparator establishing the order relation.
 	 * @param totalMemory The total amount of memory dedicated to sorting.
-	 * 
+	 *
 	 * @throws IOException Thrown, if an error occurs initializing the resources for external sorting.
 	 * @throws MemoryAllocationException Thrown, if not enough memory can be obtained from the memory manager to
 	 *                                   perform the sort.
 	 */
 	public AsynchronousPartialSorterCollector(MemoryManager memoryManager,
-			AbstractInvokable parentTask, 
+			AbstractInvokable parentTask,
 			TypeSerializer<E> serializer, TypeComparator<E> comparator,
 			long totalMemory)
 	throws IOException, MemoryAllocationException
 	{
 		super(memoryManager, null, parentTask, serializer, comparator, totalMemory);
 	}
-	
+
 	// ------------------------------------------------------------------------
-	
+
 	/**
 	 * Gets the collector that writes into the sort buffers.
-	 * 
+	 *
 	 * @return The collector that writes into the sort buffers.
 	 */
 	public InputDataCollector<E> getInputCollector() {
@@ -83,13 +83,14 @@ public class AsynchronousPartialSorterCollector<E> extends AsynchronousPartialSo
 		this.collector = new InputDataCollector<E>(queues, startSpillingBytes);
 		return null;
 	}
-	
+
 
 	public void close()
 	{
 		try {
-			if (this.collector != null)
-				this.collector.close();
+			if (this.collector != null) {
+			this.collector.close();
+			}
 		}
 		finally {
 			super.close();

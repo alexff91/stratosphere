@@ -27,7 +27,7 @@ import java.util.Stack;
  * search.
  * <p>
  * This class is not thread-safe.
- * 
+ *
  */
 public class ExecutionGroupVertexIterator implements Iterator<ExecutionGroupVertex> {
 
@@ -63,7 +63,7 @@ public class ExecutionGroupVertexIterator implements Iterator<ExecutionGroupVert
 
 	/**
 	 * Auxiliary class which stores which vertices have already been visited.
-	 * 
+	 *
 	 */
 	private static class TraversalEntry {
 
@@ -79,7 +79,7 @@ public class ExecutionGroupVertexIterator implements Iterator<ExecutionGroupVert
 
 		/**
 		 * Constructs a new traversal entry.
-		 * 
+		 *
 		 * @param groupVertex
 		 *        the group vertex this traversal entry belongs to
 		 * @param currentLink
@@ -92,7 +92,7 @@ public class ExecutionGroupVertexIterator implements Iterator<ExecutionGroupVert
 
 		/**
 		 * Returns the group vertex this traversal entry belongs to.
-		 * 
+		 *
 		 * @return the group vertex this traversal entry belongs to
 		 */
 		public ExecutionGroupVertex getGroupVertex() {
@@ -101,7 +101,7 @@ public class ExecutionGroupVertexIterator implements Iterator<ExecutionGroupVert
 
 		/**
 		 * Returns the link index to use to visit the next group vertex.
-		 * 
+		 *
 		 * @return the link index to use to visit the next group vertex
 		 */
 		public int getCurrentLink() {
@@ -118,7 +118,7 @@ public class ExecutionGroupVertexIterator implements Iterator<ExecutionGroupVert
 
 	/**
 	 * Creates a new execution group vertex iterator.
-	 * 
+	 *
 	 * @param executionGraph
 	 *        the execution graph that should be traversed
 	 * @param forward
@@ -155,7 +155,7 @@ public class ExecutionGroupVertexIterator implements Iterator<ExecutionGroupVert
 	/**
 	 * Collects all input group vertices (i.e. vertices with no incoming link or incoming links from other stages) in
 	 * the given stage and adds them to an internal list.
-	 * 
+	 *
 	 * @param stage
 	 *        the number of the stage whose input vertices should be collected
 	 */
@@ -183,7 +183,7 @@ public class ExecutionGroupVertexIterator implements Iterator<ExecutionGroupVert
 	 * Checks if for the given group vertex all incoming (if forward is <code>true</code>) or outgoing links (if forward
 	 * is <code>false</code>) come from
 	 * other stages than the one the given vertex is in.
-	 * 
+	 *
 	 * @param groupVertex
 	 *        the group vertex to check for
 	 * @param forward
@@ -266,7 +266,7 @@ public class ExecutionGroupVertexIterator implements Iterator<ExecutionGroupVert
 	/**
 	 * Returns a candidate group vertex which could potentially be visited next because it is reachable from the
 	 * currently considered group vertex.
-	 * 
+	 *
 	 * @param te
 	 *        the traversal entry for the current source group vertex
 	 * @param forward

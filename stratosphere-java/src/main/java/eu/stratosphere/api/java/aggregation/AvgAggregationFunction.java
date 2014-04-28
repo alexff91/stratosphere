@@ -23,12 +23,12 @@ public abstract class AvgAggregationFunction<T> extends AggregationFunction<T> {
 	public String toString() {
 		return "AVG";
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public static final class ByteAvgAgg extends AvgAggregationFunction<Byte> {
 		private static final long serialVersionUID = 1L;
-		
+
 		private long sum;
 		private long count;
 
@@ -49,10 +49,10 @@ public abstract class AvgAggregationFunction<T> extends AggregationFunction<T> {
 			return (byte) (sum / count);
 		}
 	}
-	
+
 	public static final class ShortAvgAgg extends AvgAggregationFunction<Short> {
 		private static final long serialVersionUID = 1L;
-		
+
 		private long sum;
 		private long count;
 
@@ -73,10 +73,10 @@ public abstract class AvgAggregationFunction<T> extends AggregationFunction<T> {
 			return (short) (sum / count);
 		}
 	}
-	
+
 	public static final class IntAvgAgg extends AvgAggregationFunction<Integer> {
 		private static final long serialVersionUID = 1L;
-		
+
 		private long sum;
 		private long count;
 
@@ -97,10 +97,10 @@ public abstract class AvgAggregationFunction<T> extends AggregationFunction<T> {
 			return (int) (sum / count);
 		}
 	}
-	
+
 	public static final class LongAvgAgg extends AvgAggregationFunction<Long> {
 		private static final long serialVersionUID = 1L;
-		
+
 		private long sum;
 		private long count;
 
@@ -121,10 +121,10 @@ public abstract class AvgAggregationFunction<T> extends AggregationFunction<T> {
 			return sum / count;
 		}
 	}
-	
+
 	public static final class FloatAvgAgg extends AvgAggregationFunction<Float> {
 		private static final long serialVersionUID = 1L;
-		
+
 		private float sum;
 		private long count;
 
@@ -145,10 +145,10 @@ public abstract class AvgAggregationFunction<T> extends AggregationFunction<T> {
 			return sum / count;
 		}
 	}
-	
+
 	public static final class DoubleAvgAgg extends AvgAggregationFunction<Double> {
 		private static final long serialVersionUID = 1L;
-		
+
 		private double sum;
 		private long count;
 
@@ -170,9 +170,9 @@ public abstract class AvgAggregationFunction<T> extends AggregationFunction<T> {
 		}
 	}
 
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public static final class AvgAggregationFunctionFactory implements AggregationFunctionFactory {
 		private static final long serialVersionUID = 1L;
 
@@ -198,7 +198,7 @@ public abstract class AvgAggregationFunction<T> extends AggregationFunction<T> {
 				return (AggregationFunction<T>) new ShortAvgAgg();
 			}
 			else {
-				throw new UnsupportedAggregationTypeException("The type " + type.getName() + 
+				throw new UnsupportedAggregationTypeException("The type " + type.getName() +
 					" has currently not supported for built-in sum aggregations.");
 			}
 		}

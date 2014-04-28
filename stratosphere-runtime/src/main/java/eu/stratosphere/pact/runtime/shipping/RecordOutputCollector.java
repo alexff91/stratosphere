@@ -27,26 +27,26 @@ import eu.stratosphere.util.Collector;
  * The OutputCollector tracks to which writers a deep-copy must be given and which not.
  */
 public class RecordOutputCollector implements Collector<Record>
-{	
+{
 	// list of writers
-	protected AbstractRecordWriter<Record>[] writers; 
-	
+	protected AbstractRecordWriter<Record>[] writers;
+
 	/**
-	 * Initializes the output collector with a set of writers. 
-	 * To specify for a writer that it must be fed with a deep-copy, set the bit in the copy flag bit mask to 1 that 
+	 * Initializes the output collector with a set of writers.
+	 * To specify for a writer that it must be fed with a deep-copy, set the bit in the copy flag bit mask to 1 that
 	 * corresponds to the position of the writer within the {@link List}.
-	 * 
+	 *
 	 * @param writers List of all writers.
 	 */
 	@SuppressWarnings("unchecked")
 	public RecordOutputCollector(List<AbstractRecordWriter<Record>> writers) {
-		
+
 		this.writers = (AbstractRecordWriter<Record>[]) writers.toArray(new AbstractRecordWriter[writers.size()]);
 	}
-	
+
 	/**
 	 * Adds a writer to the OutputCollector.
-	 * 
+	 *
 	 * @param writer The writer to add.
 	 */
 
@@ -74,7 +74,7 @@ public class RecordOutputCollector implements Collector<Record>
 	{
 		try {
 			for (int i = 0; i < writers.length; i++) {
-				this.writers[i].emit(record);	
+				this.writers[i].emit(record);
 			}
 		}
 		catch (IOException e) {

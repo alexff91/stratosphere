@@ -31,7 +31,7 @@ import eu.stratosphere.util.StringUtils;
  * return will call the global input split provider to retrieve a new input split.
  * <p>
  * This class is thread-safe.
- * 
+ *
  */
 public class TaskInputSplitProvider implements InputSplitProvider {
 

@@ -23,25 +23,25 @@ import java.util.Random;
 public class LongType implements SerializationTestType
 {
 	private long value;
-	
+
 
 	public LongType()
 	{
 		this.value = 0;
 	}
-	
+
 	private LongType(long value)
 	{
 		this.value = value;
 	}
-	
+
 
 	@Override
 	public LongType getRandom(Random rnd)
 	{
 		return new LongType(rnd.nextLong());
 	}
-	
+
 
 	@Override
 	public void write(DataOutput out) throws IOException

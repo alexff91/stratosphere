@@ -39,102 +39,102 @@ import eu.stratosphere.util.Collector;
 public class ReduceTaskExternalITCase extends DriverTestBase<GenericGroupReduce<Record, Record>>
 {
 	private static final Log LOG = LogFactory.getLog(ReduceTaskExternalITCase.class);
-	
+
 	@SuppressWarnings("unchecked")
 	private final RecordComparator comparator = new RecordComparator(
 		new int[]{0}, (Class<? extends Key>[])new Class[]{ IntValue.class });
-	
+
 	private final List<Record> outList = new ArrayList<Record>();
-	
-	
+
+
 	public ReduceTaskExternalITCase() {
 		super(0, 1, 3*1024*1024);
 	}
-	
-	
+
+
 	@Test
 	public void testSingleLevelMergeReduceTask() {
 		final int keyCnt = 8192;
 		final int valCnt = 8;
-		
+
 		setNumFileHandlesForSort(2);
-		
+
 		addInputComparator(this.comparator);
 		setOutput(this.outList);
 		getTaskConfig().setDriverStrategy(DriverStrategy.SORTED_GROUP);
-		
+
 		try {
 			addInputSorted(new UniformRecordGenerator(keyCnt, valCnt, false), this.comparator.duplicate());
-			
+
 			ReduceDriver<Record, Record> testTask = new ReduceDriver<Record, Record>();
-			
+
 			testDriver(testTask, MockReduceStub.class);
 		} catch (Exception e) {
 			LOG.debug(e);
 			Assert.fail("Exception in Test.");
 		}
-		
+
 		Assert.assertTrue("Resultset size was "+this.outList.size()+". Expected was "+keyCnt, this.outList.size() == keyCnt);
-		
+
 		for(Record record : this.outList) {
 			Assert.assertTrue("Incorrect result", record.getField(1, IntValue.class).getValue() == valCnt-record.getField(0, IntValue.class).getValue());
 		}
-		
+
 		this.outList.clear();
-				
+
 	}
-	
+
 	@Test
 	public void testMultiLevelMergeReduceTask() {
 		final int keyCnt = 32768;
 		final int valCnt = 8;
 
 		setNumFileHandlesForSort(2);
-		
+
 		addInputComparator(this.comparator);
 		setOutput(this.outList);
 		getTaskConfig().setDriverStrategy(DriverStrategy.SORTED_GROUP);
-		
+
 		try {
 			addInputSorted(new UniformRecordGenerator(keyCnt, valCnt, false), this.comparator.duplicate());
-			
+
 			ReduceDriver<Record, Record> testTask = new ReduceDriver<Record, Record>();
-			
+
 			testDriver(testTask, MockReduceStub.class);
 		} catch (Exception e) {
 			LOG.debug(e);
 			Assert.fail("Exception in Test.");
 		}
-		
+
 		Assert.assertTrue("Resultset size was "+this.outList.size()+". Expected was "+keyCnt, this.outList.size() == keyCnt);
-		
+
 		for(Record record : this.outList) {
 			Assert.assertTrue("Incorrect result", record.getField(1, IntValue.class).getValue() == valCnt-record.getField(0, IntValue.class).getValue());
 		}
-		
+
 		this.outList.clear();
-				
+
 	}
-	
+
 	@Test
 	public void testSingleLevelMergeCombiningReduceTask()
 	{
 		final int keyCnt = 8192;
 		final int valCnt = 8;
-		
+
 		addInputComparator(this.comparator);
 		setOutput(this.outList);
 		getTaskConfig().setDriverStrategy(DriverStrategy.SORTED_GROUP);
-		
+
 		CombiningUnilateralSortMerger<Record> sorter = null;
 		try {
-			sorter = new CombiningUnilateralSortMerger<Record>(new MockCombiningReduceStub(), 
-				getMemoryManager(), getIOManager(), new UniformRecordGenerator(keyCnt, valCnt, false), 
+			sorter = new CombiningUnilateralSortMerger<Record>(new MockCombiningReduceStub(),
+				getMemoryManager(), getIOManager(), new UniformRecordGenerator(keyCnt, valCnt, false),
 				getOwningNepheleTask(), RecordSerializer.get(), this.comparator.duplicate(), this.perSortMem, 2, 0.8f);
 			addInput(sorter.getIterator());
-			
+
 			ReduceDriver<Record, Record> testTask = new ReduceDriver<Record, Record>();
-		
+
 			testDriver(testTask, MockCombiningReduceStub.class);
 		} catch (Exception e) {
 			LOG.debug(e);
@@ -144,41 +144,41 @@ public class ReduceTaskExternalITCase extends DriverTestBase<GenericGroupReduce<
 				sorter.close();
 			}
 		}
-		
+
 		int expSum = 0;
 		for (int i = 1; i < valCnt; i++) {
 			expSum += i;
 		}
-		
+
 		Assert.assertTrue("Resultset size was "+this.outList.size()+". Expected was "+keyCnt, this.outList.size() == keyCnt);
-		
+
 		for (Record record : this.outList) {
 			Assert.assertTrue("Incorrect result", record.getField(1, IntValue.class).getValue() == expSum-record.getField(0, IntValue.class).getValue());
 		}
-		
+
 		this.outList.clear();
 	}
-	
-	
+
+
 	@Test
 	public void testMultiLevelMergeCombiningReduceTask() {
 
 		int keyCnt = 32768;
 		int valCnt = 8;
-		
+
 		addInputComparator(this.comparator);
 		setOutput(this.outList);
 		getTaskConfig().setDriverStrategy(DriverStrategy.SORTED_GROUP);
-		
+
 		CombiningUnilateralSortMerger<Record> sorter = null;
 		try {
-			sorter = new CombiningUnilateralSortMerger<Record>(new MockCombiningReduceStub(), 
-				getMemoryManager(), getIOManager(), new UniformRecordGenerator(keyCnt, valCnt, false), 
+			sorter = new CombiningUnilateralSortMerger<Record>(new MockCombiningReduceStub(),
+				getMemoryManager(), getIOManager(), new UniformRecordGenerator(keyCnt, valCnt, false),
 				getOwningNepheleTask(), RecordSerializer.get(), this.comparator.duplicate(), this.perSortMem, 2, 0.8f);
 			addInput(sorter.getIterator());
-			
+
 			ReduceDriver<Record, Record> testTask = new ReduceDriver<Record, Record>();
-		
+
 			testDriver(testTask, MockCombiningReduceStub.class);
 		} catch (Exception e) {
 			LOG.debug(e);
@@ -188,25 +188,25 @@ public class ReduceTaskExternalITCase extends DriverTestBase<GenericGroupReduce<
 				sorter.close();
 			}
 		}
-		
+
 		int expSum = 0;
 		for (int i = 1; i < valCnt; i++) {
 			expSum += i;
 		}
-		
+
 		Assert.assertTrue("Resultset size was "+this.outList.size()+". Expected was "+keyCnt, this.outList.size() == keyCnt);
-		
+
 		for (Record record : this.outList) {
 			Assert.assertTrue("Incorrect result", record.getField(1, IntValue.class).getValue() == expSum-record.getField(0, IntValue.class).getValue());
 		}
-		
+
 		this.outList.clear();
-		
+
 	}
-	
+
 	public static class MockReduceStub extends ReduceFunction {
 		private static final long serialVersionUID = 1L;
-		
+
 		private final IntValue key = new IntValue();
 		private final IntValue value = new IntValue();
 
@@ -225,7 +225,7 @@ public class ReduceTaskExternalITCase extends DriverTestBase<GenericGroupReduce<
 			out.collect(element);
 		}
 	}
-	
+
 	@Combinable
 	public static class MockCombiningReduceStub extends ReduceFunction {
 		private static final long serialVersionUID = 1L;
@@ -242,7 +242,7 @@ public class ReduceTaskExternalITCase extends DriverTestBase<GenericGroupReduce<
 			while (records.hasNext()) {
 				element = records.next();
 				element.getField(1, this.value);
-				
+
 				sum += this.value.getValue();
 			}
 			element.getField(0, this.key);
@@ -250,7 +250,7 @@ public class ReduceTaskExternalITCase extends DriverTestBase<GenericGroupReduce<
 			element.setField(1, this.value);
 			out.collect(element);
 		}
-		
+
 		@Override
 		public void combine(Iterator<Record> records, Collector<Record> out)
 				throws Exception {
@@ -259,15 +259,15 @@ public class ReduceTaskExternalITCase extends DriverTestBase<GenericGroupReduce<
 			while (records.hasNext()) {
 				element = records.next();
 				element.getField(1, this.combineValue);
-				
+
 				sum += this.combineValue.getValue();
 			}
-			
+
 			this.combineValue.setValue(sum);
 			element.setField(1, this.combineValue);
 			out.collect(element);
 		}
-		
+
 	}
-	
+
 }

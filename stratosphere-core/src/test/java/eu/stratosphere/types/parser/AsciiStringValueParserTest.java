@@ -21,18 +21,18 @@ public class AsciiStringValueParserTest extends ParserTestBase<StringValue> {
 	@Override
 	public String[] getValidTestValues() {
 		return new String[] {
-			"abcdefgh", "i", "jklmno", "\"abcdefgh\"", "\"i\"", "\"jklmno\"", 
+			"abcdefgh", "i", "jklmno", "\"abcdefgh\"", "\"i\"", "\"jklmno\"",
 			"\"ab,cde|fg\"", "\"hij|m|n|op\"",
 			"  \"abcdefgh\"", "     \"i\"\t\t\t", "\t \t\"jklmno\"  ",
 			"  \"     abcd    \" \t "
 		};
 	}
-	
+
 	@Override
 	public StringValue[] getValidTestResults() {
 		return new StringValue[] {
 			new StringValue("abcdefgh"), new StringValue("i"), new StringValue("jklmno"),
-			new StringValue("abcdefgh"), new StringValue("i"), new StringValue("jklmno"), 
+			new StringValue("abcdefgh"), new StringValue("i"), new StringValue("jklmno"),
 			new StringValue("ab,cde|fg"), new StringValue("hij|m|n|op"),
 			new StringValue("abcdefgh"), new StringValue("i"), new StringValue("jklmno"),
 			new StringValue("     abcd    ")

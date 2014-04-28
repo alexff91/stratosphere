@@ -24,9 +24,9 @@ import eu.stratosphere.api.java.typeutils.TypeInformation;
 /**
  *
  */
-public class CrossOperator<I1, I2, OUT> 
+public class CrossOperator<I1, I2, OUT>
 	extends TwoInputUdfOperator<I1, I2, OUT, CrossOperator<I1, I2, OUT>> {
-	
+
 	private final CrossFunction<I1, I2, OUT> function;
 
 	protected CrossOperator(DataSet<I1> input1, DataSet<I2> input2,
@@ -37,27 +37,28 @@ public class CrossOperator<I1, I2, OUT>
 
 		this.function = function;
 	}
-	
+
 	@Override
 	protected BinaryNodeTranslation translateToDataFlow() {
 		String name = getName() != null ? getName() : function.getClass().getName();
 		return new BinaryNodeTranslation(new PlanCrossOperator<I1, I2, OUT>(function, name, getInput1Type(), getInput2Type(), getResultType()));
 	}
-	
+
 
 	// --------------------------------------------------------------------------------------------
 	// Builder classes for incremental construction
 	// --------------------------------------------------------------------------------------------
-	
+
 	public static final class CrossOperatorSets<I1, I2> {
-		
+
 		private final DataSet<I1> input1;
 		private final DataSet<I2> input2;
-		
+
 		public CrossOperatorSets(DataSet<I1> input1, DataSet<I2> input2) {
-			if (input1 == null || input2 == null)
-				throw new NullPointerException();
-			
+			if (input1 == null || input2 == null) {
+			throw new NullPointerException();
+			}
+
 			this.input1 = input1;
 			this.input2 = input2;
 		}

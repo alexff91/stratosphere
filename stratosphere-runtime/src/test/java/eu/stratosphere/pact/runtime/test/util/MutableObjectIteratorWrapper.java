@@ -26,7 +26,7 @@ import eu.stratosphere.util.MutableObjectIterator;
 public class MutableObjectIteratorWrapper implements MutableObjectIterator<Record>
 {
 	private final Iterator<Record> source;
-	
+
 	public MutableObjectIteratorWrapper(Iterator<Record> source)
 	{
 		this.source = source;

@@ -20,26 +20,26 @@ import eu.stratosphere.types.Record;
 
 
 /**
- * 
+ *
  */
 public final class EdgeInputFormat extends DelimitedInputFormat {
 	private static final long serialVersionUID = 1L;
-	
+
 	public static final String ID_DELIMITER_CHAR = "edgeinput.delimiter";
-	
+
 	private final IntValue i1 = new IntValue();
 	private final IntValue i2 = new IntValue();
-	
+
 	private char delimiter;
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public Record readRecord(Record target, byte[] bytes, int offset, int numBytes) {
 		final int limit = offset + numBytes;
 		int first = 0, second = 0;
 		final char delimiter = this.delimiter;
-		
+
 		int pos = offset;
 		while (pos < limit && bytes[pos] != delimiter) {
 			first = first * 10 + (bytes[pos++] - '0');
@@ -48,19 +48,20 @@ public final class EdgeInputFormat extends DelimitedInputFormat {
 		while (pos < limit) {
 			second = second * 10 + (bytes[pos++] - '0');
 		}
-		
-		if (first <= 0 || second <= 0 || first == second)
-			return null;
-		
+
+		if (first <= 0 || second <= 0 || first == second) {
+		return null;
+		}
+
 		this.i1.setValue(first);
 		this.i2.setValue(second);
 		target.setField(0, this.i1);
 		target.setField(1, this.i2);
 		return target;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 
 	@Override
 	public void configure(Configuration parameters) {

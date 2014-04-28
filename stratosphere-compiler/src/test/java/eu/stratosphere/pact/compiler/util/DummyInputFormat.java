@@ -20,7 +20,7 @@ import eu.stratosphere.types.Record;
 
 public final class DummyInputFormat extends DelimitedInputFormat {
 	private static final long serialVersionUID = 1L;
-	
+
 	private final IntValue integer = new IntValue(1);
 
 	@Override

@@ -18,18 +18,18 @@ public final class ConflictingFieldTypeInfoException extends Exception {
 	private static final long serialVersionUID = 3991352502693288321L;
 
 	private final int fieldNumber;
-	
+
 	private final Object previousType, newType;
 
-	
+
 	public ConflictingFieldTypeInfoException(int fieldNumber, Object previousType, Object newType) {
 		super("Conflicting type info for field " + fieldNumber + ": Old='" + previousType + "', new='" + newType + "'.");
 		this.fieldNumber = fieldNumber;
 		this.previousType = previousType;
 		this.newType = newType;
 	}
-	
-	
+
+
 	public int getFieldNumber() {
 		return fieldNumber;
 	}

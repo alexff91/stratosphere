@@ -43,7 +43,7 @@ import eu.stratosphere.nephele.jobgraph.JobGraph;
 
 
 public class JobSubmissionServlet extends HttpServlet {
-	
+
 	/**
 	 * Serial UID for serialization interoperability.
 	 */
@@ -148,14 +148,14 @@ public class JobSubmissionServlet extends HttpServlet {
 			String[] options = params.isEmpty() ? new String[0] : (String[]) params.toArray(new String[params.size()]);
 			PackagedProgram program;
 			OptimizedPlan optPlan;
-			
+
 			try {
 				if (assemblerClass == null) {
 					program = new PackagedProgram(jarFile, options);
 				} else {
 					program = new PackagedProgram(jarFile, assemblerClass, options);
 				}
-				
+
 				optPlan = client.getOptimizedPlan(program);
 			}
 			catch (ProgramInvocationException e) {
@@ -321,7 +321,7 @@ public class JobSubmissionServlet extends HttpServlet {
 
 	/**
 	 * Prints the error page, containing the given message.
-	 * 
+	 *
 	 * @param resp
 	 *        The response handler.
 	 * @param message
@@ -363,7 +363,7 @@ public class JobSubmissionServlet extends HttpServlet {
 
 	/**
 	 * Checks the given parameter. If it is null, it prints the error page.
-	 * 
+	 *
 	 * @param resp
 	 *        The response handler.
 	 * @param parameter
@@ -388,7 +388,7 @@ public class JobSubmissionServlet extends HttpServlet {
 	 * Utility method that takes the given arguments, splits them at the whitespaces (space and tab) and
 	 * turns them into an array of Strings. Other than the <tt>StringTokenizer</tt>, this method
 	 * takes care of quotes, such that quoted passages end up being one string.
-	 * 
+	 *
 	 * @param args
 	 *        The string to be split.
 	 * @return The array of split strings.

@@ -26,7 +26,7 @@ import eu.stratosphere.core.memory.MemorySegment;
 public final class GlobalBufferPool {
 
 	private final static Log LOG = LogFactory.getLog(GlobalBufferPool.class);
-	
+
 	/**
 	 * The singleton instance of the global buffer pool.
 	 */
@@ -47,7 +47,7 @@ public final class GlobalBufferPool {
 	/**
 	 * Returns the singleton instance of the global buffer pool. If the instance does not already exist, it is also
 	 * created by calling this method.
-	 * 
+	 *
 	 * @return the singleton instance of the global buffer pool
 	 */
 	public static synchronized GlobalBufferPool getInstance() {
@@ -85,7 +85,7 @@ public final class GlobalBufferPool {
 
 	/**
 	 * Returns the maximum size of a buffer available at this pool in bytes.
-	 * 
+	 *
 	 * @return the maximum size of a buffer available at this pool in bytes
 	 */
 	public int getMaximumBufferSize() {
@@ -95,7 +95,7 @@ public final class GlobalBufferPool {
 
 	/**
 	 * Locks a buffer from the global buffer pool and returns it to the caller of this method.
-	 * 
+	 *
 	 * @return the locked buffer from the pool or <code>null</code> if currently no global buffer is available
 	 */
 	public MemorySegment lockGlobalBuffer() {
@@ -105,7 +105,7 @@ public final class GlobalBufferPool {
 
 	/**
 	 * Releases a lock on a previously locked buffer and returns the buffer to the global pool.
-	 * 
+	 *
 	 * @param releasedBuffer
 	 *        the previously locked buffer to be released
 	 */
@@ -115,7 +115,7 @@ public final class GlobalBufferPool {
 
 	/**
 	 * Returns the total number of buffers managed by this pool.
-	 * 
+	 *
 	 * @return the total number of buffers managed by this pool
 	 */
 	public int getTotalNumberOfBuffers() {
@@ -125,7 +125,7 @@ public final class GlobalBufferPool {
 
 	/**
 	 * Returns the number of buffers which are currently available at this pool.
-	 * 
+	 *
 	 * @return the number of buffers which are currently available at this pool
 	 */
 	public int getCurrentNumberOfBuffers() {

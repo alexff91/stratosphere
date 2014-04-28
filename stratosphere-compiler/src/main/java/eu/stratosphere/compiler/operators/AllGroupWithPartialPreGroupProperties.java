@@ -49,7 +49,7 @@ public final class AllGroupWithPartialPreGroupProperties extends OperatorDescrip
 			toCombiner.setShipStrategy(ShipStrategyType.FORWARD);
 			SingleInputPlanNode combiner = new SingleInputPlanNode(node, "Combine("+node.getPactContract().getName()+")", toCombiner, DriverStrategy.ALL_GROUP);
 			combiner.setCosts(new Costs(0, 0));
-			
+
 			Channel toReducer = new Channel(combiner);
 			toReducer.setShipStrategy(in.getShipStrategy(), in.getShipStrategyKeys(), in.getShipStrategySortOrder());
 			toReducer.setLocalStrategy(in.getLocalStrategy(), in.getLocalStrategyKeys(), in.getLocalStrategySortOrder());
@@ -68,7 +68,7 @@ public final class AllGroupWithPartialPreGroupProperties extends OperatorDescrip
 	protected List<RequestedLocalProperties> createPossibleLocalProperties() {
 		return Collections.singletonList(new RequestedLocalProperties());
 	}
-	
+
 
 	@Override
 	public GlobalProperties computeGlobalProperties(GlobalProperties gProps) {
@@ -80,7 +80,7 @@ public final class AllGroupWithPartialPreGroupProperties extends OperatorDescrip
 		gProps.clearUniqueFieldCombinations();
 		return gProps;
 	}
-	
+
 
 	@Override
 	public LocalProperties computeLocalProperties(LocalProperties lProps) {

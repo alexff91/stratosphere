@@ -26,17 +26,17 @@ public class PageWithRankOutFormat extends DelimitedOutputFormat {
 	@Override
 	public int serializeRecord(Record record, byte[] target) {
 		StringBuilder buffer = this.buffer;
-		
+
 		buffer.setLength(0);
 		buffer.append(record.getField(0, LongValue.class).toString());
 		buffer.append('\t');
 		buffer.append(record.getField(1, DoubleValue.class).toString());
 		buffer.append('\n');
-		
+
 		if (target.length < buffer.length()) {
 			return -buffer.length();
 		}
-		
+
 		for (int i = 0; i < buffer.length(); i++) {
 			target[i] = (byte) buffer.charAt(i);
 		}

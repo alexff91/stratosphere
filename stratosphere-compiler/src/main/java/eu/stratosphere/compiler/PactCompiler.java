@@ -40,9 +40,9 @@ import eu.stratosphere.api.common.operators.Operator;
 import eu.stratosphere.api.common.operators.base.CoGroupOperatorBase;
 import eu.stratosphere.api.common.operators.base.CrossOperatorBase;
 import eu.stratosphere.api.common.operators.base.FlatMapOperatorBase;
+import eu.stratosphere.api.common.operators.base.GroupReduceOperatorBase;
 import eu.stratosphere.api.common.operators.base.JoinOperatorBase;
 import eu.stratosphere.api.common.operators.base.MapOperatorBase;
-import eu.stratosphere.api.common.operators.base.GroupReduceOperatorBase;
 import eu.stratosphere.api.common.operators.base.PlainMapOperatorBase;
 import eu.stratosphere.api.common.operators.base.ReduceOperatorBase;
 import eu.stratosphere.compiler.costs.CostEstimator;
@@ -55,12 +55,12 @@ import eu.stratosphere.compiler.dag.CrossNode;
 import eu.stratosphere.compiler.dag.DataSinkNode;
 import eu.stratosphere.compiler.dag.DataSourceNode;
 import eu.stratosphere.compiler.dag.FlatMapNode;
+import eu.stratosphere.compiler.dag.GroupReduceNode;
 import eu.stratosphere.compiler.dag.IterationNode;
 import eu.stratosphere.compiler.dag.MapNode;
 import eu.stratosphere.compiler.dag.MatchNode;
 import eu.stratosphere.compiler.dag.OptimizerNode;
 import eu.stratosphere.compiler.dag.PactConnection;
-import eu.stratosphere.compiler.dag.GroupReduceNode;
 import eu.stratosphere.compiler.dag.ReduceNode;
 import eu.stratosphere.compiler.dag.SinkJoiner;
 import eu.stratosphere.compiler.dag.SolutionSetNode;
@@ -140,34 +140,34 @@ public class PactCompiler {
 	/**
 	 * Value for the shipping strategy compiler hint that enforces a <b>Forward</b> strategy on the
 	 * input channel, i.e. no redistribution of any kind.
-	 * 
+	 *
 	 * @see #HINT_SHIP_STRATEGY
 	 * @see #HINT_SHIP_STRATEGY_FIRST_INPUT
 	 * @see #HINT_SHIP_STRATEGY_SECOND_INPUT
 	 */
 	public static final String HINT_SHIP_STRATEGY_FORWARD = "SHIP_FORWARD";
-	
+
 	/**
 	 * Value for the shipping strategy compiler hint that enforces a random repartition strategy.
-	 * 
+	 *
 	 * @see #HINT_SHIP_STRATEGY
 	 * @see #HINT_SHIP_STRATEGY_FIRST_INPUT
 	 * @see #HINT_SHIP_STRATEGY_SECOND_INPUT
 	 */
 	public static final String HINT_SHIP_STRATEGY_REPARTITION= "SHIP_REPARTITION";
-	
+
 	/**
 	 * Value for the shipping strategy compiler hint that enforces a hash-partition strategy.
-	 * 
+	 *
 	 * @see #HINT_SHIP_STRATEGY
 	 * @see #HINT_SHIP_STRATEGY_FIRST_INPUT
 	 * @see #HINT_SHIP_STRATEGY_SECOND_INPUT
 	 */
 	public static final String HINT_SHIP_STRATEGY_REPARTITION_HASH = "SHIP_REPARTITION_HASH";
-	
+
 	/**
 	 * Value for the shipping strategy compiler hint that enforces a range-partition strategy.
-	 * 
+	 *
 	 * @see #HINT_SHIP_STRATEGY
 	 * @see #HINT_SHIP_STRATEGY_FIRST_INPUT
 	 * @see #HINT_SHIP_STRATEGY_SECOND_INPUT
@@ -177,7 +177,7 @@ public class PactCompiler {
 	/**
 	 * Value for the shipping strategy compiler hint that enforces a <b>broadcast</b> strategy on the
 	 * input channel.
-	 * 
+	 *
 	 * @see #HINT_SHIP_STRATEGY
 	 * @see #HINT_SHIP_STRATEGY_FIRST_INPUT
 	 * @see #HINT_SHIP_STRATEGY_SECOND_INPUT
@@ -197,67 +197,67 @@ public class PactCompiler {
 	/**
 	 * Value for the local strategy compiler hint that enforces a <b>sort based</b> local strategy.
 	 * For example, a <i>Reduce</i> operator will sort the data to group it.
-	 * 
+	 *
 	 * @see #HINT_LOCAL_STRATEGY
 	 */
 	public static final String HINT_LOCAL_STRATEGY_SORT = "LOCAL_STRATEGY_SORT";
-	
+
 	/**
 	 * Value for the local strategy compiler hint that enforces a <b>sort based</b> local strategy.
 	 * During sorting a combine method is repeatedly applied to reduce the data volume.
 	 * For example, a <i>Reduce</i> operator will sort the data to group it.
-	 * 
+	 *
 	 * @see #HINT_LOCAL_STRATEGY
 	 */
 	public static final String HINT_LOCAL_STRATEGY_COMBINING_SORT = "LOCAL_STRATEGY_COMBINING_SORT";
-	
+
 	/**
 	 * Value for the local strategy compiler hint that enforces a <b>sort merge based</b> local strategy on both
-	 * inputs with subsequent merging of inputs. 
-	 * For example, a <i>Match</i> or <i>CoGroup</i> operator will use a sort-merge strategy to find pairs 
+	 * inputs with subsequent merging of inputs.
+	 * For example, a <i>Match</i> or <i>CoGroup</i> operator will use a sort-merge strategy to find pairs
 	 * of matching keys.
-	 * 
+	 *
 	 * @see #HINT_LOCAL_STRATEGY
 	 */
 	public static final String HINT_LOCAL_STRATEGY_SORT_BOTH_MERGE = "LOCAL_STRATEGY_SORT_BOTH_MERGE";
-	
+
 	/**
 	 * Value for the local strategy compiler hint that enforces a <b>sort merge based</b> local strategy.
-	 * The the first input is sorted, the second input is assumed to be sorted. After sorting both inputs are merged. 
-	 * For example, a <i>Match</i> or <i>CoGroup</i> operator will use a sort-merge strategy to find pairs 
+	 * The the first input is sorted, the second input is assumed to be sorted. After sorting both inputs are merged.
+	 * For example, a <i>Match</i> or <i>CoGroup</i> operator will use a sort-merge strategy to find pairs
 	 * of matching keys.
-	 * 
+	 *
 	 * @see #HINT_LOCAL_STRATEGY
 	 */
 	public static final String HINT_LOCAL_STRATEGY_SORT_FIRST_MERGE = "LOCAL_STRATEGY_SORT_FIRST_MERGE";
-	
+
 	/**
 	 * Value for the local strategy compiler hint that enforces a <b>sort merge based</b> local strategy.
-	 * The the second input is sorted, the first input is assumed to be sorted. After sorting both inputs are merged. 
-	 * For example, a <i>Match</i> or <i>CoGroup</i> operator will use a sort-merge strategy to find pairs 
+	 * The the second input is sorted, the first input is assumed to be sorted. After sorting both inputs are merged.
+	 * For example, a <i>Match</i> or <i>CoGroup</i> operator will use a sort-merge strategy to find pairs
 	 * of matching keys.
-	 * 
+	 *
 	 * @see #HINT_LOCAL_STRATEGY
 	 */
 	public static final String HINT_LOCAL_STRATEGY_SORT_SECOND_MERGE = "LOCAL_STRATEGY_SORT_SECOND_MERGE";
-	
+
 	/**
 	 * Value for the local strategy compiler hint that enforces a <b>merge based</b> local strategy.
-	 * Both inputs are assumed to be sorted and are merged. 
-	 * For example, a <i>Match</i> or <i>CoGroup</i> operator will use a merge strategy to find pairs 
+	 * Both inputs are assumed to be sorted and are merged.
+	 * For example, a <i>Match</i> or <i>CoGroup</i> operator will use a merge strategy to find pairs
 	 * of matching keys.
-	 * 
+	 *
 	 * @see #HINT_LOCAL_STRATEGY
 	 */
 	public static final String HINT_LOCAL_STRATEGY_MERGE = "LOCAL_STRATEGY_MERGE";
 
-	
+
 	/**
 	 * Value for the local strategy compiler hint that enforces a <b>hash based</b> local strategy.
 	 * For example, a <i>Match</i> operator will use a hybrid-hash-join strategy to find pairs of
 	 * matching keys. The <b>first</b> input will be used to build the hash table, the second input will be
 	 * used to probe the table.
-	 * 
+	 *
 	 * @see #HINT_LOCAL_STRATEGY
 	 */
 	public static final String HINT_LOCAL_STRATEGY_HASH_BUILD_FIRST = "LOCAL_STRATEGY_HASH_BUILD_FIRST";
@@ -267,7 +267,7 @@ public class PactCompiler {
 	 * For example, a <i>Match</i> operator will use a hybrid-hash-join strategy to find pairs of
 	 * matching keys. The <b>second</b> input will be used to build the hash table, the first input will be
 	 * used to probe the table.
-	 * 
+	 *
 	 * @see #HINT_LOCAL_STRATEGY
 	 */
 	public static final String HINT_LOCAL_STRATEGY_HASH_BUILD_SECOND = "LOCAL_STRATEGY_HASH_BUILD_SECOND";
@@ -278,7 +278,7 @@ public class PactCompiler {
 	 * Hence, the data of the first input will be is streamed though, while the data of the second input is stored on
 	 * disk
 	 * and repeatedly read.
-	 * 
+	 *
 	 * @see #HINT_LOCAL_STRATEGY
 	 */
 	public static final String HINT_LOCAL_STRATEGY_NESTEDLOOP_STREAMED_OUTER_FIRST = "LOCAL_STRATEGY_NESTEDLOOP_STREAMED_OUTER_FIRST";
@@ -289,7 +289,7 @@ public class PactCompiler {
 	 * Hence, the data of the second input will be is streamed though, while the data of the first input is stored on
 	 * disk
 	 * and repeatedly read.
-	 * 
+	 *
 	 * @see #HINT_LOCAL_STRATEGY
 	 */
 	public static final String HINT_LOCAL_STRATEGY_NESTEDLOOP_STREAMED_OUTER_SECOND = "LOCAL_STRATEGY_NESTEDLOOP_STREAMED_OUTER_SECOND";
@@ -300,7 +300,7 @@ public class PactCompiler {
 	 * Further more, the first input, being the outer side, will be processed in blocks, and for each block, the second
 	 * input,
 	 * being the inner side, will read repeatedly from disk.
-	 * 
+	 *
 	 * @see #HINT_LOCAL_STRATEGY
 	 */
 	public static final String HINT_LOCAL_STRATEGY_NESTEDLOOP_BLOCKED_OUTER_FIRST = "LOCAL_STRATEGY_NESTEDLOOP_BLOCKED_OUTER_FIRST";
@@ -311,11 +311,11 @@ public class PactCompiler {
 	 * Further more, the second input, being the outer side, will be processed in blocks, and for each block, the first
 	 * input,
 	 * being the inner side, will read repeatedly from disk.
-	 * 
+	 *
 	 * @see #HINT_LOCAL_STRATEGY
 	 */
 	public static final String HINT_LOCAL_STRATEGY_NESTEDLOOP_BLOCKED_OUTER_SECOND = "LOCAL_STRATEGY_NESTEDLOOP_BLOCKED_OUTER_SECOND";
-	
+
 	/**
 	 * The log handle that is used by the compiler to log messages.
 	 */
@@ -380,7 +380,7 @@ public class PactCompiler {
 	 * it has no access to another cost estimator.
 	 * <p>
 	 * The address of the job manager (to obtain system characteristics) is determined via the global configuration.
-	 * 
+	 *
 	 * @param stats
 	 *        The statistics to be used to determine the input properties.
 	 */
@@ -395,7 +395,7 @@ public class PactCompiler {
 	 * however the given cost estimator to compute the costs of the individual operations.
 	 * <p>
 	 * The address of the job manager (to obtain system characteristics) is determined via the global configuration.
-	 * 
+	 *
 	 * @param estimator
 	 *        The <tt>CostEstimator</tt> to use to cost the individual operations.
 	 */
@@ -410,7 +410,7 @@ public class PactCompiler {
 	 * operations.
 	 * <p>
 	 * The address of the job manager (to obtain system characteristics) is determined via the global configuration.
-	 * 
+	 *
 	 * @param stats
 	 *        The statistics to be used to determine the input properties.
 	 * @param estimator
@@ -428,7 +428,7 @@ public class PactCompiler {
 	 * <p>
 	 * The given socket-address is used to connect to the job manager to obtain system characteristics, like available
 	 * memory. If that parameter is null, then the address is obtained from the global configuration.
-	 * 
+	 *
 	 * @param stats
 	 *        The statistics to be used to determine the input properties.
 	 * @param estimator
@@ -479,15 +479,15 @@ public class PactCompiler {
 			this.jobManagerAddress = new InetSocketAddress(address, port);
 		}
 	}
-	
+
 	// ------------------------------------------------------------------------
 	//                             Getters / Setters
 	// ------------------------------------------------------------------------
-	
+
 	public int getMaxMachines() {
 		return maxMachines;
 	}
-	
+
 	public void setMaxMachines(int maxMachines) {
 		if (maxMachines == -1 || maxMachines > 0) {
 			this.maxMachines = maxMachines;
@@ -495,11 +495,11 @@ public class PactCompiler {
 			throw new IllegalArgumentException();
 		}
 	}
-	
+
 	public int getDefaultDegreeOfParallelism() {
 		return defaultDegreeOfParallelism;
 	}
-	
+
 	public void setDefaultDegreeOfParallelism(int defaultDegreeOfParallelism) {
 		if (defaultDegreeOfParallelism == -1 || defaultDegreeOfParallelism > 0) {
 			this.defaultDegreeOfParallelism = defaultDegreeOfParallelism;
@@ -507,11 +507,11 @@ public class PactCompiler {
 			throw new IllegalArgumentException();
 		}
 	}
-	
+
 	public int getMaxIntraNodeParallelism() {
 		return maxIntraNodeParallelism;
 	}
-	
+
 	public void setMaxIntraNodeParallelism(int maxIntraNodeParallelism) {
 		if (maxIntraNodeParallelism == -1 || maxIntraNodeParallelism > 0) {
 			this.maxIntraNodeParallelism = maxIntraNodeParallelism;
@@ -519,7 +519,7 @@ public class PactCompiler {
 			throw new IllegalArgumentException();
 		}
 	}
-	
+
 	// ------------------------------------------------------------------------
 	//                               Compilation
 	// ------------------------------------------------------------------------
@@ -536,7 +536,7 @@ public class PactCompiler {
 	 * <li>Enumerate plan alternatives. This cannot be done in the same step as the interesting property computation (as
 	 * opposed to the Database approaches), because we support plans that are not trees.</li>
 	 * </ol>
-	 * 
+	 *
 	 * @param program The program to be translated.
 	 * @return The optimized plan.
 	 * @throws CompilerException
@@ -549,12 +549,12 @@ public class PactCompiler {
 		final OptimizerPostPass postPasser = getPostPassFromPlan(program);
 		return compile(program, getInstanceTypeInfo(), postPasser);
 	}
-	
+
 	public OptimizedPlan compile(Plan program, InstanceTypeDescription type) throws CompilerException {
 		final OptimizerPostPass postPasser = getPostPassFromPlan(program);
 		return compile(program, type, postPasser);
 	}
-	
+
 	/**
 	 * Translates the given pact plan in to an OptimizedPlan, where all nodes have their local strategy assigned
 	 * and all channels have a shipping strategy assigned. The process goes through several phases:
@@ -564,33 +564,34 @@ public class PactCompiler {
 	 * <li>Enumerate plan alternatives. This cannot be done in the same step as the interesting property computation (as
 	 * opposed to the Database approaches), because we support plans that are not trees.</li>
 	 * </ol>
-	 * 
+	 *
 	 * @param program The program to be translated.
 	 * @param type The instance type to schedule the execution on. Used also to determine the amount of memory
 	 *             available to the tasks.
 	 * @param postPasser The function to be used for post passing the optimizer's plan and setting the
 	 *                   data type specific serialization routines.
 	 * @return The optimized plan.
-	 * 
+	 *
 	 * @throws CompilerException
 	 *         Thrown, if the plan is invalid or the optimizer encountered an inconsistent
 	 *         situation during the compilation process.
 	 */
 	private OptimizedPlan compile(Plan program, InstanceTypeDescription type, OptimizerPostPass postPasser) throws CompilerException {
-		if (program == null || type == null || postPasser == null)
-			throw new NullPointerException();
-		
-		
+		if (program == null || type == null || postPasser == null) {
+		throw new NullPointerException();
+		}
+
+
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Beginning compilation of program '" + program.getJobName() + '\'');
 		}
-		
+
 		final String instanceName = type.getInstanceType().getIdentifier();
-		
+
 		// we subtract some percentage of the memory to accommodate for rounding errors
 		final long memoryPerInstance = (long) (type.getHardwareDescription().getSizeOfFreeMemory() * 0.96f);
 		final int numInstances = type.getMaximumNumberOfAvailableInstances();
-		
+
 		// determine the maximum number of machines to use
 		int maxMachinesJob = program.getMaxNumberMachines();
 
@@ -621,7 +622,7 @@ public class PactCompiler {
 		// set the default degree of parallelism
 		int defaultParallelism = program.getDefaultParallelism() > 0 ?
 			program.getDefaultParallelism() : this.defaultDegreeOfParallelism;
-		
+
 		if (this.maxIntraNodeParallelism > 0) {
 			if (defaultParallelism < 1) {
 				defaultParallelism = maxMachinesJob * this.maxIntraNodeParallelism;
@@ -684,10 +685,10 @@ public class PactCompiler {
 
 		// now that we have all nodes created and recorded which ones consume memory, tell the nodes their minimal
 		// guaranteed memory, for further cost estimations. we assume an equal distribution of memory among consumer tasks
-		
+
 		rootNode.accept(new IdAndMemoryAndEstimatesVisitor(this.statistics,
 			graphCreator.getMemoryConsumerCount() == 0 ? 0 : memoryPerInstance / graphCreator.getMemoryConsumerCount()));
-		
+
 		// Now that the previous step is done, the next step is to traverse the graph again for the two
 		// steps that cannot directly be performed during the plan enumeration, because we are dealing with DAGs
 		// rather than a trees. That requires us to deviate at some points from the classical DB optimizer algorithms.
@@ -697,10 +698,10 @@ public class PactCompiler {
 		// multiple inputs.
 		InterestingPropertyVisitor propsVisitor = new InterestingPropertyVisitor(this.costEstimator);
 		rootNode.accept(propsVisitor);
-		
+
 		BranchesVisitor branchingVisitor = new BranchesVisitor();
 		rootNode.accept(branchingVisitor);
-		
+
 		// perform a sanity check: the root may not have any unclosed branches
 		if (rootNode.getOpenBranches() != null && rootNode.getOpenBranches().size() > 0) {
 			throw new CompilerException("Bug: Logic for branching plans (non-tree plans) has an error, and does not " +
@@ -724,28 +725,28 @@ public class PactCompiler {
 		} else if (bestPlanRoot instanceof SinkJoinerPlanNode) {
 			((SinkJoinerPlanNode) bestPlanRoot).getDataSinks(bestPlanSinks);
 		}
-		
+
 		DeadlockPreventer dp = new DeadlockPreventer();
 		dp.resolveDeadlocks(bestPlanSinks);
 
 		// finalize the plan
 		OptimizedPlan plan = new PlanFinalizer().createFinalPlan(bestPlanSinks, program.getJobName(), program, memoryPerInstance);
 		plan.setInstanceTypeName(instanceName);
-		
+
 		// swap the binary unions for n-ary unions. this changes no strategies or memory consumers whatsoever, so
 		// we can do this after the plan finalization
 		plan.accept(new BinaryUnionReplacer());
-		
+
 		// post pass the plan. this is the phase where the serialization and comparator code is set
 		postPasser.postPass(plan);
-		
+
 		return plan;
 	}
 
 	/**
 	 * This function performs only the first step to the compilation process - the creation of the optimizer
 	 * representation of the plan. No estimations or enumerations of alternatives are done here.
-	 * 
+	 *
 	 * @param program The plan to generate the optimizer representation for.
 	 * @return The optimizer representation of the plan, as a collection of all data sinks
 	 *         from the plan can be traversed.
@@ -755,11 +756,11 @@ public class PactCompiler {
 		program.accept(graphCreator);
 		return graphCreator.sinks;
 	}
-	
+
 	// ------------------------------------------------------------------------
 	//                 Visitors for Compilation Traversals
 	// ------------------------------------------------------------------------
-	
+
 	/**
 	 * This utility class performs the translation from the user specified program to the optimizer plan.
 	 * It works as a visitor that walks the user's job in a depth-first fashion. During the descend, it creates
@@ -771,7 +772,7 @@ public class PactCompiler {
 	 * already respects all optimizer hints.
 	 */
 	private static final class GraphCreatingVisitor implements Visitor<Operator> {
-		
+
 		private final Map<Operator, OptimizerNode> con2node; // map from the operator objects to their
 																// corresponding optimizer nodes
 
@@ -782,20 +783,20 @@ public class PactCompiler {
 		private final int maxMachines; // the maximum number of machines to use
 
 		private final int defaultParallelism; // the default degree of parallelism
-		
+
 		private int numMemoryConsumers;
-		
+
 		private final GraphCreatingVisitor parent;	// reference to enclosing creator, in case of a recursive translation
-		
+
 		private final boolean forceDOP;
 
-		
+
 		private GraphCreatingVisitor(int maxMachines, int defaultParallelism) {
 			this(null, false, maxMachines, defaultParallelism, null);
 		}
 
 		private GraphCreatingVisitor(GraphCreatingVisitor parent, boolean forceDOP, int maxMachines,
-									 int defaultParallelism, HashMap<Operator, OptimizerNode> closure) {
+									int defaultParallelism, HashMap<Operator, OptimizerNode> closure) {
 			if(closure == null){
 				con2node = new HashMap<Operator, OptimizerNode>();
 			}else{
@@ -864,7 +865,7 @@ public class PactCompiler {
 				final BulkIteration enclosingIteration = holder.getContainingBulkIteration();
 				final BulkIterationNode containingIterationNode =
 							(BulkIterationNode) this.parent.con2node.get(enclosingIteration);
-				
+
 				// catch this for the recursive translation of step functions
 				BulkPartialSolutionNode p = new BulkPartialSolutionNode(holder, containingIterationNode);
 				p.setDegreeOfParallelism(containingIterationNode.getDegreeOfParallelism());
@@ -876,7 +877,7 @@ public class PactCompiler {
 				final DeltaIteration enclosingIteration = holder.getContainingWorksetIteration();
 				final WorksetIterationNode containingIterationNode =
 							(WorksetIterationNode) this.parent.con2node.get(enclosingIteration);
-				
+
 				// catch this for the recursive translation of step functions
 				WorksetNode p = new WorksetNode(holder, containingIterationNode);
 				p.setDegreeOfParallelism(containingIterationNode.getDegreeOfParallelism());
@@ -888,7 +889,7 @@ public class PactCompiler {
 				final DeltaIteration enclosingIteration = holder.getContainingWorksetIteration();
 				final WorksetIterationNode containingIterationNode =
 							(WorksetIterationNode) this.parent.con2node.get(enclosingIteration);
-				
+
 				// catch this for the recursive translation of step functions
 				SolutionSetNode p = new SolutionSetNode(holder, containingIterationNode);
 				p.setDegreeOfParallelism(containingIterationNode.getDegreeOfParallelism());
@@ -900,7 +901,7 @@ public class PactCompiler {
 			}
 
 			this.con2node.put(c, n);
-			
+
 			// record the potential memory consumption
 			this.numMemoryConsumers += n.isMemoryConsumer() ? 1 : 0;
 
@@ -929,7 +930,7 @@ public class PactCompiler {
 					int p = n.getDegreeOfParallelism();
 					tasksPerInstance = (p / this.maxMachines) + (p % this.maxMachines == 0 ? 0 : 1);
 				}
-	
+
 				// we group together n tasks per machine, depending on config and the above computed
 				// value required to obey the maximum number of machines
 				n.setSubtasksPerInstance(tasksPerInstance);
@@ -944,7 +945,7 @@ public class PactCompiler {
 			// first connect to the predecessors
 			n.setInputs(this.con2node);
 			n.setBroadcastInputs(this.con2node);
-			
+
 			// if the node represents a bulk iteration, we recursively translate the data flow now
 			if (n instanceof BulkIterationNode) {
 				final BulkIterationNode iterNode = (BulkIterationNode) n;
@@ -956,44 +957,44 @@ public class PactCompiler {
 				// first, recursively build the data flow for the step function
 				final GraphCreatingVisitor recursiveCreator = new GraphCreatingVisitor(this, true,
 					this.maxMachines, iterNode.getDegreeOfParallelism(), closure);
-				
+
 				BulkPartialSolutionNode partialSolution = null;
-				
+
 				iter.getNextPartialSolution().accept(recursiveCreator);
-				
+
 				partialSolution =  (BulkPartialSolutionNode) recursiveCreator.con2node.get(iter.getPartialSolution());
 				OptimizerNode rootOfStepFunction = recursiveCreator.con2node.get(iter.getNextPartialSolution());
 				if (partialSolution == null) {
 					throw new CompilerException("Error: The step functions result does not depend on the partial solution.");
 				}
-				
-				
+
+
 				OptimizerNode terminationCriterion = null;
-				
+
 				if (iter.getTerminationCriterion() != null) {
 					terminationCriterion = recursiveCreator.con2node.get(iter.getTerminationCriterion());
-					
+
 					// no intermediate node yet, traverse from the termination criterion to build the missing parts
 					if (terminationCriterion == null) {
 						iter.getTerminationCriterion().accept(recursiveCreator);
 						terminationCriterion = recursiveCreator.con2node.get(iter.getTerminationCriterion());
-						
+
 						// this does unfortunately not work, as the partial solution node is known to exist at
 						// this point (otherwise the check for the next partial solution would have failed already)
 //						partialSolution = (BulkPartialSolutionNode) recursiveCreator.con2node.get(iter.getPartialSolution());
-//						
+//
 //						if (partialSolution == null) {
 //							throw new CompilerException("Error: The termination criterion result does not depend on the partial solution.");
 //						}
 					}
 				}
-				
+
 				iterNode.setNextPartialSolution(rootOfStepFunction, terminationCriterion);
 				iterNode.setPartialSolution(partialSolution);
-				
+
 				// account for the nested memory consumers
 				this.numMemoryConsumers += recursiveCreator.numMemoryConsumers;
-				
+
 				// go over the contained data flow and mark the dynamic path nodes
 				StaticDynamicPathIdentifier identifier = new StaticDynamicPathIdentifier(iterNode.getCostWeight());
 				rootOfStepFunction.accept(identifier);
@@ -1014,16 +1015,16 @@ public class PactCompiler {
 				// descend from the solution set delta. check that it depends on both the workset
 				// and the solution set. If it does depend on both, this descend should create both nodes
 				iter.getSolutionSetDelta().accept(recursiveCreator);
-				
+
 				final SolutionSetNode solutionSetNode = (SolutionSetNode) recursiveCreator.con2node.get(iter.getSolutionSet());
 				final WorksetNode worksetNode = (WorksetNode) recursiveCreator.con2node.get(iter.getWorkset());
-				
+
 				if (worksetNode == null) {
 					throw new CompilerException("In the given plan, the solution set delta does not depend on the workset. This is a prerequisite in workset iterations.");
 				}
-				
+
 				iter.getNextWorkset().accept(recursiveCreator);
-				
+
 				// for now, check that the solution set it joined with only once. we want to allow multiple joins
 				// with the solution set later when we can share data structures among operators. also, the join
 				// must be a match which is at the same time the solution set delta
@@ -1034,7 +1035,7 @@ public class PactCompiler {
 						throw new CompilerException("Error: The solution set may currently be joined with only once.");
 					} else {
 						OptimizerNode successor = solutionSetNode.getOutgoingConnections().get(0).getTarget();
-						
+
 						if (successor.getClass() == MatchNode.class) {
 							// find out which input to the match the solution set is
 							MatchNode mn = (MatchNode) successor;
@@ -1061,39 +1062,39 @@ public class PactCompiler {
 						}
 					}
 				}
-				
+
 				final OptimizerNode nextWorksetNode = recursiveCreator.con2node.get(iter.getNextWorkset());
 				final OptimizerNode solutionSetDeltaNode = recursiveCreator.con2node.get(iter.getSolutionSetDelta());
-				
+
 				// set the step function nodes to the iteration node
 				iterNode.setPartialSolution(solutionSetNode, worksetNode);
 				iterNode.setNextPartialSolution(solutionSetDeltaNode, nextWorksetNode);
-				
+
 				// account for the nested memory consumers
 				this.numMemoryConsumers += recursiveCreator.numMemoryConsumers;
-				
+
 				// go over the contained data flow and mark the dynamic path nodes
 				StaticDynamicPathIdentifier pathIdentifier = new StaticDynamicPathIdentifier(iterNode.getCostWeight());
 				nextWorksetNode.accept(pathIdentifier);
 				iterNode.getSolutionSetDelta().accept(pathIdentifier);
 			}
 		}
-		
+
 		int getMemoryConsumerCount() {
 			return this.numMemoryConsumers;
 		}
 	};
-	
+
 	private static final class StaticDynamicPathIdentifier implements Visitor<OptimizerNode> {
-		
+
 		private final Set<OptimizerNode> seenBefore = new HashSet<OptimizerNode>();
-		
+
 		private final int costWeight;
-		
+
 		private StaticDynamicPathIdentifier(int costWeight) {
 			this.costWeight = costWeight;
 		}
-		
+
 		@Override
 		public boolean preVisit(OptimizerNode visitable) {
 			return this.seenBefore.add(visitable);
@@ -1104,19 +1105,19 @@ public class PactCompiler {
 			visitable.identifyDynamicPath(this.costWeight);
 		}
 	}
-	
+
 	/**
 	 * Simple visitor that sets the minimal guaranteed memory per task based on the amount of available memory,
 	 * the number of memory consumers, and on the task's degree of parallelism.
 	 */
 	private static final class IdAndMemoryAndEstimatesVisitor implements Visitor<OptimizerNode> {
-		
+
 		private final DataStatistics statistics;
-		
+
 		private final long memoryPerTaskPerInstance;
-		
+
 		private int id = 1;
-		
+
 		private IdAndMemoryAndEstimatesVisitor(DataStatistics statistics, long memoryPerTaskPerInstance) {
 			this.statistics = statistics;
 			this.memoryPerTaskPerInstance = memoryPerTaskPerInstance;
@@ -1129,12 +1130,12 @@ public class PactCompiler {
 				// been here before
 				return false;
 			}
-			
+
 			// assign minimum memory share, for lower bound estimates
-			final long mem = visitable.isMemoryConsumer() ? 
+			final long mem = visitable.isMemoryConsumer() ?
 					this.memoryPerTaskPerInstance / visitable.getSubtasksPerInstance() : 0;
 			visitable.setMinimalMemoryPerSubTask(mem);
-			
+
 			return true;
 		}
 
@@ -1143,7 +1144,7 @@ public class PactCompiler {
 		public void postVisit(OptimizerNode visitable) {
 			// the node ids
 			visitable.initId(this.id++);
-			
+
 			// connections need to figure out their maximum path depths
 			for (PactConnection conn : visitable.getIncomingConnections()) {
 				conn.initMaxDepth();
@@ -1151,36 +1152,36 @@ public class PactCompiler {
 			for (PactConnection conn : visitable.getBroadcastConnections()) {
 				conn.initMaxDepth();
 			}
-			
+
 			// the estimates
 			visitable.computeOutputEstimates(this.statistics);
-			
+
 			// if required, recurse into the step function
 			if (visitable instanceof IterationNode) {
 				((IterationNode) visitable).acceptForStepFunction(this);
 			}
 		}
 	}
-	
+
 	/**
 	 * Visitor that computes the interesting properties for each node in the plan. On its recursive
 	 * depth-first descend, it propagates all interesting properties top-down.
 	 */
 	public static final class InterestingPropertyVisitor implements Visitor<OptimizerNode> {
-		
+
 		private CostEstimator estimator; // the cost estimator for maximal costs of an interesting property
 
 		/**
 		 * Creates a new visitor that computes the interesting properties for all nodes in the plan.
 		 * It uses the given cost estimator used to compute the maximal costs for an interesting property.
-		 * 
+		 *
 		 * @param estimator
 		 *        The cost estimator to estimate the maximal costs for interesting properties.
 		 */
 		public InterestingPropertyVisitor(CostEstimator estimator) {
 			this.estimator = estimator;
 		}
-		
+
 		@Override
 		public boolean preVisit(OptimizerNode node) {
 			// The interesting properties must be computed on the descend. In case a node has multiple outputs,
@@ -1208,7 +1209,7 @@ public class PactCompiler {
 	 * node).
 	 */
 	private static final class BranchesVisitor implements Visitor<OptimizerNode> {
-		
+
 		@Override
 		public boolean preVisit(OptimizerNode node) {
 			return node.getOpenBranches() == null;
@@ -1223,23 +1224,23 @@ public class PactCompiler {
 			node.computeUnclosedBranchStack();
 		}
 	};
-	
+
 	/**
 	 * Utility class that traverses a plan to collect all nodes and add them to the OptimizedPlan.
 	 * Besides collecting all nodes, this traversal assigns the memory to the nodes.
 	 */
 	private static final class PlanFinalizer implements Visitor<PlanNode> {
-		
+
 		private final Set<PlanNode> allNodes; // a set of all nodes in the optimizer plan
 
 		private final List<SourcePlanNode> sources; // all data source nodes in the optimizer plan
 
 		private final List<SinkPlanNode> sinks; // all data sink nodes in the optimizer plan
-		
+
 		private final Deque<IterationPlanNode> stackOfIterationNodes;
 
 		private long memoryPerInstance; // the amount of memory per instance
-		
+
 		private int memoryConsumerWeights; // a counter of all memory consumers
 
 		/**
@@ -1253,12 +1254,13 @@ public class PactCompiler {
 		}
 
 		private OptimizedPlan createFinalPlan(List<SinkPlanNode> sinks, String jobName, Plan originalPlan, long memPerInstance) {
-			if (LOG.isDebugEnabled())
-				LOG.debug("Available memory per instance: " + memPerInstance);
-			
+			if (LOG.isDebugEnabled()) {
+			LOG.debug("Available memory per instance: " + memPerInstance);
+			}
+
 			this.memoryPerInstance = memPerInstance;
 			this.memoryConsumerWeights = 0;
-			
+
 			// traverse the graph
 			for (SinkPlanNode node : sinks) {
 				node.accept(this);
@@ -1267,10 +1269,11 @@ public class PactCompiler {
 			// assign the memory to each node
 			if (this.memoryConsumerWeights > 0) {
 				final long memoryPerInstanceAndWeight = this.memoryPerInstance / this.memoryConsumerWeights;
-				
-				if (LOG.isDebugEnabled())
-					LOG.debug("Memory per consumer weight: " + memoryPerInstanceAndWeight);
-				
+
+				if (LOG.isDebugEnabled()) {
+				LOG.debug("Memory per consumer weight: " + memoryPerInstanceAndWeight);
+				}
+
 				for (PlanNode node : this.allNodes) {
 					// assign memory to the driver strategy of the node
 					final int consumerWeight = node.getMemoryConsumerWeight();
@@ -1279,12 +1282,12 @@ public class PactCompiler {
 						node.setMemoryPerSubTask(mem);
 						if (LOG.isDebugEnabled()) {
 							final long mib = mem >> 20;
-							LOG.debug("Assigned " + mib + " MiBytes memory to each subtask of " + 
+							LOG.debug("Assigned " + mib + " MiBytes memory to each subtask of " +
 								node.getPactContract().getName() + " (" + mib * node.getDegreeOfParallelism() +
-								" MiBytes total.)"); 
+								" MiBytes total.)");
 						}
 					}
-					
+
 					// assign memory to the local and global strategies of the channels
 					for (Iterator<Channel> channels = node.getInputs(); channels.hasNext();) {
 						final Channel c = channels.next();
@@ -1293,8 +1296,8 @@ public class PactCompiler {
 							c.setMemoryLocalStrategy(mem);
 							if (LOG.isDebugEnabled()) {
 								final long mib = mem >> 20;
-								LOG.debug("Assigned " + mib + " MiBytes memory to each local strategy instance of " + 
-									c + " (" + mib * node.getDegreeOfParallelism() + " MiBytes total.)"); 
+								LOG.debug("Assigned " + mib + " MiBytes memory to each local strategy instance of " +
+									c + " (" + mib * node.getDegreeOfParallelism() + " MiBytes total.)");
 							}
 						}
 						if (c.getTempMode() != TempMode.NONE) {
@@ -1302,8 +1305,8 @@ public class PactCompiler {
 							c.setTempMemory(mem);
 							if (LOG.isDebugEnabled()) {
 								final long mib = mem >> 20;
-								LOG.debug("Assigned " + mib + " MiBytes memory to each instance of the temp table for " + 
-									c + " (" + mib * node.getDegreeOfParallelism() + " MiBytes total.)"); 
+								LOG.debug("Assigned " + mib + " MiBytes memory to each instance of the temp table for " +
+									c + " (" + mib * node.getDegreeOfParallelism() + " MiBytes total.)");
 							}
 						}
 					}
@@ -1318,7 +1321,7 @@ public class PactCompiler {
 			if (!this.allNodes.add(visitable)) {
 				return false;
 			}
-			
+
 			if (visitable instanceof SinkPlanNode) {
 				this.sinks.add((SinkPlanNode) visitable);
 			}
@@ -1329,7 +1332,7 @@ public class PactCompiler {
 				// tell the partial solution about the iteration node that contains it
 				final BulkPartialSolutionPlanNode pspn = (BulkPartialSolutionPlanNode) visitable;
 				final IterationPlanNode iteration = this.stackOfIterationNodes.peekLast();
-				
+
 				// sanity check!
 				if (iteration == null || !(iteration instanceof BulkIterationPlanNode)) {
 					throw new CompilerException("Bug: Error finalizing the plan. " +
@@ -1341,7 +1344,7 @@ public class PactCompiler {
 				// tell the partial solution about the iteration node that contains it
 				final WorksetPlanNode wspn = (WorksetPlanNode) visitable;
 				final IterationPlanNode iteration = this.stackOfIterationNodes.peekLast();
-				
+
 				// sanity check!
 				if (iteration == null || !(iteration instanceof WorksetIterationPlanNode)) {
 					throw new CompilerException("Bug: Error finalizing the plan. " +
@@ -1353,7 +1356,7 @@ public class PactCompiler {
 				// tell the partial solution about the iteration node that contains it
 				final SolutionSetPlanNode sspn = (SolutionSetPlanNode) visitable;
 				final IterationPlanNode iteration = this.stackOfIterationNodes.peekLast();
-				
+
 				// sanity check!
 				if (iteration == null || !(iteration instanceof WorksetIterationPlanNode)) {
 					throw new CompilerException("Bug: Error finalizing the plan. " +
@@ -1361,7 +1364,7 @@ public class PactCompiler {
 				}
 				sspn.setContainingIterationNode((WorksetIterationPlanNode) iteration);
 			}
-			
+
 			// double-connect the connections. previously, only parents knew their children, because
 			// one child candidate could have been referenced by multiple parents.
 			for (Iterator<Channel> iter = visitable.getInputs(); iter.hasNext();) {
@@ -1369,7 +1372,7 @@ public class PactCompiler {
 				conn.setTarget(visitable);
 				conn.getSource().addOutgoingChannel(conn);
 			}
-			
+
 			for (Channel c : visitable.getBroadcastInputs()) {
 				c.setTarget(visitable);
 				c.getSource().addOutgoingChannel(c);
@@ -1394,16 +1397,16 @@ public class PactCompiler {
 					this.memoryConsumerWeights++;
 				}
 			}
-			
+
 			// pass the visitor to the iteraton's step function
 			if (visitable instanceof IterationPlanNode) {
 				// push the iteration node onto the stack
 				final IterationPlanNode iterNode = (IterationPlanNode) visitable;
 				this.stackOfIterationNodes.addLast(iterNode);
-				
+
 				// recurse
 				((IterationPlanNode) visitable).acceptForStepFunction(this);
-				
+
 				// pop the iteration node from the stack
 				this.stackOfIterationNodes.removeLast();
 			}
@@ -1414,16 +1417,16 @@ public class PactCompiler {
 		public void postVisit(PlanNode visitable) {}
 	}
 
-	
+
 	/**
 	 * A visitor that traverses the graph and collects cascading binary unions into a single n-ary
 	 * union operator. The exception is, when on of the union inputs is materialized, such as in the
 	 * static-code-path-cache in iterations.
 	 */
 	private static final class BinaryUnionReplacer implements Visitor<PlanNode> {
-		
+
 		private final Set<PlanNode> seenBefore = new HashSet<PlanNode>();
-		
+
 		@Override
 		public boolean preVisit(PlanNode visitable) {
 			if (this.seenBefore.add(visitable)) {
@@ -1442,9 +1445,9 @@ public class PactCompiler {
 				final BinaryUnionPlanNode unionNode = (BinaryUnionPlanNode) visitable;
 				final Channel in1 = unionNode.getInput1();
 				final Channel in2 = unionNode.getInput2();
-				
+
 				PlanNode newUnionNode;
-				
+
 				// if any input is cached, we keep this as a binary union and do not collapse it into a
 				// n-ary union
 //				if (in1.getTempMode().isCached() || in2.getTempMode().isCached()) {
@@ -1457,33 +1460,33 @@ public class PactCompiler {
 //						cached = in2;
 //						pipelined = in1;
 //					}
-//					
+//
 //					newUnionNode = new DualInputPlanNode(unionNode.getOriginalOptimizerNode(), cached, pipelined,
 //						DriverStrategy.UNION_WITH_CACHED);
 //					newUnionNode.initProperties(unionNode.getGlobalProperties(), new LocalProperties());
-//					
+//
 //					in1.setTarget(newUnionNode);
 //					in2.setTarget(newUnionNode);
 //				} else {
-					// collect the union inputs to collapse this operator with 
+					// collect the union inputs to collapse this operator with
 					// its collapsed predecessors. check whether an input is materialized to prevent
 					// collapsing
 					List<Channel> inputs = new ArrayList<Channel>();
 					collect(in1, inputs);
 					collect(in2, inputs);
-					
+
 					newUnionNode = new NAryUnionPlanNode(unionNode.getOptimizerNode(), inputs, unionNode.getGlobalProperties());
-					
+
 					// adjust the input channels to have their target point to the new union node
 					for (Channel c : inputs) {
 						c.setTarget(newUnionNode);
 					}
 //				}
-				
+
 				unionNode.getOutgoingChannels().get(0).swapUnionNodes(newUnionNode);
 			}
 		}
-		
+
 		private void collect(Channel in, List<Channel> inputs) {
 			if (in.getSource() instanceof NAryUnionPlanNode) {
 				// sanity check
@@ -1493,7 +1496,7 @@ public class PactCompiler {
 				if (!(in.getLocalStrategy() == null || in.getLocalStrategy() == LocalStrategy.NONE)) {
 					throw new CompilerException("Bug: Plan generation for Unions picked a local strategy between binary plan operators.");
 				}
-				
+
 				inputs.addAll(((NAryUnionPlanNode) in.getSource()).getListOfInputs());
 			} else {
 				// is not a union node, so we take the channel directly
@@ -1505,7 +1508,7 @@ public class PactCompiler {
 	// ------------------------------------------------------------------------
 	// Miscellaneous
 	// ------------------------------------------------------------------------
-	
+
 	private OptimizerPostPass getPostPassFromPlan(Plan program) {
 		final String className =  program.getPostPassClassName();
 		if (className == null) {
@@ -1534,11 +1537,11 @@ public class PactCompiler {
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Connecting compiler to JobManager to dertermine instance information.");
 		}
-		
+
 		// create the connection in a separate thread, such that this thread
 		// can abort, if an unsuccessful connection occurs.
 		Map<InstanceType, InstanceTypeDescription> instances = null;
-		
+
 		JobManagerConnector jmc = new JobManagerConnector(this.jobManagerAddress);
 		Thread connectorThread = new Thread(jmc, "Compiler - JobManager connector.");
 		connectorThread.setDaemon(true);
@@ -1553,21 +1556,21 @@ public class PactCompiler {
 			}
 		}
 		catch (Throwable t) {
-			throw new CompilerException("Available instances could not be determined from job manager: " + 
+			throw new CompilerException("Available instances could not be determined from job manager: " +
 				t.getMessage(), t);
 		}
 
 		// determine which type to run on
 		return getType(instances);
 	}
-	
+
 	/**
 	 * This utility method picks the instance type to be used for executing programs.
 	 * <p>
-	 * 
+	 *
 	 * @param types The available types.
 	 * @return The type to be used for scheduling.
-	 * 
+	 *
 	 * @throws CompilerException
 	 * @throws IllegalArgumentException
 	 */
@@ -1577,30 +1580,30 @@ public class PactCompiler {
 		if (types == null || types.size() < 1) {
 			throw new IllegalArgumentException("No instance type found.");
 		}
-		
+
 		InstanceTypeDescription retValue = null;
 		long totalMemory = 0;
 		int numInstances = 0;
-		
+
 		final Iterator<InstanceTypeDescription> it = types.values().iterator();
 		while(it.hasNext())
 		{
 			final InstanceTypeDescription descr = it.next();
-			
+
 			// skip instances for which no hardware description is available
-			// this means typically that no 
+			// this means typically that no
 			if (descr.getHardwareDescription() == null || descr.getInstanceType() == null) {
 				continue;
 			}
-			
+
 			final int curInstances = descr.getMaximumNumberOfAvailableInstances();
 			final long curMemory = curInstances * descr.getHardwareDescription().getSizeOfFreeMemory();
-			
+
 			// get, if first, or if it has more instances and not less memory, or if it has significantly more memory
 			// and the same number of cores still
 			if ( (retValue == null) ||
-				 (curInstances > numInstances && (int) (curMemory * 1.2f) > totalMemory) ||
-				 (curInstances * retValue.getInstanceType().getNumberOfCores() >= numInstances && 
+				(curInstances > numInstances && (int) (curMemory * 1.2f) > totalMemory) ||
+				(curInstances * retValue.getInstanceType().getNumberOfCores() >= numInstances &&
 							(int) (curMemory * 1.5f) > totalMemory)
 				)
 			{
@@ -1609,47 +1612,47 @@ public class PactCompiler {
 				totalMemory = curMemory;
 			}
 		}
-		
+
 		if (retValue == null) {
 			throw new CompilerException("No instance currently registered at the job-manager. Retry later.\n" +
 				"If the system has recently started, it may take a few seconds until the instances register.");
 		}
-		
+
 		return retValue;
 	}
-	
+
 	/**
 	 * Utility class for an asynchronous connection to the job manager to determine the available instances.
 	 */
 	private static final class JobManagerConnector implements Runnable {
-		
+
 		private static final long MAX_MILLIS_TO_WAIT = 10000;
-		
+
 		private final InetSocketAddress jobManagerAddress;
-		
+
 		private final Object lock = new Object();
-		
+
 		private volatile Map<InstanceType, InstanceTypeDescription> instances;
-		
+
 		private volatile Throwable error;
-		
-		
+
+
 		private JobManagerConnector(InetSocketAddress jobManagerAddress) {
 			this.jobManagerAddress = jobManagerAddress;
 		}
-		
-		
+
+
 		public void waitForCompletion() throws Throwable {
 			long start = System.currentTimeMillis();
 			long remaining = MAX_MILLIS_TO_WAIT;
-			
+
 			if (this.error != null) {
 				throw this.error;
 			}
 			if (this.instances != null) {
 				return;
 			}
-			
+
 			do {
 				try {
 					synchronized (this.lock) {
@@ -1659,18 +1662,18 @@ public class PactCompiler {
 			}
 			while (this.error == null && this.instances == null &&
 					(remaining = MAX_MILLIS_TO_WAIT + start - System.currentTimeMillis()) > 0);
-			
+
 			if (this.error != null) {
 				throw this.error;
 			}
 			if (this.instances != null) {
 				return;
 			}
-			
+
 			// try to forcefully shut this thread down
 			throw new IOException("Connection timed out.");
 		}
-		
+
 
 		@Override
 		public void run() {
@@ -1691,7 +1694,7 @@ public class PactCompiler {
 				synchronized (this.lock) {
 					this.lock.notifyAll();
 				}
-				
+
 				if (jobManagerConnection != null) {
 					try {
 						RPC.stopProxy(jobManagerConnection);

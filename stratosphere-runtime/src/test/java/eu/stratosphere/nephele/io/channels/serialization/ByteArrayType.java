@@ -24,20 +24,20 @@ import java.util.Random;
 public class ByteArrayType implements SerializationTestType
 {
 	private static final int MAX_LEN = 512 * 15;
-	
+
 	private byte[] data;
-	
+
 
 	public ByteArrayType()
 	{
 		this.data = new byte[0];
 	}
-	
+
 	private ByteArrayType(byte[] data)
 	{
 		this.data = data;
 	}
-	
+
 
 	@Override
 	public ByteArrayType getRandom(Random rnd)
@@ -47,9 +47,9 @@ public class ByteArrayType implements SerializationTestType
 		rnd.nextBytes(data);
 		return new ByteArrayType(data);
 	}
-	
-	
-	
+
+
+
 
 	@Override
 	public void write(DataOutput out) throws IOException

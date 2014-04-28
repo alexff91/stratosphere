@@ -30,41 +30,41 @@ import eu.stratosphere.pact.runtime.task.util.LocalStrategy;
 public class RequestedLocalProperties implements Cloneable {
 
 	public static final RequestedLocalProperties DEFAULT_PROPERTIES = null;
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	Ordering ordering;			// order inside a partition, null if not ordered
 
 	FieldSet groupedFields;		// fields by which the stream is grouped. null if not grouped.
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Default constructor for trivial local properties. No order, no grouping, no uniqueness.
 	 */
 	public RequestedLocalProperties() {}
-	
+
 	/**
 	 * Creates interesting properties for the given ordering.
-	 * 
+	 *
 	 * @param ordering The interesting ordering.
 	 */
 	public RequestedLocalProperties(Ordering ordering) {
 		this.ordering = ordering;
 	}
-	
+
 	/**
 	 * Creates interesting properties for the given grouping.
-	 * 
+	 *
 	 * @param groupedFields The set of fields whose grouping is interesting.
 	 */
 	public RequestedLocalProperties(FieldSet groupedFields) {
 		this.groupedFields = groupedFields;
 	}
-	
+
 	/**
 	 * This constructor is used only for internal copy creation.
-	 * 
+	 *
 	 * @param ordering The ordering represented by these local properties.
 	 * @param groupedFields The grouped fields for these local properties.
 	 */
@@ -74,43 +74,43 @@ public class RequestedLocalProperties implements Cloneable {
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Gets the key order.
-	 * 
+	 *
 	 * @return The key order, or <code>null</code> if nothing is ordered.
 	 */
 	public Ordering getOrdering() {
 		return ordering;
 	}
-	
+
 	/**
 	 * Sets the order for these interesting local properties.
-	 * 
+	 *
 	 * @param ordering The order to set.
 	 */
 	public void setOrdering(Ordering ordering) {
 		this.ordering = ordering;
 	}
-	
+
 	/**
 	 * Gets the grouped fields.
-	 * 
+	 *
 	 * @return The grouped fields, or <code>null</code> if nothing is grouped.
 	 */
 	public FieldSet getGroupedFields() {
 		return this.groupedFields;
 	}
-	
+
 	/**
 	 * Sets the fields that are grouped in these data properties.
-	 * 
+	 *
 	 * @param groupedFields The fields that are grouped in these data properties.
 	 */
 	public void setGroupedFields(FieldSet groupedFields) {
-		this.groupedFields = groupedFields;	
+		this.groupedFields = groupedFields;
 	}
-	
+
 	/**
 	 * Checks, if the properties in this object are trivial, i.e. only standard values.
 	 */
@@ -125,17 +125,17 @@ public class RequestedLocalProperties implements Cloneable {
 		this.ordering = null;
 		this.groupedFields = null;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	/**
 	 * Filters these properties by what can be preserved through a user function's constant fields set.
 	 * Since interesting properties are filtered top-down, anything that partially destroys the ordering
 	 * makes the properties uninteresting.
-	 * 
+	 *
 	 * @param node The optimizer node that potentially modifies the properties.
 	 * @param input The input of the node which is relevant.
-	 * 
+	 *
 	 * @return True, if the resulting properties are non trivial.
 	 */
 	public RequestedLocalProperties filterByNodesConstantSet(OptimizerNode node, int input) {
@@ -160,7 +160,7 @@ public class RequestedLocalProperties implements Cloneable {
 	/**
 	 * Checks, if this set of properties, as interesting properties, is met by the given
 	 * properties.
-	 * 
+	 *
 	 * @param other
 	 *        The properties for which to check whether they meet these properties.
 	 * @return True, if the properties are met, false otherwise.
@@ -180,10 +180,10 @@ public class RequestedLocalProperties implements Cloneable {
 			return true;
 		}
 	}
-	
+
 	/**
 	 * Parameterizes the local strategy fields of a channel such that the channel produces the desired local properties.
-	 * 
+	 *
 	 * @param channel The channel to parameterize.
 	 */
 	public void parameterizeChannel(Channel channel) {
@@ -195,7 +195,7 @@ public class RequestedLocalProperties implements Cloneable {
 			channel.setLocalStrategy(LocalStrategy.SORT, Utils.createOrderedFromSet(this.groupedFields), dirs);
 		}
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	@Override

@@ -26,16 +26,16 @@ public class PlanFlatMapOperator<T, O> extends FlatMapOperatorBase<GenericFlatMa
 	implements UnaryJavaPlanNode<T, O>
 {
 	private final TypeInformation<T> inType;
-	
+
 	private final TypeInformation<O> outType;
-	
-	
+
+
 	public PlanFlatMapOperator(FlatMapFunction<T, O> udf, String name, TypeInformation<T> inType, TypeInformation<O> outType) {
 		super(udf, name);
 		this.inType = inType;
 		this.outType = outType;
 	}
-	
+
 	@Override
 	public TypeInformation<O> getReturnType() {
 		return this.outType;

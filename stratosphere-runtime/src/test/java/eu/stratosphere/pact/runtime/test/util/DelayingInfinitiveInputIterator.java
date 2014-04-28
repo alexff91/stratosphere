@@ -18,11 +18,11 @@ import eu.stratosphere.types.Record;
 public class DelayingInfinitiveInputIterator extends InfiniteInputIterator
 {
 	private int delay;
-	
+
 	public DelayingInfinitiveInputIterator(int delay) {
 		this.delay = delay;
 	}
-	
+
 	@Override
 	public Record next(Record reuse) {
 		try {
@@ -31,5 +31,5 @@ public class DelayingInfinitiveInputIterator extends InfiniteInputIterator
 		catch (InterruptedException e) { }
 		return super.next(reuse);
 	}
-	
+
 }

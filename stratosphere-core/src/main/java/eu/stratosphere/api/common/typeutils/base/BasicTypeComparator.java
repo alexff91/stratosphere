@@ -24,11 +24,11 @@ import eu.stratosphere.core.memory.DataOutputView;
 public abstract class BasicTypeComparator<T extends Comparable<T>> extends TypeComparator<T> implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private transient T reference;
-	
+
 	protected final boolean ascendingComparison;
-	
+
 
 	protected BasicTypeComparator(boolean ascending) {
 		this.ascendingComparison = ascending;
@@ -60,9 +60,9 @@ public abstract class BasicTypeComparator<T extends Comparable<T>> extends TypeC
 	public boolean invertNormalizedKey() {
 		return !ascendingComparison;
 	}
-	
-	
-	
+
+
+
 	@Override
 	public boolean supportsSerializationWithKeyNormalization() {
 		return false;

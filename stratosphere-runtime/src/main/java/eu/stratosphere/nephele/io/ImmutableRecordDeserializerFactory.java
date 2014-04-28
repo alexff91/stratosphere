@@ -21,13 +21,13 @@ import eu.stratosphere.nephele.io.channels.DefaultDeserializer;
  * each deserialization, a new record is instantiated from the given class.
  */
 public class ImmutableRecordDeserializerFactory<T extends IOReadableWritable> implements RecordDeserializerFactory<T> {
-	
+
 	private final Class<? extends T> recordType;			// the type of the record to be deserialized
-	
-	
+
+
 	/**
 	 * Creates a new factory that instantiates deserializers for immutable records.
-	 * 
+	 *
 	 * @param recordType The type of the record to be deserialized.
 	 */
 	public ImmutableRecordDeserializerFactory(final Class<? extends T> recordType) {

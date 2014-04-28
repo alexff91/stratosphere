@@ -23,25 +23,25 @@ import java.util.Random;
 public class IntType implements SerializationTestType
 {
 	private int value;
-	
+
 
 	public IntType()
 	{
 		this.value = 0;
 	}
-	
+
 	public IntType(int value)
 	{
 		this.value = value;
 	}
-	
+
 
 	@Override
 	public IntType getRandom(Random rnd)
 	{
 		return new IntType(rnd.nextInt());
 	}
-	
+
 
 	@Override
 	public void write(DataOutput out) throws IOException

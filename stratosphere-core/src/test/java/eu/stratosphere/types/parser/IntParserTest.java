@@ -22,7 +22,7 @@ public class IntParserTest extends ParserTestBase<Integer> {
 			"0", "1", "576", "-877678", String.valueOf(Integer.MAX_VALUE), String.valueOf(Integer.MIN_VALUE)
 		};
 	}
-	
+
 	@Override
 	public Integer[] getValidTestResults() {
 		return new Integer[] {

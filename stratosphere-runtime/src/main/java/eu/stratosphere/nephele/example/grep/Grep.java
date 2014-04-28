@@ -40,12 +40,12 @@ public class Grep {
 		input.setFileInputClass(FileLineReader.class);
 		input.setFilePath(new Path("file:///home/ec2-user/test.txt"));
 		input.setInstanceType("t1.micro");
-		
+
 		JobTaskVertex task1 = new JobTaskVertex("Task 1", jobGraph);
 		task1.setTaskClass(GrepTask.class);
 		task1.setInstanceType("t1.micro");
 
-		
+
 		JobFileOutputVertex output = new JobFileOutputVertex("Output 1", jobGraph);
 		output.setFileOutputClass(FileLineWriter.class);
 		output.setFilePath(new Path("file:///tmp/"));
@@ -86,11 +86,11 @@ public class Grep {
 		jobGraph.getJobConfiguration().setString("job.cloud.awsaccessid", "xxx");
 		jobGraph.getJobConfiguration().setString("job.cloud.awssecretkey", "xxx");
 		jobGraph.getJobConfiguration().setString("job.cloud.sshkeypair", "caspeu");
-		jobGraph.getJobConfiguration().setString("job.ec2.image.id", "ami-d64474a2");		
+		jobGraph.getJobConfiguration().setString("job.ec2.image.id", "ami-d64474a2");
 
 		InetSocketAddress jobmanager = new InetSocketAddress("127.0.0.1", 6123);
-		
-		
+
+
 		try {
 			final JobClient jobClient = new JobClient(jobGraph, conf, jobmanager);
 			System.out.println("submitting");

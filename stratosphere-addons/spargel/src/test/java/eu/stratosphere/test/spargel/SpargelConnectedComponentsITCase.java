@@ -30,31 +30,31 @@ import eu.stratosphere.test.util.JavaProgramTestBase;
 public class SpargelConnectedComponentsITCase extends JavaProgramTestBase {
 
 	private static final long SEED = 9487520347802987L;
-	
+
 	private static final int NUM_VERTICES = 1000;
-	
+
 	private static final int NUM_EDGES = 10000;
 
 	private String resultPath;
-	
-	
+
+
 	@Override
 	protected void preSubmit() throws Exception {
 		resultPath = getTempFilePath("results");
 	}
-	
+
 	@Override
 	protected void testProgram() throws Exception {
 		ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
-		
+
 		DataSet<Long> vertexIds = env.generateSequence(1, NUM_VERTICES);
 		DataSet<String> edgeString = env.fromElements(ConnectedComponentsData.getRandomOddEvenEdges(NUM_EDGES, NUM_VERTICES, SEED).split("\n"));
-		
+
 		DataSet<Tuple2<Long, Long>> edges = edgeString.map(new EdgeParser());
-		
+
 		DataSet<Tuple2<Long, Long>> initialVertices = vertexIds.map(new IdAssigner());
 		DataSet<Tuple2<Long, Long>> result = initialVertices.runOperation(VertexCentricIteration.withPlainEdges(edges, new CCUpdater(), new CCMessager(), 100));
-		
+
 		result.writeAsCsv(resultPath, "\n", " ");
 		env.execute("Spargel Connected Components");
 	}
@@ -65,7 +65,7 @@ public class SpargelConnectedComponentsITCase extends JavaProgramTestBase {
 			ConnectedComponentsData.checkOddEvenResult(reader);
 		}
 	}
-	
+
 	public static final class EdgeParser extends MapFunction<String, Tuple2<Long, Long>> {
 		public Tuple2<Long, Long> map(String value) {
 			String[] nums = value.split(" ");

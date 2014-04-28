@@ -55,7 +55,7 @@ public class WebInterfaceServer {
 	 * to upload, list, delete and submit jobs, to compile them and to show the optimizer plan.
 	 * It serves the asynchronous requests for the plans and all other static resources, like
 	 * static web pages, stylesheets or javascript files.
-	 * 
+	 *
 	 * @param nepheleConfig
 	 *        The configuration for the nephele job manager. All compiled jobs will be sent
 	 *        to the manager described by this configuration.
@@ -72,7 +72,7 @@ public class WebInterfaceServer {
 		if (nepheleConfig == null) {
 			nepheleConfig = config;
 		}
-		
+
 		// get base path of Stratosphere installation
 		String basePath = nepheleConfig.getString(ConfigConstants.STRATOSPHERE_BASE_DIR_PATH_KEY,"");
 
@@ -80,10 +80,10 @@ public class WebInterfaceServer {
 		File tmpDir;
 		File uploadDir;
 		File planDumpDir;
-		
+
 		String webDirPath = config.getString(ConfigConstants.WEB_ROOT_PATH_KEY,
 			ConfigConstants.DEFAULT_WEB_ROOT_DIR);
-		
+
 		if(webDirPath.startsWith("/")) {
 			// absolute path
 			webDir = new File(webDirPath);
@@ -91,10 +91,10 @@ public class WebInterfaceServer {
 			// path relative to base dir
 			webDir = new File(basePath+"/"+webDirPath);
 		}
-		
+
 		String tmpDirPath = config.getString(ConfigConstants.WEB_TMP_DIR_KEY,
 			ConfigConstants.DEFAULT_WEB_TMP_DIR);
-		
+
 		tmpDir = new File(tmpDirPath);
 		if(tmpDir.isAbsolute()) {
 			// absolute path, everything all right
@@ -102,10 +102,10 @@ public class WebInterfaceServer {
 			// path relative to base dir
 			tmpDir = new File(basePath+"/"+tmpDirPath);
 		}
-		
+
 		String uploadDirPath = config.getString(ConfigConstants.WEB_JOB_UPLOAD_DIR_KEY,
 				ConfigConstants.DEFAULT_WEB_JOB_STORAGE_DIR);
-		
+
 		uploadDir = new File(uploadDirPath);
 		if(uploadDir.isAbsolute()) {
 			// absolute path, everything peachy
@@ -116,7 +116,7 @@ public class WebInterfaceServer {
 
 		String planDumpDirPath = config.getString(ConfigConstants.WEB_PLAN_DUMP_DIR_KEY,
 				ConfigConstants.DEFAULT_WEB_PLAN_DUMP_DIR);
-		
+
 		planDumpDir = new File(planDumpDirPath);
 		if(planDumpDir.isAbsolute()) {
 			// absolute path, nice and dandy
@@ -124,13 +124,13 @@ public class WebInterfaceServer {
 			// path relative to base dir
 			planDumpDir = new File(basePath+"/"+planDumpDirPath);
 		}
-		
+
 		if (LOG.isInfoEnabled()) {
 			LOG.info("Setting up web frontend server, using web-root directory '" + webDir.getAbsolutePath() + "'.");
 			LOG.info("Web frontend server will store temporary files in '" + tmpDir.getAbsolutePath()
 				+ "', uploaded jobs in '" + uploadDir.getAbsolutePath() + "', plan-json-dumps in '"
 				+ planDumpDir.getAbsolutePath() + "'.");
-	
+
 			LOG.info("Web-frontend will submit jobs to nephele job-manager on "
 				+ config.getString(ConfigConstants.JOB_MANAGER_IPC_ADDRESS_KEY, null) + ", port "
 				+ config.getInteger(ConfigConstants.JOB_MANAGER_IPC_PORT_KEY, ConfigConstants.DEFAULT_JOB_MANAGER_IPC_PORT)
@@ -149,7 +149,7 @@ public class WebInterfaceServer {
 		checkAndCreateDirectories(tmpDir, true);
 		checkAndCreateDirectories(uploadDir, true);
 		checkAndCreateDirectories(planDumpDir, true);
-		
+
 		int jobManagerWebPort = config.getInteger(ConfigConstants.JOB_MANAGER_WEB_PORT_KEY, ConfigConstants.DEFAULT_JOB_MANAGER_WEB_FRONTEND_PORT);
 
 		// ----- the handlers for the servlets -----
@@ -224,7 +224,7 @@ public class WebInterfaceServer {
 
 	/**
 	 * Starts the web frontend server.
-	 * 
+	 *
 	 * @throws Exception
 	 *         Thrown, if the start fails.
 	 */
@@ -234,7 +234,7 @@ public class WebInterfaceServer {
 
 	/**
 	 * Lets the calling thread wait until the server terminates its operation.
-	 * 
+	 *
 	 * @throws InterruptedException
 	 *         Thrown, if the calling thread is interrupted.
 	 */
@@ -246,7 +246,7 @@ public class WebInterfaceServer {
 	 * Checks and creates the directory described by the abstract directory path. This function checks
 	 * if the directory exists and creates it if necessary. It also checks read permissions and
 	 * write permission, if necessary.
-	 * 
+	 *
 	 * @param dir
 	 *        The String describing the directory path.
 	 * @param needWritePermission

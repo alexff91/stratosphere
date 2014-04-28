@@ -33,24 +33,24 @@ import eu.stratosphere.pact.runtime.task.DriverStrategy;
 import eu.stratosphere.pact.runtime.task.util.LocalStrategy;
 
 public final class GroupWithPartialPreGroupProperties extends OperatorDescriptorSingle {
-	
-	private final Ordering ordering;		// ordering that we need to use if an additional ordering is requested 
-	
-	
+
+	private final Ordering ordering;		// ordering that we need to use if an additional ordering is requested
+
+
 	public GroupWithPartialPreGroupProperties(FieldSet keys) {
 		this(keys, null);
 	}
-	
+
 	public GroupWithPartialPreGroupProperties(FieldSet groupKeys, Ordering additionalOrderKeys) {
 		super(groupKeys);
-		
+
 		// if we have an additional ordering, construct the ordering to have primarily the grouping fields
 		if (additionalOrderKeys != null) {
 			this.ordering = new Ordering();
 			for (Integer key : this.keyList) {
 				this.ordering.appendOrdering(key, null, Order.ANY);
 			}
-		
+
 			// and next the additional order fields
 			for (int i = 0; i < additionalOrderKeys.getNumberOfFields(); i++) {
 				Integer field = additionalOrderKeys.getFieldNumber(i);
@@ -61,7 +61,7 @@ public final class GroupWithPartialPreGroupProperties extends OperatorDescriptor
 			this.ordering = null;
 		}
 	}
-	
+
 	@Override
 	public DriverStrategy getStrategy() {
 		return DriverStrategy.SORTED_GROUP;
@@ -86,11 +86,11 @@ public final class GroupWithPartialPreGroupProperties extends OperatorDescriptor
 			GroupReduceNode combinerNode = ((GroupReduceNode) node).getCombinerUtilityNode();
 			combinerNode.setDegreeOfParallelism(in.getSource().getDegreeOfParallelism());
 			combinerNode.setSubtasksPerInstance(in.getSource().getSubtasksPerInstance());
-			
+
 			SingleInputPlanNode combiner = new SingleInputPlanNode(combinerNode, "Combine("+node.getPactContract().getName()+")", toCombiner, DriverStrategy.PARTIAL_GROUP, this.keyList);
 			combiner.setCosts(new Costs(0, 0));
 			combiner.initProperties(toCombiner.getGlobalProperties(), toCombiner.getLocalProperties());
-			
+
 			Channel toReducer = new Channel(combiner);
 			toReducer.setShipStrategy(in.getShipStrategy(), in.getShipStrategyKeys(), in.getShipStrategySortOrder());
 			toReducer.setLocalStrategy(LocalStrategy.COMBININGSORT, in.getLocalStrategyKeys(), in.getLocalStrategySortOrder());

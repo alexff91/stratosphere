@@ -16,15 +16,15 @@ package eu.stratosphere.api.common;
 import java.util.Map;
 
 public class JobExecutionResult {
-	
+
 	private long netRuntime;
 	private Map<String, Object> accumulatorResults;
-	
+
 	public JobExecutionResult(long netRuntime, Map<String, Object> accumulators) {
 		this.netRuntime = netRuntime;
 		this.accumulatorResults = accumulators;
 	}
-	
+
 	public long getNetRuntime() {
 		return this.netRuntime;
 	}
@@ -37,7 +37,7 @@ public class JobExecutionResult {
 	public Map<String, Object> getAllAccumulatorResults() {
 		return this.accumulatorResults;
 	}
-	
+
 	/**
 	 * @param accumulatorName
 	 *            Name of the counter

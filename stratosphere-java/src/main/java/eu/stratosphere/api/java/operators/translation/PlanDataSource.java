@@ -25,10 +25,10 @@ public class PlanDataSource<T> extends GenericDataSource<InputFormat<T,?>> imple
 
 	public PlanDataSource(InputFormat<T, ?> format, String name, TypeInformation<T> producedType) {
 		super(format, name);
-		
+
 		this.producedType = producedType;
 	}
-	
+
 	@Override
 	public TypeInformation<T> getReturnType() {
 		return producedType;

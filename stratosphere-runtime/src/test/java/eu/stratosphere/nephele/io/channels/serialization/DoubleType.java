@@ -23,25 +23,25 @@ import java.util.Random;
 public class DoubleType implements SerializationTestType
 {
 	private double value;
-	
+
 
 	public DoubleType()
 	{
 		this.value = 0;
 	}
-	
+
 	private DoubleType(double value)
 	{
 		this.value = value;
 	}
-	
+
 
 	@Override
 	public DoubleType getRandom(Random rnd)
 	{
 		return new DoubleType(rnd.nextDouble());
 	}
-	
+
 
 	@Override
 	public void write(DataOutput out) throws IOException

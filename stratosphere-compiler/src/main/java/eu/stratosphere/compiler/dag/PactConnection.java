@@ -26,7 +26,7 @@ import eu.stratosphere.pact.runtime.shipping.ShipStrategyType;
  * direction of the sources.
  */
 public class PactConnection implements EstimateProvider, DumpableConnection<OptimizerNode> {
-	
+
 	private final OptimizerNode source; // The source node of the connection
 
 	private final OptimizerNode target; // The target node of the connection.
@@ -34,15 +34,15 @@ public class PactConnection implements EstimateProvider, DumpableConnection<Opti
 	private InterestingProperties interestingProps; // local properties that succeeding nodes are interested in
 
 	private ShipStrategyType shipStrategy; // The data distribution strategy, if preset
-	
+
 	private TempMode materializationMode = TempMode.NONE;
-	
+
 	private int maxDepth = -1;
 
 	/**
 	 * Creates a new Connection between two nodes. The shipping strategy is by default <tt>NONE</tt>.
 	 * The temp mode is by default <tt>NONE</tt>.
-	 * 
+	 *
 	 * @param source
 	 *        The source node.
 	 * @param target
@@ -54,7 +54,7 @@ public class PactConnection implements EstimateProvider, DumpableConnection<Opti
 
 	/**
 	 * Creates a new Connection between two nodes.
-	 * 
+	 *
 	 * @param source
 	 *        The source node.
 	 * @param target
@@ -70,10 +70,10 @@ public class PactConnection implements EstimateProvider, DumpableConnection<Opti
 		this.target = target;
 		this.shipStrategy = shipStrategy;
 	}
-	
+
 	/**
 	 * Creates a new Connection between two nodes.
-	 * 
+	 *
 	 * @param source
 	 *        The source node.
 	 * @param target
@@ -92,7 +92,7 @@ public class PactConnection implements EstimateProvider, DumpableConnection<Opti
 
 	/**
 	 * Gets the source of the connection.
-	 * 
+	 *
 	 * @return The source Node.
 	 */
 	public OptimizerNode getSource() {
@@ -101,7 +101,7 @@ public class PactConnection implements EstimateProvider, DumpableConnection<Opti
 
 	/**
 	 * Gets the target of the connection.
-	 * 
+	 *
 	 * @return The target node.
 	 */
 	public OptimizerNode getTarget() {
@@ -110,7 +110,7 @@ public class PactConnection implements EstimateProvider, DumpableConnection<Opti
 
 	/**
 	 * Gets the shipping strategy for this connection.
-	 * 
+	 *
 	 * @return The connection's shipping strategy.
 	 */
 	public ShipStrategyType getShipStrategy() {
@@ -119,7 +119,7 @@ public class PactConnection implements EstimateProvider, DumpableConnection<Opti
 
 	/**
 	 * Sets the shipping strategy for this connection.
-	 * 
+	 *
 	 * @param strategy
 	 *        The shipping strategy to be applied to this connection.
 	 */
@@ -131,7 +131,7 @@ public class PactConnection implements EstimateProvider, DumpableConnection<Opti
 	 * Gets the interesting properties object for this pact connection.
 	 * If the interesting properties for this connections have not yet been set,
 	 * this method returns null.
-	 * 
+	 *
 	 * @return The collection of all interesting properties, or null, if they have not yet been set.
 	 */
 	public InterestingProperties getInterestingProperties() {
@@ -140,7 +140,7 @@ public class PactConnection implements EstimateProvider, DumpableConnection<Opti
 
 	/**
 	 * Sets the interesting properties for this pact connection.
-	 * 
+	 *
 	 * @param props The interesting properties.
 	 */
 	public void setInterestingProperties(InterestingProperties props) {
@@ -150,20 +150,20 @@ public class PactConnection implements EstimateProvider, DumpableConnection<Opti
 			throw new IllegalStateException("Interesting Properties have already been set.");
 		}
 	}
-	
+
 	public void clearInterestingProperties() {
 		this.interestingProps = null;
 	}
-	
+
 	public void initMaxDepth() {
-		
+
 		if (this.maxDepth == -1) {
 			this.maxDepth = this.source.getMaxDepth() + 1;
 		} else {
 			throw new IllegalStateException("Maximum path depth has already been initialized.");
 		}
 	}
-	
+
 	public int getMaxDepth() {
 		if (this.maxDepth != -1) {
 			return this.maxDepth;
@@ -183,27 +183,27 @@ public class PactConnection implements EstimateProvider, DumpableConnection<Opti
 	public long getEstimatedNumRecords() {
 		return this.source.getEstimatedNumRecords();
 	}
-	
+
 	@Override
 	public float getEstimatedAvgWidthPerOutputRecord() {
 		return this.source.getEstimatedAvgWidthPerOutputRecord();
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
-	
+
 	public TempMode getMaterializationMode() {
 		return this.materializationMode;
 	}
-	
+
 	public void setMaterializationMode(TempMode materializationMode) {
 		this.materializationMode = materializationMode;
 	}
-	
+
 	public boolean isOnDynamicPath() {
 		return this.source.isOnDynamicPath();
 	}
-	
+
 	public int getCostWeight() {
 		return this.source.getCostWeight();
 	}

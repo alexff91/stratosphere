@@ -34,19 +34,19 @@ import eu.stratosphere.util.MutableObjectIterator;
 public class ChannelReaderInputViewIterator<E> implements MutableObjectIterator<E>
 {
 	private final ChannelReaderInputView inView;
-	
+
 	private final TypeSerializer<E> accessors;
-	
+
 	private final List<MemorySegment> freeMemTarget;
-	
-	
+
+
 	public ChannelReaderInputViewIterator(IOManager ioAccess, Channel.ID channel, List<MemorySegment> segments,
 			List<MemorySegment> freeMemTarget, TypeSerializer<E> accessors, int numBlocks)
 	throws IOException
 	{
 		this(ioAccess, channel, new LinkedBlockingQueue<MemorySegment>(), segments, freeMemTarget, accessors, numBlocks);
 	}
-		
+
 	public ChannelReaderInputViewIterator(IOManager ioAccess, Channel.ID channel,  LinkedBlockingQueue<MemorySegment> returnQueue,
 			List<MemorySegment> segments, List<MemorySegment> freeMemTarget, TypeSerializer<E> accessors, int numBlocks)
 	throws IOException
@@ -54,7 +54,7 @@ public class ChannelReaderInputViewIterator<E> implements MutableObjectIterator<
 		this(ioAccess.createBlockChannelReader(channel, returnQueue), returnQueue,
 			segments, freeMemTarget, accessors, numBlocks);
 	}
-		
+
 	public ChannelReaderInputViewIterator(BlockChannelReader reader, LinkedBlockingQueue<MemorySegment> returnQueue,
 			List<MemorySegment> segments, List<MemorySegment> freeMemTarget, TypeSerializer<E> accessors, int numBlocks)
 	throws IOException
@@ -63,14 +63,14 @@ public class ChannelReaderInputViewIterator<E> implements MutableObjectIterator<
 		this.freeMemTarget = freeMemTarget;
 		this.inView = new ChannelReaderInputView(reader, segments, numBlocks, false);
 	}
-	
+
 	public ChannelReaderInputViewIterator(ChannelReaderInputView inView, List<MemorySegment> freeMemTarget, TypeSerializer<E> accessors)
 	{
 		this.inView = inView;
 		this.freeMemTarget = freeMemTarget;
 		this.accessors = accessors;
 	}
-			
+
 
 
 	@Override

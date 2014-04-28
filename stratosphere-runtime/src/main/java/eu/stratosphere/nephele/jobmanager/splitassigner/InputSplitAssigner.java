@@ -20,13 +20,13 @@ import eu.stratosphere.nephele.executiongraph.ExecutionVertex;
 /**
  * The input split assigner interface must be implemented by every component which is supposed to dynamically offer
  * input splits to the input vertices of a job at runtime.
- * 
+ *
  */
 public interface InputSplitAssigner {
 
 	/**
 	 * Registers an input vertex with the input split assigner.
-	 * 
+	 *
 	 * @param groupVertex
 	 *        the input vertex to register
 	 */
@@ -35,7 +35,7 @@ public interface InputSplitAssigner {
 	/**
 	 * Unregisters an input vertex from the input split assigner. All resources allocated to the input vertex are freed
 	 * as part of this operation.
-	 * 
+	 *
 	 * @param groupVertex
 	 *        the input vertex to unregister
 	 */
@@ -43,7 +43,7 @@ public interface InputSplitAssigner {
 
 	/**
 	 * Returns the next input split that shall be consumed by the given input vertex.
-	 * 
+	 *
 	 * @param vertex
 	 *        the vertex for which the next input split to be consumed shall be determined
 	 * @return the next input split to be consumed or <code>null</code> if no more splits shall be consumed by the given

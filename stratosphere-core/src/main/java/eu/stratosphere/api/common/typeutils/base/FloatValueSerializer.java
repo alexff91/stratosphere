@@ -25,9 +25,9 @@ import eu.stratosphere.types.FloatValue;
 public class FloatValueSerializer extends TypeSerializer<FloatValue> {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	public static final FloatValueSerializer INSTANCE = new FloatValueSerializer();
-	
+
 	@Override
 	public FloatValue createInstance() {
 		return new FloatValue();

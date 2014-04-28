@@ -13,6 +13,14 @@
 
 package eu.stratosphere.api.java.io;
 
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import eu.stratosphere.api.common.InvalidProgramException;
 import eu.stratosphere.api.common.io.FileOutputFormat;
 import eu.stratosphere.api.java.tuple.Tuple;
@@ -20,10 +28,6 @@ import eu.stratosphere.api.java.typeutils.InputTypeConfigurable;
 import eu.stratosphere.api.java.typeutils.TypeInformation;
 import eu.stratosphere.core.fs.Path;
 import eu.stratosphere.types.StringValue;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.io.*;
 
 /**
  * This is an OutputFormat to serialize {@link eu.stratosphere.api.java.tuple.Tuple}s to text. The output is
@@ -36,11 +40,11 @@ public class CsvOutputFormat<T extends Tuple> extends FileOutputFormat<T> implem
 
 	@SuppressWarnings("unused")
 	private static final Log LOG = LogFactory.getLog(CsvOutputFormat.class);
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public static final String DEFAULT_LINE_DELIMITER = CsvInputFormat.DEFAULT_LINE_DELIMITER;
-	
+
 	public static final String DEFAULT_FIELD_DELIMITER = String.valueOf(CsvInputFormat.DEFAULT_FIELD_DELIMITER);
 
 	// --------------------------------------------------------------------------------------------
@@ -64,7 +68,7 @@ public class CsvOutputFormat<T extends Tuple> extends FileOutputFormat<T> implem
 	/**
 	 * Creates an instance of CsvOutputFormat. Lines are separated by the newline character '\n',
 	 * fields are separated by ','.
-	 * 
+	 *
 	 * @param outputPath The path where the CSV file is written.
 	 */
 	public CsvOutputFormat(Path outputPath) {
@@ -74,7 +78,7 @@ public class CsvOutputFormat<T extends Tuple> extends FileOutputFormat<T> implem
 	/**
 	 * Creates an instance of CsvOutputFormat. Lines are separated by the newline character '\n',
 	 * fields by the given field delimiter.
-	 * 
+	 *
 	 * @param outputPath The path where the CSV file is written.
 	 * @param fieldDelimiter
 	 *            The delimiter that is used to separate fields in a tuple.
@@ -85,7 +89,7 @@ public class CsvOutputFormat<T extends Tuple> extends FileOutputFormat<T> implem
 
 	/**
 	 * Creates an instance of CsvOutputFormat.
-	 * 
+	 *
 	 * @param outputPath The path where the CSV file is written.
 	 * @param recordDelimiter
 	 *            The delimiter that is used to separate the tuples.
@@ -105,13 +109,13 @@ public class CsvOutputFormat<T extends Tuple> extends FileOutputFormat<T> implem
 		this.recordDelimiter = recordDelimiter;
 		this.allowNullValues = false;
 	}
-	
+
 	/**
 	 * Configures the format to either allow null values (writing an empty field),
 	 * or to throw an exception when encountering a null field.
 	 * <p>
 	 * by default, null values are allowed.
-	 * 
+	 *
 	 * @param allowNulls Flag to indicate whether the output format should accept null values.
 	 */
 	public void setAllowNullValues(boolean allowNulls) {
@@ -121,7 +125,7 @@ public class CsvOutputFormat<T extends Tuple> extends FileOutputFormat<T> implem
 	/**
 	 * Sets the charset with which the CSV strings are written to the file.
 	 * If not specified, the output format uses the systems default character encoding.
-	 * 
+	 *
 	 * @param charsetName The name of charset to use for encoding the output.
 	 */
 	public void setCharsetName(String charsetName) {
@@ -134,13 +138,13 @@ public class CsvOutputFormat<T extends Tuple> extends FileOutputFormat<T> implem
 	 * all subclasses of the latter.
 	 * <p>
 	 * By default, strings are not quoted.
-	 * 
+	 *
 	 * @param quoteStrings Flag indicating whether string fields should be quoted.
 	 */
 	public void setQuoteStrings(boolean quoteStrings) {
 		this.quoteStrings = quoteStrings;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	@Override
@@ -194,18 +198,18 @@ public class CsvOutputFormat<T extends Tuple> extends FileOutputFormat<T> implem
 		// add the record delimiter
 		this.wrt.write(this.recordDelimiter);
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
-	 * 
+	 *
 	 * The purpose of this method is solely to check whether the data type to be processed
 	 * is in fact a tuple type.
 	 */
 	@Override
 	public void setInputType(TypeInformation<?> type) {
 		if (!type.isTupleType()) {
-			throw new InvalidProgramException("The " + CsvOutputFormat.class.getSimpleName() + 
+			throw new InvalidProgramException("The " + CsvOutputFormat.class.getSimpleName() +
 				" can only be used to write tuple data sets.");
 		}
 	}

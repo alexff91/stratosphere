@@ -27,7 +27,7 @@ public class PlanDataSink<T> extends GenericDataSink {
 		super(format, name);
 		this.inputDataType = inputDataType;
 	}
-	
+
 	public TypeInformation<T> getType() {
 		return this.inputDataType;
 	}

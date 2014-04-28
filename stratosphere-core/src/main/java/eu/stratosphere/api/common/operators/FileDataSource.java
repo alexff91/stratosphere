@@ -21,56 +21,56 @@ import eu.stratosphere.api.common.io.FileInputFormat;
  * Operator for input nodes which read data from files.
  */
 public class FileDataSource extends GenericDataSource<FileInputFormat<?>> {
-	
+
 	protected final String filePath;
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Creates a new instance for the given file using the given file input format.
-	 * 
+	 *
 	 * @param f The {@link FileInputFormat} implementation used to read the data.
 	 * @param filePath The file location. The file path must be a fully qualified URI, including the address schema.
 	 * @param name The given name for the Pact, used in plans, logs and progress messages.
 	 */
 	public FileDataSource(FileInputFormat<?> f, String filePath, String name) {
 		super(f, name);
-		
+
 		Preconditions.checkNotNull(filePath, "The file path may not be null.");
-		
+
 		this.filePath = filePath;
 		f.setFilePath(filePath);
 	}
 
 	/**
 	 * Creates a new instance for the given file using the given input format. The contract has the default name.
-	 * 
+	 *
 	 * @param f The {@link FileInputFormat} implementation used to read the data.
 	 * @param filePath The file location. The file path must be a fully qualified URI, including the address schema.
 	 */
 	public FileDataSource(FileInputFormat<?> f, String filePath) {
 		this(f, Preconditions.checkNotNull(filePath, "The file path may not be null."), "File " + filePath);
 	}
-	
+
 	/**
 	 * Creates a new instance for the given file using the given file input format.
-	 * 
+	 *
 	 * @param f The {@link FileInputFormat} implementation used to read the data.
 	 * @param filePath The file location. The file path must be a fully qualified URI, including the address schema.
 	 * @param name The given name for the Pact, used in plans, logs and progress messages.
 	 */
 	public FileDataSource(Class<? extends FileInputFormat<?>> f, String filePath, String name) {
 		super(f, name);
-		
+
 		Preconditions.checkNotNull(filePath, "The file path may not be null.");
-		
+
 		this.filePath = filePath;
 		FileInputFormat.configureFileFormat(this).filePath(filePath);
 	}
 
 	/**
 	 * Creates a new instance for the given file using the given input format. The contract has the default name.
-	 * 
+	 *
 	 * @param f The {@link FileInputFormat} implementation used to read the data.
 	 * @param filePath The file location. The file path must be a fully qualified URI, including the address schema.
 	 */
@@ -82,15 +82,15 @@ public class FileDataSource extends GenericDataSource<FileInputFormat<?>> {
 
 	/**
 	 * Returns the file path from which the input is read.
-	 * 
+	 *
 	 * @return The path from which the input shall be read.
 	 */
 	public String getFilePath() {
 		return this.filePath;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public String toString() {
 		return this.filePath;
 	}

@@ -29,7 +29,6 @@ import org.apache.log4j.Level;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import eu.stratosphere.api.java.record.io.TextInputFormat;
 import eu.stratosphere.configuration.Configuration;
 import eu.stratosphere.core.fs.FileInputSplit;
 import eu.stratosphere.types.Record;
@@ -37,16 +36,16 @@ import eu.stratosphere.types.StringValue;
 import eu.stratosphere.util.LogUtils;
 
 public class TextInputFormatTest {
-		
+
 	@BeforeClass
 	public static void initialize() {
 		LogUtils.initializeDefaultConsoleLogger(Level.WARN);
 	}
-	
+
 	/**
 	 * The TextInputFormat seems to fail reading more than one record. I guess its
 	 * an off by one error.
-	 * 
+	 *
 	 * The easiest workaround is to setParameter(TextInputFormat.CHARSET_NAME, "ASCII");
 	 * @throws IOException
 	 */
@@ -54,36 +53,36 @@ public class TextInputFormatTest {
 	public void testPositionBug() {
 		final String FIRST = "First line";
 		final String SECOND = "Second line";
-		
+
 		try {
 			// create input file
 			File tempFile = File.createTempFile("TextInputFormatTest", "tmp");
 			tempFile.deleteOnExit();
 			tempFile.setWritable(true);
-			
+
 			FileWriter writer = new FileWriter(tempFile);
 			writer.append(FIRST).append('\n');
 			writer.append(SECOND).append('\n');
 			writer.close();
-			
+
 			TextInputFormat inputFormat = new TextInputFormat();
 			inputFormat.setFilePath(tempFile.toURI().toString());
-			
-			Configuration parameters = new Configuration(); 
+
+			Configuration parameters = new Configuration();
 			inputFormat.configure(parameters);
-			
+
 			FileInputSplit[] splits = inputFormat.createInputSplits(1);
 			assertTrue("expected at least one input split", splits.length >= 1);
-			
+
 			inputFormat.open(splits[0]);
-			
+
 			Record r = new Record();
 			assertNotNull("Expecting first record here", inputFormat.nextRecord(r));
 			assertEquals(FIRST, r.getField(0, StringValue.class).getValue());
-			
+
 			assertNotNull("Expecting second record here",inputFormat.nextRecord(r ));
 			assertEquals(SECOND, r.getField(0, StringValue.class).getValue());
-			
+
 			assertNull("The input file is over", inputFormat.nextRecord(r));
 		}
 		catch (Throwable t) {
@@ -93,16 +92,16 @@ public class TextInputFormatTest {
 		}
 	}
 
-	
+
 	/**
-	 * This tests cases when line ends with \r\n and \n is used as delimiter, the last \r should be removed 
+	 * This tests cases when line ends with \r\n and \n is used as delimiter, the last \r should be removed
 	 */
 	@Test
 	public void testRemovingTrailingCR() {
-		
+
 		testRemovingTrailingCR("\n","\n");
 		testRemovingTrailingCR("\r\n","\n");
-		
+
 		testRemovingTrailingCR("|","|");
 		testRemovingTrailingCR("|","\n");
 
@@ -110,50 +109,50 @@ public class TextInputFormatTest {
 
 	private void testRemovingTrailingCR(String lineBreaker,String delimiter) {
 		File tempFile=null;
-		
+
 		String FIRST = "First line";
 		String SECOND = "Second line";
 		String CONTENT = FIRST + lineBreaker + SECOND + lineBreaker;
-		
+
 		try {
 			// create input file
 			tempFile = File.createTempFile("TextInputFormatTest", "tmp");
 			tempFile.deleteOnExit();
 			tempFile.setWritable(true);
-			
+
 			OutputStreamWriter wrt = new OutputStreamWriter(new FileOutputStream(tempFile));
 			wrt.write(CONTENT);
 			wrt.close();
-			
+
 			TextInputFormat inputFormat = new TextInputFormat();
 			inputFormat.setFilePath(tempFile.toURI().toString());
-			
-			Configuration parameters = new Configuration(); 
+
+			Configuration parameters = new Configuration();
 			inputFormat.configure(parameters);
-			
+
 			inputFormat.setDelimiter(delimiter);
-			
+
 			FileInputSplit[] splits = inputFormat.createInputSplits(1);
-						
+
 			inputFormat.open(splits[0]);
-			
+
 			Record r = new Record();
-			if (  (delimiter.equals("\n") && (lineBreaker.equals("\n") || lineBreaker.equals("\r\n") ) ) 
+			if (  (delimiter.equals("\n") && (lineBreaker.equals("\n") || lineBreaker.equals("\r\n") ) )
 					|| (lineBreaker.equals(delimiter)) ){
 
 				assertNotNull("Expecting first record here", inputFormat.nextRecord(r));
 				assertEquals(FIRST, r.getField(0, StringValue.class).getValue());
-				
+
 				assertNotNull("Expecting second record here",inputFormat.nextRecord(r ));
 				assertEquals(SECOND, r.getField(0, StringValue.class).getValue());
-				
+
 				assertNull("The input file is over", inputFormat.nextRecord(r));
 			}else{
 				assertNotNull("Expecting first record here", inputFormat.nextRecord(r));
 				assertEquals(CONTENT, r.getField(0, StringValue.class).getValue());
 			}
-			
-			
+
+
 		}
 		catch (Throwable t) {
 			System.err.println("test failed with exception: " + t.getMessage());

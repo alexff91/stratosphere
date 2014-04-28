@@ -13,7 +13,8 @@
 
 package eu.stratosphere.nephele.io.channels;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -32,7 +33,7 @@ public class MemoryBufferTest {
 
 	private MemoryBufferPoolConnector bufferPoolConnector;
 	private Queue<MemorySegment> bufferPool;
-	
+
 	private final static int INT_COUNT = 512;
 	private final static int INT_SIZE = Integer.SIZE / Byte.SIZE;
 
@@ -50,7 +51,7 @@ public class MemoryBufferTest {
 	public void readToSmallByteBuffer() throws IOException {
 		MemoryBuffer buf = new MemoryBuffer(INT_COUNT*INT_SIZE, new MemorySegment(new byte[INT_COUNT*INT_SIZE]), bufferPoolConnector);
 		fillBuffer(buf);
-		
+
 		ByteBuffer target = ByteBuffer.allocate(INT_SIZE);
 		ByteBuffer largeTarget = ByteBuffer.allocate(INT_COUNT*INT_SIZE);
 		int i = 0;
@@ -64,15 +65,15 @@ public class MemoryBufferTest {
 			}
 		}
 		assertEquals(-1, buf.read(target));
-		
+
 		target.rewind();
 		validateByteBuffer(largeTarget);
 	}
-		
-	
+
+
 	/**
 	 * CopyToBuffer uses system.arraycopy()
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	@Test
@@ -80,24 +81,24 @@ public class MemoryBufferTest {
 
 		MemoryBuffer buf = new MemoryBuffer(INT_COUNT*INT_SIZE, new MemorySegment(new byte[INT_COUNT*INT_SIZE]), bufferPoolConnector);
 		fillBuffer(buf);
-		
-		
+
+
 		// the target buffer is larger to check if the limit is set appropriately
-		MemoryBuffer destination = new MemoryBuffer(INT_COUNT*INT_SIZE*2, 
-					new MemorySegment(new byte[INT_COUNT*INT_SIZE*2]), 
+		MemoryBuffer destination = new MemoryBuffer(INT_COUNT*INT_SIZE*2,
+					new MemorySegment(new byte[INT_COUNT*INT_SIZE*2]),
 					bufferPoolConnector);
 		assertEquals(INT_COUNT*INT_SIZE*2, destination.limit());
 		// copy buf contents to double sized MemBuffer
 		buf.copyToBuffer(destination);
 		assertEquals(INT_COUNT*INT_SIZE, destination.limit());
-		
+
 		// copy contents of destination to byteBuffer
 		ByteBuffer test = ByteBuffer.allocate(INT_COUNT*INT_SIZE);
 		int written = destination.read(test);
 		assertEquals(INT_COUNT*INT_SIZE, written);
 		// validate byteBuffer contents
 		validateByteBuffer(test);
-		
+
 		destination.position(written);
 		destination.limit(destination.getTotalSize());
 		// allocate another byte buffer to write the rest of destination into a byteBuffer
@@ -105,15 +106,15 @@ public class MemoryBufferTest {
 		written = destination.read(testRemainder);
 		assertEquals(INT_COUNT*INT_SIZE, written);
 		expectAllNullByteBuffer(testRemainder);
-		
+
 		buf.close(); // make eclipse happy
 	}
-	
+
 	@Test
 	public void testDuplicate() throws Exception {
 		MemoryBuffer buf = new MemoryBuffer(INT_COUNT*INT_SIZE, new MemorySegment(new byte[INT_COUNT*INT_SIZE]), bufferPoolConnector);
 		MemoryBuffer buf2 = buf.duplicate();
-		
+
 		buf2.close();
 		buf.close();
 	}
@@ -128,22 +129,22 @@ public class MemoryBufferTest {
 		}
 		buf.flip();
 	}
-	
-	
+
+
 	/**
 	 * Validates if the ByteBuffer contains the what fillMemoryBuffer has written!
-	 * 
+	 *
 	 * @param target
 	 */
 	private void validateByteBuffer(ByteBuffer target) {
 		ByteBuffer ref = ByteBuffer.allocate(INT_SIZE);
-		
+
 		for(int i = 0; i < INT_SIZE*INT_COUNT; ++i) {
 			ref.putInt(0,i / INT_SIZE);
 			assertEquals("Byte at position "+i+" is different", ref.get(i%INT_SIZE), target.get(i));
 		}
 	}
-	
+
 	private void expectAllNullByteBuffer(ByteBuffer target) {
 		ByteBuffer ref = ByteBuffer.allocate(INT_SIZE);
 		ref.putInt(0,0);

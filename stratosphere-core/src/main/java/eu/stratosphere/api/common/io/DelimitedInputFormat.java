@@ -26,9 +26,9 @@ import com.google.common.base.Charsets;
 
 import eu.stratosphere.api.common.io.statistics.BaseStatistics;
 import eu.stratosphere.api.common.operators.FileDataSource;
+import eu.stratosphere.configuration.ConfigConstants;
 import eu.stratosphere.configuration.Configuration;
 import eu.stratosphere.configuration.GlobalConfiguration;
-import eu.stratosphere.configuration.ConfigConstants;
 import eu.stratosphere.core.fs.FileInputSplit;
 import eu.stratosphere.core.fs.FileStatus;
 import eu.stratosphere.core.fs.FileSystem;
@@ -42,49 +42,49 @@ import eu.stratosphere.core.fs.Path;
  * The default delimiter is the newline character {@code '\n'}.
  */
 public abstract class DelimitedInputFormat<OT> extends FileInputFormat<OT> {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	// -------------------------------------- Constants -------------------------------------------
-	
+
 	/**
 	 * The log.
 	 */
 	private static final Log LOG = LogFactory.getLog(DelimitedInputFormat.class);
-	
+
 	/**
 	 * The default read buffer size = 1MB.
 	 */
 	private static final int DEFAULT_READ_BUFFER_SIZE = 1024 * 1024;
-	
+
 	/**
 	 * Indication that the number of samples has not been set by the configuration.
 	 */
 	private static final int NUM_SAMPLES_UNDEFINED = -1;
-	
+
 	/**
 	 * The maximum number of line samples to be taken.
 	 */
 	private static int DEFAULT_MAX_NUM_SAMPLES;
-	
+
 	/**
 	 * The minimum number of line samples to be taken.
 	 */
 	private static int DEFAULT_MIN_NUM_SAMPLES;
-	
+
 	/**
 	 * The maximum size of a sample record before sampling is aborted. To catch cases where a wrong delimiter is given.
 	 */
 	private static int MAX_SAMPLE_LEN;
-	
+
 	static { loadGloablConfigParams(); }
-	
+
 	protected static final void loadGloablConfigParams() {
 		int maxSamples = GlobalConfiguration.getInteger(ConfigConstants.DELIMITED_FORMAT_MAX_LINE_SAMPLES_KEY,
 				ConfigConstants.DEFAULT_DELIMITED_FORMAT_MAX_LINE_SAMPLES);
 		int minSamples = GlobalConfiguration.getInteger(ConfigConstants.DELIMITED_FORMAT_MIN_LINE_SAMPLES_KEY,
 			ConfigConstants.DEFAULT_DELIMITED_FORMAT_MIN_LINE_SAMPLES);
-		
+
 		if (maxSamples < 0) {
 			LOG.error("Invalid default maximum number of line samples: " + maxSamples + ". Using default value of " +
 				ConfigConstants.DEFAULT_DELIMITED_FORMAT_MAX_LINE_SAMPLES);
@@ -95,9 +95,9 @@ public abstract class DelimitedInputFormat<OT> extends FileInputFormat<OT> {
 				ConfigConstants.DEFAULT_DELIMITED_FORMAT_MIN_LINE_SAMPLES);
 			minSamples = ConfigConstants.DEFAULT_DELIMITED_FORMAT_MIN_LINE_SAMPLES;
 		}
-		
+
 		DEFAULT_MAX_NUM_SAMPLES = maxSamples;
-		
+
 		if (minSamples > maxSamples) {
 			LOG.error("Defaul minimum number of line samples cannot be greater the default maximum number " +
 					"of line samples: min=" + minSamples + ", max=" + maxSamples + ". Defaulting minumum to maximum.");
@@ -105,7 +105,7 @@ public abstract class DelimitedInputFormat<OT> extends FileInputFormat<OT> {
 		} else {
 			DEFAULT_MIN_NUM_SAMPLES = minSamples;
 		}
-		
+
 		int maxLen = GlobalConfiguration.getInteger(ConfigConstants.DELIMITED_FORMAT_MAX_SAMPLE_LENGTH_KEY,
 				ConfigConstants.DEFAULT_DELIMITED_FORMAT_MAX_SAMPLE_LEN);
 		if (maxLen <= 0) {
@@ -117,12 +117,12 @@ public abstract class DelimitedInputFormat<OT> extends FileInputFormat<OT> {
 		}
 		MAX_SAMPLE_LEN = maxLen;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 	//  Variables for internal parsing.
-	//  They are all transient, because we do not want them so be serialized 
+	//  They are all transient, because we do not want them so be serialized
 	// --------------------------------------------------------------------------------------------
-	
+
 	private transient byte[] readBuffer;
 
 	private transient byte[] wrapBuffer;
@@ -130,7 +130,7 @@ public abstract class DelimitedInputFormat<OT> extends FileInputFormat<OT> {
 	private transient int readPos;
 
 	private transient int limit;
-	
+
 	private transient byte[] currBuffer;		// buffer in which current record byte sequence is found
 	private transient int currOffset;			// offset in above buffer
 	private transient int currLen;				// length of current byte sequence
@@ -138,103 +138,110 @@ public abstract class DelimitedInputFormat<OT> extends FileInputFormat<OT> {
 	private transient boolean overLimit;
 
 	private transient boolean end;
-	
-	
+
+
 	// --------------------------------------------------------------------------------------------
 	//  The configuration parameters. Configured on the instance and serialized to be shipped.
 	// --------------------------------------------------------------------------------------------
-	
+
 	private byte[] delimiter = new byte[] {'\n'};
-	
+
 	private int lineLengthLimit = Integer.MAX_VALUE;
-	
+
 	private int bufferSize = -1;
-	
+
 	private int numLineSamples = NUM_SAMPLES_UNDEFINED;
-	
-	
+
+
 	// --------------------------------------------------------------------------------------------
 	//  Constructors & Getters/setters for the configurable parameters
 	// --------------------------------------------------------------------------------------------
-	
+
 	public DelimitedInputFormat() {
 		super();
 	}
-	
+
 	protected DelimitedInputFormat(Path filePath) {
 		super(filePath);
 	}
-	
-	
+
+
 	public byte[] getDelimiter() {
 		return delimiter;
 	}
-	
+
 	public void setDelimiter(byte[] delimiter) {
-		if (delimiter == null)
-			throw new IllegalArgumentException("Delimiter must not be null");
-		
+		if (delimiter == null) {
+		throw new IllegalArgumentException("Delimiter must not be null");
+		}
+
 		this.delimiter = delimiter;
 	}
-	
+
 	public void setDelimiter(char delimiter) {
 		setDelimiter(String.valueOf(delimiter));
 	}
-	
+
 	public void setDelimiter(String delimiter) {
 		setDelimiter(delimiter, Charsets.UTF_8);
 	}
-	
+
 	public void setDelimiter(String delimiter, String charsetName) throws IllegalCharsetNameException, UnsupportedCharsetException {
-		if (charsetName == null)
-			throw new IllegalArgumentException("Charset name must not be null");
-		
+		if (charsetName == null) {
+		throw new IllegalArgumentException("Charset name must not be null");
+		}
+
 		Charset charset = Charset.forName(charsetName);
 		setDelimiter(delimiter, charset);
 	}
-	
+
 	public void setDelimiter(String delimiter, Charset charset) {
-		if (delimiter == null)
-			throw new IllegalArgumentException("Delimiter must not be null");
-		if (charset == null)
-			throw new IllegalArgumentException("Charset must not be null");
-		
+		if (delimiter == null) {
+		throw new IllegalArgumentException("Delimiter must not be null");
+		}
+		if (charset == null) {
+		throw new IllegalArgumentException("Charset must not be null");
+		}
+
 		this.delimiter = delimiter.getBytes(charset);
 	}
-	
+
 	public int getLineLengthLimit() {
 		return lineLengthLimit;
 	}
-	
+
 	public void setLineLengthLimit(int lineLengthLimit) {
-		if (lineLengthLimit < 1)
-			throw new IllegalArgumentException("Line length limit must be at least 1.");
+		if (lineLengthLimit < 1) {
+		throw new IllegalArgumentException("Line length limit must be at least 1.");
+		}
 
 		this.lineLengthLimit = lineLengthLimit;
 	}
-	
+
 	public int getBufferSize() {
 		return bufferSize;
 	}
-	
+
 	public void setBufferSize(int bufferSize) {
-		if (bufferSize < 1)
-			throw new IllegalArgumentException("Buffer size must be at least 1.");
-		
+		if (bufferSize < 1) {
+		throw new IllegalArgumentException("Buffer size must be at least 1.");
+		}
+
 		this.bufferSize = bufferSize;
 	}
-	
+
 	public int getNumLineSamples() {
 		return numLineSamples;
 	}
-	
+
 	public void setNumLineSamples(int numLineSamples) {
-		if (numLineSamples < 0)
-			throw new IllegalArgumentException("Number of line samples must not be negative.");
-		
+		if (numLineSamples < 0) {
+		throw new IllegalArgumentException("Number of line samples must not be negative.");
+		}
+
 		this.numLineSamples = numLineSamples;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 	//  User-defined behavior
 	// --------------------------------------------------------------------------------------------
@@ -243,30 +250,30 @@ public abstract class DelimitedInputFormat<OT> extends FileInputFormat<OT> {
 	 * This function parses the given byte array which represents a serialized records.
 	 * The parsed content is then returned by setting the pair variables. If the
 	 * byte array contains invalid content the record can be skipped by returning <tt>false</tt>.
-	 * 
+	 *
 	 * @param reuse An optionally reusable object.
 	 * @param bytes Binary data of serialized records.
-	 * @param offset The offset where to start to read the record data. 
+	 * @param offset The offset where to start to read the record data.
 	 * @param numBytes The number of bytes that can be read starting at the offset position.
-	 * 
+	 *
 	 * @return returns whether the record was successfully deserialized or not.
 	 */
 	public abstract OT readRecord(OT reuse, byte[] bytes, int offset, int numBytes);
-	
+
 	// --------------------------------------------------------------------------------------------
 	//  Pre-flight: Configuration, Splits, Sampling
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Configures this input format by reading the path to the file from the configuration andge the string that
 	 * defines the record delimiter.
-	 * 
+	 *
 	 * @param parameters The configuration object to read the parameters from.
 	 */
 	@Override
 	public void configure(Configuration parameters) {
 		super.configure(parameters);
-		
+
 		String delimString = parameters.getString(RECORD_DELIMITER, null);
 		if (delimString != null) {
 			String charsetName = parameters.getString(RECORD_DELIMITER_ENCODING, null);
@@ -278,12 +285,12 @@ public abstract class DelimitedInputFormat<OT> extends FileInputFormat<OT> {
 					setDelimiter(delimString, charsetName);
 				}
 				catch (UnsupportedCharsetException e) {
-					throw new IllegalArgumentException("The charset with the name '" + charsetName + 
+					throw new IllegalArgumentException("The charset with the name '" + charsetName +
 							"' is not supported on this TaskManager instance.", e);
 				}
 			}
 		}
-		
+
 		// set the number of samples
 		String samplesString = parameters.getString(NUM_STATISTICS_SAMPLES, null);
 		if (samplesString != null) {
@@ -291,43 +298,44 @@ public abstract class DelimitedInputFormat<OT> extends FileInputFormat<OT> {
 				setNumLineSamples(Integer.parseInt(samplesString));
 			}
 			catch (NumberFormatException e) {
-				if (LOG.isWarnEnabled())
-					LOG.warn("Invalid value for number of samples to take: " + samplesString + ". Skipping sampling.");
+				if (LOG.isWarnEnabled()) {
+				LOG.warn("Invalid value for number of samples to take: " + samplesString + ". Skipping sampling.");
+				}
 				setNumLineSamples(0);
 			}
 		}
 	}
-	
+
 	@Override
 	public FileBaseStatistics getStatistics(BaseStatistics cachedStats) throws IOException {
-		
+
 		final FileBaseStatistics cachedFileStats = (cachedStats != null && cachedStats instanceof FileBaseStatistics) ?
 				(FileBaseStatistics) cachedStats : null;
-		
+
 		// store properties
 		final long oldTimeout = this.openTimeout;
 		final int oldBufferSize = this.bufferSize;
 		final int oldLineLengthLimit = this.lineLengthLimit;
 		try {
 			final Path filePath = this.filePath;
-		
+
 			// get the filesystem
 			final FileSystem fs = FileSystem.get(filePath.toUri());
 			final ArrayList<FileStatus> allFiles = new ArrayList<FileStatus>(1);
-			
+
 			// let the file input format deal with the up-to-date check and the basic size
 			final FileBaseStatistics stats = getFileStats(cachedFileStats, filePath, fs, allFiles);
 			if (stats == null) {
 				return null;
 			}
-			
+
 			// check whether the width per record is already known or the total size is unknown as well
 			// in both cases, we return the stats as they are
 			if (stats.getAverageRecordWidth() != FileBaseStatistics.AVG_RECORD_BYTES_UNKNOWN ||
 					stats.getTotalInputSize() == FileBaseStatistics.SIZE_UNKNOWN) {
 				return stats;
 			}
-			
+
 			// compute how many samples to take, depending on the defined upper and lower bound
 			final int numSamples;
 			if (this.numLineSamples != NUM_SAMPLES_UNDEFINED) {
@@ -337,7 +345,7 @@ public abstract class DelimitedInputFormat<OT> extends FileInputFormat<OT> {
 				final int calcSamples = (int) (stats.getTotalInputSize() / 1024);
 				numSamples = Math.min(DEFAULT_MAX_NUM_SAMPLES, Math.max(DEFAULT_MIN_NUM_SAMPLES, calcSamples));
 			}
-			
+
 			// check if sampling is disabled.
 			if (numSamples == 0) {
 				return stats;
@@ -345,15 +353,15 @@ public abstract class DelimitedInputFormat<OT> extends FileInputFormat<OT> {
 			if (numSamples < 0) {
 				throw new RuntimeException("Error: Invalid number of samples: " + numSamples);
 			}
-			
-			
+
+
 			// make sure that the sampling times out after a while if the file system does not answer in time
 			this.openTimeout = 10000;
 			// set a small read buffer size
 			this.bufferSize = 4 * 1024;
 			// prevent overly large records, for example if we have an incorrectly configured delimiter
 			this.lineLengthLimit = MAX_SAMPLE_LEN;
-			
+
 			long offset = 0;
 			long totalNumBytes = 0;
 			long stepSize = stats.getTotalInputSize() / numSamples;
@@ -387,27 +395,29 @@ public abstract class DelimitedInputFormat<OT> extends FileInputFormat<OT> {
 					fileNum++;
 				}
 			}
-			
+
 			// we have the width, store it
 			return new FileBaseStatistics(stats.getLastModificationTime(),
 				stats.getTotalInputSize(), totalNumBytes / (float) samplesTaken);
-			
+
 		} catch (IOException ioex) {
-			if (LOG.isWarnEnabled())
-				LOG.warn("Could not determine statistics for file '" + this.filePath + "' due to an io error: "
-						+ ioex.getMessage());
+			if (LOG.isWarnEnabled()) {
+			LOG.warn("Could not determine statistics for file '" + this.filePath + "' due to an io error: "
+					+ ioex.getMessage());
+			}
 		}
 		catch (Throwable t) {
-			if (LOG.isErrorEnabled())
-				LOG.error("Unexpected problen while getting the file statistics for file '" + this.filePath + "': "
-						+ t.getMessage(), t);
+			if (LOG.isErrorEnabled()) {
+			LOG.error("Unexpected problen while getting the file statistics for file '" + this.filePath + "': "
+					+ t.getMessage(), t);
+			}
 		} finally {
 			// restore properties (even on return)
 			this.openTimeout = oldTimeout;
 			this.bufferSize = oldBufferSize;
 			this.lineLengthLimit = oldLineLengthLimit;
 		}
-		
+
 		// no statistics possible
 		return null;
 	}
@@ -415,17 +425,17 @@ public abstract class DelimitedInputFormat<OT> extends FileInputFormat<OT> {
 	/**
 	 * Opens the given input split. This method opens the input stream to the specified file, allocates read buffers
 	 * and positions the stream at the correct position, making sure that any partial record at the beginning is skipped.
-	 * 
+	 *
 	 * @param split The input split to open.
-	 * 
+	 *
 	 * @see eu.stratosphere.api.common.io.FileInputFormat#open(eu.stratosphere.core.fs.FileInputSplit)
 	 */
 	@Override
 	public void open(FileInputSplit split) throws IOException {
 		super.open(split);
-		
+
 		this.bufferSize = this.bufferSize <= 0 ? DEFAULT_READ_BUFFER_SIZE : this.bufferSize;
-		
+
 		if (this.readBuffer == null || this.readBuffer.length != this.bufferSize) {
 			this.readBuffer = new byte[this.bufferSize];
 		}
@@ -441,9 +451,9 @@ public abstract class DelimitedInputFormat<OT> extends FileInputFormat<OT> {
 		if (this.splitStart != 0) {
 			this.stream.seek(this.splitStart);
 			readLine();
-			
+
 			// if the first partial record already pushes the stream over the limit of our split, then no
-			// record starts within this split 
+			// record starts within this split
 			if (this.overLimit) {
 				this.end = true;
 			}
@@ -454,14 +464,14 @@ public abstract class DelimitedInputFormat<OT> extends FileInputFormat<OT> {
 
 	/**
 	 * Checks whether the current split is at its end.
-	 * 
+	 *
 	 * @return True, if the split is at its end, false otherwise.
 	 */
 	@Override
 	public boolean reachedEnd() {
 		return this.end;
 	}
-	
+
 	@Override
 	public OT nextRecord(OT record) throws IOException {
 		if (readLine()) {
@@ -474,7 +484,7 @@ public abstract class DelimitedInputFormat<OT> extends FileInputFormat<OT> {
 
 	/**
 	 * Closes the input by releasing all buffers and closing the file input stream.
-	 * 
+	 *
 	 * @throws IOException Thrown, if the closing of the file stream causes an I/O error.
 	 */
 	@Override
@@ -544,10 +554,10 @@ public abstract class DelimitedInputFormat<OT> extends FileInputFormat<OT> {
 				}
 			} else {
 				count = this.limit - startPos;
-				
+
 				// check against the maximum record length
 				if ( ((long) countInWrapBuffer) + count > this.lineLengthLimit) {
-					throw new IOException("The record length exceeded the maximum record length (" + 
+					throw new IOException("The record length exceeded the maximum record length (" +
 							this.lineLengthLimit + ").");
 				}
 
@@ -564,7 +574,7 @@ public abstract class DelimitedInputFormat<OT> extends FileInputFormat<OT> {
 			}
 		}
 	}
-	
+
 	private final void setResult(byte[] buffer, int offset, int len) {
 		this.currBuffer = buffer;
 		this.currOffset = offset;
@@ -591,64 +601,64 @@ public abstract class DelimitedInputFormat<OT> extends FileInputFormat<OT> {
 			return true;
 		}
 	}
-	
+
 	// ============================================================================================
 	//  Parameterization via configuration
 	// ============================================================================================
-	
+
 	// ------------------------------------- Config Keys ------------------------------------------
-	
+
 	/**
 	 * The configuration key to set the record delimiter.
 	 */
 	protected static final String RECORD_DELIMITER = "delimited-format.delimiter";
-	
+
 	/**
 	 * The configuration key to set the record delimiter encoding.
 	 */
 	private static final String RECORD_DELIMITER_ENCODING = "delimited-format.delimiter-encoding";
-	
+
 	/**
 	 * The configuration key to set the number of samples to take for the statistics.
 	 */
 	private static final String NUM_STATISTICS_SAMPLES = "delimited-format.numSamples";
-	
+
 	// ----------------------------------- Config Builder -----------------------------------------
-	
+
 	/**
 	 * Creates a configuration builder that can be used to set the input format's parameters to the config in a fluent
 	 * fashion.
-	 * 
+	 *
 	 * @return A config builder for setting parameters.
 	 */
 	public static ConfigBuilder configureDelimitedFormat(FileDataSource target) {
 		return new ConfigBuilder(target.getParameters());
 	}
-	
+
 	/**
 	 * Abstract builder used to set parameters to the input format's configuration in a fluent way.
 	 */
 	protected static class AbstractConfigBuilder<T> extends FileInputFormat.AbstractConfigBuilder<T> {
-		
+
 		private static final String NEWLINE_DELIMITER = "\n";
-		
+
 		// --------------------------------------------------------------------
-		
+
 		/**
 		 * Creates a new builder for the given configuration.
-		 * 
+		 *
 		 * @param config The configuration into which the parameters will be written.
 		 */
 		protected AbstractConfigBuilder(Configuration config) {
 			super(config);
 		}
-		
+
 		// --------------------------------------------------------------------
-		
+
 		/**
 		 * Sets the delimiter to be a single character, namely the given one. The character must be within
 		 * the value range <code>0</code> to <code>127</code>.
-		 * 
+		 *
 		 * @param delimiter The delimiter character.
 		 * @return The builder itself.
 		 */
@@ -662,11 +672,11 @@ public abstract class DelimitedInputFormat<OT> extends FileInputFormat<OT> {
 			T ret = (T) this;
 			return ret;
 		}
-		
+
 		/**
 		 * Sets the delimiter to be the given string. The string will be converted to bytes for more efficient
 		 * comparison during input parsing. The conversion will be done using the platforms default charset.
-		 * 
+		 *
 		 * @param delimiter The delimiter string.
 		 * @return The builder itself.
 		 */
@@ -676,13 +686,13 @@ public abstract class DelimitedInputFormat<OT> extends FileInputFormat<OT> {
 			T ret = (T) this;
 			return ret;
 		}
-		
+
 		/**
 		 * Sets the delimiter to be the given string. The string will be converted to bytes for more efficient
 		 * comparison during input parsing. The conversion will be done using the charset with the given name.
 		 * The charset must be available on the processing nodes, otherwise an exception will be raised at
 		 * runtime.
-		 * 
+		 *
 		 * @param delimiter The delimiter string.
 		 * @param charsetName The name of the encoding character set.
 		 * @return The builder itself.
@@ -694,11 +704,11 @@ public abstract class DelimitedInputFormat<OT> extends FileInputFormat<OT> {
 			T ret = (T) this;
 			return ret;
 		}
-		
+
 		/**
 		 * Sets the number of line samples to take in order to estimate the base statistics for the
 		 * input format.
-		 * 
+		 *
 		 * @param numSamples The number of line samples to take.
 		 * @return The builder itself.
 		 */
@@ -709,15 +719,15 @@ public abstract class DelimitedInputFormat<OT> extends FileInputFormat<OT> {
 			return ret;
 		}
 	}
-	
+
 	/**
 	 * A builder used to set parameters to the input format's configuration in a fluent way.
 	 */
 	public static class ConfigBuilder extends AbstractConfigBuilder<ConfigBuilder> {
-		
+
 		/**
 		 * Creates a new builder for the given configuration.
-		 * 
+		 *
 		 * @param targetConfig The configuration into which the parameters will be written.
 		 */
 		protected ConfigBuilder(Configuration targetConfig) {

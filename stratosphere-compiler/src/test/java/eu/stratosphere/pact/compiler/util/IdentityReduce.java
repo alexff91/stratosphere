@@ -16,15 +16,15 @@ package eu.stratosphere.pact.compiler.util;
 import java.io.Serializable;
 import java.util.Iterator;
 
-import eu.stratosphere.api.java.record.functions.ReduceFunction;
 import eu.stratosphere.api.java.record.functions.FunctionAnnotation.ConstantFieldsExcept;
+import eu.stratosphere.api.java.record.functions.ReduceFunction;
 import eu.stratosphere.types.Record;
 import eu.stratosphere.util.Collector;
 
 @ConstantFieldsExcept({})
 public final class IdentityReduce extends ReduceFunction implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	@Override
 	public void reduce(Iterator<Record> records, Collector<Record> out) throws Exception {
 		while (records.hasNext()) {

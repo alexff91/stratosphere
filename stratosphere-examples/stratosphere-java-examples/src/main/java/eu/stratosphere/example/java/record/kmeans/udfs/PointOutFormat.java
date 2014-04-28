@@ -31,26 +31,26 @@ import eu.stratosphere.types.Record;
  */
 public class PointOutFormat extends DelimitedOutputFormat {
 	private static final long serialVersionUID = 1L;
-	
+
 	private final DecimalFormat df = new DecimalFormat("####0.00");
 	private final StringBuilder line = new StringBuilder();
-	
-	
+
+
 	public PointOutFormat() {
 		DecimalFormatSymbols dfSymbols = new DecimalFormatSymbols();
 		dfSymbols.setDecimalSeparator('.');
 		this.df.setDecimalFormatSymbols(dfSymbols);
 	}
-	
+
 	@Override
 	public int serializeRecord(Record record, byte[] target) {
-		
+
 		line.setLength(0);
-		
+
 		IntValue centerId = record.getField(0, IntValue.class);
 		CoordVector centerPos = record.getField(1, CoordVector.class);
-		
-		
+
+
 		line.append(centerId.getValue());
 
 		for (double coord : centerPos.getCoordinates()) {
@@ -58,9 +58,9 @@ public class PointOutFormat extends DelimitedOutputFormat {
 			line.append(df.format(coord));
 		}
 		line.append('|');
-		
+
 		byte[] byteString = line.toString().getBytes();
-		
+
 		if (byteString.length <= target.length) {
 			System.arraycopy(byteString, 0, target, 0, byteString.length);
 			return byteString.length;

@@ -32,75 +32,76 @@ import eu.stratosphere.types.Record;
  */
 public final class EdgeWithDegreesInputFormat extends DelimitedInputFormat {
 	private static final long serialVersionUID = 1L;
-	
+
 	public static final String VERTEX_DELIMITER_CHAR = "edgeinput.vertexdelimiter";
 	public static final String DEGREE_DELIMITER_CHAR = "edgeinput.degreedelimiter";
-	
+
 	private final IntValue v1 = new IntValue();
 	private final IntValue v2 = new IntValue();
 	private final IntValue d1 = new IntValue();
 	private final IntValue d2 = new IntValue();
-	
+
 	private char vertexDelimiter;
 	private char degreeDelimiter;
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public Record readRecord(Record target, byte[] bytes, int offset, int numBytes) {
 		final int limit = offset + numBytes;
 		int firstV = 0, secondV = 0;
 		int firstD = 0, secondD = 0;
-		
+
 		final char vertexDelimiter = this.vertexDelimiter;
 		final char degreeDelimiter = this.degreeDelimiter;
-		
+
 		int pos = offset;
-		
+
 		// read the first vertex ID
 		while (pos < limit && bytes[pos] != degreeDelimiter) {
 			firstV = firstV * 10 + (bytes[pos++] - '0');
 		}
-		
+
 		pos += 1;// skip the delimiter
-		
+
 		// read the first vertex degree
 		while (pos < limit && bytes[pos] != vertexDelimiter) {
 			firstD = firstD * 10 + (bytes[pos++] - '0');
 		}
-		
+
 		pos += 1;// skip the delimiter
-		
+
 		// read the second vertex ID
 		while (pos < limit && bytes[pos] != degreeDelimiter) {
 			secondV = secondV * 10 + (bytes[pos++] - '0');
 		}
-		
+
 		pos += 1;// skip the delimiter
-		
+
 		// read the second vertex degree
 		while (pos < limit) {
 			secondD = secondD * 10 + (bytes[pos++] - '0');
 		}
-		
-		if (firstV <= 0 || secondV <= 0 || firstV == secondV)
-			return null;
-		
+
+		if (firstV <= 0 || secondV <= 0 || firstV == secondV) {
+		return null;
+		}
+
 		v1.setValue(firstV);
 		v2.setValue(secondV);
 		d1.setValue(firstD);
 		d2.setValue(secondD);
-		
+
 		target.setField(0, v1);
 		target.setField(1, v2);
 		target.setField(2, d1);
 		target.setField(3, d2);
-		
+
 		return target;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 
 	@Override
 	public void configure(Configuration parameters) {

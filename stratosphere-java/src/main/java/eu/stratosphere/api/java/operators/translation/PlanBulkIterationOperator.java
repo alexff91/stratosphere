@@ -25,7 +25,7 @@ public class PlanBulkIterationOperator<T> extends BulkIteration implements JavaP
 		super(name);
 		this.type = type;
 	}
-	
+
 	@Override
 	public TypeInformation<T> getReturnType() {
 		return this.type;

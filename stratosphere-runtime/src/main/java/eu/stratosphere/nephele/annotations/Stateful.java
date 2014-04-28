@@ -19,7 +19,7 @@ import java.lang.annotation.Target;
 
 /**
  * This annotation can be used to indicate a stateful task.
- * 
+ *
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

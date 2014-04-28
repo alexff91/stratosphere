@@ -21,16 +21,16 @@ import eu.stratosphere.nephele.taskmanager.transferenvelope.TransferEnvelope;
 public interface ChannelContext {
 
 	boolean isInputChannel();
-	
+
 	JobID getJobID();
 
 	ChannelID getChannelID();
 
 	ChannelID getConnectedChannelID();
-	
+
 	ChannelType getType();
-	
+
 	void queueTransferEnvelope(TransferEnvelope transferEnvelope);
-	
+
 	void destroy();
 }

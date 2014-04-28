@@ -26,7 +26,7 @@ import eu.stratosphere.util.Visitor;
  * workset is considered the second input.
  */
 public class DeltaIteration extends DualInputOperator<AbstractFunction> implements IterationOperator {
-	
+
 	private final Operator solutionSetPlaceholder = new SolutionSetPlaceHolder(this);
 
 	private final Operator worksetPlaceholder = new WorksetPlaceHolder(this);
@@ -34,25 +34,25 @@ public class DeltaIteration extends DualInputOperator<AbstractFunction> implemen
 	private Operator solutionSetDelta;
 
 	private Operator nextWorkset;
-	
+
 	/**
 	 * The positions of the keys in the solution tuple.
 	 */
 	private final int[] solutionSetKeyFields;
-	
+
 	/**
 	 * The maximum number of iterations. Possibly used only as a safeguard.
 	 */
 	private int maxNumberOfIterations = -1;
-	
+
 	private final AggregatorRegistry aggregators = new AggregatorRegistry();
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	public DeltaIteration(int keyPosition) {
 		this(new int[] {keyPosition});
 	}
-	
+
 	public DeltaIteration(int[] keyPositions) {
 		this(keyPositions, "<Unnamed Workset-Iteration>");
 	}
@@ -60,38 +60,38 @@ public class DeltaIteration extends DualInputOperator<AbstractFunction> implemen
 	public DeltaIteration(int keyPosition, String name) {
 		this(new int[] {keyPosition}, name);
 	}
-	
+
 	public DeltaIteration(int[] keyPositions, String name) {
 		super(new UserCodeClassWrapper<AbstractFunction>(AbstractFunction.class), name);
 		this.solutionSetKeyFields = keyPositions;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public int[] getSolutionSetKeyFields() {
 		return this.solutionSetKeyFields;
 	}
-	
+
 	public void setMaximumNumberOfIterations(int maxIterations) {
 		this.maxNumberOfIterations = maxIterations;
 	}
-	
+
 	public int getMaximumNumberOfIterations() {
 		return this.maxNumberOfIterations;
 	}
-	
+
 	@Override
 	public AggregatorRegistry getAggregators() {
 		return this.aggregators;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 	// Getting / Setting of the step function input place-holders
 	// --------------------------------------------------------------------------------------------
 
 	/**
 	 * Gets the contract that represents the solution set for the step function.
-	 * 
+	 *
 	 * @return The solution set for the step function.
 	 */
 	public Operator getSolutionSet() {
@@ -100,7 +100,7 @@ public class DeltaIteration extends DualInputOperator<AbstractFunction> implemen
 
 	/**
 	 * Gets the contract that represents the workset for the step function.
-	 * 
+	 *
 	 * @return The workset for the step function.
 	 */
 	public Operator getWorkset() {
@@ -108,37 +108,37 @@ public class DeltaIteration extends DualInputOperator<AbstractFunction> implemen
 	}
 
 	/**
-	 * Sets the contract of the step function that represents the next workset. This contract is considered 
+	 * Sets the contract of the step function that represents the next workset. This contract is considered
 	 * one of the two sinks of the step function (the other one being the solution set delta).
-	 * 
+	 *
 	 * @param result The contract representing the next workset.
 	 */
 	public void setNextWorkset(Operator result) {
 		this.nextWorkset = result;
 	}
-	
+
 	/**
 	 * Gets the contract that has been set as the next workset.
-	 * 
+	 *
 	 * @return The contract that has been set as the next workset.
 	 */
 	public Operator getNextWorkset() {
 		return this.nextWorkset;
 	}
-	
+
 	/**
 	 * Sets the contract of the step function that represents the solution set delta. This contract is considered
 	 * one of the two sinks of the step function (the other one being the next workset).
-	 * 
+	 *
 	 * @param delta The contract representing the solution set delta.
 	 */
 	public void setSolutionSetDelta(Operator delta) {
 		this.solutionSetDelta = delta;
 	}
-	
+
 	/**
 	 * Gets the contract that has been set as the solution set delta.
-	 * 
+	 *
 	 * @return The contract that has been set as the solution set delta.
 	 */
 	public Operator getSolutionSetDelta() {
@@ -148,37 +148,37 @@ public class DeltaIteration extends DualInputOperator<AbstractFunction> implemen
 	// --------------------------------------------------------------------------------------------
 	// Getting / Setting the Inputs
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Returns the initial solution set input, or null, if none is set.
-	 * 
+	 *
 	 * @return The iteration's initial solution set input.
 	 */
 	public List<Operator> getInitialSolutionSet() {
 		return getFirstInputs();
 	}
-	
+
 	/**
 	 * Returns the initial workset input, or null, if none is set.
-	 * 
+	 *
 	 * @return The iteration's workset input.
 	 */
 	public List<Operator> getInitialWorkset() {
 		return getSecondInputs();
 	}
-	
+
 	/**
 	 * Sets the given input as the initial solution set.
-	 * 
+	 *
 	 * @param input The contract to set the initial solution set.
 	 */
 	public void setInitialSolutionSet(Operator ... input) {
 		setFirstInput(input);
 	}
-	
+
 	/**
 	 * Sets the given input as the initial workset.
-	 * 
+	 *
 	 * @param input The contract to set as the initial workset.
 	 */
 	public void setInitialWorkset(Operator ... input) {
@@ -187,7 +187,7 @@ public class DeltaIteration extends DualInputOperator<AbstractFunction> implemen
 
 	/**
 	 * Sets the given inputs as the initial solution set.
-	 * 
+	 *
 	 * @param inputs The contracts to set as the initial solution set.
 	 */
 	public void setInitialSolutionSet(List<Operator> inputs) {
@@ -196,25 +196,25 @@ public class DeltaIteration extends DualInputOperator<AbstractFunction> implemen
 
 	/**
 	 * Sets the given inputs as the initial workset.
-	 * 
+	 *
 	 * @param inputs The contracts to set as the initial workset.
 	 */
 	public void setInitialWorkset(List<Operator> inputs) {
 		setSecondInputs(inputs);
 	}
-	
+
 	/**
 	 * Adds the given input to the initial solution set.
-	 * 
+	 *
 	 * @param inputs The contract added to the initial solution set.
 	 */
 	public void addToInitialSolutionSet(Operator ... inputs) {
 		addFirstInput(inputs);
 	}
-	
+
 	/**
 	 * Adds the given input to the initial workset.
-	 * 
+	 *
 	 * @param inputs The contract added to the initial workset.
 	 */
 	public void addToInitialWorkset(Operator ... inputs) {
@@ -223,7 +223,7 @@ public class DeltaIteration extends DualInputOperator<AbstractFunction> implemen
 
 	/**
 	 * Adds the given inputs to the initial solution set.
-	 * 
+	 *
 	 * @param inputs The contracts added to the initial solution set.
 	 */
 	public void addToInitialSolutionSet(List<Operator> inputs) {
@@ -232,17 +232,17 @@ public class DeltaIteration extends DualInputOperator<AbstractFunction> implemen
 
 	/**
 	 * Adds the given inputs to the initial workset.
-	 * 
+	 *
 	 * @param inputs The contracts added to the initial workset.
 	 */
 	public void addToInitialWorkset(List<Operator> inputs) {
 		addSecondInputs(inputs);
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 	// Place-holder Operators
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Specialized operator to use as a recognizable place-holder for the working set input to the
 	 * step function.
@@ -271,7 +271,7 @@ public class DeltaIteration extends DualInputOperator<AbstractFunction> implemen
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Specialized operator to use as a recognizable place-holder for the solution set input to the
 	 * step function.

@@ -28,45 +28,45 @@ import eu.stratosphere.core.memory.MemorySegment;
  * segment of the block is added to a collection to be returned.
  * <p>
  * The asynchrony of the access makes it possible to implement read-ahead or write-behind types of I/O accesses.
- * 
- * 
+ *
+ *
  * @param <R> The type of request (e.g. <tt>ReadRequest</tt> or <tt>WriteRequest</tt> issued by this access to
  *            the I/O threads.
  * @param <C> The type of collection used to collect the segments from completed requests. Those segments are for
  *            example for write requests the written and reusable segments, and for read requests the now full
  *            and usable segments. The collection type may for example be a synchronized queue or an unsynchronized
- *            list. 
+ *            list.
  */
 public abstract class BlockChannelAccess<R extends IORequest, C extends Collection<MemorySegment>> extends ChannelAccess<MemorySegment, R>
-{	
+{
 	/**
 	 * The lock that is used during closing to synchronize the thread that waits for all
 	 * requests to be handled with the asynchronous I/O thread.
 	 */
 	protected final Object closeLock = new Object();
-	
+
 	/**
 	 * An atomic integer that counts the number of buffers we still wait for to return.
 	 */
 	protected final AtomicInteger requestsNotReturned = new AtomicInteger(0);
-	
+
 	/**
 	 * The collection gathering the processed buffers that are ready to be (re)used.
 	 */
 	protected final C returnBuffers;
-	
+
 	/**
 	 * Flag marking this channel as closed;
 	 */
 	protected volatile boolean closed;
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Creates a new channel access to the path indicated by the given ID. The channel accepts buffers to be
-	 * read/written and hands them to the asynchronous I/O thread. After being processed, the buffers 
+	 * read/written and hands them to the asynchronous I/O thread. After being processed, the buffers
 	 * are returned by adding the to the given queue.
-	 * 
+	 *
 	 * @param channelID The id describing the path of the file that the channel accessed.
 	 * @param requestQueue The queue that this channel hands its IO requests to.
 	 * @param returnQueue The queue to which the segments are added after their buffer was written.
@@ -79,38 +79,38 @@ public abstract class BlockChannelAccess<R extends IORequest, C extends Collecti
 	throws IOException
 	{
 		super(channelID, requestQueue, writeEnabled);
-		
+
 		if (requestQueue == null) {
 			throw new NullPointerException();
 		}
-		
+
 		this.returnBuffers = returnQueue;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Gets the queue (or list) to which the asynchronous reader adds its elements.
-	 * 
+	 *
 	 * @return The queue (or list) to which the asynchronous reader adds its elements.
 	 */
 	public C getReturnQueue()
 	{
 		return this.returnBuffers;
 	}
-	
+
 
 	@Override
 	public boolean isClosed()
 	{
 		return this.closed;
 	}
-	
+
 	/**
 	 * Closes the reader and waits until all pending asynchronous requests are
 	 * handled. Even if an exception interrupts the closing, the underlying <tt>FileChannel</tt> is
 	 * closed.
-	 * 
+	 *
 	 * @throws IOException Thrown, if an I/O exception occurred while waiting for the buffers, or if
 	 *                     the closing was interrupted.
 	 */
@@ -122,7 +122,7 @@ public abstract class BlockChannelAccess<R extends IORequest, C extends Collecti
 				return;
 			}
 			this.closed = true;
-			
+
 			try {
 				// wait until as many buffers have been returned as were written
 				// only then is everything guaranteed to be consistent.{
@@ -147,14 +147,14 @@ public abstract class BlockChannelAccess<R extends IORequest, C extends Collecti
 			}
 		}
 	}
-	
+
 	/**
 	 * This method waits for all pending asynchronous requests to return. When the
 	 * last request has returned, the channel is closed and deleted.
-	 * 
+	 *
 	 * Even if an exception interrupts the closing, such that not all request are handled,
 	 * the underlying <tt>FileChannel</tt> is closed and deleted.
-	 * 
+	 *
 	 * @throws IOException Thrown, if an I/O exception occurred while waiting for the buffers, or if
 	 *                     the closing was interrupted.
 	 */
@@ -167,14 +167,14 @@ public abstract class BlockChannelAccess<R extends IORequest, C extends Collecti
 			deleteChannel();
 		}
 	}
-	
+
 
 	@Override
 	protected void returnBuffer(MemorySegment buffer)
 	{
 		this.returnBuffers.add(buffer);
-		
-		// decrement the number of missing buffers. If we are currently closing, notify the 
+
+		// decrement the number of missing buffers. If we are currently closing, notify the
 		if (this.closed) {
 			synchronized (this.closeLock) {
 				int num = this.requestsNotReturned.decrementAndGet();
@@ -197,9 +197,9 @@ public abstract class BlockChannelAccess<R extends IORequest, C extends Collecti
 final class SegmentReadRequest implements ReadRequest
 {
 	private final BlockChannelAccess<ReadRequest, ?> channel;
-	
+
 	private final MemorySegment segment;
-	
+
 	protected SegmentReadRequest(BlockChannelAccess<ReadRequest, ?> targetChannel, MemorySegment segment)
 	{
 		this.channel = targetChannel;
@@ -238,9 +238,9 @@ final class SegmentReadRequest implements ReadRequest
 final class SegmentWriteRequest implements WriteRequest
 {
 	private final BlockChannelAccess<WriteRequest, ?> channel;
-	
+
 	private final MemorySegment segment;
-	
+
 	protected SegmentWriteRequest(BlockChannelAccess<WriteRequest, ?> targetChannel, MemorySegment segment)
 	{
 		this.channel = targetChannel;

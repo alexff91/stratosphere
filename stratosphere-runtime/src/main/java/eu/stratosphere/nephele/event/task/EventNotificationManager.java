@@ -23,7 +23,7 @@ import java.util.Map;
  * The event notification manager manages the subscription of {@link EventListener} objects to
  * particular event types. Moreover, it handles the dispatching of the events.
  * This class is thread-safe.
- * 
+ *
  */
 public class EventNotificationManager {
 
@@ -34,7 +34,7 @@ public class EventNotificationManager {
 
 	/**
 	 * Subscribes the given event listener object to the specified event type.
-	 * 
+	 *
 	 * @param eventListener
 	 *        the {@link EventListener} object to create the subscription for
 	 * @param eventType
@@ -56,7 +56,7 @@ public class EventNotificationManager {
 
 	/**
 	 * Removes a subscription of an {@link EventListener} object for the given event type.
-	 * 
+	 *
 	 * @param eventListener
 	 *        the event listener to remove the subscription for
 	 * @param eventType
@@ -80,7 +80,7 @@ public class EventNotificationManager {
 
 	/**
 	 * Delivers a event to all of the registered subscribers.
-	 * 
+	 *
 	 * @param event The event to deliver.
 	 */
 	public void deliverEvent(AbstractTaskEvent event) {

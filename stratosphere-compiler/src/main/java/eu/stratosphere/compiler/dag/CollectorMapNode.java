@@ -25,7 +25,7 @@ import eu.stratosphere.compiler.operators.OperatorDescriptorSingle;
  * The optimizer's internal representation of a <i>Map</i> operator node.
  */
 public class CollectorMapNode extends SingleInputNode {
-	
+
 
 	public CollectorMapNode(SingleInputOperator<?> operator) {
 		super(operator);

@@ -42,68 +42,68 @@ import eu.stratosphere.util.LogUtils;
 import eu.stratosphere.util.MutableObjectIterator;
 
 public class DriverTestBase<S extends Function> implements PactTaskContext<S, Record> {
-	
+
 	protected static final long DEFAULT_PER_SORT_MEM = 16 * 1024 * 1024;
-	
-	protected static final int PAGE_SIZE = 32 * 1024; 
-	
+
+	protected static final int PAGE_SIZE = 32 * 1024;
+
 	private final IOManager ioManager;
-	
+
 	private final MemoryManager memManager;
-	
+
 	private final List<MutableObjectIterator<Record>> inputs;
-	
+
 	private final List<TypeComparator<Record>> comparators;
-	
+
 	private final List<UnilateralSortMerger<Record>> sorters;
-	
+
 	private final AbstractInvokable owner;
-	
+
 	private final Configuration config;
-	
+
 	private final TaskConfig taskConfig;
-	
+
 	protected final long perSortMem;
-	
+
 	private Collector<Record> output;
-	
+
 	protected int numFileHandles;
-	
+
 	private S stub;
-	
+
 	private PactDriver<S, Record> driver;
-	
+
 	private volatile boolean running;
-	
-	
+
+
 	@BeforeClass
 	public static void setupLog() {
 		/// suppress log output, as this class produces errors on purpose to test exception handling
 		LogUtils.initializeDefaultConsoleLogger(Level.OFF);
 	}
-	
-	
+
+
 	protected DriverTestBase(long memory, int maxNumSorters) {
 		this(memory, maxNumSorters, DEFAULT_PER_SORT_MEM);
 	}
-	
+
 	protected DriverTestBase(long memory, int maxNumSorters, long perSortMemory) {
 		if (memory < 0 || maxNumSorters < 0 || perSortMemory < 0) {
 			throw new IllegalArgumentException();
 		}
-		
+
 		final long totalMem = Math.max(memory, 0) + (Math.max(maxNumSorters, 0) * perSortMemory);
-		
+
 		this.perSortMem = perSortMemory;
 		this.ioManager = new IOManager();
 		this.memManager = totalMem > 0 ? new DefaultMemoryManager(totalMem) : null;
-		
+
 		this.inputs = new ArrayList<MutableObjectIterator<Record>>();
 		this.comparators = new ArrayList<TypeComparator<Record>>();
 		this.sorters = new ArrayList<UnilateralSortMerger<Record>>();
-		
+
 		this.owner = new DummyInvokable();
-		
+
 		this.config = new Configuration();
 		this.taskConfig = new TaskConfig(this.config);
 	}
@@ -112,14 +112,14 @@ public class DriverTestBase<S extends Function> implements PactTaskContext<S, Re
 		this.inputs.add(input);
 		this.sorters.add(null);
 	}
-	
+
 	public void addInputSorted(MutableObjectIterator<Record> input, RecordComparator comp) throws Exception {
 		UnilateralSortMerger<Record> sorter = new UnilateralSortMerger<Record>(
 				this.memManager, this.ioManager, input, this.owner, RecordSerializer.get(), comp, this.perSortMem, 32, 0.8f);
 		this.sorters.add(sorter);
 		this.inputs.add(null);
 	}
-	
+
 	public void addInputComparator(RecordComparator comparator) {
 		this.comparators.add(comparator);
 	}
@@ -130,28 +130,28 @@ public class DriverTestBase<S extends Function> implements PactTaskContext<S, Re
 	public void setOutput(List<Record> output) {
 		this.output = new ListOutputCollector(output);
 	}
-	
+
 	public int getNumFileHandlesForSort() {
 		return numFileHandles;
 	}
 
-	
+
 	public void setNumFileHandlesForSort(int numFileHandles) {
 		this.numFileHandles = numFileHandles;
 	}
 
 	public void testDriver(PactDriver<S, Record> driver, Class<? extends S> stubClass) throws Exception {
-		
+
 		this.driver = driver;
 		driver.setup(this);
-		
+
 		// instantiate the stub
 		this.stub = stubClass.newInstance();
-		
+
 		// regular running logic
 		this.running = true;
 		boolean stubOpen = false;
-		
+
 		try {
 			// run the data preparation
 			try {
@@ -160,7 +160,7 @@ public class DriverTestBase<S extends Function> implements PactTaskContext<S, Re
 			catch (Throwable t) {
 				throw new Exception("The data preparation caused an error: " + t.getMessage(), t);
 			}
-			
+
 			// open stub implementation
 			try {
 				this.stub.open(getTaskConfig().getStubParameters());
@@ -169,16 +169,16 @@ public class DriverTestBase<S extends Function> implements PactTaskContext<S, Re
 			catch (Throwable t) {
 				throw new Exception("The user defined 'open()' method caused an exception: " + t.getMessage(), t);
 			}
-			
+
 			// run the user code
 			driver.run();
-			
+
 			// close. We close here such that a regular close throwing an exception marks a task as failed.
 			if (this.running) {
 				this.stub.close();
 				stubOpen = false;
 			}
-			
+
 			this.output.close();
 		}
 		catch (Exception ex) {
@@ -189,7 +189,7 @@ public class DriverTestBase<S extends Function> implements PactTaskContext<S, Re
 				}
 				catch (Throwable t) {}
 			}
-			
+
 			// drop exception, if the task was canceled
 			if (this.running) {
 				throw ex;
@@ -199,7 +199,7 @@ public class DriverTestBase<S extends Function> implements PactTaskContext<S, Re
 			driver.cleanup();
 		}
 	}
-	
+
 	public void cancel() throws Exception {
 		this.running = false;
 		this.driver.cancel();
@@ -211,7 +211,7 @@ public class DriverTestBase<S extends Function> implements PactTaskContext<S, Re
 	public TaskConfig getTaskConfig() {
 		return this.taskConfig;
 	}
-	
+
 	@Override
 	public ClassLoader getUserCodeClassLoader() {
 		return getClass().getClassLoader();
@@ -221,7 +221,7 @@ public class DriverTestBase<S extends Function> implements PactTaskContext<S, Re
 	public IOManager getIOManager() {
 		return this.ioManager;
 	}
-	
+
 	@Override
 	public MemoryManager getMemoryManager() {
 		return this.memManager;
@@ -239,7 +239,7 @@ public class DriverTestBase<S extends Function> implements PactTaskContext<S, Re
 			}
 			this.inputs.set(index, in);
 		}
-		
+
 		@SuppressWarnings("unchecked")
 		MutableObjectIterator<X> input = (MutableObjectIterator<X>) this.inputs.get(index);
 		return input;
@@ -278,18 +278,19 @@ public class DriverTestBase<S extends Function> implements PactTaskContext<S, Re
 	public String formatLogString(String message) {
 		return "Driver Tester: " + message;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	@After
 	public void shutdownAll() throws Exception {
 		// 1st, shutdown sorters
 		for (UnilateralSortMerger<?> sorter : this.sorters) {
-			if (sorter != null)
-				sorter.close();
+			if (sorter != null) {
+			sorter.close();
+			}
 		}
 		this.sorters.clear();
-		
+
 		// 2nd, shutdown I/O
 		this.ioManager.shutdown();
 		Assert.assertTrue("I/O Manager has not properly shut down.", this.ioManager.isProperlyShutDown());
@@ -301,17 +302,17 @@ public class DriverTestBase<S extends Function> implements PactTaskContext<S, Re
 			memMan.shutdown();
 		}
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	private static final class ListOutputCollector implements Collector<Record> {
-		
+
 		private final List<Record> output;
-		
+
 		public ListOutputCollector(List<Record> outputList) {
 			this.output = outputList;
 		}
-		
+
 
 		@Override
 		public void collect(Record record) {
@@ -321,9 +322,9 @@ public class DriverTestBase<S extends Function> implements PactTaskContext<S, Re
 		@Override
 		public void close() {}
 	}
-	
+
 	public static final class CountingOutputCollector implements Collector<Record> {
-		
+
 		private int num;
 
 		@Override
@@ -333,7 +334,7 @@ public class DriverTestBase<S extends Function> implements PactTaskContext<S, Re
 
 		@Override
 		public void close() {}
-		
+
 		public int getNumberOfRecords() {
 			return this.num;
 		}

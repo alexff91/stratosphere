@@ -27,7 +27,7 @@ import eu.stratosphere.nephele.jobgraph.JobID;
  * to transport one specific type of records.
  * <p>
  * This class in general is not thread-safe.
- * 
+ *
  * @param <T>
  *        the record type to be transported from this gate
  */
@@ -60,7 +60,7 @@ public abstract class AbstractGate<T extends IOReadableWritable> implements Gate
 
 	/**
 	 * Constructs a new abstract gate
-	 * 
+	 *
 	 * @param jobID
 	 *        the ID of the job this gate belongs to
 	 * @param gateID
@@ -82,7 +82,7 @@ public abstract class AbstractGate<T extends IOReadableWritable> implements Gate
 
 	/**
 	 * Returns the event notification manager used to dispatch events.
-	 * 
+	 *
 	 * @return the event notification manager used to dispatch events
 	 */
 	protected final EventNotificationManager getEventNotificationManager() {

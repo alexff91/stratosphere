@@ -22,25 +22,25 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import eu.stratosphere.api.common.accumulators.Accumulator;
+import eu.stratosphere.api.common.io.InputFormat;
 import eu.stratosphere.api.common.typeutils.TypeSerializer;
 import eu.stratosphere.api.common.typeutils.TypeSerializerFactory;
-import eu.stratosphere.api.common.io.InputFormat;
 import eu.stratosphere.configuration.Configuration;
 import eu.stratosphere.core.io.InputSplit;
 import eu.stratosphere.nephele.execution.librarycache.LibraryCacheManager;
 import eu.stratosphere.nephele.template.AbstractInputTask;
 import eu.stratosphere.pact.runtime.shipping.OutputCollector;
 import eu.stratosphere.pact.runtime.shipping.RecordOutputCollector;
-import eu.stratosphere.pact.runtime.task.chaining.ChainedDriver;
 import eu.stratosphere.pact.runtime.task.chaining.ChainedCollectorMapDriver;
+import eu.stratosphere.pact.runtime.task.chaining.ChainedDriver;
 import eu.stratosphere.pact.runtime.task.util.TaskConfig;
 import eu.stratosphere.types.Record;
 import eu.stratosphere.util.Collector;
 
 /**
- * DataSourceTask which is executed by a Nephele task manager. The task reads data and uses an 
+ * DataSourceTask which is executed by a Nephele task manager. The task reads data and uses an
  * {@link InputFormat} to create records from the input.
- * 
+ *
  * @see eu.stratosphere.api.io.InputFormat
  */
 public class DataSourceTask<OT> extends AbstractInputTask<InputSplit>
@@ -56,13 +56,13 @@ public class DataSourceTask<OT> extends AbstractInputTask<InputSplit>
 
 	// type serializer for the input
 	private TypeSerializer<OT> serializer;
-	
+
 	// Task configuration
 	private TaskConfig config;
-	
+
 	// tasks chained to this data source
 	private ArrayList<ChainedDriver<?, ?>> chainedTasks;
-	
+
 	private ClassLoader userCodeClassLoader;
 
 	// cancel flag
@@ -72,77 +72,82 @@ public class DataSourceTask<OT> extends AbstractInputTask<InputSplit>
 	@Override
 	public void registerInputOutput()
 	{
-		if (LOG.isDebugEnabled())
-			LOG.debug(getLogString("Start registering input and output"));
+		if (LOG.isDebugEnabled()) {
+		LOG.debug(getLogString("Start registering input and output"));
+		}
 
 		if (this.userCodeClassLoader == null) {
 			try {
 				this.userCodeClassLoader = LibraryCacheManager.getClassLoader(getEnvironment().getJobID());
 			}
 			catch (IOException ioe) {
-				throw new RuntimeException("Usercode ClassLoader could not be obtained for job: " + 
+				throw new RuntimeException("Usercode ClassLoader could not be obtained for job: " +
 							getEnvironment().getJobID(), ioe);
 			}
 		}
-		
+
 		// obtain task configuration (including stub parameters)
 		Configuration taskConf = getTaskConfiguration();
 		taskConf.setClassLoader(this.userCodeClassLoader);
 		this.config = new TaskConfig(taskConf);
-		
+
 		initInputFormat(this.userCodeClassLoader);
-		
+
 		try {
 			initOutputs(this.userCodeClassLoader);
 		} catch (Exception ex) {
-			throw new RuntimeException("The initialization of the DataSource's outputs caused an error: " + 
+			throw new RuntimeException("The initialization of the DataSource's outputs caused an error: " +
 				ex.getMessage(), ex);
 		}
 
-		if (LOG.isDebugEnabled())
-			LOG.debug(getLogString("Finished registering input and output"));
+		if (LOG.isDebugEnabled()) {
+		LOG.debug(getLogString("Finished registering input and output"));
+		}
 	}
 
 
 	@Override
 	public void invoke() throws Exception {
-		
-		if (LOG.isDebugEnabled())
-			LOG.debug(getLogString("Starting data source operator"));
-		
+
+		if (LOG.isDebugEnabled()) {
+		LOG.debug(getLogString("Starting data source operator"));
+		}
+
 		try {
 			// start all chained tasks
 			RegularPactTask.openChainedTasks(this.chainedTasks, this);
-			
+
 			// get input splits to read
 			final Iterator<InputSplit> splitIterator = getInputSplits();
-			
+
 			// for each assigned input split
 			while (!this.taskCanceled && splitIterator.hasNext())
 			{
 				// get start and end
 				final InputSplit split = splitIterator.next();
-				
+
 				OT record = this.serializer.createInstance();
-	
-				if (LOG.isDebugEnabled())
-					LOG.debug(getLogString("Opening input split " + split.toString()));
-				
+
+				if (LOG.isDebugEnabled()) {
+				LOG.debug(getLogString("Opening input split " + split.toString()));
+				}
+
 				final InputFormat<OT, InputSplit> format = this.format;
-			
+
 				// open input format
 				format.open(split);
-	
-				if (LOG.isDebugEnabled())
-					LOG.debug(getLogString("Starting to read input from split " + split.toString()));
-				
+
+				if (LOG.isDebugEnabled()) {
+				LOG.debug(getLogString("Starting to read input from split " + split.toString()));
+				}
+
 				try {
 					// ======= special-case the Record, to help the JIT and avoid some casts ======
 					if (record.getClass() == Record.class) {
 						Record typedRecord = (Record) record;
 						@SuppressWarnings("unchecked")
 						final InputFormat<Record, InputSplit> inFormat = (InputFormat<Record, InputSplit>) format;
-						
+
 						if (this.output instanceof RecordOutputCollector) {
 							// Record going directly into network channels
 							final RecordOutputCollector output = (RecordOutputCollector) this.output;
@@ -158,7 +163,7 @@ public class DataSourceTask<OT> extends AbstractInputTask<InputSplit>
 							// Record going to a chained map task
 							@SuppressWarnings("unchecked")
 							final ChainedCollectorMapDriver<Record, ?> output = (ChainedCollectorMapDriver<Record, ?>) this.output;
-							
+
 							// as long as there is data to read
 							while (!this.taskCanceled && !inFormat.reachedEnd()) {
 								// build next pair and ship pair if it is valid
@@ -214,7 +219,7 @@ public class DataSourceTask<OT> extends AbstractInputTask<InputSplit>
 							}
 						}
 					}
-					
+
 					if (LOG.isDebugEnabled() && !this.taskCanceled) {
 						LOG.debug(getLogString("Closing input split " + split.toString()));
 					}
@@ -223,13 +228,13 @@ public class DataSourceTask<OT> extends AbstractInputTask<InputSplit>
 					format.close();
 				}
 			} // end for all input splits
-			
+
 			// close the collector. if it is a chaining task collector, it will close its chained tasks
 			this.output.close();
-			
+
 			// close all chained tasks letting them report failure
 			RegularPactTask.closeChainedTasks(this.chainedTasks, this);
-			
+
 			// Merge and report accumulators
 			RegularPactTask.reportAndClearAccumulators(getEnvironment(),
 					new HashMap<String, Accumulator<?,?>>(), chainedTasks);
@@ -239,9 +244,9 @@ public class DataSourceTask<OT> extends AbstractInputTask<InputSplit>
 			try {
 				this.format.close();
 			} catch (Throwable t) {}
-			
+
 			RegularPactTask.cancelChainedTasks(this.chainedTasks);
-			
+
 			// drop exception, if the task was canceled
 			if (!this.taskCanceled) {
 				RegularPactTask.logAndThrowException(ex, this);
@@ -249,25 +254,28 @@ public class DataSourceTask<OT> extends AbstractInputTask<InputSplit>
 		}
 
 		if (!this.taskCanceled) {
-			if (LOG.isDebugEnabled())
-				LOG.debug(getLogString("Finished data source operator"));
+			if (LOG.isDebugEnabled()) {
+			LOG.debug(getLogString("Finished data source operator"));
+			}
 		}
 		else {
-			if (LOG.isDebugEnabled())
-				LOG.debug(getLogString("Data source operator cancelled"));
+			if (LOG.isDebugEnabled()) {
+			LOG.debug(getLogString("Data source operator cancelled"));
+			}
 		}
 	}
 
 	@Override
 	public void cancel() throws Exception {
 		this.taskCanceled = true;
-		if (LOG.isDebugEnabled())
-			LOG.debug(getLogString("Cancelling data source operator"));
+		if (LOG.isDebugEnabled()) {
+		LOG.debug(getLogString("Cancelling data source operator"));
+		}
 	}
-	
+
 	/**
 	 * Sets the class-loader to be used to load the user code.
-	 * 
+	 *
 	 * @param cl The class-loader to be used to load the user code.
 	 */
 	public void setUserCodeClassLoader(ClassLoader cl) {
@@ -276,7 +284,7 @@ public class DataSourceTask<OT> extends AbstractInputTask<InputSplit>
 
 	/**
 	 * Initializes the InputFormat implementation and configuration.
-	 * 
+	 *
 	 * @throws RuntimeException
 	 *         Throws if instance of InputFormat implementation can not be
 	 *         obtained.
@@ -286,15 +294,15 @@ public class DataSourceTask<OT> extends AbstractInputTask<InputSplit>
 		@SuppressWarnings("unchecked")
 		Class<InputFormat<OT, InputSplit>> superClass = (Class<InputFormat<OT, InputSplit>>) (Class<?>) InputFormat.class;
 		this.format = RegularPactTask.instantiateUserCode(this.config, cl, superClass);
-		
-		// configure the stub. catch exceptions here extra, to report them as originating from the user code 
+
+		// configure the stub. catch exceptions here extra, to report them as originating from the user code
 		try {
 			this.format.configure(this.config.getStubParameters());
 		}
 		catch (Throwable t) {
 			throw new RuntimeException("The user defined 'configure()' method caused an error: " + t.getMessage(), t);
 		}
-		
+
 		// get the factory for the type serializer
 		final TypeSerializerFactory<OT> serializerFactory = this.config.getOutputSerializer(cl);
 		this.serializer = serializerFactory.getSerializer();
@@ -308,11 +316,11 @@ public class DataSourceTask<OT> extends AbstractInputTask<InputSplit>
 		this.chainedTasks = new ArrayList<ChainedDriver<?, ?>>();
 		this.output = RegularPactTask.initOutputs(this, cl, this.config, this.chainedTasks, null);
 	}
-	
+
 	// ------------------------------------------------------------------------
 	//                              Input Split creation
 	// ------------------------------------------------------------------------
-	
+
 
 	@Override
 	public InputSplit[] computeInputSplits(int requestedMinNumber) throws Exception {
@@ -331,14 +339,14 @@ public class DataSourceTask<OT> extends AbstractInputTask<InputSplit>
 		if (this.format == null) {
 			throw new IllegalStateException("BUG: Input format hast not been instantiated, yet.");
 		}
-		
+
 		return (Class<InputSplit>) this.format.getInputSplitType();
 	}
-	
+
 	// ------------------------------------------------------------------------
 	//                       Control of Parallelism
 	// ------------------------------------------------------------------------
-	
+
 
 	@Override
 	public int getMinimumNumberOfSubtasks() {
@@ -355,22 +363,22 @@ public class DataSourceTask<OT> extends AbstractInputTask<InputSplit>
 	// ------------------------------------------------------------------------
 	//                               Utilities
 	// ------------------------------------------------------------------------
-	
+
 	/**
 	 * Utility function that composes a string for logging purposes. The string includes the given message and
 	 * the index of the task in its task group together with the number of tasks in the task group.
-	 *  
+	 *
 	 * @param message The main message for the log.
 	 * @return The string ready for logging.
 	 */
 	private String getLogString(String message) {
 		return getLogString(message, this.getEnvironment().getTaskName());
 	}
-	
+
 	/**
 	 * Utility function that composes a string for logging purposes. The string includes the given message and
 	 * the index of the task in its task group together with the number of tasks in the task group.
-	 *  
+	 *
 	 * @param message The main message for the log.
 	 * @param taskName The name of the task.
 	 * @return The string ready for logging.

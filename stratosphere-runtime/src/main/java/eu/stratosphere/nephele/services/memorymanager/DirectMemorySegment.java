@@ -26,24 +26,24 @@ import java.nio.ByteBuffer;
  * fashion in the memory.
  */
 public class DirectMemorySegment {
-	
+
 	/**
 	 * The array in which the data is stored.
 	 */
 	protected byte[] memory;
-	
+
 	/**
 	 * Wrapper for I/O requests.
 	 */
 	protected ByteBuffer wrapper;
-	
+
 	// -------------------------------------------------------------------------
 	//                             Constructors
 	// -------------------------------------------------------------------------
 
 	/**
 	 * Creates a new memory segment of given size with the provided views.
-	 * 
+	 *
 	 * @param size The size of the memory segment.
 	 * @param inputView The input view to use.
 	 * @param outputView The output view to use.
@@ -55,33 +55,33 @@ public class DirectMemorySegment {
 	// -------------------------------------------------------------------------
 	//                        MemorySegment Accessors
 	// -------------------------------------------------------------------------
-	
+
 	/**
 	 * Checks whether this memory segment has already been freed. In that case, the
 	 * segment must not be used any more.
-	 * 
+	 *
 	 * @return True, if the segment has been freed, false otherwise.
 	 */
 	public final boolean isFreed() {
 		return this.memory == null;
 	}
-	
+
 	/**
 	 * Gets the size of the memory segment, in bytes. Because segments
 	 * are backed by arrays, they cannot be larger than two GiBytes.
-	 * 
+	 *
 	 * @return The size in bytes.
 	 */
 	public final int size() {
 		return this.memory.length;
 	}
-	
+
 	/**
 	 * Gets the byte array that backs the memory segment and this random access view.
 	 * Since different regions of the backing array are used by different segments, the logical
 	 * positions in this view do not correspond to the indexes in the backing array and need
 	 * to be translated via the {@link #translateOffset(int)} method.
-	 * 
+	 *
 	 * @return The backing byte array.
 	 */
 	public final byte[] getBackingArray() {
@@ -90,23 +90,23 @@ public class DirectMemorySegment {
 
 	/**
 	 * Translates the given offset for this view into the offset for the backing array.
-	 * 
+	 *
 	 * @param offset The offset to be translated.
 	 * @return The corresponding position in the backing array.
 	 */
 	public final int translateOffset(int offset) {
 		return offset;
 	}
-	
+
 	// -------------------------------------------------------------------------
 	//                       Helper methods
 	// -------------------------------------------------------------------------
-	
+
 
 	/**
-	 * Wraps the chunk of the underlying memory located between <tt>offset<tt> and 
+	 * Wraps the chunk of the underlying memory located between <tt>offset<tt> and
 	 * <tt>length</tt> in a NIO ByteBuffer.
-	 * 
+	 *
 	 * @param offset The offset in the memory segment.
 	 * @param length The number of bytes to be wrapped as a buffer.
 	 * @return A <tt>ByteBuffer</tt> backed by the specified portion of the memory segment.
@@ -117,7 +117,7 @@ public class DirectMemorySegment {
 		if (offset > this.memory.length || offset > this.memory.length - length) {
 			throw new IndexOutOfBoundsException();
 		}
-		
+
 		if (this.wrapper == null) {
 			this.wrapper = ByteBuffer.wrap(this.memory, offset, length);
 		}
@@ -125,7 +125,7 @@ public class DirectMemorySegment {
 			this.wrapper.position(offset);
 			this.wrapper.limit(offset + length);
 		}
-		
+
 		return this.wrapper;
 	}
 
@@ -184,8 +184,8 @@ public class DirectMemorySegment {
 	}
 
 	public final char getChar(int index) {
-		return (char) ( ((this.memory[index    ] & 0xff) << 8) | 
-		                 (this.memory[index + 1] & 0xff) );
+		return (char) ( ((this.memory[index    ] & 0xff) << 8) |
+				(this.memory[index + 1] & 0xff) );
 	}
 
 	public final void putChar(int index, char value) {
@@ -203,79 +203,79 @@ public class DirectMemorySegment {
 		this.memory[index    ] = (byte) (value >> 8);
 		this.memory[index + 1] = (byte) value;
 	}
-	
+
 	public final int getInt(int index) {
 		return ((this.memory[index    ] & 0xff) << 24)
-		     | ((this.memory[index + 1] & 0xff) << 16)
-		     | ((this.memory[index + 2] & 0xff) <<  8)
-		     | ((this.memory[index + 3] & 0xff)     );
+		| ((this.memory[index + 1] & 0xff) << 16)
+		| ((this.memory[index + 2] & 0xff) <<  8)
+		| ((this.memory[index + 3] & 0xff)     );
 	}
 
 	public final int getIntLittleEndian(int index) {
 		return ((this.memory[index    ] & 0xff)      )
-		     | ((this.memory[index + 1] & 0xff) <<  8)
-		     | ((this.memory[index + 2] & 0xff) << 16)
-		     | ((this.memory[index + 3] & 0xff) << 24);
+		| ((this.memory[index + 1] & 0xff) <<  8)
+		| ((this.memory[index + 2] & 0xff) << 16)
+		| ((this.memory[index + 3] & 0xff) << 24);
 	}
-	
+
 	public final int getIntBigEndian(int index) {
 		return ((this.memory[index    ] & 0xff) << 24)
-		     | ((this.memory[index + 1] & 0xff) << 16)
-		     | ((this.memory[index + 2] & 0xff) <<  8)
-		     | ((this.memory[index + 3] & 0xff)      );
+		| ((this.memory[index + 1] & 0xff) << 16)
+		| ((this.memory[index + 2] & 0xff) <<  8)
+		| ((this.memory[index + 3] & 0xff)      );
 	}
-	
+
 	public final void putInt(int index, int value) {
 		this.memory[index    ] = (byte) (value >> 24);
 		this.memory[index + 1] = (byte) (value >> 16);
 		this.memory[index + 2] = (byte) (value >> 8);
 		this.memory[index + 3] = (byte) value;
 	}
-	
+
 	public final void putIntLittleEndian(int index, int value) {
 		this.memory[index    ] = (byte) value;
 		this.memory[index + 1] = (byte) (value >>  8);
 		this.memory[index + 2] = (byte) (value >> 16);
 		this.memory[index + 3] = (byte) (value >> 24);
 	}
-	
+
 	public final void putIntBigEndian(int index, int value) {
 		this.memory[index    ] = (byte) (value >> 24);
 		this.memory[index + 1] = (byte) (value >> 16);
 		this.memory[index + 2] = (byte) (value >> 8);
 		this.memory[index + 3] = (byte) value;
 	}
-	
+
 	public final long getLong(int index) {
 		return (((long) this.memory[index    ] & 0xff) << 56)
-			 | (((long) this.memory[index + 1] & 0xff) << 48)
-			 | (((long) this.memory[index + 2] & 0xff) << 40)
-			 | (((long) this.memory[index + 3] & 0xff) << 32)
-			 | (((long) this.memory[index + 4] & 0xff) << 24)
-			 | (((long) this.memory[index + 5] & 0xff) << 16)
-			 | (((long) this.memory[index + 6] & 0xff) <<  8)
-			 | (((long) this.memory[index + 7] & 0xff)      );
+			| (((long) this.memory[index + 1] & 0xff) << 48)
+			| (((long) this.memory[index + 2] & 0xff) << 40)
+			| (((long) this.memory[index + 3] & 0xff) << 32)
+			| (((long) this.memory[index + 4] & 0xff) << 24)
+			| (((long) this.memory[index + 5] & 0xff) << 16)
+			| (((long) this.memory[index + 6] & 0xff) <<  8)
+			| (((long) this.memory[index + 7] & 0xff)      );
 	}
 	public final long getLongLittleEndian(int index) {
 		return (((long) this.memory[index    ] & 0xff)      )
-			 | (((long) this.memory[index + 1] & 0xff) <<  8)
-			 | (((long) this.memory[index + 2] & 0xff) << 16)
-			 | (((long) this.memory[index + 3] & 0xff) << 24)
-			 | (((long) this.memory[index + 4] & 0xff) << 32)
-			 | (((long) this.memory[index + 5] & 0xff) << 40)
-			 | (((long) this.memory[index + 6] & 0xff) << 48)
-			 | (((long) this.memory[index + 7] & 0xff) << 56);
+			| (((long) this.memory[index + 1] & 0xff) <<  8)
+			| (((long) this.memory[index + 2] & 0xff) << 16)
+			| (((long) this.memory[index + 3] & 0xff) << 24)
+			| (((long) this.memory[index + 4] & 0xff) << 32)
+			| (((long) this.memory[index + 5] & 0xff) << 40)
+			| (((long) this.memory[index + 6] & 0xff) << 48)
+			| (((long) this.memory[index + 7] & 0xff) << 56);
 	}
-	
+
 	public final long getLongBigEndian(int index) {
 		return (((long) this.memory[index    ] & 0xff) << 56)
-			 | (((long) this.memory[index + 1] & 0xff) << 48)
-			 | (((long) this.memory[index + 2] & 0xff) << 40)
-			 | (((long) this.memory[index + 3] & 0xff) << 32)
-			 | (((long) this.memory[index + 4] & 0xff) << 24)
-			 | (((long) this.memory[index + 5] & 0xff) << 16)
-			 | (((long) this.memory[index + 6] & 0xff) <<  8)
-			 | (((long) this.memory[index + 7] & 0xff)      );
+			| (((long) this.memory[index + 1] & 0xff) << 48)
+			| (((long) this.memory[index + 2] & 0xff) << 40)
+			| (((long) this.memory[index + 3] & 0xff) << 32)
+			| (((long) this.memory[index + 4] & 0xff) << 24)
+			| (((long) this.memory[index + 5] & 0xff) << 16)
+			| (((long) this.memory[index + 6] & 0xff) <<  8)
+			| (((long) this.memory[index + 7] & 0xff)      );
 	}
 
 	public final void putLong(int index, long value) {
@@ -288,7 +288,7 @@ public class DirectMemorySegment {
 		this.memory[index + 6] = (byte) (value >>  8);
 		this.memory[index + 7] = (byte)  value;
 	}
-	
+
 	public final void putLongLittleEndian(int index, long value) {
 		this.memory[index    ] = (byte)  value;
 		this.memory[index + 1] = (byte) (value >>  8);
@@ -299,7 +299,7 @@ public class DirectMemorySegment {
 		this.memory[index + 6] = (byte) (value >> 48);
 		this.memory[index + 7] = (byte) (value >> 56);
 	}
-	
+
 	public final void putLongBigEndian(int index, long value) {
 		this.memory[index    ] = (byte) (value >> 56);
 		this.memory[index + 1] = (byte) (value >> 48);
@@ -310,7 +310,7 @@ public class DirectMemorySegment {
 		this.memory[index + 6] = (byte) (value >>  8);
 		this.memory[index + 7] = (byte)  value;
 	}
-	
+
 	public final float getFloat(int index) {
 		return Float.intBitsToFloat(getInt(index));
 	}
@@ -318,7 +318,7 @@ public class DirectMemorySegment {
 	public final void putFloat(int index, float value) {
 		putLong(index, Float.floatToIntBits(value));
 	}
-	
+
 	public final double getDouble(int index) {
 		return Double.longBitsToDouble(getLong(index));
 	}

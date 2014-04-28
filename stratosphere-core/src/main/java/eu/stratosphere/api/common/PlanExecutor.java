@@ -20,34 +20,34 @@ import java.util.List;
 
 /**
  * A PlanExecutor runs a plan. The specific implementation (such as the {@link eu.stratosphere.client.LocalExecutor}
- * and {@link eu.stratosphere.client.RemoteExecutor}) determines where and how to run the plan. 
+ * and {@link eu.stratosphere.client.RemoteExecutor}) determines where and how to run the plan.
  */
 public abstract class PlanExecutor {
 
 	private static final String LOCAL_EXECUTOR_CLASS = "eu.stratosphere.client.LocalExecutor";
 	private static final String REMOTE_EXECUTOR_CLASS = "eu.stratosphere.client.RemoteExecutor";
-	
-	
+
+
 	/**
 	 * Execute the given plan and return the runtime in milliseconds.
-	 * 
+	 *
 	 * @param plan The plan of the program to execute.
 	 * @return The execution result, containing for example the net runtime of the program, and the accumulators.
-	 * 
+	 *
 	 * @throws Exception Thrown, i job submission caused an exception.
 	 */
 	public abstract JobExecutionResult executePlan(Plan plan) throws Exception;
-	
-	
+
+
 	public abstract String getOptimizerPlanAsJSON(Plan plan) throws Exception;
-	
-	
-	
-	
-	
+
+
+
+
+
 	public static PlanExecutor createLocalExecutor() {
 		Class<? extends PlanExecutor> leClass = loadExecutorClass(LOCAL_EXECUTOR_CLASS);
-		
+
 		try {
 			return leClass.newInstance();
 		}
@@ -63,11 +63,11 @@ public abstract class PlanExecutor {
 		if (port <= 0 || port > Short.MAX_VALUE) {
 			throw new IllegalArgumentException("The port value is out of range.");
 		}
-		
+
 		Class<? extends PlanExecutor> leClass = loadExecutorClass(REMOTE_EXECUTOR_CLASS);
-		
-		List<String> files = (jarFiles == null || jarFiles.length == 0) ? Collections.<String>emptyList() : Arrays.asList(jarFiles); 
-		
+
+		List<String> files = (jarFiles == null || jarFiles.length == 0) ? Collections.<String>emptyList() : Arrays.asList(jarFiles);
+
 		try {
 			return leClass.getConstructor(String.class, int.class, List.class).newInstance(hostname, port, files);
 		}
@@ -75,8 +75,8 @@ public abstract class PlanExecutor {
 			throw new RuntimeException("An error occurred while loading the local executor (" + LOCAL_EXECUTOR_CLASS + ").", t);
 		}
 	}
-	
-	
+
+
 	private static final Class<? extends PlanExecutor> loadExecutorClass(String className) {
 		try {
 			Class<?> leClass = Class.forName(LOCAL_EXECUTOR_CLASS);

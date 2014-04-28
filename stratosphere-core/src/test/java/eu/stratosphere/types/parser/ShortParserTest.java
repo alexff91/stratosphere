@@ -22,7 +22,7 @@ public class ShortParserTest extends ParserTestBase<Short> {
 			"0", "1", "576", "-8778", String.valueOf(Short.MAX_VALUE), String.valueOf(Short.MIN_VALUE)
 		};
 	}
-	
+
 	@Override
 	public Short[] getValidTestResults() {
 		return new Short[] {

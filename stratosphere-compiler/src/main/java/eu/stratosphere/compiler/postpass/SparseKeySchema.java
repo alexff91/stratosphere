@@ -24,16 +24,16 @@ import eu.stratosphere.types.Key;
  * Class encapsulating a schema map (int column position -> column type) and a reference counter.
  */
 public class SparseKeySchema extends AbstractSchema<Class<? extends Key>> {
-	
+
 	private final Map<Integer, Class<? extends Key>> schema;
-	
-	
+
+
 	public SparseKeySchema() {
 		this.schema = new HashMap<Integer, Class<? extends Key>>();
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public void addType(int key, Class<? extends Key> type) throws ConflictingFieldTypeInfoException  {
 		Class<? extends Key> previous = this.schema.put(key, type);
@@ -41,17 +41,17 @@ public class SparseKeySchema extends AbstractSchema<Class<? extends Key>> {
 			throw new ConflictingFieldTypeInfoException(key, previous, type);
 		}
 	}
-	
+
 	@Override
 	public Class<? extends Key> getType(int field) {
 		return this.schema.get(field);
 	}
-	
+
 	@Override
 	public Iterator<Entry<Integer, Class<? extends Key>>> iterator() {
 		return this.schema.entrySet().iterator();
 	}
-	
+
 	public int getNumTypes() {
 		return this.schema.size();
 	}
@@ -67,13 +67,13 @@ public class SparseKeySchema extends AbstractSchema<Class<? extends Key>> {
 	public boolean equals(Object obj) {
 		if (obj instanceof SparseKeySchema) {
 			SparseKeySchema other = (SparseKeySchema) obj;
-			return this.schema.equals(other.schema) && 
+			return this.schema.equals(other.schema) &&
 					this.getNumConnectionsThatContributed() == other.getNumConnectionsThatContributed();
 		} else {
 			return false;
 		}
 	}
-	
+
 	@Override
 	public String toString() {
 		return "<" + getNumConnectionsThatContributed() + "> : " + this.schema.toString();

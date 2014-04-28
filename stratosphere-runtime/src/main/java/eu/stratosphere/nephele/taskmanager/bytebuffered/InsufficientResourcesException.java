@@ -16,7 +16,7 @@ package eu.stratosphere.nephele.taskmanager.bytebuffered;
 /**
  * This exception is thrown by the {@link ByteBufferedChannelManager} to indicate that a task cannot be accepted because
  * there are not enough resources available to safely execute it.
- * 
+ *
  */
 public final class InsufficientResourcesException extends Exception {
 
@@ -27,7 +27,7 @@ public final class InsufficientResourcesException extends Exception {
 
 	/**
 	 * Constructs a new insufficient resources exception.
-	 * 
+	 *
 	 * @param msg
 	 *        the message describing the exception
 	 */

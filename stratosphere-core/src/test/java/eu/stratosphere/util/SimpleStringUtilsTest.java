@@ -32,14 +32,14 @@ public class SimpleStringUtilsTest {
 		SimpleStringUtils.toLowerCase(testString);
 		assertEquals(new StringValue("test"), testString);
 	}
-	
+
 	@Test
 	public void testReplaceNonWordChars() {
 		StringValue testString = new StringValue("TEST123_@");
 		SimpleStringUtils.replaceNonWordChars(testString, '!');
 		assertEquals(new StringValue("TEST123_!"), testString);
 	}
-	
+
 	@Test
 	public void testTokenizerOnStringWithoutNexToken() {
 		StringValue testString = new StringValue("test");
@@ -50,7 +50,7 @@ public class SimpleStringUtilsTest {
 		//next token is not exist
 		assertFalse(tokenizer.next(testString));
 	}
-	
+
 	@Test
 	public void testTokenizerOnStringWithNexToken() {
 		StringValue testString = new StringValue("test test");
@@ -58,7 +58,7 @@ public class SimpleStringUtilsTest {
 		tokenizer.setStringToTokenize(testString);
 		assertTrue(tokenizer.next(testString));
 	}
-	
+
 	@Test
 	public void testTokenizerOnStringOnlyWithDelimiter() {
 		StringValue testString = new StringValue("    ");

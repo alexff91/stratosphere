@@ -14,6 +14,8 @@
  **********************************************************************************************************************/
 package eu.stratosphere.api.java.operators.translation;
 
+import java.util.Iterator;
+
 import eu.stratosphere.api.common.functions.GenericGroupReduce;
 import eu.stratosphere.api.common.operators.base.GroupReduceOperatorBase;
 import eu.stratosphere.api.java.functions.GroupReduceFunction;
@@ -22,8 +24,6 @@ import eu.stratosphere.api.java.tuple.Tuple2;
 import eu.stratosphere.api.java.typeutils.TypeInformation;
 import eu.stratosphere.util.Collector;
 
-import java.util.Iterator;
-
 /**
  *
  */
@@ -31,7 +31,7 @@ public class PlanUnwrappingReduceGroupOperator<IN, OUT, K> extends GroupReduceOp
 	implements UnaryJavaPlanNode<Tuple2<K, IN>, OUT>
 {
 	private final TypeInformation<OUT> outputType;
-	
+
 	private final TypeInformation<Tuple2<K, IN>> typeInfoWithKey;
 
 
@@ -39,12 +39,12 @@ public class PlanUnwrappingReduceGroupOperator<IN, OUT, K> extends GroupReduceOp
 			TypeInformation<IN> inType, TypeInformation<OUT> outType, TypeInformation<Tuple2<K, IN>> typeInfoWithKey)
 	{
 		super(new TupleUnwrappingGroupReducer<IN, OUT, K>(udf), key.computeLogicalKeyPositions(), name);
-		
+
 		this.outputType = outType;
 		this.typeInfoWithKey = typeInfoWithKey;
 	}
-	
-	
+
+
 	@Override
 	public TypeInformation<OUT> getReturnType() {
 		return this.outputType;
@@ -54,18 +54,18 @@ public class PlanUnwrappingReduceGroupOperator<IN, OUT, K> extends GroupReduceOp
 	public TypeInformation<Tuple2<K, IN>> getInputType() {
 		return this.typeInfoWithKey;
 	}
-	
-	
+
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public static final class TupleUnwrappingGroupReducer<IN, OUT, K> extends WrappingFunction<GroupReduceFunction<IN, OUT>>
 		implements GenericGroupReduce<Tuple2<K, IN>, OUT>
 	{
 
 		private static final long serialVersionUID = 1L;
-		
+
 		private TupleUnwrappingIterator<IN, K> iter;
-		
+
 		private TupleUnwrappingGroupReducer(GroupReduceFunction<IN, OUT> wrapped) {
 			super(wrapped);
 		}

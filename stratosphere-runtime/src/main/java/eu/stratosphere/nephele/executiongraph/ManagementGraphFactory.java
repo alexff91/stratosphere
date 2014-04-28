@@ -122,10 +122,10 @@ public class ManagementGraphFactory {
 
 			final AbstractInstance instance = ev.getAllocatedResource().getInstance();
 			final ManagementVertex managementVertex = new ManagementVertex(
-						parent, 
+						parent,
 						ev.getID().toManagementVertexID(),
-						(instance.getInstanceConnectionInfo() != null) ? instance.getInstanceConnectionInfo().toString() : instance.toString(), 
-						instance.getType().toString(), 
+						(instance.getInstanceConnectionInfo() != null) ? instance.getInstanceConnectionInfo().toString() : instance.toString(),
+						instance.getType().toString(),
 						ev.getIndexInVertexGroup()
 					);
 			managementVertex.setExecutionState(ev.getExecutionState());

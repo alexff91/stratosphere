@@ -23,34 +23,34 @@ import java.util.Random;
 public class UTFStringType implements SerializationTestType
 {
 	private static final int MAX_LEN = 1500;
-	
+
 	private String value;
-	
+
 
 	public UTFStringType()
 	{
 		this.value = "";
 	}
-	
+
 	private UTFStringType(String value)
 	{
 		this.value = value;
 	}
-	
+
 
 	@Override
 	public UTFStringType getRandom(Random rnd)
 	{
 		final StringBuilder bld = new StringBuilder();
 		final int len = rnd.nextInt(MAX_LEN + 1);
-		
+
 		for (int i = 0; i < len; i++) {
 			bld.append((char) rnd.nextInt(Character.MAX_VALUE));
 		}
-		
+
 		return new UTFStringType(bld.toString());
 	}
-	
+
 
 	@Override
 	public void write(DataOutput out) throws IOException

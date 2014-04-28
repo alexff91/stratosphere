@@ -22,16 +22,16 @@ import eu.stratosphere.nephele.template.AbstractInvokable;
 
 /**
  * This is an abstract base class for a record reader, either dealing with mutable or immutable records.
- * 
+ *
  * @param <T> The type of the record that can be read from this record reader.
  */
 public abstract class AbstractSingleGateRecordReader<T extends IOReadableWritable> extends AbstractRecordReader {
-	
+
 	/**
 	 * The input gate associated with the record reader.
 	 */
 	protected final InputGate<T> inputGate;
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	protected AbstractSingleGateRecordReader(AbstractInvokable invokable, RecordDeserializerFactory<T> deserializerFactory, int inputGateID) {
@@ -47,7 +47,7 @@ public abstract class AbstractSingleGateRecordReader<T extends IOReadableWritabl
 
 	/**
 	 * Returns the number of input channels wired to this reader's input gate.
-	 * 
+	 *
 	 * @return the number of input channels wired to this reader's input gate
 	 */
 	public int getNumberOfInputChannels() {
@@ -56,7 +56,7 @@ public abstract class AbstractSingleGateRecordReader<T extends IOReadableWritabl
 
 	/**
 	 * Publishes an event.
-	 * 
+	 *
 	 * @param event
 	 *        the event to be published
 	 * @throws IOException
@@ -69,8 +69,8 @@ public abstract class AbstractSingleGateRecordReader<T extends IOReadableWritabl
 		// Delegate call to input gate to send events
 		this.inputGate.publishEvent(event);
 	}
-	
-	
+
+
 	InputGate<T> getInputGate() {
 		return this.inputGate;
 	}

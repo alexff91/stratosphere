@@ -23,11 +23,11 @@ public class LogUtils {
 	public static void initializeDefaultConsoleLogger() {
 		initializeDefaultConsoleLogger(Level.INFO);
 	}
-	
+
 	public static void initializeDefaultTestConsoleLogger() {
 		initializeDefaultConsoleLogger(Level.WARN);
 	}
-	
+
 	public static void initializeDefaultConsoleLogger(Level logLevel) {
 		Logger root = Logger.getRootLogger();
 		root.removeAllAppenders();

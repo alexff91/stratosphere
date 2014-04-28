@@ -36,29 +36,29 @@ import eu.stratosphere.util.ReflectionUtil;
 
 
 public class AvroInputFormat<E> extends FileInputFormat {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	private static final Log LOG = LogFactory.getLog(AvroInputFormat.class);
-	
-	
+
+
 	private final Class<? extends AvroBaseValue<E>> avroWrapperTypeClass;
-	
+
 	private final Class<E> avroValueType;
-	
+
 
 	private transient FileReader<E> dataFileReader;
-	
+
 	private transient E reuseAvroValue;
-	
+
 	private transient AvroBaseValue<E> wrapper;
-	
-	
+
+
 	public AvroInputFormat(Class<? extends AvroBaseValue<E>> wrapperClass) {
 		this.avroWrapperTypeClass = wrapperClass;
 		this.avroValueType = ReflectionUtil.getTemplateType1(wrapperClass);
 	}
-	
+
 	public AvroInputFormat(Class<? extends AvroBaseValue<E>> wrapperClass, Class<E> avroType) {
 		this.avroValueType = avroType;
 		this.avroWrapperTypeClass = wrapperClass;
@@ -67,23 +67,23 @@ public class AvroInputFormat<E> extends FileInputFormat {
 	@Override
 	public void open(FileInputSplit split) throws IOException {
 		super.open(split);
-		
+
 		this.wrapper = InstantiationUtil.instantiate(avroWrapperTypeClass, AvroBaseValue.class);
-		
+
 		DatumReader<E> datumReader;
 		if (org.apache.avro.specific.SpecificRecordBase.class.isAssignableFrom(avroValueType)) {
 			datumReader = new SpecificDatumReader<E>(avroValueType);
 		} else {
 			datumReader = new ReflectDatumReader<E>(avroValueType);
 		}
-		
+
 		LOG.info("Opening split " + split);
-		
+
 		SeekableInput in = new FSDataInputStreamWrapper(stream, (int) split.getLength());
-		
+
 		dataFileReader = DataFileReader.openReader(in, datumReader);
 		dataFileReader.sync(split.getStart());
-		
+
 		reuseAvroValue = null;
 	}
 
@@ -97,7 +97,7 @@ public class AvroInputFormat<E> extends FileInputFormat {
 		if (!dataFileReader.hasNext()) {
 			return null;
 		}
-		
+
 		reuseAvroValue = dataFileReader.next(reuseAvroValue);
 		wrapper.datum(reuseAvroValue);
 		record.setField(0, wrapper);

@@ -19,17 +19,17 @@ public class AsciiStringParserTest extends ParserTestBase<String> {
 	@Override
 	public String[] getValidTestValues() {
 		return new String[] {
-			"abcdefgh", "i", "jklmno", "\"abcdefgh\"", "\"i\"", "\"jklmno\"", 
+			"abcdefgh", "i", "jklmno", "\"abcdefgh\"", "\"i\"", "\"jklmno\"",
 			"\"ab,cde|fg\"", "\"hij|m|n|op\"",
 			"  \"abcdefgh\"", "     \"i\"\t\t\t", "\t \t\"jklmno\"  ",
 			"  \"     abcd    \" \t "
 		};
 	}
-	
+
 	@Override
 	public String[] getValidTestResults() {
 		return new String[] {
-			"abcdefgh", "i", "jklmno", "abcdefgh", "i", "jklmno", 
+			"abcdefgh", "i", "jklmno", "abcdefgh", "i", "jklmno",
 			"ab,cde|fg", "hij|m|n|op",
 			"abcdefgh", "i", "jklmno",
 			"     abcd    "

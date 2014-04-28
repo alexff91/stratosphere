@@ -20,13 +20,13 @@ import eu.stratosphere.nephele.template.AbstractOutputTask;
 import eu.stratosphere.nephele.template.AbstractTask;
 
 public class MutableRecordReader<T extends IOReadableWritable> extends AbstractSingleGateRecordReader<T> implements MutableReader<T> {
-	
+
 	private boolean endOfStream;
-	
-	
+
+
 	/**
 	 * Constructs a new mutable record reader and registers a new input gate with the application's environment.
-	 * 
+	 *
 	 * @param taskBase The application that instantiated the record reader.
 	 */
 	public MutableRecordReader(final AbstractTask taskBase) {
@@ -35,7 +35,7 @@ public class MutableRecordReader<T extends IOReadableWritable> extends AbstractS
 
 	/**
 	 * Constructs a new record reader and registers a new input gate with the application's environment.
-	 * 
+	 *
 	 * @param outputBase The application that instantiated the record reader.
 	 */
 	public MutableRecordReader(final AbstractOutputTask outputBase) {
@@ -44,7 +44,7 @@ public class MutableRecordReader<T extends IOReadableWritable> extends AbstractS
 
 	/**
 	 * Constructs a new record reader and registers a new input gate with the application's environment.
-	 * 
+	 *
 	 * @param taskBase
 	 *        the application that instantiated the record reader
 	 * @param inputGateID
@@ -56,7 +56,7 @@ public class MutableRecordReader<T extends IOReadableWritable> extends AbstractS
 
 	/**
 	 * Constructs a new record reader and registers a new input gate with the application's environment.
-	 * 
+	 *
 	 * @param outputBase
 	 *        the application that instantiated the record reader
 	 * @param inputGateID
@@ -65,14 +65,14 @@ public class MutableRecordReader<T extends IOReadableWritable> extends AbstractS
 	public MutableRecordReader(final AbstractOutputTask outputBase, final int inputGateID) {
 		super(outputBase, MutableRecordDeserializerFactory.<T>get(), inputGateID);
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public boolean next(final T target) throws IOException, InterruptedException {
 		if (this.endOfStream) {
 			return false;
-			
+
 		}
 		while (true) {
 			InputChannelResult result = this.inputGate.readRecord(target);
@@ -80,27 +80,29 @@ public class MutableRecordReader<T extends IOReadableWritable> extends AbstractS
 				case INTERMEDIATE_RECORD_FROM_BUFFER:
 				case LAST_RECORD_FROM_BUFFER:
 					return true;
-					
+
 				case END_OF_SUPERSTEP:
-					if (incrementEndOfSuperstepEventAndCheck())
-						return false; // end of the superstep
-					else 
-						break; // fall through and wait for next record/event
-					
+					if (incrementEndOfSuperstepEventAndCheck()) {
+					return false; // end of the superstep
+					}
+					else {
+					break; // fall through and wait for next record/event
+					}
+
 				case TASK_EVENT:
 					handleEvent(this.inputGate.getCurrentEvent());
 					break;	// fall through to get next record
-				
+
 				case END_OF_STREAM:
 					this.endOfStream = true;
 					return false;
-					
+
 				default:
 					; // fall through to get next record
 			}
 		}
 	}
-	
+
 	@Override
 	public boolean isInputClosed() {
 		return this.endOfStream;

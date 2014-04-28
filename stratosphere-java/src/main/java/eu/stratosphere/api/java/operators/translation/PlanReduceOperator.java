@@ -27,14 +27,14 @@ public class PlanReduceOperator<T> extends GroupReduceOperatorBase<GenericGroupR
 {
 
 	private final TypeInformation<T> type;
-	
-	
+
+
 	public PlanReduceOperator(ReduceFunction<T> udf, int[] logicalGroupingFields, String name, TypeInformation<T> type) {
 		super(udf, logicalGroupingFields, name);
 		this.type = type;
 	}
-	
-	
+
+
 	@Override
 	public TypeInformation<T> getReturnType() {
 		return this.type;
@@ -44,5 +44,5 @@ public class PlanReduceOperator<T> extends GroupReduceOperatorBase<GenericGroupR
 	public TypeInformation<T> getInputType() {
 		return this.type;
 	}
-	
+
 }

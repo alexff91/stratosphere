@@ -26,9 +26,9 @@ import eu.stratosphere.example.java.triangles.util.EdgeDataTypes.Edge;
 public class EdgeData {
 
 	public static DataSet<Edge> getDefaultEdgeDataSet(ExecutionEnvironment env) {
-		
+
 		Set<Edge> edgeData = new HashSet<Edge>();
-		
+
 		edgeData.add(new Edge(1, 2));
 		edgeData.add(new Edge(1, 3));
 		edgeData.add(new Edge(1, 4));
@@ -40,15 +40,15 @@ public class EdgeData {
 		edgeData.add(new Edge(3, 8));
 		edgeData.add(new Edge(5, 6));
 		edgeData.add(new Edge(7, 8));
-				
-		TupleTypeInfo<Edge> edgeType = 
+
+		TupleTypeInfo<Edge> edgeType =
 				new TupleTypeInfo<Edge>(
 						Edge.class,
 						BasicTypeInfo.INT_TYPE_INFO,
 						BasicTypeInfo.INT_TYPE_INFO);
-		
+
 		return env.fromCollection(edgeData, edgeType);
-		
+
 	}
-	
+
 }

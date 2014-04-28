@@ -15,7 +15,7 @@ package eu.stratosphere.nephele.instance;
 
 /**
  * An instance exception is thrown if the allocation, assignment or deallocation of an instance fails.
- * 
+ *
  */
 public class InstanceException extends Exception {
 
@@ -26,7 +26,7 @@ public class InstanceException extends Exception {
 
 	/**
 	 * Constructs a new instance exception with the given error message.
-	 * 
+	 *
 	 * @param errorMsg
 	 *        the error message to be included in the exception.
 	 */

@@ -18,8 +18,8 @@ import java.util.Random;
 
 /**
  * Gives a number of random integer values
- * 
- * 
+ *
+ *
  */
 public class RandomIterator implements Iterator<Integer> {
 
@@ -29,7 +29,7 @@ public class RandomIterator implements Iterator<Integer> {
 
 	/**
 	 * Creates an iterator which gives random integer numbers
-	 * 
+	 *
 	 * @param seed
 	 *            Seed for random generator
 	 * @param count

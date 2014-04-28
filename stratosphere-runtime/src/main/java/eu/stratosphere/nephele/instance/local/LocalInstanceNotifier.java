@@ -26,7 +26,7 @@ import eu.stratosphere.nephele.jobgraph.JobID;
  * a separate thread, otherwise the atomic operation of requesting an instance
  * for a vertex and switching to the state ASSINING could not be guaranteed.
  * This class is thread-safe.
- * 
+ *
  */
 public class LocalInstanceNotifier extends Thread {
 
@@ -47,7 +47,7 @@ public class LocalInstanceNotifier extends Thread {
 
 	/**
 	 * Constructs a new instance notifier object.
-	 * 
+	 *
 	 * @param instanceListener
 	 *        the listener object to send the notification to
 	 * @param jobID
@@ -64,7 +64,7 @@ public class LocalInstanceNotifier extends Thread {
 
 	@Override
 	public void run() {
-		
+
 		this.instanceListener.resourcesAllocated(this.jobID, this.allocatedResources);
 	}
 }

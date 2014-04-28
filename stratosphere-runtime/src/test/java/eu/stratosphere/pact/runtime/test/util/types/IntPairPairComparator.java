@@ -21,7 +21,7 @@ import eu.stratosphere.api.common.typeutils.TypePairComparator;
 public class IntPairPairComparator extends TypePairComparator<IntPair, IntPair>
 {
 	private int key;
-	
+
 	/* (non-Javadoc)
 	 * @see eu.stratosphere.pact.runtime.plugable.TypeComparator#setReference(java.lang.Object, eu.stratosphere.pact.runtime.plugable.TypeAccessorsV2)
 	 */
@@ -43,5 +43,5 @@ public class IntPairPairComparator extends TypePairComparator<IntPair, IntPair>
 	public int compareToReference(IntPair candidate) {
 		return candidate.getKey() - this.key;
 	}
-	
+
 }

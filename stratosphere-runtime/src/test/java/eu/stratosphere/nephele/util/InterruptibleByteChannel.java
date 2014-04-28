@@ -28,7 +28,7 @@ import java.util.Queue;
  * in the byte stream.
  * <p>
  * This class is not thread-safe.
- * 
+ *
  */
 public class InterruptibleByteChannel implements ReadableByteChannel, WritableByteChannel {
 
@@ -64,7 +64,7 @@ public class InterruptibleByteChannel implements ReadableByteChannel, WritableBy
 
 	/**
 	 * Constructs a new interruptible byte channel.
-	 * 
+	 *
 	 * @param writeInterruptPositions
 	 *        the positions to interrupt the byte stream during write operations or <code>null</code> if no
 	 *        interruptions are requested

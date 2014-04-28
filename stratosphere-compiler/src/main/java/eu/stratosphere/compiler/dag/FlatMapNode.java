@@ -25,7 +25,7 @@ import eu.stratosphere.compiler.operators.OperatorDescriptorSingle;
  * The optimizer's internal representation of a <i>FlatMap</i> operator node.
  */
 public class FlatMapNode extends SingleInputNode {
-	
+
 
 	public FlatMapNode(FlatMapOperatorBase<?> operator) {
 		super(operator);
@@ -48,7 +48,7 @@ public class FlatMapNode extends SingleInputNode {
 
 	/**
 	 * Computes the estimates for the FlatMap operator. Since it un-nests, we assume a cardinality
-	 * increase. To give the system a hint at data increase, we take a default magic number of a 5 times increase. 
+	 * increase. To give the system a hint at data increase, we take a default magic number of a 5 times increase.
 	 */
 	@Override
 	protected void computeOperatorSpecificDefaultEstimates(DataStatistics statistics) {

@@ -47,51 +47,52 @@ import eu.stratosphere.util.MutableObjectIterator;
 /**
  * DataSinkTask which is executed by a Nephele task manager.
  * The task hands the data to an output format.
- * 
+ *
  * @see eu.eu.stratosphere.pact.common.generic.io.OutputFormat
  */
 public class DataSinkTask<IT> extends AbstractOutputTask
 {
 	public static final String DEGREE_OF_PARALLELISM_KEY = "sink.dop";
-	
+
 	// Obtain DataSinkTask Logger
 	private static final Log LOG = LogFactory.getLog(DataSinkTask.class);
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	// OutputFormat instance. volatile, because the asynchronous canceller may access it
 	private volatile OutputFormat<IT> format;
-	
+
 	// input reader
 	private MutableObjectIterator<IT> reader;
-	
+
 	// input iterator
-	 private MutableObjectIterator<IT> input;
-	
+	private MutableObjectIterator<IT> input;
+
 	// The serializer for the input type
 	private TypeSerializer<IT> inputTypeSerializer;
-	
+
 	// local strategy
 	private CloseableInputProvider<IT> localStrategy;
 
 	// task configuration
 	private TaskConfig config;
-	
+
 	// class loader for user code
 	private ClassLoader userCodeClassLoader;
 
 	// cancel flag
 	private volatile boolean taskCanceled;
-	
+
 
 	@Override
 	public void registerInputOutput() {
-		if (LOG.isDebugEnabled())
-			LOG.debug(getLogString("Start registering input and output"));
+		if (LOG.isDebugEnabled()) {
+		LOG.debug(getLogString("Start registering input and output"));
+		}
 
 		// initialize OutputFormat
 		initOutputFormat();
-		
+
 		// initialize input readers
 		try {
 			initInputReaders();
@@ -100,19 +101,21 @@ public class DataSinkTask<IT> extends AbstractOutputTask
 				e.getMessage() == null ? "." : ": " + e.getMessage(), e);
 		}
 
-		if (LOG.isDebugEnabled())
-			LOG.debug(getLogString("Finished registering input and output"));
+		if (LOG.isDebugEnabled()) {
+		LOG.debug(getLogString("Finished registering input and output"));
+		}
 	}
 
 
 	@Override
 	public void invoke() throws Exception
 	{
-		if (LOG.isDebugEnabled())
-			LOG.debug(getLogString("Starting data sink operator"));
-		
+		if (LOG.isDebugEnabled()) {
+		LOG.debug(getLogString("Starting data sink operator"));
+		}
+
 		try {
-			
+
 			// initialize local strategies
 			switch (this.config.getInputLocalStrategy(0)) {
 			case NONE:
@@ -128,15 +131,15 @@ public class DataSinkTask<IT> extends AbstractOutputTask
 					if (compFact == null) {
 						throw new Exception("Missing comparator factory for local strategy on input " + 0);
 					}
-					
+
 					// initialize sorter
 					UnilateralSortMerger<IT> sorter = new UnilateralSortMerger<IT>(
-							getEnvironment().getMemoryManager(), 
+							getEnvironment().getMemoryManager(),
 							getEnvironment().getIOManager(),
 							this.reader, this, this.inputTypeSerializer, compFact.createComparator(),
 							this.config.getMemoryInput(0), this.config.getFilehandlesInput(0),
 							this.config.getSpillingThresholdInput(0));
-					
+
 					this.localStrategy = sorter;
 					this.input = sorter.getIterator();
 				} catch (Exception e) {
@@ -147,12 +150,12 @@ public class DataSinkTask<IT> extends AbstractOutputTask
 			default:
 				throw new RuntimeException("Invalid local strategy for DataSinkTask");
 			}
-			
+
 			// read the reader and write it to the output
 			final MutableObjectIterator<IT> input = this.input;
 			final OutputFormat<IT> format = this.format;
 			IT record = this.inputTypeSerializer.createInstance();
-			
+
 			// check if task has been canceled
 			if (this.taskCanceled) {
 				return;
@@ -169,7 +172,7 @@ public class DataSinkTask<IT> extends AbstractOutputTask
 			while (!this.taskCanceled && ((record = input.next(record)) != null)) {
 				format.writeRecord(record);
 			}
-			
+
 			// close. We close here such that a regular close throwing an exception marks a task as failed.
 			if (!this.taskCanceled) {
 				this.format.close();
@@ -179,8 +182,9 @@ public class DataSinkTask<IT> extends AbstractOutputTask
 		catch (Exception ex) {
 			// drop, if the task was canceled
 			if (!this.taskCanceled) {
-				if (LOG.isErrorEnabled())
-					LOG.error(getLogString("Error in Pact user code: " + ex.getMessage()), ex);
+				if (LOG.isErrorEnabled()) {
+				LOG.error(getLogString("Error in Pact user code: " + ex.getMessage()), ex);
+				}
 				throw ex;
 			}
 		}
@@ -192,8 +196,9 @@ public class DataSinkTask<IT> extends AbstractOutputTask
 					this.format.close();
 				}
 				catch (Throwable t) {
-					if (LOG.isWarnEnabled())
-						LOG.warn(getLogString("Error closing the ouput format."), t);
+					if (LOG.isWarnEnabled()) {
+					LOG.warn(getLogString("Error closing the ouput format."), t);
+					}
 				}
 			}
 			// close local strategy if necessary
@@ -212,8 +217,9 @@ public class DataSinkTask<IT> extends AbstractOutputTask
 			}
 		}
 		else {
-			if (LOG.isDebugEnabled())
-				LOG.debug(getLogString("Data sink operator cancelled"));
+			if (LOG.isDebugEnabled()) {
+			LOG.debug(getLogString("Data sink operator cancelled"));
+			}
 		}
 	}
 
@@ -226,14 +232,15 @@ public class DataSinkTask<IT> extends AbstractOutputTask
 				this.format.close();
 			} catch (Throwable t) {}
 		}
-		
-		if (LOG.isDebugEnabled())
-			LOG.debug(getLogString("Cancelling data sink operator"));
+
+		if (LOG.isDebugEnabled()) {
+		LOG.debug(getLogString("Cancelling data sink operator"));
+		}
 	}
-	
+
 	/**
 	 * Sets the class-loader to be used to load the user code.
-	 * 
+	 *
 	 * @param cl The class-loader to be used to load the user code.
 	 */
 	public void setUserCodeClassLoader(ClassLoader cl) {
@@ -242,7 +249,7 @@ public class DataSinkTask<IT> extends AbstractOutputTask
 
 	/**
 	 * Initializes the OutputFormat implementation and configuration.
-	 * 
+	 *
 	 * @throws RuntimeException
 	 *         Throws if instance of OutputFormat implementation can not be
 	 *         obtained.
@@ -265,35 +272,35 @@ public class DataSinkTask<IT> extends AbstractOutputTask
 
 			// check if the class is a subclass, if the check is required
 			if (!OutputFormat.class.isAssignableFrom(this.format.getClass())) {
-				throw new RuntimeException("The class '" + this.format.getClass().getName() + "' is not a subclass of '" + 
+				throw new RuntimeException("The class '" + this.format.getClass().getName() + "' is not a subclass of '" +
 						OutputFormat.class.getName() + "' as is required.");
 			}
 		}
 		catch (ClassCastException ccex) {
 			throw new RuntimeException("The stub class is not a proper subclass of " + OutputFormat.class.getName(), ccex);
 		}
-		
-		// configure the stub. catch exceptions here extra, to report them as originating from the user code 
+
+		// configure the stub. catch exceptions here extra, to report them as originating from the user code
 		try {
 			this.format.configure(this.config.getStubParameters());
 		}
 		catch (Throwable t) {
-			throw new RuntimeException("The user defined 'configure()' method in the Output Format caused an error: " 
+			throw new RuntimeException("The user defined 'configure()' method in the Output Format caused an error: "
 				+ t.getMessage(), t);
 		}
 	}
 
 	/**
 	 * Initializes the input readers of the DataSinkTask.
-	 * 
+	 *
 	 * @throws RuntimeException
 	 *         Thrown in case of invalid task input configuration.
 	 */
 	@SuppressWarnings("unchecked")
 	private void initInputReaders() throws Exception {
-		
+
 		MutableReader<?> inputReader;
-		
+
 		int numGates = 0;
 		//  ---------------- create the input readers ---------------------
 		// in case where a logical input unions multiple physical inputs, create a union reader
@@ -304,7 +311,7 @@ public class DataSinkTask<IT> extends AbstractOutputTask
 			inputReader = new MutableRecordReader<DeserializationDelegate<IT>>(this);
 		} else if (groupSize > 1){
 			// union case
-			
+
 			MutableRecordReader<IOReadableWritable>[] readers = new MutableRecordReader[groupSize];
 			for (int j = 0; j < groupSize; ++j) {
 				readers[j] = new MutableRecordReader<IOReadableWritable>(this);
@@ -313,10 +320,10 @@ public class DataSinkTask<IT> extends AbstractOutputTask
 		} else {
 			throw new Exception("Illegal input group size in task configuration: " + groupSize);
 		}
-		
+
 		final TypeSerializerFactory<IT> serializerFactory = this.config.getInputSerializer(0, this.userCodeClassLoader);
 		this.inputTypeSerializer = serializerFactory.getSerializer();
-		
+
 		if (this.inputTypeSerializer.getClass() == RecordSerializer.class) {
 			// pact record specific deserialization
 			MutableReader<Record> reader = (MutableReader<Record>) inputReader;
@@ -328,41 +335,41 @@ public class DataSinkTask<IT> extends AbstractOutputTask
 			final MutableObjectIterator<?> iter = new ReaderIterator(reader, this.inputTypeSerializer);
 			this.reader = (MutableObjectIterator<IT>)iter;
 		}
-		
+
 		// final sanity check
 		if (numGates != this.config.getNumInputs()) {
 			throw new Exception("Illegal configuration: Number of input gates and group sizes are not consistent.");
 		}
 	}
-	
+
 	// ------------------------------------------------------------------------
 	//                     Degree of parallelism & checks
 	// ------------------------------------------------------------------------
-	
+
 
 	@Override
 	public int getMaximumNumberOfSubtasks() {
 		if (!(this.format instanceof FileOutputFormat<?>)) {
 			return -1;
 		}
-		
+
 		final FileOutputFormat<?> fileOutputFormat = (FileOutputFormat<?>) this.format;
-		
+
 		// ----------------- This code applies only to file inputs ------------------
-		
+
 		final Path path = fileOutputFormat.getOutputFilePath();
 		final WriteMode writeMode = fileOutputFormat.getWriteMode();
 		final OutputDirectoryMode outDirMode = fileOutputFormat.getOutputDirectoryMode();
 
-		// Prepare output path and determine max DOP		
+		// Prepare output path and determine max DOP
 		try {
-			
+
 			int dop = getTaskConfiguration().getInteger(DEGREE_OF_PARALLELISM_KEY, -1);
 			final FileSystem fs = path.getFileSystem();
-			
+
 			if(dop == 1 && outDirMode == OutputDirectoryMode.PARONLY) {
 				// output is not written in parallel and should be written to a single file.
-				
+
 				if(fs.isDistributedFS()) {
 					// prepare distributed output path
 					if(!fs.initOutPathDistFS(path, writeMode, false)) {
@@ -370,21 +377,21 @@ public class DataSinkTask<IT> extends AbstractOutputTask
 						throw new IOException("Output path could not be initialized.");
 					}
 				}
-				
+
 				return 1;
-				
+
 			} else {
 				// output should be written to a directory
-				
+
 				if(fs.isDistributedFS()) {
 					// only distributed file systems can be initialized at start-up time.
 					if(!fs.initOutPathDistFS(path, writeMode, true)) {
 						throw new IOException("Output directory could not be created.");
 					}
 				}
-				
+
 				return -1;
-				
+
 			}
 		}
 		catch (IOException e) {
@@ -396,11 +403,11 @@ public class DataSinkTask<IT> extends AbstractOutputTask
 	// ------------------------------------------------------------------------
 	//                               Utilities
 	// ------------------------------------------------------------------------
-	
+
 	/**
 	 * Utility function that composes a string for logging purposes. The string includes the given message and
 	 * the index of the task in its task group together with the number of tasks in the task group.
-	 * 
+	 *
 	 * @param message The main message for the log.
 	 * @return The string ready for logging.
 	 */

@@ -20,7 +20,7 @@ package eu.stratosphere.core.io;
 public interface InputSplit extends IOReadableWritable {
 	/**
 	 * Returns the number of this input split.
-	 * 
+	 *
 	 * @return the number of this input split
 	 */
 	int getSplitNumber();

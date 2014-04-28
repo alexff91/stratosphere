@@ -45,7 +45,7 @@ import eu.stratosphere.nephele.taskmanager.bytebuffered.ConnectionInfoLookupResp
 /**
  * The MulticastManager is responsible for the creation and storage of application-layer multicast trees used to
  * broadcast records to multiple target vertices.
- * 
+ *
  */
 
 public final class MulticastManager implements ChannelLookupProtocol {
@@ -92,7 +92,7 @@ public final class MulticastManager implements ChannelLookupProtocol {
 
 	/**
 	 * Constructs a new multicast manager.
-	 * 
+	 *
 	 * @param scheduler
 	 *        reference to the scheduler
 	 */
@@ -109,7 +109,7 @@ public final class MulticastManager implements ChannelLookupProtocol {
 	/**
 	 * Retrieves all recipients of a data for the given <code>sourceChannelID</code>. Returns both local recipients as
 	 * well as next-hop remote instances within the multicast-tree.
-	 * 
+	 *
 	 * @param caller
 	 *        the {@link InstanceConnectionInfo} object of the task manager which calls this method
 	 * @param jobID
@@ -161,7 +161,7 @@ public final class MulticastManager implements ChannelLookupProtocol {
 
 	/**
 	 * Returns and removes the TreeNode which is closest to the given indicator.
-	 * 
+	 *
 	 * @param indicator
 	 * @param nodes
 	 * @return
@@ -180,7 +180,7 @@ public final class MulticastManager implements ChannelLookupProtocol {
 	 * Returns the TreeNode which is closest to the given indicator Node. Proximity is determined
 	 * either using topology-information (if given), penalty information (if given) or it returns
 	 * the first node in the list.
-	 * 
+	 *
 	 * @param indicator
 	 * @param nodes
 	 * @return
@@ -206,7 +206,7 @@ public final class MulticastManager implements ChannelLookupProtocol {
 	 * If topology information or penalties are available, it considers that.
 	 * If fanout is set to 1, it creates a sequential tree.
 	 * if fanout is set to Integer.MAXVALUE, it creates a unicast tree.
-	 * 
+	 *
 	 * @param nodes
 	 * @param fanout
 	 * @return
@@ -249,7 +249,7 @@ public final class MulticastManager implements ChannelLookupProtocol {
 	/**
 	 * Reads a hard-coded tree topology from file and creates a tree according to the hard-coded
 	 * topology from the file.
-	 * 
+	 *
 	 * @param nodes
 	 * @return
 	 */
@@ -288,7 +288,7 @@ public final class MulticastManager implements ChannelLookupProtocol {
 	/**
 	 * Checks, if all target vertices for multicast transmisison are ready. If vertices are in state ASSIGNED, it will
 	 * deploy those vertices.
-	 * 
+	 *
 	 * @param caller
 	 * @param jobID
 	 * @param sourceChannelID
@@ -341,7 +341,7 @@ public final class MulticastManager implements ChannelLookupProtocol {
 	 * Returns a list of (physical) Nodes (=hosts) within the multicast tree. Each node contains the local ChannelIDs,
 	 * records
 	 * must be forwarded to. The first node in the List is the only multicast sender.
-	 * 
+	 *
 	 * @param sourceChannelID
 	 * @return
 	 */

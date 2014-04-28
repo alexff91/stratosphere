@@ -30,9 +30,9 @@ import eu.stratosphere.api.common.accumulators.Histogram;
 import eu.stratosphere.api.common.accumulators.LongCounter;
 import eu.stratosphere.api.common.operators.FileDataSink;
 import eu.stratosphere.api.common.operators.FileDataSource;
+import eu.stratosphere.api.java.record.functions.FunctionAnnotation.ConstantFields;
 import eu.stratosphere.api.java.record.functions.MapFunction;
 import eu.stratosphere.api.java.record.functions.ReduceFunction;
-import eu.stratosphere.api.java.record.functions.FunctionAnnotation.ConstantFields;
 import eu.stratosphere.api.java.record.io.CsvOutputFormat;
 import eu.stratosphere.api.java.record.io.TextInputFormat;
 import eu.stratosphere.api.java.record.operators.MapOperator;
@@ -52,7 +52,7 @@ import eu.stratosphere.util.Collector;
  * use custom accumulators (built-in or custom).
  */
 public class WordCountAccumulators implements Program, ProgramDescription {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	public static class TokenizeLine extends MapFunction implements Serializable {
@@ -69,7 +69,7 @@ public class WordCountAccumulators implements Program, ProgramDescription {
 		public static final String ACCUM_DISTINCT_WORDS = "accumulator.distinct-words";
 		private SetAccumulator<StringValue> distinctWords = new SetAccumulator<StringValue>();
 
-		
+
 		@Override
 		public void open(Configuration parameters) throws Exception {
 
@@ -81,33 +81,33 @@ public class WordCountAccumulators implements Program, ProgramDescription {
 			// You could also write to accumulators in open() or close()
 		}
 
-		
+
 		@Override
 		public void map(Record record, Collector<Record> collector) {
-			
+
 			// Increment counter
 			numLines.add(1L);
-						
+
 			// get the first field (as type StringValue) from the record
 			String line = record.getField(0, StringValue.class).getValue();
 
 			// normalize the line
 			line = line.replaceAll("\\W+", " ").toLowerCase();
-			
+
 			// tokenize the line
 			StringTokenizer tokenizer = new StringTokenizer(line);
 			int numWords = 0;
-			
+
 			while (tokenizer.hasMoreTokens()) {
 				String word = tokenizer.nextToken();
-				
+
 				distinctWords.add(new StringValue(word));
 				++numWords;
-				
-				// we emit a (word, 1) pair 
+
+				// we emit a (word, 1) pair
 				collector.collect(new Record(new StringValue(word), new IntValue(1)));
 			}
-			
+
 			// Add a value to the histogram accumulator
 			this.wordsPerLine.add(numWords);
 		}
@@ -146,12 +146,12 @@ public class WordCountAccumulators implements Program, ProgramDescription {
 		FileDataSource source = new FileDataSource(new TextInputFormat(), dataInput, "Input Lines");
 
 		MapOperator mapper = MapOperator.builder(new TokenizeLine()).input(source).name("Tokenize Lines").build();
-		
+
 		ReduceOperator reducer = ReduceOperator.builder(CountWords.class, StringValue.class, 0).input(mapper)
 				.name("Count Words").build();
-		
+
 		FileDataSink out = new FileDataSink(new CsvOutputFormat(), output, reducer, "Word Counts");
-		
+
 		CsvOutputFormat.configureRecordFormat(out).recordDelimiter('\n')
 				.fieldDelimiter(' ').field(StringValue.class, 0)
 				.field(IntValue.class, 1);
@@ -178,7 +178,7 @@ public class WordCountAccumulators implements Program, ProgramDescription {
 
 		JobExecutionResult result = LocalExecutor.execute(plan);
 
-		// Accumulators can be accessed by their name. 
+		// Accumulators can be accessed by their name.
 		System.out.println("Number of lines counter: "+ result.getAccumulatorResult(TokenizeLine.ACCUM_NUM_LINES));
 		System.out.println("Words per line histogram: " + result.getAccumulatorResult(TokenizeLine.ACCUM_WORDS_PER_LINE));
 		System.out.println("Distinct words: " + result.getAccumulatorResult(TokenizeLine.ACCUM_DISTINCT_WORDS));

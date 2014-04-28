@@ -30,41 +30,41 @@ import eu.stratosphere.util.Visitor;
  * Plan candidate node for partial solution of a bulk iteration.
  */
 public class BulkPartialSolutionPlanNode extends PlanNode {
-	
+
 	private static final Costs NO_COSTS = new Costs();
-	
+
 	private BulkIterationPlanNode containingIterationNode;
-	
+
 	public Object postPassHelper;
-	
-	
+
+
 	public BulkPartialSolutionPlanNode(BulkPartialSolutionNode template, String nodeName, GlobalProperties gProps, LocalProperties lProps) {
 		super(template, nodeName, DriverStrategy.NONE);
-		
+
 		this.globalProps = gProps;
 		this.localProps = lProps;
-		
+
 		// the partial solution does not cost anything
 		this.nodeCosts = NO_COSTS;
 		this.cumulativeCosts = NO_COSTS;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public BulkPartialSolutionNode getPartialSolutionNode() {
 		return (BulkPartialSolutionNode) this.template;
 	}
-	
+
 	public BulkIterationPlanNode getContainingIterationNode() {
 		return this.containingIterationNode;
 	}
-	
+
 	public void setContainingIterationNode(BulkIterationPlanNode containingIterationNode) {
 		this.containingIterationNode = containingIterationNode;
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public void accept(Visitor<PlanNode> visitor) {
 		if (visitor.preVisit(this)) {

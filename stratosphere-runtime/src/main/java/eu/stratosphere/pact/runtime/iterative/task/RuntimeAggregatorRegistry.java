@@ -26,44 +26,44 @@ import eu.stratosphere.util.InstantiationUtil;
  *
  */
 public class RuntimeAggregatorRegistry {
-	
+
 	private final Map<String, Aggregator<?>> aggregators;
-	
+
 	private final Map<String, Value> previousGlobalAggregate;
-	
+
 	public RuntimeAggregatorRegistry(Collection<AggregatorWithName<?>> aggs) {
 		this.aggregators = new HashMap<String, Aggregator<?>>();
 		this.previousGlobalAggregate = new HashMap<String, Value>();
-		
+
 		for (AggregatorWithName<?> agg : aggs) {
 			Aggregator<?> aggregator = InstantiationUtil.instantiate(agg.getAggregator(), Aggregator.class);
 			this.aggregators.put(agg.getName(), aggregator);
 		}
 	}
-	
+
 	public Value getPreviousGlobalAggregate(String name) {
 		return this.previousGlobalAggregate.get(name);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public <T extends Value> Aggregator<T> getAggregator(String name) {
 		return (Aggregator<T>) this.aggregators.get(name);
 	}
-	
+
 	public Map<String, Aggregator<?>> getAllAggregators() {
 		return this.aggregators;
 	}
-	
+
 	public void updateGlobalAggregatesAndReset(String[] names, Value[] aggregates) {
 		if (names == null || aggregates == null || names.length != aggregates.length) {
 			throw new IllegalArgumentException();
 		}
-		
+
 		// add global aggregates
 		for (int i = 0 ; i < names.length; i++) {
 			this.previousGlobalAggregate.put(names[i], aggregates[i]);
 		}
-		
+
 		// reset all aggregators
 		for (Aggregator<?> agg : this.aggregators.values()) {
 			agg.reset();

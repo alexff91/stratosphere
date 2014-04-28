@@ -16,8 +16,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Scanner;
 
 import com.google.common.base.Charsets;
@@ -29,11 +27,11 @@ import com.google.common.io.Files;
  */
 public class TupleGenerator {
 
-	// Parameters for tuple classes	
+	// Parameters for tuple classes
 	private static final String ROOT_DIRECTORY = "./src/main/java";
 
 	private static final String PACKAGE = "eu.stratosphere.api.java.tuple";
-	
+
 	private static final String BUILDER_SUFFIX = "builder";
 
 	private static final String GEN_TYPE_PREFIX = "T";
@@ -43,22 +41,22 @@ public class TupleGenerator {
 
 	private static final String END_INDICATOR = "END_OF_TUPLE_DEPENDENT_CODE";
 
-	// Parameters for CsvReader	
+	// Parameters for CsvReader
 	private static final String CSV_READER_PACKAGE = "eu.stratosphere.api.java.io";
 
 	private static final String CSV_READER_CLASSNAME = "CsvReader";
-	
+
 	// Parameters for TupleTypeInfo
 	private static final String TUPLE_TYPE_INFO_PACKAGE = "eu.stratosphere.api.java.typeutils";
-	
+
 	private static final String TUPLE_TYPE_INFO_CLASSNAME = "TupleTypeInfo";
-	
+
 	// Parameters for ProjectOperator
 	private static final String PROJECT_OPERATOR_PACKAGE = "eu.stratosphere.api.java.operators";
-	
+
 	private static final String PROJECT_OPERATOR_CLASSNAME = "ProjectOperator";
 
-	// min. and max. tuple arity	
+	// min. and max. tuple arity
 	private static final int FIRST = 1;
 
 	private static final int LAST = 22;
@@ -67,13 +65,13 @@ public class TupleGenerator {
 		File root = new File(ROOT_DIRECTORY);
 
 		createTupleClasses(root);
-		
+
 		createTupleBuilderClasses(root);
 
 		modifyCsvReader(root);
-		
+
 		modifyTupleTypeInfo(root);
-		
+
 		modifyProjectOperator(root);
 	}
 
@@ -92,7 +90,7 @@ public class TupleGenerator {
 
 		StringBuilder sb = new StringBuilder();
 		String line = null;
-		
+
 		boolean indicatorFound = false;
 
 		// add file beginning
@@ -103,7 +101,7 @@ public class TupleGenerator {
 				break;
 			}
 		}
-		
+
 		if(!indicatorFound) {
 			System.out.println("No indicator found in '" + file + "'. Will skip code generation.");
 			s.close();
@@ -131,27 +129,27 @@ public class TupleGenerator {
 		s.close();
 		Files.write(sb.toString(), file, Charsets.UTF_8);
 	}
-	
+
 	private static void modifyProjectOperator(File root) throws IOException {
 		// generate code
 		StringBuilder sb = new StringBuilder();
-		
+
 		for (int numFields = FIRST; numFields <= LAST; numFields++) {
 
 			// method begin
 			sb.append("\n");
-			
+
 			// method comment
 			sb.append("\t\t/**\n");
 			sb.append("\t\t * Projects a tuple data set to the previously selected fields. \n");
 			sb.append("\t\t * Requires the classes of the fields of the resulting tuples. \n");
-			sb.append("\t\t * \n");			
+			sb.append("\t\t * \n");
 			for (int i = 0; i < numFields; i++) {
 				sb.append("\t\t * @param type" + i + " The class of field '"+i+"' of the result tuples.\n");
 			}
 			sb.append("\t\t * @return The projected data set.\n");
 			sb.append("\t\t */\n");
-			
+
 			// method signature
 			sb.append("\t\tpublic <");
 			appendTupleTypeGenerics(sb, numFields);
@@ -167,7 +165,7 @@ public class TupleGenerator {
 				sb.append("> type" + i);
 			}
 			sb.append(") {\n");
-			
+
 			// convert type0..1 to types array
 			sb.append("\t\t\tClass<?>[] types = {");
 			for (int i = 0; i < numFields; i++) {
@@ -177,37 +175,37 @@ public class TupleGenerator {
 				sb.append("type" + i);
 			}
 			sb.append("};\n");
-			
+
 			// check number of types and extract field types
 			sb.append("\t\t\tif(types.length != this.fieldIndexes.length) {\n");
 			sb.append("\t\t\t\tthrow new IllegalArgumentException(\"Numbers of projected fields and types do not match.\");\n");
 			sb.append("\t\t\t}\n");
 			sb.append("\t\t\t\n");
 			sb.append("\t\t\tTypeInformation<?>[] fTypes = extractFieldTypes(fieldIndexes, types, ds.getType());\n");
-			
+
 			// create new tuple type info
 			sb.append("\t\t\tTupleTypeInfo<Tuple"+numFields+"<");
 			appendTupleTypeGenerics(sb, numFields);
 			sb.append(">> tType = new TupleTypeInfo<Tuple"+numFields+"<");
 			appendTupleTypeGenerics(sb, numFields);
 			sb.append(">>(fTypes);\n\n");
-			
+
 			// create and return new project operator
 			sb.append("\t\t\treturn new ProjectOperator<T, Tuple"+numFields+"<");
 			appendTupleTypeGenerics(sb, numFields);
 			sb.append(">>(this.ds, this.fieldIndexes, tType);\n");
-			
+
 			// method end
 			sb.append("\t\t}\n");
-			
+
 		}
-		
+
 		// insert code into file
 		File dir = getPackage(root, PROJECT_OPERATOR_PACKAGE);
 		File projectOperatorClass = new File(dir, PROJECT_OPERATOR_CLASSNAME + ".java");
 		insertCodeIntoFile(sb.toString(), projectOperatorClass);
 	}
-	
+
 	private static void modifyTupleTypeInfo(File root) throws IOException {
 		// generate code
 		StringBuilder sb = new StringBuilder();
@@ -219,7 +217,7 @@ public class TupleGenerator {
 			sb.append("Tuple" + i + ".class");
 		}
 		sb.append("\n\t};");
-		
+
 		// insert code into file
 		File dir = getPackage(root, TUPLE_TYPE_INFO_PACKAGE);
 		File tupleTypeInfoClass = new File(dir, TUPLE_TYPE_INFO_CLASSNAME + ".java");
@@ -318,7 +316,7 @@ public class TupleGenerator {
 	private static void writeTupleClass(PrintWriter w, int numFields) {
 		final String className = "Tuple" + numFields;
 
-		// head 
+		// head
 		w.print(HEADER);
 
 		// package and imports
@@ -457,7 +455,7 @@ public class TupleGenerator {
 		// foot
 		w.println("}");
 	}
-	
+
 	private static void createTupleBuilderClasses(File root) throws FileNotFoundException {
 		File dir = getPackage(root, PACKAGE+"."+BUILDER_SUFFIX);
 
@@ -469,7 +467,7 @@ public class TupleGenerator {
 			writer.close();
 		}
 	}
-	
+
 	private static void printGenericsString(PrintWriter w, int numFields){
 		w.print("<");
 		for (int i = 0; i < numFields; i++) {
@@ -480,11 +478,11 @@ public class TupleGenerator {
 		}
 		w.print(">");
 	}
-	
+
 	private static void writeTupleBuilderClass(PrintWriter w, int numFields) {
 		final String className = "Tuple" + numFields + "Builder";
 
-		// head 
+		// head
 		w.print(HEADER);
 
 		// package and imports
@@ -509,7 +507,7 @@ public class TupleGenerator {
 		w.println(">();");
 		w.println();
 
-		// add(...) function for adding a single tuple 
+		// add(...) function for adding a single tuple
 		w.print("\tpublic " + className);
 		printGenericsString(w, numFields);
 		w.print(" add(");
@@ -533,7 +531,7 @@ public class TupleGenerator {
 		w.println("\t\treturn this;");
 		w.println("\t}");
 		w.println();
-		
+
 		// build() function, returns an array of tuples
 		w.println("\t@SuppressWarnings(\"unchecked\")");
 		w.print("\tpublic Tuple" + numFields);
@@ -541,12 +539,12 @@ public class TupleGenerator {
 		w.println("[] build(){");
 		w.println("\t\treturn tuples.toArray(new Tuple" + numFields + "[tuples.size()]);");
 		w.println("\t}");
-		
+
 		// foot
 		w.println("}");
 	}
-	
-	private static String HEADER = 
+
+	private static String HEADER =
 		"/***********************************************************************************************************************\n" +
 		" *\n" +
 		" * Copyright (C) 2010-2013 by the Stratosphere project (http://stratosphere.eu)\n" +

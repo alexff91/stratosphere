@@ -35,20 +35,20 @@ import eu.stratosphere.nephele.topology.NetworkTopology;
  *
  */
 public class MemoryArchivist implements ArchiveListener {
-	
-	
+
+
 	private int max_entries;
 	/**
 	 * The map which stores all collected events until they are either
 	 * fetched by the client or discarded.
 	 */
 	private final Map<JobID, List<AbstractEvent>> collectedEvents = new HashMap<JobID, List<AbstractEvent>>();
-	
+
 	/**
 	 * Map of recently started jobs with the time stamp of the last received job event.
 	 */
 	private final Map<JobID, RecentJobEvent> oldJobs = new HashMap<JobID, RecentJobEvent>();
-	
+
 	/**
 	 * Map of management graphs belonging to recently started jobs with the time stamp of the last received job event.
 	 */
@@ -58,43 +58,43 @@ public class MemoryArchivist implements ArchiveListener {
 	 * Map of network topologies belonging to recently started jobs with the time stamp of the last received job event.
 	 */
 	private final Map<JobID, NetworkTopology> networkTopologies = new HashMap<JobID, NetworkTopology>();
-	
+
 	private final LinkedList<JobID> lru = new LinkedList<JobID>();
-	
+
 	public MemoryArchivist(int max_entries) {
 		this.max_entries = max_entries;
 	}
-	
-	
+
+
 	public void archiveEvent(JobID jobId, AbstractEvent event) {
-		
+
 		if(!collectedEvents.containsKey(jobId)) {
 			collectedEvents.put(jobId, new ArrayList<AbstractEvent>());
 		}
-		
+
 		collectedEvents.get(jobId).add(event);
-		
+
 		cleanup(jobId);
 	}
-	
+
 	public void archiveJobevent(JobID jobId, RecentJobEvent event) {
-		
+
 		oldJobs.put(jobId, event);
-		
+
 		cleanup(jobId);
 	}
-	
+
 	public void archiveManagementGraph(JobID jobId, ManagementGraph graph) {
-		
+
 		managementGraphs.put(jobId, graph);
-		
+
 		cleanup(jobId);
 	}
-	
+
 	public void archiveNetworkTopology(JobID jobId, NetworkTopology topology) {
-		
+
 		networkTopologies.put(jobId, topology);
-		
+
 		cleanup(jobId);
 	}
 
@@ -102,10 +102,11 @@ public class MemoryArchivist implements ArchiveListener {
 
 		return new ArrayList<RecentJobEvent>(oldJobs.values());
 	}
-	
+
 	private void cleanup(JobID jobId) {
-		if(!lru.contains(jobId))
-			lru.addFirst(jobId);
+		if(!lru.contains(jobId)) {
+		lru.addFirst(jobId);
+		}
 		if(lru.size() > this.max_entries) {
 			JobID toRemove = lru.removeLast();
 			collectedEvents.remove(toRemove);
@@ -114,23 +115,23 @@ public class MemoryArchivist implements ArchiveListener {
 			networkTopologies.remove(toRemove);
 		}
 	}
-	
+
 	public RecentJobEvent getJob(JobID jobId) {
 
 		return oldJobs.get(jobId);
 	}
-	
+
 	public ManagementGraph getManagementGraph(final JobID jobID) {
 
 		synchronized (this.managementGraphs) {
 			return this.managementGraphs.get(jobID);
 		}
 	}
-	
+
 	public List<AbstractEvent> getEvents(JobID jobID) {
 		return collectedEvents.get(jobID);
 	}
-	
+
 	public long getJobTime(JobID jobID, JobStatus jobStatus) {
 		for(AbstractEvent event : this.getEvents(jobID)) {
 			if(event instanceof JobEvent)
@@ -142,7 +143,7 @@ public class MemoryArchivist implements ArchiveListener {
 		}
 		return 0;
 	}
-	
+
 	public long getVertexTime(JobID jobID, ManagementVertexID jobVertexID, ExecutionState executionState) {
 		for(AbstractEvent event : this.getEvents(jobID)) {
 			if(event instanceof ExecutionStateChangeEvent)

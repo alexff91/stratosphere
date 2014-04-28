@@ -24,26 +24,26 @@ import eu.stratosphere.api.common.operators.util.UserCodeWrapper;
  * @see GenericCrosser
  */
 public class CrossOperatorBase<T extends GenericCrosser<?, ?, ?>> extends DualInputOperator<T> {
-	
+
 	public CrossOperatorBase(UserCodeWrapper<T> udf, String name) {
 		super(udf, name);
 	}
-	
+
 	public CrossOperatorBase(T udf, String name) {
 		this(new UserCodeObjectWrapper<T>(udf), name);
 	}
-	
+
 	public CrossOperatorBase(Class<? extends T> udf, String name) {
 		this(new UserCodeClassWrapper<T>(udf), name);
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Marker interface to declare the second input as the smaller one.
 	 */
 	public static interface CrossWithSmall {}
-	
+
 	/**
 	 * Marker interface to declare the second input as the larger one.
 	 */

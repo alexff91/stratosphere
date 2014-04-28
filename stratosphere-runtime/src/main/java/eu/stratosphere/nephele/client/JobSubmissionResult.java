@@ -21,14 +21,14 @@ import java.io.IOException;
  * A <code>JobSubmissionResult</code> is used to report the results
  * of a job submission. It contains a return code and a description.
  * In case of a submission error the description includes an error message.
- * 
+ *
  */
 public class JobSubmissionResult extends AbstractJobResult {
 
 	/**
 	 * Constructs a new <code>JobSubmissionResult</code> object with
 	 * the given return code.
-	 * 
+	 *
 	 * @param returnCode
 	 *        the return code of the submission result.
 	 * @param description

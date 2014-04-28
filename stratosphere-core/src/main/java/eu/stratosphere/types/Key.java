@@ -21,26 +21,26 @@ package eu.stratosphere.types;
  * <p>
  * This interface extends {@link eu.stratosphere.types.Value} and requires to implement
  * the serialization of its value.
- * 
+ *
  * @see eu.stratosphere.types.Value
  * @see eu.stratosphere.core.io.IOReadableWritable
  * @see java.lang.Comparable
  */
 public interface Key extends Value, Comparable<Key> {
-	
+
 	/**
 	 * All keys must override the hash-code function to generate proper deterministic hash codes,
 	 * based on their contents.
-	 * 
+	 *
 	 * @return The hash code of the key
 	 */
 	public int hashCode();
-	
+
 	/**
 	 * Compares the object on equality with another object.
-	 * 
+	 *
 	 * @param other The other object to compare against.
-	 * 
+	 *
 	 * @return True, iff this object is identical to the other object, false otherwise.
 	 */
 	public boolean equals(Object other);

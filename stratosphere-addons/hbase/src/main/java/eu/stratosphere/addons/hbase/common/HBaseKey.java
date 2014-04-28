@@ -17,8 +17,6 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
-
 import eu.stratosphere.types.Key;
 
 /**
@@ -29,18 +27,18 @@ public class HBaseKey implements Key {
 	private static final long serialVersionUID = 1L;
 
 	private ImmutableBytesWritable writable;
-	
+
 
 	public HBaseKey() {
 		this.writable = new ImmutableBytesWritable();
 	}
-	
+
 
 	public HBaseKey(ImmutableBytesWritable writable) {
 		this.writable = writable;
 	}
-	
-	
+
+
 	public ImmutableBytesWritable getWritable() {
 		return writable;
 	}
@@ -48,9 +46,9 @@ public class HBaseKey implements Key {
 	public void setWritable(ImmutableBytesWritable writable) {
 		this.writable = writable;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public void write(DataOutput out) throws IOException {
 		this.writable.write(out);
@@ -65,7 +63,7 @@ public class HBaseKey implements Key {
 	public int hashCode() {
 		return this.writable.hashCode();
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj.getClass() == HBaseKey.class) {
@@ -74,13 +72,13 @@ public class HBaseKey implements Key {
 			return false;
 		}
 	}
-	
+
 	@Override
 	public int compareTo(Key other) {
 		if (other.getClass() == HBaseKey.class) {
 			return this.writable.compareTo(((HBaseKey) other).writable);
 		} else {
-			throw new IllegalArgumentException("Compare between HBase key and " + 
+			throw new IllegalArgumentException("Compare between HBase key and " +
 					other.getClass().getName() + " is not defined.");
 		}
 	}

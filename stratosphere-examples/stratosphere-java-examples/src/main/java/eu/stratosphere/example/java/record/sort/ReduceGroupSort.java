@@ -23,8 +23,8 @@ import eu.stratosphere.api.common.operators.FileDataSink;
 import eu.stratosphere.api.common.operators.FileDataSource;
 import eu.stratosphere.api.common.operators.Order;
 import eu.stratosphere.api.common.operators.Ordering;
-import eu.stratosphere.api.java.record.functions.ReduceFunction;
 import eu.stratosphere.api.java.record.functions.FunctionAnnotation.ConstantFieldsExcept;
+import eu.stratosphere.api.java.record.functions.ReduceFunction;
 import eu.stratosphere.api.java.record.io.CsvInputFormat;
 import eu.stratosphere.api.java.record.io.CsvOutputFormat;
 import eu.stratosphere.api.java.record.operators.ReduceOperator;
@@ -34,10 +34,10 @@ import eu.stratosphere.util.Collector;
 
 /**
  * This job shows how to define ordered input for a Reduce contract.
- * The inputs for CoGroups can be (individually) ordered as well.  
+ * The inputs for CoGroups can be (individually) ordered as well.
  */
 public class ReduceGroupSort implements Program, ProgramDescription {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -46,20 +46,20 @@ public class ReduceGroupSort implements Program, ProgramDescription {
 	 */
 	@ConstantFieldsExcept(0)
 	public static class IdentityReducer extends ReduceFunction implements Serializable {
-		
+
 		private static final long serialVersionUID = 1L;
-		
+
 		@Override
 		public void reduce(Iterator<Record> records, Collector<Record> out) {
-			
+
 			Record next = records.next();
-			
+
 			// Increments the first field of the first record of the reduce group by 100 and emit it
 			IntValue incrVal = next.getField(0, IntValue.class);
 			incrVal.setValue(incrVal.getValue() + 100);
 			next.setField(0, incrVal);
 			out.collect(next);
-			
+
 			// emit all remaining records
 			while (records.hasNext()) {
 				out.collect(records.next());
@@ -70,7 +70,7 @@ public class ReduceGroupSort implements Program, ProgramDescription {
 
 	@Override
 	public Plan getPlan(String... args) {
-		
+
 		// parse job parameters
 		int numSubTasks = (args.length > 0 ? Integer.parseInt(args[0]) : 1);
 		String dataInput = (args.length > 1 ? args[1] : "");
@@ -79,7 +79,7 @@ public class ReduceGroupSort implements Program, ProgramDescription {
 		@SuppressWarnings("unchecked")
 		CsvInputFormat format = new CsvInputFormat(' ', IntValue.class, IntValue.class);
 		FileDataSource input = new FileDataSource(format, dataInput, "Input");
-		
+
 		// create the reduce contract and sets the key to the first field
 		ReduceOperator sorter = ReduceOperator.builder(new IdentityReducer(), IntValue.class, 0)
 			.input(input)
@@ -95,7 +95,7 @@ public class ReduceGroupSort implements Program, ProgramDescription {
 			.fieldDelimiter(' ')
 			.field(IntValue.class, 0)
 			.field(IntValue.class, 1);
-		
+
 		Plan plan = new Plan(out, "SecondarySort Example");
 		plan.setDefaultParallelism(numSubTasks);
 		return plan;

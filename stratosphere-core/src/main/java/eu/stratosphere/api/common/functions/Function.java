@@ -20,10 +20,10 @@ import eu.stratosphere.configuration.Configuration;
  * for PACT programs.
  */
 public interface Function {
-	
+
 	/**
-	 * Initialization method for the stub. It is called before the actual working methods 
-	 * (like <i>map</i> or <i>match</i>). This method should be used for configuration and 
+	 * Initialization method for the stub. It is called before the actual working methods
+	 * (like <i>map</i> or <i>match</i>). This method should be used for configuration and
 	 * initialization of the stub implementation.
 	 * <p>
 	 * This method receives the parameters attached to the contract. Consider the following pseudo code example,
@@ -34,22 +34,22 @@ public interface Function {
 	 *     MapContract mc = new MapContract(MyMapper.class, "My Mapper");
 	 *     mc.setDegreeOfParallelism(48);
 	 *     mc.getStubParameters().setString("foo", "bar");
-	 *     
+	 *
 	 *      ...
-	 *      
+	 *
 	 *      Plan plan = new Plan(...);
 	 *      return plan;
 	 * }
-	 * 
+	 *
 	 * public class MyMapper extends MapStub {
-	 * 
+	 *
 	 *     private String searchString;
-	 *     
+	 *
 	 *     public void open(Configuration parameters) {
 	 *         this.searchString = parameters.getString("foo", null);
 	 *         // searchString will be "bar" when job is started
 	 *     }
-	 *     
+	 *
 	 *     public void map(Record record, Collector collector) {
 	 *         if ( record.getValue(0, StringValue.class).equals(this.searchString) ) {
 	 *             collector.emit(record);
@@ -59,13 +59,13 @@ public interface Function {
 	 * </code>
 	 * <p>
 	 * By default, this method does nothing.
-	 * 
-	 * @param parameters The configuration containing the parameters attached to the contract. 
-	 * 
+	 *
+	 * @param parameters The configuration containing the parameters attached to the contract.
+	 *
 	 * @throws Exception Implementations may forward exceptions, which are caught by the runtime. When the
 	 *                   runtime catches an exception, it aborts the task and lets the fail-over logic
 	 *                   decide whether to retry the task execution.
-	 * 
+	 *
 	 * @see eu.stratosphere.configuration.Configuration
 	 */
 	void open(Configuration parameters) throws Exception;
@@ -73,27 +73,27 @@ public interface Function {
 	/**
 	 * Teardown method for the user code. It is called after the last call to the main working methods
 	 * (e.g. <i>map</i> or <i>match</i>). It is called also when the task is aborted, in which case exceptions
-	 * thrown by this method are logged but ignored. 
+	 * thrown by this method are logged but ignored.
 	 * <p>
 	 * This method should be used for clean up.
-	 * 
+	 *
 	 * @throws Exception Implementations may forward exceptions, which are caught by the runtime. When the
 	 *                   runtime catches an exception, it aborts the task and lets the fail-over logic
 	 *                   decide whether to retry the task execution.
 	 */
 	void close() throws Exception;
-	
-	
+
+
 	/**
 	 * Gets the context that contains information about the UDF's runtime.
-	 * 
+	 *
 	 * @return The UDF's runtime context.
 	 */
 	RuntimeContext getRuntimeContext();
-	
+
 	/**
 	 * Sets the stub's runtime context. Called by the framework when creating a parallel instance of the stub.
-	 *  
+	 *
 	 * @param t The runtime context.
 	 */
 	void setRuntimeContext(RuntimeContext t);

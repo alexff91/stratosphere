@@ -26,7 +26,7 @@ import eu.stratosphere.util.StringUtils;
 /**
  * This class contains utility functions to load and configure Nephele's
  * profiling component.
- * 
+ *
  */
 public class ProfilingUtils {
 
@@ -77,7 +77,7 @@ public class ProfilingUtils {
 
 	/**
 	 * Creates an instance of the job manager's profiling component.
-	 * 
+	 *
 	 * @param profilerClassName
 	 *        the class name of the profiling component to load
 	 * @param jobManagerBindAddress
@@ -96,12 +96,12 @@ public class ProfilingUtils {
 		}
 
 		JobManagerProfiler profiler = null;
-		
+
 		try {
-			
+
 			final Constructor<JobManagerProfiler> constr = (Constructor<JobManagerProfiler>) profilerClass.getConstructor(InetAddress.class);
 			profiler = constr.newInstance(jobManagerBindAddress);
-		
+
 		} catch(InvocationTargetException e) {
 			LOG.error("Cannot create profiler: " + StringUtils.stringifyException(e));
 			return null;
@@ -124,7 +124,7 @@ public class ProfilingUtils {
 
 	/**
 	 * Creates an instance of the task manager's profiling component.
-	 * 
+	 *
 	 * @param profilerClassName
 	 *        the class name of the profiling component to load
 	 * @return an instance of the task manager profiling component or <code>null</code> if an error occurs

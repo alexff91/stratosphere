@@ -24,15 +24,15 @@ import eu.stratosphere.api.common.operators.util.UserCodeWrapper;
  * @see GenericFlatMap
  */
 public class FlatMapOperatorBase<T extends GenericFlatMap<?, ?>> extends SingleInputOperator<T> {
-	
+
 	public FlatMapOperatorBase(UserCodeWrapper<T> udf, String name) {
 		super(udf, name);
 	}
-	
+
 	public FlatMapOperatorBase(T udf, String name) {
 		super(new UserCodeObjectWrapper<T>(udf), name);
 	}
-	
+
 	public FlatMapOperatorBase(Class<? extends T> udf, String name) {
 		super(new UserCodeClassWrapper<T>(udf), name);
 	}

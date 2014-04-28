@@ -30,17 +30,17 @@ import eu.stratosphere.pact.runtime.util.MathUtils;
  *
  */
 public class SimpleCollectingOutputView extends AbstractPagedOutputView
-{	
+{
 	private final List<MemorySegment> fullSegments;
-	
+
 	private final MemorySegmentSource memorySource;
-	
+
 	private final int segmentSizeBits;
-	
+
 	private int segmentNum;
 
 
-	public SimpleCollectingOutputView(List<MemorySegment> fullSegmentTarget, 
+	public SimpleCollectingOutputView(List<MemorySegment> fullSegmentTarget,
 									MemorySegmentSource memSource, int segmentSize)
 	{
 		super(memSource.nextSegment(), segmentSize, 0);
@@ -49,14 +49,14 @@ public class SimpleCollectingOutputView extends AbstractPagedOutputView
 		this.memorySource = memSource;
 		this.fullSegments.add(getCurrentSegment());
 	}
-	
-	
+
+
 	public void reset()
 	{
 		if (this.fullSegments.size() != 0) {
 			throw new IllegalStateException("The target list still contains memory segments.");
 		}
-	
+
 		clear();
 		try {
 			advance();
@@ -65,13 +65,13 @@ public class SimpleCollectingOutputView extends AbstractPagedOutputView
 		}
 		this.segmentNum = 0;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.stratosphere.nephele.services.memorymanager.AbstractPagedOutputView#nextSegment(eu.stratosphere.nephele.services.memorymanager.MemorySegment, int)
 	 */
 	@Override
 	protected MemorySegment nextSegment(MemorySegment current, int positionInCurrent) throws EOFException
-	{	
+	{
 		final MemorySegment next = this.memorySource.nextSegment();
 		if (next != null) {
 			this.fullSegments.add(next);
@@ -81,7 +81,7 @@ public class SimpleCollectingOutputView extends AbstractPagedOutputView
 			throw new EOFException();
 		}
 	}
-	
+
 	public long getCurrentOffset() {
 		return (((long) this.segmentNum) << this.segmentSizeBits) + getCurrentPositionInSegment();
 	}

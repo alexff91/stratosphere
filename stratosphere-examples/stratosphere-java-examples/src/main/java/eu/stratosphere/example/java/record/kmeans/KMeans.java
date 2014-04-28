@@ -45,7 +45,7 @@ import eu.stratosphere.util.Collector;
 
 
 public class KMeans implements Program, ProgramDescription {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	@Override
@@ -64,13 +64,13 @@ public class KMeans implements Program, ProgramDescription {
 		// data source for cluster center input
 		@SuppressWarnings("unchecked")
 		FileDataSource clustersSource = new FileDataSource(new CsvInputFormat('|', IntValue.class, DoubleValue.class, DoubleValue.class, DoubleValue.class), clusterInput, "Centers");
-		
+
 		MapOperator dataPoints = MapOperator.builder(new PointBuilder()).name("Build data points").input(pointsSource).build();
-		
+
 		MapOperator clusterPoints = MapOperator.builder(new PointBuilder()).name("Build cluster points").input(clustersSource).build();
-		
+
 		// ---------------------- Begin K-Means Loop ---------------------
-		
+
 		BulkIteration iter = new BulkIteration("k-means loop");
 		iter.setInput(clusterPoints);
 		iter.setMaximumNumberOfIterations(numIterations);
@@ -87,11 +87,11 @@ public class KMeans implements Program, ProgramDescription {
 			.input(findNearestClusterCenters)
 			.name("Recompute Center Positions")
 			.build();
-		
+
 		iter.setNextPartialSolution(recomputeClusterCenter);
 
 		// ---------------------- End K-Means Loop ---------------------
-		
+
 		// create DataSinkContract for writing the new cluster positions
 		FileDataSink newClusterPoints = new FileDataSink(new PointOutFormat(), output, iter, "New Center Positions");
 
@@ -104,19 +104,19 @@ public class KMeans implements Program, ProgramDescription {
 	public String getDescription() {
 		return "Parameters: <numSubStasks> <dataPoints> <clusterCenters> <output> <numIterations>";
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 	//  Data Types and UDFs
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * A simple three-dimensional point.
 	 */
 	public static final class Point implements Value {
 		private static final long serialVersionUID = 1L;
-		
+
 		public double x, y, z;
-		
+
 		public Point() {}
 
 		public Point(double x, double y, double z) {
@@ -124,24 +124,24 @@ public class KMeans implements Program, ProgramDescription {
 			this.y = y;
 			this.z = z;
 		}
-		
+
 		public void add(Point other) {
 			x += other.x;
 			y += other.y;
 			z += other.z;
 		}
-		
+
 		public Point div(long val) {
 			x /= val;
 			y /= val;
 			z /= val;
 			return this;
 		}
-		
+
 		public double euclideanDistance(Point other) {
 			return Math.sqrt((x-other.x)*(x-other.x) + (y-other.y)*(y-other.y) + (z-other.z)*(z-other.z));
 		}
-		
+
 		public void clear() {
 			x = y = z = 0.0;
 		}
@@ -159,24 +159,24 @@ public class KMeans implements Program, ProgramDescription {
 			y = in.readDouble();
 			z = in.readDouble();
 		}
-		
+
 		@Override
 		public String toString() {
 			return "(" + x + "|" + y + "|" + z + ")";
 		}
 	}
-	
+
 	public static final class PointWithId {
-		
+
 		public int id;
 		public Point point;
-		
+
 		public PointWithId(int id, Point p) {
 			this.id = id;
 			this.point = p;
 		}
 	}
-	
+
 	/**
 	 * Determines the closest cluster center for a data point.
 	 */
@@ -194,7 +194,7 @@ public class KMeans implements Program, ProgramDescription {
 		@Override
 		public void open(Configuration parameters) throws Exception {
 			Collection<Record> clusterCenters = this.getRuntimeContext().getBroadcastVariable("centers");
-			
+
 			centers.clear();
 			for (Record r : clusterCenters) {
 				centers.add(new PointWithId(r.getField(0, IntValue.class).getValue(), r.getField(1, Point.class)));
@@ -203,7 +203,7 @@ public class KMeans implements Program, ProgramDescription {
 
 		/**
 		 * Computes a minimum aggregation on the distance of a data point to cluster centers.
-		 * 
+		 *
 		 * Output Format:
 		 * 0: centerID
 		 * 1: pointVector
@@ -212,7 +212,7 @@ public class KMeans implements Program, ProgramDescription {
 		@Override
 		public void map(Record dataPointRecord, Collector<Record> out) {
 			Point p = dataPointRecord.getField(1, Point.class);
-			
+
 			double nearestDistance = Double.MAX_VALUE;
 			int centerId = -1;
 
@@ -220,8 +220,8 @@ public class KMeans implements Program, ProgramDescription {
 			for (PointWithId center : centers) {
 				// compute distance
 				double distance = p.euclideanDistance(center.point);
-				
-				// update nearest cluster if necessary 
+
+				// update nearest cluster if necessary
 				if (distance < nearestDistance) {
 					nearestDistance = distance;
 					centerId = center.id;
@@ -237,14 +237,14 @@ public class KMeans implements Program, ProgramDescription {
 			out.collect(result);
 		}
 	}
-	
+
 	@Combinable
 	public static final class RecomputeClusterCenter extends ReduceFunction {
 		private static final long serialVersionUID = 1L;
-		
+
 		private final Point p = new Point();
-		
-		
+
+
 		/**
 		 * Compute the new position (coordinate vector) of a cluster center.
 		 */
@@ -262,25 +262,25 @@ public class KMeans implements Program, ProgramDescription {
 		public void combine(Iterator<Record> points, Collector<Record> out) {
 			out.collect(sumPointsAndCount(points));
 		}
-		
+
 		private final Record sumPointsAndCount(Iterator<Record> dataPoints) {
 			Record next = null;
 			p.clear();
 			int count = 0;
-			
+
 			// compute coordinate vector sum and count
 			while (dataPoints.hasNext()) {
 				next = dataPoints.next();
 				p.add(next.getField(1, Point.class));
 				count += next.getField(2, IntValue.class).getValue();
 			}
-			
+
 			next.setField(1, p);
 			next.setField(2, new IntValue(count));
 			return next;
 		}
 	}
-	
+
 	public static final class PointBuilder extends MapFunction {
 
 		private static final long serialVersionUID = 1L;
@@ -290,29 +290,29 @@ public class KMeans implements Program, ProgramDescription {
 			double x = record.getField(1, DoubleValue.class).getValue();
 			double y = record.getField(2, DoubleValue.class).getValue();
 			double z = record.getField(3, DoubleValue.class).getValue();
-			
+
 			record.setField(1, new Point(x, y, z));
 			out.collect(record);
 		}
 	}
-	
+
 	public static final class PointOutFormat extends FileOutputFormat {
 
 		private static final long serialVersionUID = 1L;
-		
+
 		private static final String format = "%d|%.1f|%.1f|%.1f|\n";
 
 		@Override
 		public void writeRecord(Record record) throws IOException {
 			int id = record.getField(0, IntValue.class).getValue();
 			Point p = record.getField(1, Point.class);
-			
+
 			byte[] bytes = String.format(format, id, p.x, p.y, p.z).getBytes();
-			
+
 			this.stream.write(bytes);
 		}
 	}
-	
+
 	public static void main(String[] args) throws Exception {
 		System.out.println(LocalExecutor.optimizerPlanAsJSON(new KMeans().getPlan("4", "/dev/random", "/dev/random", "/tmp", "20")));
 	}

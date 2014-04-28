@@ -18,7 +18,7 @@ import eu.stratosphere.nephele.taskmanager.bufferprovider.BufferProvider;
 /**
  * This exception is thrown to indicate that the deserialization process of a {@link TransferEnvelope} could not be
  * continued because a {@link Buffer} to store the envelope's content is currently not available.
- * 
+ *
  */
 public final class NoBufferAvailableException extends Exception {
 
@@ -34,7 +34,7 @@ public final class NoBufferAvailableException extends Exception {
 
 	/**
 	 * Constructs a new exception.
-	 * 
+	 *
 	 * @param bufferProvider
 	 *        the buffer provider which could not deliver a buffer
 	 */
@@ -44,7 +44,7 @@ public final class NoBufferAvailableException extends Exception {
 
 	/**
 	 * Returns the buffer provider which could not deliver a buffer.
-	 * 
+	 *
 	 * @return the buffer provider which could not deliver a buffer
 	 */
 	public BufferProvider getBufferProvider() {

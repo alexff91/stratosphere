@@ -25,7 +25,7 @@ import eu.stratosphere.api.common.operators.util.UserCodeWrapper;
  * @see GenericGroupReduce
  */
 public class GroupReduceOperatorBase<T extends GenericGroupReduce<?, ?>> extends SingleInputOperator<T> {
-	
+
 
 	/**
 	 * The ordering for the order inside a reduce group.
@@ -33,42 +33,42 @@ public class GroupReduceOperatorBase<T extends GenericGroupReduce<?, ?>> extends
 	private Ordering groupOrder;
 
 	private boolean combinable;
-	
-	
+
+
 	public GroupReduceOperatorBase(UserCodeWrapper<T> udf, int[] keyPositions, String name) {
 		super(udf, keyPositions, name);
 		this.combinable = false;
 	}
-	
+
 	public GroupReduceOperatorBase(T udf, int[] keyPositions, String name) {
 		super(new UserCodeObjectWrapper<T>(udf), keyPositions, name);
 		this.combinable = false;
 	}
-	
+
 	public GroupReduceOperatorBase(Class<? extends T> udf, int[] keyPositions, String name) {
 		super(new UserCodeClassWrapper<T>(udf), keyPositions, name);
 		this.combinable = false;
 	}
-	
+
 	public GroupReduceOperatorBase(UserCodeWrapper<T> udf, String name) {
 		super(udf, name);
 		this.combinable = false;
 	}
-	
+
 	public GroupReduceOperatorBase(T udf, String name) {
 		super(new UserCodeObjectWrapper<T>(udf), name);
 		this.combinable = false;
 	}
-	
+
 	public GroupReduceOperatorBase(Class<? extends T> udf, String name) {
 		super(new UserCodeClassWrapper<T>(udf), name);
 		this.combinable = false;
 	}
-	
+
 
 	/**
 	 * Sets the order of the elements within a reduce group.
-	 * 
+	 *
 	 * @param order The order for the elements in a reduce group.
 	 */
 	public void setGroupOrder(Ordering order) {
@@ -78,19 +78,19 @@ public class GroupReduceOperatorBase<T extends GenericGroupReduce<?, ?>> extends
 	/**
 	 * Gets the order of elements within a reduce group. If no such order has been
 	 * set, this method returns null.
-	 * 
+	 *
 	 * @return The secondary order.
 	 */
 	public Ordering getGroupOrder() {
 		return this.groupOrder;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public void setCombinable(boolean combinable) {
 		this.combinable = combinable;
 	}
-	
+
 	public boolean isCombinable() {
 		return this.combinable;
 	}

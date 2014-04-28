@@ -25,9 +25,9 @@ import eu.stratosphere.types.LongValue;
 public class LongValueSerializer extends TypeSerializer<LongValue> {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	public static final LongValueSerializer INSTANCE = new LongValueSerializer();
-	
+
 	@Override
 	public LongValue createInstance() {
 		return new LongValue();

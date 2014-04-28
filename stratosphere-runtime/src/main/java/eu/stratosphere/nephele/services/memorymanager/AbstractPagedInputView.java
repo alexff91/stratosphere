@@ -27,29 +27,29 @@ import eu.stratosphere.core.memory.MemorySegment;
  * implement the methods to provide the next memory page once the boundary is crossed.
  */
 public abstract class AbstractPagedInputView implements DataInputView {
-	
+
 	private MemorySegment currentSegment;
-	
+
 	protected final int headerLength;				// the number of bytes to skip at the beginning of each segment
-	
+
 	private int positionInSegment;					// the offset in the current segment
-	
+
 	private int limitInSegment;						// the limit in the current segment before switching to the next
-	
+
 	private byte[] utfByteBuffer;					// reusable byte buffer for utf-8 decoding
 	private char[] utfCharBuffer;					// reusable char buffer for utf-8 decoding
-	
-	
+
+
 	// --------------------------------------------------------------------------------------------
 	//                                    Constructors
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Creates a new view that starts with the given segment. The input starts directly after the header
 	 * of the given page. If the header size is zero, it starts at the beginning. The specified initial
 	 * limit describes up to which position data may be read from the current segment, before the view must
 	 * advance to the next segment.
-	 * 
+	 *
 	 * @param initialSegment The memory segment to start reading from.
 	 * @param initialLimit The position one after the last valid byte in the initial segment.
 	 * @param headerLength The number of bytes to skip at the beginning of each segment for the header. This
@@ -60,14 +60,14 @@ public abstract class AbstractPagedInputView implements DataInputView {
 		this.positionInSegment = headerLength;
 		seekInput(initialSegment, headerLength, initialLimit);
 	}
-	
+
 	/**
 	 * Creates a new view that is initially not bound to a memory segment. This constructor is typically
 	 * for views that always seek first.
 	 * <p>
-	 * WARNING: The view is not readable until the first call to either {@link #advance()}, 
+	 * WARNING: The view is not readable until the first call to either {@link #advance()},
 	 * or to {@link #seekInput(MemorySegment, int, int)}.
-	 * 
+	 *
 	 * @param headerLength The number of bytes to skip at the beginning of each segment for the header.
 	 */
 	protected AbstractPagedInputView(int headerLength) {
@@ -77,73 +77,73 @@ public abstract class AbstractPagedInputView implements DataInputView {
 	// --------------------------------------------------------------------------------------------
 	//                                  Page Management
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Gets the memory segment that will be used to read the next bytes from. If the segment is exactly exhausted,
 	 * meaning that the last byte read was the last byte available in the segment, then this segment will
 	 * not serve the next bytes. The segment to serve the next bytes will be obtained through the
 	 * {@link #nextSegment(MemorySegment)} method.
-	 * 
+	 *
 	 * @return The current memory segment.
 	 */
 	public MemorySegment getCurrentSegment() {
 		return this.currentSegment;
 	}
-	
+
 	/**
 	 * Gets the position from which the next byte will be read. If that position is equal to the current limit,
 	 * then the next byte will be read from next segment.
-	 * 
+	 *
 	 * @return
 	 * @see #getCurrentSegmentLimit()
 	 */
 	public int getCurrentPositionInSegment() {
 		return this.positionInSegment;
 	}
-	
+
 	/**
 	 * Gets the current limit in the memory segment. This value points to the byte one after the last valid byte
 	 * in the memory segment.
-	 * 
+	 *
 	 * @return The current limit in the memory segment.
 	 * @see #getCurrentPositionInSegment()
 	 */
 	public int getCurrentSegmentLimit() {
 		return this.limitInSegment;
 	}
-	
+
 	/**
 	 * The method by which concrete subclasses realize page crossing. This method is invoked when the current page
 	 * is exhausted and a new page is required to continue the reading. If no further page is available, this
 	 * method must throw an {@link EOFException}.
-	 *  
+	 *
 	 * @param current The current page that was read to its limit. May be {@code null}, if this method is
 	 *                invoked for the first time.
 	 * @return The next page from which the reading should continue. May not be {@code null}. If the input is
 	 *         exhausted, an {@link EOFException} must be thrown instead.
-	 *         
+	 *
 	 * @throws EOFException Thrown, if no further segment is available.
 	 * @throws IOException Thrown, if the method cannot provide the next page due to an I/O related problem.
 	 */
 	protected abstract MemorySegment nextSegment(MemorySegment current) throws EOFException, IOException;
-	
+
 	/**
 	 * Gets the limit for reading bytes from the given memory segment. This method must return the position
 	 * of the byte after the last valid byte in the given memory segment. When the position returned by this
 	 * method is reached, the view will attempt to switch to the next memory segment.
-	 * 
+	 *
 	 * @param segment The segment to determine the limit for.
 	 * @return The limit for the given memory segment.
 	 */
 	protected abstract int getLimitForSegment(MemorySegment segment);
-	
+
 	/**
 	 * Advances the view to the next memory segment. The reading will continue after the header of the next
 	 * segment. This method uses {@link #nextSegment(MemorySegment)} and {@link #getLimitForSegment(MemorySegment)}
 	 * to get the next segment and set its limit.
-	 * 
+	 *
 	 * @throws IOException Thrown, if the next segment could not be obtained.
-	 * 
+	 *
 	 * @see #nextSegment(MemorySegment)
 	 * @see #getLimitForSegment(MemorySegment)
 	 */
@@ -154,11 +154,11 @@ public abstract class AbstractPagedInputView implements DataInputView {
 		this.limitInSegment = getLimitForSegment(this.currentSegment);
 		this.positionInSegment = this.headerLength;
 	}
-	
+
 	/**
 	 * Sets the internal state of the view such that the next bytes will be read from the given memory segment,
 	 * starting at the given position. The memory segment will provide bytes up to the given limit position.
-	 * 
+	 *
 	 * @param segment The segment to read the next bytes from.
 	 * @param positionInSegment The position in the segment to start reading from.
 	 * @param limitInSegment The limit in the segment. When reached, the view will attempt to switch to
@@ -169,7 +169,7 @@ public abstract class AbstractPagedInputView implements DataInputView {
 		this.positionInSegment = positionInSegment;
 		this.limitInSegment = limitInSegment;
 	}
-	
+
 	/**
 	 * Clears the internal state of the view. After this call, all read attempts will fail, until the
 	 * {@link #advance()} or {@link #seekInput(MemorySegment, int, int)} method have been invoked.
@@ -179,11 +179,11 @@ public abstract class AbstractPagedInputView implements DataInputView {
 		this.positionInSegment = this.headerLength;
 		this.limitInSegment = headerLength;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 	//                               Data Input Specific methods
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public void readFully(byte[] b) throws IOException {
 		readFully(b, 0, b.length);
@@ -191,9 +191,10 @@ public abstract class AbstractPagedInputView implements DataInputView {
 
 	@Override
 	public void readFully(byte[] b, int off, int len) throws IOException {
-		if (off < 0 || len < 0 || off + len > b.length)
-			throw new IndexOutOfBoundsException();
-		
+		if (off < 0 || len < 0 || off + len > b.length) {
+		throw new IndexOutOfBoundsException();
+		}
+
 		int remaining = this.limitInSegment - this.positionInSegment;
 		if (remaining >= len) {
 			this.currentSegment.get(this.positionInSegment, b, off, len);
@@ -204,16 +205,16 @@ public abstract class AbstractPagedInputView implements DataInputView {
 				advance();
 				remaining = this.limitInSegment - this.positionInSegment;
 			}
-			
+
 			while (true) {
 				int toRead = Math.min(remaining, len);
 				this.currentSegment.get(this.positionInSegment, b, off, toRead);
 				off += toRead;
 				len -= toRead;
-				
+
 				if (len > 0) {
 					advance();
-					remaining = this.limitInSegment - this.positionInSegment;	
+					remaining = this.limitInSegment - this.positionInSegment;
 				}
 				else {
 					this.positionInSegment += toRead;
@@ -305,9 +306,9 @@ public abstract class AbstractPagedInputView implements DataInputView {
 		}
 		else {
 			return (readUnsignedByte() << 24) |
-			       (readUnsignedByte() << 16) |
-			       (readUnsignedByte() <<  8) |
-			        readUnsignedByte();
+			(readUnsignedByte() << 16) |
+			(readUnsignedByte() <<  8) |
+				readUnsignedByte();
 		}
 	}
 
@@ -349,19 +350,21 @@ public abstract class AbstractPagedInputView implements DataInputView {
 	@Override
 	public String readLine() throws IOException {
 		final StringBuilder bld = new StringBuilder(32);
-		
+
 		try {
 			int b;
 			while ((b = readUnsignedByte()) != '\n') {
-				if (b != '\r')
-					bld.append((char) b);
+				if (b != '\r') {
+				bld.append((char) b);
+				}
 			}
 		}
 		catch (EOFException eofex) {}
 
-		if (bld.length() == 0)
-			return null;
-		
+		if (bld.length() == 0) {
+		return null;
+		}
+
 		// trim a trailing carriage return
 		int len = bld.length();
 		if (len > 0 && bld.charAt(len - 1) == '\r') {
@@ -373,10 +376,10 @@ public abstract class AbstractPagedInputView implements DataInputView {
 	@Override
 	public String readUTF() throws IOException {
 		final int utflen = readUnsignedShort();
-		
+
 		final byte[] bytearr;
 		final char[] chararr;
-		
+
 		if (this.utfByteBuffer == null || this.utfByteBuffer.length < utflen) {
 			bytearr = new byte[utflen];
 			this.utfByteBuffer = bytearr;
@@ -398,8 +401,9 @@ public abstract class AbstractPagedInputView implements DataInputView {
 
 		while (count < utflen) {
 			c = (int) bytearr[count] & 0xff;
-			if (c > 127)
-				break;
+			if (c > 127) {
+			break;
+			}
 			count++;
 			chararr[chararr_count++] = (char) c;
 		}
@@ -423,22 +427,26 @@ public abstract class AbstractPagedInputView implements DataInputView {
 			case 13:
 				/* 110x xxxx 10xx xxxx */
 				count += 2;
-				if (count > utflen)
-					throw new UTFDataFormatException("malformed input: partial character at end");
+				if (count > utflen) {
+				throw new UTFDataFormatException("malformed input: partial character at end");
+				}
 				char2 = (int) bytearr[count - 1];
-				if ((char2 & 0xC0) != 0x80)
-					throw new UTFDataFormatException("malformed input around byte " + count);
+				if ((char2 & 0xC0) != 0x80) {
+				throw new UTFDataFormatException("malformed input around byte " + count);
+				}
 				chararr[chararr_count++] = (char) (((c & 0x1F) << 6) | (char2 & 0x3F));
 				break;
 			case 14:
 				/* 1110 xxxx 10xx xxxx 10xx xxxx */
 				count += 3;
-				if (count > utflen)
-					throw new UTFDataFormatException("malformed input: partial character at end");
+				if (count > utflen) {
+				throw new UTFDataFormatException("malformed input: partial character at end");
+				}
 				char2 = (int) bytearr[count - 2];
 				char3 = (int) bytearr[count - 1];
-				if (((char2 & 0xC0) != 0x80) || ((char3 & 0xC0) != 0x80))
-					throw new UTFDataFormatException("malformed input around byte " + (count - 1));
+				if (((char2 & 0xC0) != 0x80) || ((char3 & 0xC0) != 0x80)) {
+				throw new UTFDataFormatException("malformed input around byte " + (count - 1));
+				}
 				chararr[chararr_count++] = (char) (((c & 0x0F) << 12) | ((char2 & 0x3F) << 6) | ((char3 & 0x3F) << 0));
 				break;
 			default:
@@ -449,12 +457,13 @@ public abstract class AbstractPagedInputView implements DataInputView {
 		// The number of chars produced may be less than utflen
 		return new String(chararr, 0, chararr_count);
 	}
-	
+
 	@Override
 	public int skipBytes(int n) throws IOException {
-		if (n < 0)
-			throw new IllegalArgumentException();
-		
+		if (n < 0) {
+		throw new IllegalArgumentException();
+		}
+
 		int remaining = this.limitInSegment - this.positionInSegment;
 		if (remaining >= n) {
 			this.positionInSegment += n;
@@ -469,20 +478,20 @@ public abstract class AbstractPagedInputView implements DataInputView {
 				}
 				remaining = this.limitInSegment - this.positionInSegment;
 			}
-			
+
 			int skipped = 0;
 			while (true) {
 				int toSkip = Math.min(remaining, n);
 				n -= toSkip;
 				skipped += toSkip;
-				
+
 				if (n > 0) {
 					try {
 						advance();
 					} catch (EOFException eofex) {
 						return skipped;
 					}
-					remaining = this.limitInSegment - this.positionInSegment;	
+					remaining = this.limitInSegment - this.positionInSegment;
 				}
 				else {
 					this.positionInSegment += toSkip;
@@ -495,9 +504,10 @@ public abstract class AbstractPagedInputView implements DataInputView {
 
 	@Override
 	public void skipBytesToRead(int numBytes) throws IOException {
-		if (numBytes < 0)
-			throw new IllegalArgumentException();
-		
+		if (numBytes < 0) {
+		throw new IllegalArgumentException();
+		}
+
 		int remaining = this.limitInSegment - this.positionInSegment;
 		if (remaining >= numBytes) {
 			this.positionInSegment += numBytes;
@@ -507,12 +517,12 @@ public abstract class AbstractPagedInputView implements DataInputView {
 				advance();
 				remaining = this.limitInSegment - this.positionInSegment;
 			}
-			
+
 			while (true) {
 				if (numBytes > remaining) {
 					numBytes -= remaining;
 					advance();
-					remaining = this.limitInSegment - this.positionInSegment;	
+					remaining = this.limitInSegment - this.positionInSegment;
 				}
 				else {
 					this.positionInSegment += numBytes;

@@ -23,7 +23,7 @@ import eu.stratosphere.types.Record;
 
 public class DanglingPageRankInputFormat extends TextInputFormat {
 	private static final long serialVersionUID = 1L;
-	
+
 	public static final String NUM_VERTICES_PARAMETER = "pageRank.numVertices";
 
 	private LongValue vertexID = new LongValue();

@@ -24,12 +24,12 @@ import eu.stratosphere.core.memory.MemorySegment;
 /**
  * Boxed serializable and comparable integer type, representing the primitive
  * type {@code int}.
- * 
+ *
  * @see eu.stratosphere.types.Key
  */
 public class IntValue implements Key, NormalizableKey, ResettableValue<IntValue>, CopyableValue<IntValue> {
 	private static final long serialVersionUID = 1L;
-	
+
 	private int value;
 
 	/**
@@ -41,16 +41,16 @@ public class IntValue implements Key, NormalizableKey, ResettableValue<IntValue>
 
 	/**
 	 * Initializes the encapsulated int with the provided value.
-	 * 
+	 *
 	 * @param value Initial value of the encapsulated int.
 	 */
 	public IntValue(int value) {
 		this.value = value;
 	}
-	
+
 	/**
 	 * Returns the value of the encapsulated int.
-	 * 
+	 *
 	 * @return the value of the encapsulated int.
 	 */
 	public int getValue() {
@@ -59,7 +59,7 @@ public class IntValue implements Key, NormalizableKey, ResettableValue<IntValue>
 
 	/**
 	 * Sets the encapsulated int to the specified value.
-	 * 
+	 *
 	 * @param value
 	 *        the new value of the encapsulated int.
 	 */
@@ -67,10 +67,10 @@ public class IntValue implements Key, NormalizableKey, ResettableValue<IntValue>
 		this.value = value;
 	}
 
-    @Override
-    public void setValue(IntValue value) {
-        this.value = value.value;
-    }
+@Override
+public void setValue(IntValue value) {
+	this.value = value.value;
+}
 
 	@Override
 	public String toString() {
@@ -78,7 +78,7 @@ public class IntValue implements Key, NormalizableKey, ResettableValue<IntValue>
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public void read(DataInput in) throws IOException {
 		this.value = in.readInt();
@@ -90,11 +90,12 @@ public class IntValue implements Key, NormalizableKey, ResettableValue<IntValue>
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public int compareTo(final Key o) {
-		if (!(o instanceof IntValue))
-			throw new ClassCastException("Cannot compare " + o.getClass().getName() + " to IntValue!");
+		if (!(o instanceof IntValue)) {
+		throw new ClassCastException("Cannot compare " + o.getClass().getName() + " to IntValue!");
+		}
 
 		final int other = ((IntValue) o).value;
 
@@ -113,7 +114,7 @@ public class IntValue implements Key, NormalizableKey, ResettableValue<IntValue>
 		}
 		return false;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	@Override
@@ -147,12 +148,12 @@ public class IntValue implements Key, NormalizableKey, ResettableValue<IntValue>
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public int getBinaryLength() {
 		return 4;
 	}
-	
+
 	@Override
 	public void copyTo(IntValue target) {
 		target.value = this.value;

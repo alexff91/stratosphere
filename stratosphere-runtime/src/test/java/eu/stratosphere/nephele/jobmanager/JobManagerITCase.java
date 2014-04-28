@@ -47,7 +47,6 @@ import eu.stratosphere.nephele.jobgraph.JobFileOutputVertex;
 import eu.stratosphere.nephele.jobgraph.JobGraph;
 import eu.stratosphere.nephele.jobgraph.JobGraphDefinitionException;
 import eu.stratosphere.nephele.jobgraph.JobTaskVertex;
-import eu.stratosphere.nephele.jobmanager.JobManager;
 import eu.stratosphere.nephele.jobmanager.JobManager.ExecutionMode;
 import eu.stratosphere.nephele.taskmanager.TaskManager;
 import eu.stratosphere.nephele.taskmanager.runtime.RuntimeTask;
@@ -69,8 +68,8 @@ public class JobManagerITCase {
 		root.addAppender(appender);
 		root.setLevel(Level.WARN);
 	}
-	
-	
+
+
 	/**
 	 * The name of the test directory some tests read their input from.
 	 */
@@ -92,7 +91,7 @@ public class JobManagerITCase {
 
 		/**
 		 * Constructs a new job manager thread.
-		 * 
+		 *
 		 * @param jobManager
 		 *        the job manager to run in this thread.
 		 */
@@ -114,7 +113,7 @@ public class JobManagerITCase {
 
 		/**
 		 * Checks whether the encapsulated job manager is completely shut down.
-		 * 
+		 *
 		 * @return <code>true</code> if the encapsulated job manager is completely shut down, <code>false</code>
 		 *         otherwise
 		 */
@@ -180,7 +179,7 @@ public class JobManagerITCase {
 			}
 		}
 	}
-	
+
 	/**
 	 * Tests the correctness of the union record reader with non-empty inputs.
 	 */
@@ -375,12 +374,12 @@ public class JobManagerITCase {
 
 			// Create job client and launch job
 			jobClient = new JobClient(jg, configuration);
-			
+
 			// deactivate logging of expected test exceptions
 			Logger rtLogger = Logger.getLogger(RuntimeTask.class);
 			Level rtLevel = rtLogger.getEffectiveLevel();
 			rtLogger.setLevel(Level.OFF);
-			
+
 			try {
 				jobClient.submitJobAndWait();
 			} catch (JobExecutionException e) {
@@ -471,7 +470,7 @@ public class JobManagerITCase {
 
 			// Create job client and launch job
 			jobClient = new JobClient(jg, configuration);
-			
+
 			// deactivate logging of expected test exceptions
 			Logger jcLogger = Logger.getLogger(JobClient.class);
 			Level jcLevel = jcLogger.getEffectiveLevel();
@@ -525,7 +524,7 @@ public class JobManagerITCase {
 	 * and triggers a sample job. The sample reads all the numbers from the input file and pushes them through a
 	 * network, a file, and an in-memory channel. Eventually, the numbers are written back to an output file. The test
 	 * is considered successful if the input file equals the output file.
-	 * 
+	 *
 	 * @param limit
 	 *        the upper bound for the sequence of numbers to be generated
 	 */
@@ -584,7 +583,7 @@ public class JobManagerITCase {
 
 			// Create job client and launch job
 			jobClient = new JobClient(jg, configuration);
-			
+
 			try {
 				jobClient.submitJobAndWait();
 			} catch (JobExecutionException e) {
@@ -781,7 +780,7 @@ public class JobManagerITCase {
 
 	/**
 	 * Tests the correctness of the union reader for different input sizes.
-	 * 
+	 *
 	 * @param limit
 	 *        the upper bound for the sequence of numbers to be generated
 	 */
@@ -991,19 +990,19 @@ public class JobManagerITCase {
 
 			// Create job client and launch job
 			jobClient = new JobClient(jg, configuration);
-			
+
 			// disable logging for the taskmanager and the client, as they will have many
 			// expected test errors they will log.
-			
+
 			Logger tmLogger = Logger.getLogger(TaskManager.class);
 			Logger jcLogger = Logger.getLogger(JobClient.class);
 			Level tmLevel = tmLogger.getEffectiveLevel();
 			Level jcLevel = jcLogger.getEffectiveLevel();
-			
+
 			tmLogger.setLevel(Level.OFF);
 			jcLogger.setLevel(Level.OFF);
 			try {
-				
+
 				jobClient.submitJobAndWait();
 			} catch (JobExecutionException e) {
 				// Job execution should lead to an error due to lack of resources

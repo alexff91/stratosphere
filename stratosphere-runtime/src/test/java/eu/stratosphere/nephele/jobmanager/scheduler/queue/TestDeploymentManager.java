@@ -25,7 +25,7 @@ import eu.stratosphere.nephele.jobmanager.DeploymentManager;
  * the unit tests.
  * <p>
  * This class is thread-safe.
- * 
+ *
  */
 public class TestDeploymentManager implements DeploymentManager {
 
@@ -67,7 +67,7 @@ public class TestDeploymentManager implements DeploymentManager {
 
 	/**
 	 * Returns a list of the last deployed vertices.
-	 * 
+	 *
 	 * @return a list of the last deployed vertices
 	 */
 	List<ExecutionVertex> getListOfLastDeployedVertices() {

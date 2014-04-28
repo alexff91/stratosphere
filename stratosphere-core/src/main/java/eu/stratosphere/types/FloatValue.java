@@ -23,7 +23,7 @@ import eu.stratosphere.core.memory.DataOutputView;
 /**
  * Boxed serializable and comparable single precision floating point type, representing the primitive
  * type {@code float}.
- * 
+ *
  * @see eu.stratosphere.types.Key
  */
 public class FloatValue implements Key, ResettableValue<FloatValue>, CopyableValue<FloatValue> {
@@ -40,7 +40,7 @@ public class FloatValue implements Key, ResettableValue<FloatValue>, CopyableVal
 
 	/**
 	 * Initializes the encapsulated float with the provided value.
-	 * 
+	 *
 	 * @param value
 	 *        Initial value of the encapsulated float.
 	 */
@@ -50,7 +50,7 @@ public class FloatValue implements Key, ResettableValue<FloatValue>, CopyableVal
 
 	/**
 	 * Returns the value of the encapsulated primitive float.
-	 * 
+	 *
 	 * @return the value of the encapsulated primitive float.
 	 */
 	public float getValue() {
@@ -59,7 +59,7 @@ public class FloatValue implements Key, ResettableValue<FloatValue>, CopyableVal
 
 	/**
 	 * Sets the value of the encapsulated primitive float.
-	 * 
+	 *
 	 * @param value
 	 *        the new value of the encapsulated primitive float.
 	 */
@@ -67,13 +67,13 @@ public class FloatValue implements Key, ResettableValue<FloatValue>, CopyableVal
 		this.value = value;
 	}
 
-    @Override
-    public void setValue(FloatValue value) {
-        this.value = value.value;
-    }
+@Override
+public void setValue(FloatValue value) {
+	this.value = value.value;
+}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public void read(DataInput in) throws IOException {
 		this.value = in.readFloat();
@@ -83,18 +83,19 @@ public class FloatValue implements Key, ResettableValue<FloatValue>, CopyableVal
 	public void write(DataOutput out) throws IOException {
 		out.writeFloat(this.value);
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	@Override
 	public String toString() {
 		return String.valueOf(this.value);
 	}
-	
+
 	@Override
 	public int compareTo(final Key o) {
-		if (!(o instanceof FloatValue))
-			throw new ClassCastException("Cannot compare " + o.getClass().getName() + " to FloatValue!");
+		if (!(o instanceof FloatValue)) {
+		throw new ClassCastException("Cannot compare " + o.getClass().getName() + " to FloatValue!");
+		}
 
 		final double other = ((FloatValue) o).value;
 		return this.value < other ? -1 : this.value > other ? 1 : 0;
@@ -115,12 +116,12 @@ public class FloatValue implements Key, ResettableValue<FloatValue>, CopyableVal
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public int getBinaryLength() {
 		return 4;
 	}
-	
+
 	@Override
 	public void copyTo(FloatValue target) {
 		target.value = this.value;

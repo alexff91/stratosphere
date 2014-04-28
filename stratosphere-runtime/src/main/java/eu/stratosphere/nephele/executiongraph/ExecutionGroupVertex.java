@@ -166,7 +166,7 @@ public final class ExecutionGroupVertex {
 
 	/**
 	 * Constructs a new group vertex.
-	 * 
+	 *
 	 * @param name
 	 *        the name of the group vertex
 	 * @param jobVertexID
@@ -232,7 +232,7 @@ public final class ExecutionGroupVertex {
 
 	/**
 	 * Returns the name of the group vertex, usually copied from the initial job vertex.
-	 * 
+	 *
 	 * @return the name of the group vertex.
 	 */
 	public String getName() {
@@ -241,7 +241,7 @@ public final class ExecutionGroupVertex {
 
 	/**
 	 * Returns the environment of the instantiated {@link AbstractInvokable} object.
-	 * 
+	 *
 	 * @return the environment of the instantiated {@link AbstractInvokable} object
 	 */
 	public RuntimeEnvironment getEnvironment() {
@@ -251,7 +251,7 @@ public final class ExecutionGroupVertex {
 
 	/**
 	 * Sets the execution stage this group vertex is associated with.
-	 * 
+	 *
 	 * @param executionStage
 	 *        The new execution stage.
 	 */
@@ -262,7 +262,7 @@ public final class ExecutionGroupVertex {
 
 	/**
 	 * Returns the execution stage this group vertex is associated with.
-	 * 
+	 *
 	 * @return The execution stage this vertex is associated with.
 	 */
 	public ExecutionStage getExecutionStage() {
@@ -272,7 +272,7 @@ public final class ExecutionGroupVertex {
 
 	/**
 	 * Adds the initial execution vertex to this group vertex.
-	 * 
+	 *
 	 * @param ev
 	 *        The new execution vertex to be added.
 	 */
@@ -289,7 +289,7 @@ public final class ExecutionGroupVertex {
 
 	/**
 	 * Returns a specific execution vertex from the list of members.
-	 * 
+	 *
 	 * @param pos
 	 *        The position of the execution vertex to be returned.
 	 * @return The execution vertex at position <code>pos</code> of the member list, <code>null</code> if there is no
@@ -310,7 +310,7 @@ public final class ExecutionGroupVertex {
 
 	/**
 	 * Sets the maximum number of members this group vertex can have.
-	 * 
+	 *
 	 * @param maxSize
 	 *        the maximum number of members this group vertex can have
 	 */
@@ -323,7 +323,7 @@ public final class ExecutionGroupVertex {
 
 	/**
 	 * Sets the minimum number of members this group vertex must have.
-	 * 
+	 *
 	 * @param minSize
 	 *        the minimum number of members this group vertex must have
 	 */
@@ -336,7 +336,7 @@ public final class ExecutionGroupVertex {
 
 	/**
 	 * Returns the current number of members this group vertex has.
-	 * 
+	 *
 	 * @return the current number of members this group vertex has
 	 */
 	public int getCurrentNumberOfGroupMembers() {
@@ -346,7 +346,7 @@ public final class ExecutionGroupVertex {
 
 	/**
 	 * Returns the maximum number of members this group vertex can have.
-	 * 
+	 *
 	 * @return the maximum number of members this group vertex can have
 	 */
 	public int getMaximumNumberOfGroupMembers() {
@@ -355,7 +355,7 @@ public final class ExecutionGroupVertex {
 
 	/**
 	 * Returns the minimum number of members this group vertex must have.
-	 * 
+	 *
 	 * @return the minimum number of members this group vertex must have
 	 */
 	public int getMinimumNumberOfGroupMember() {
@@ -365,7 +365,7 @@ public final class ExecutionGroupVertex {
 	/**
 	 * Wires this group vertex to the specified group vertex and creates
 	 * a back link.
-	 * 
+	 *
 	 * @param groupVertex
 	 *        the group vertex that should be the target of the wiring
 	 * @param indexOfInputGate
@@ -413,7 +413,7 @@ public final class ExecutionGroupVertex {
 
 	/**
 	 * Checks if this group vertex is wired to the given group vertex.
-	 * 
+	 *
 	 * @param groupVertex
 	 *        the group vertex to check for
 	 * @return <code>true</code> if there is a wire from the current group vertex to the specified group vertex,
@@ -434,7 +434,7 @@ public final class ExecutionGroupVertex {
 
 	/**
 	 * Creates a back link from the current group vertex to the specified group vertex.
-	 * 
+	 *
 	 * @param groupVertex
 	 *        the target of the back link
 	 */
@@ -445,7 +445,7 @@ public final class ExecutionGroupVertex {
 
 	/**
 	 * Returns the number of forward links the current group vertex has.
-	 * 
+	 *
 	 * @return the number of forward links the current group vertex has
 	 */
 	public int getNumberOfForwardLinks() {
@@ -455,7 +455,7 @@ public final class ExecutionGroupVertex {
 
 	/**
 	 * Returns the number of backward links the current group vertex has.
-	 * 
+	 *
 	 * @return the number of backward links the current group vertex has
 	 */
 	public int getNumberOfBackwardLinks() {
@@ -465,7 +465,7 @@ public final class ExecutionGroupVertex {
 
 	/**
 	 * Returns the number of the stage this group vertex belongs to.
-	 * 
+	 *
 	 * @return the number of the stage this group vertex belongs to
 	 */
 	public int getStageNumber() {
@@ -475,7 +475,7 @@ public final class ExecutionGroupVertex {
 
 	/**
 	 * Creates the initial execution vertices managed by this group vertex.
-	 * 
+	 *
 	 * @param initialNumberOfVertices
 	 *        the initial number of execution vertices
 	 * @throws GraphConversionException
@@ -551,7 +551,7 @@ public final class ExecutionGroupVertex {
 
 	/**
 	 * Sets the input splits that should be assigned to this group vertex.
-	 * 
+	 *
 	 * @param inputSplits
 	 *        the input splits that shall be assigned to this group vertex
 	 */
@@ -562,7 +562,7 @@ public final class ExecutionGroupVertex {
 
 	/**
 	 * Returns the input splits assigned to this group vertex.
-	 * 
+	 *
 	 * @return the input splits, possibly <code>null</code> if the group vertex does not represent an input vertex
 	 */
 	public InputSplit[] getInputSplits() {
@@ -697,7 +697,7 @@ public final class ExecutionGroupVertex {
 	/**
 	 * Returns the number of retries in case of an error before the task represented by this vertex is considered as
 	 * failed.
-	 * 
+	 *
 	 * @return the number of retries in case of an error before the task represented by this vertex is considered as
 	 *         failed
 	 */
@@ -730,7 +730,7 @@ public final class ExecutionGroupVertex {
 
 	/**
 	 * Returns the configuration object of the original job vertex.
-	 * 
+	 *
 	 * @return the configuration object of the original job vertex
 	 */
 	public Configuration getConfiguration() {
@@ -740,7 +740,7 @@ public final class ExecutionGroupVertex {
 
 	/**
 	 * Returns the execution signature of this vertex.
-	 * 
+	 *
 	 * @return the execution signature of this vertex
 	 */
 	public ExecutionSignature getExecutionSignature() {
@@ -841,7 +841,7 @@ public final class ExecutionGroupVertex {
 	/**
 	 * Checks if this vertex is an input vertex in its stage, i.e. has either no
 	 * incoming connections or only incoming connections to group vertices in a lower stage.
-	 * 
+	 *
 	 * @return <code>true</code> if this vertex is an input vertex, <code>false</code> otherwise
 	 */
 	public boolean isInputVertex() {
@@ -863,7 +863,7 @@ public final class ExecutionGroupVertex {
 	/**
 	 * Checks if this vertex is an output vertex in its stage, i.e. has either no
 	 * outgoing connections or only outgoing connections to group vertices in a higher stage.
-	 * 
+	 *
 	 * @return <code>true</code> if this vertex is an output vertex, <code>false</code> otherwise
 	 */
 	public boolean isOutputVertex() {
@@ -889,7 +889,7 @@ public final class ExecutionGroupVertex {
 	/**
 	 * Returns the ID of the job vertex which is represented by
 	 * this group vertex.
-	 * 
+	 *
 	 * @return the ID of the job vertex which is represented by
 	 *         this group vertex
 	 */
@@ -900,7 +900,7 @@ public final class ExecutionGroupVertex {
 
 	/**
 	 * Returns an iterator over all members of this execution group vertex.
-	 * 
+	 *
 	 * @return an iterator over all members of this execution group vertex
 	 */
 	public Iterator<ExecutionVertex> iterator() {
@@ -910,7 +910,7 @@ public final class ExecutionGroupVertex {
 
 	/**
 	 * Recursive method to calculate the connection IDs of the {@link ExecutionGraph}.
-	 * 
+	 *
 	 * @param currentConnectionID
 	 *        the current connection ID
 	 * @param alreadyVisited
@@ -922,24 +922,24 @@ public final class ExecutionGroupVertex {
 		if (!alreadyVisited.add(this)) {
 			return currentConnectionID;
 		}
-		
+
 		for (final ExecutionGroupEdge backwardLink : this.backwardLinks) {
-		  
+
 			backwardLink.setConnectionID(currentConnectionID);
-			
+
 			++currentConnectionID;
-			
+
 			currentConnectionID = backwardLink.getSourceVertex()
-			    .calculateConnectionID(currentConnectionID, alreadyVisited);
+			.calculateConnectionID(currentConnectionID, alreadyVisited);
 		}
-		
+
 		return currentConnectionID;
 	}
 
 
 	/**
 	 * Returns the task class that is assigned to execution vertices of this group.
-	 * 
+	 *
 	 * @return the task class that is assigned to execution vertices of this group
 	 */
 	Class<? extends AbstractInvokable> getInvokableClass() {

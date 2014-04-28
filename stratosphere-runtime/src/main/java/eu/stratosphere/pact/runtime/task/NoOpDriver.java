@@ -19,16 +19,16 @@ import eu.stratosphere.util.MutableObjectIterator;
 
 /**
  * A driver that does nothing but forward data from its input to its output.
- * 
+ *
  * @param <T> The data type.
  */
 public class NoOpDriver<T> implements PactDriver<AbstractFunction, T> {
-	
+
 	private PactTaskContext<AbstractFunction, T> taskContext;
-	
+
 	private volatile boolean running;
-	
-	
+
+
 	@Override
 	public void setup(PactTaskContext<AbstractFunction, T> context) {
 		this.taskContext = context;
@@ -39,7 +39,7 @@ public class NoOpDriver<T> implements PactDriver<AbstractFunction, T> {
 	public int getNumberOfInputs() {
 		return 1;
 	}
-	
+
 	@Override
 	public Class<AbstractFunction> getStubType() {
 		return null;
@@ -64,7 +64,7 @@ public class NoOpDriver<T> implements PactDriver<AbstractFunction, T> {
 			output.collect(record);
 		}
 	}
-	
+
 	@Override
 	public void cleanup() {}
 

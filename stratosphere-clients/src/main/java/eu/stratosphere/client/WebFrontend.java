@@ -17,14 +17,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import eu.stratosphere.client.web.WebInterfaceServer;
+import eu.stratosphere.configuration.ConfigConstants;
 import eu.stratosphere.configuration.Configuration;
 import eu.stratosphere.configuration.GlobalConfiguration;
-import eu.stratosphere.configuration.ConfigConstants;
 
 /**
  * Main entry point for the web frontend. Creates a web server according to the configuration
  * in the given directory.
- * 
+ *
  */
 public class WebFrontend {
 	/**
@@ -34,7 +34,7 @@ public class WebFrontend {
 
 	/**
 	 * Main method. accepts a single parameter, which is the config directory.
-	 * 
+	 *
 	 * @param args
 	 *        The parameters to the entry point.
 	 */
@@ -57,7 +57,7 @@ public class WebFrontend {
 			// load the global configuration
 			GlobalConfiguration.loadConfiguration(configDir);
 			Configuration config = GlobalConfiguration.getConfiguration();
-			
+
 			// add stratosphere base dir to config
 			config.setString(ConfigConstants.STRATOSPHERE_BASE_DIR_PATH_KEY, configDir+"/..");
 

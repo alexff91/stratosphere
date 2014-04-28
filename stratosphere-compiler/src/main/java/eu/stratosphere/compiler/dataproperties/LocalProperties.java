@@ -30,23 +30,23 @@ public class LocalProperties implements Cloneable
 	private Ordering ordering;			// order inside a partition, null if not ordered
 
 	private FieldList groupedFields;		// fields by which the stream is grouped. null if not grouped.
-	
+
 	private Set<FieldSet> uniqueFields;		// fields whose value combination is unique in the stream
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Default constructor for trivial local properties. No order, no grouping, no uniqueness.
 	 */
 	public LocalProperties() {}
-	
+
 	/**
 	 * Creates a new instance of local properties that have the given ordering as property,
 	 * field grouping and field uniqueness. Any of the given parameters may be null. Beware, though,
 	 * that a null grouping is inconsistent with a non-null ordering.
 	 * <p>
 	 * This constructor is used only for internal copy creation.
-	 * 
+	 *
 	 * @param ordering The ordering represented by these local properties.
 	 * @param groupedFields The grouped fields for these local properties.
 	 * @param uniqueFields The unique fields for these local properties.
@@ -58,19 +58,19 @@ public class LocalProperties implements Cloneable
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Gets the key order.
-	 * 
+	 *
 	 * @return The key order, or <code>null</code> if nothing is ordered.
 	 */
 	public Ordering getOrdering() {
 		return ordering;
 	}
-	
+
 	/**
 	 * Sets the key order for these global properties.
-	 * 
+	 *
 	 * @param keyOrder
 	 *        The key order to set.
 	 */
@@ -78,41 +78,41 @@ public class LocalProperties implements Cloneable
 		this.ordering = ordering;
 		this.groupedFields = ordering.getInvolvedIndexes();
 	}
-	
+
 	/**
 	 * Gets the grouped fields.
-	 * 
+	 *
 	 * @return The grouped fields, or <code>null</code> if nothing is grouped.
 	 */
 	public FieldList getGroupedFields() {
 		return this.groupedFields;
 	}
-	
+
 	/**
 	 * Sets the fields that are grouped in these data properties.
-	 * 
+	 *
 	 * @param groupedFields The fields that are grouped in these data properties.
 	 */
 	public void setGroupedFields(FieldList groupedFields) {
-		this.groupedFields = groupedFields;	
+		this.groupedFields = groupedFields;
 	}
 
 	/**
 	 * Gets the fields whose combination is unique within the data set.
-	 * 
+	 *
 	 * @return The unique field combination, or <code>null</code> if nothing is unique.
 	 */
 	public Set<FieldSet> getUniqueFields() {
 		return this.uniqueFields;
 	}
-	
+
 	public boolean areFieldsUnique(FieldSet set) {
 		return this.uniqueFields != null && this.uniqueFields.contains(set);
 	}
-	
+
 	/**
 	 * Adds a combination of fields that are unique in these data properties.
-	 * 
+	 *
 	 * @param uniqueFields The fields that are unique in these data properties.
 	 */
 	public void addUniqueFields(FieldSet uniqueFields) {
@@ -121,21 +121,21 @@ public class LocalProperties implements Cloneable
 		}
 		this.uniqueFields.add(uniqueFields);
 	}
-	
+
 	public void clearUniqueFieldSets() {
 		if (this.uniqueFields != null) {
 			this.uniqueFields = null;
 		}
 	}
-	
+
 	public boolean areFieldsGrouped(FieldSet set) {
 		return this.groupedFields != null && this.groupedFields.isValidUnorderedPrefix(set);
 	}
-	
+
 	public boolean meetsOrderingConstraint(Ordering o) {
 		return o.isMetBy(this.ordering);
 	}
-	
+
 	/**
 	 * Checks, if the properties in this object are trivial, i.e. only standard values.
 	 */
@@ -151,15 +151,15 @@ public class LocalProperties implements Cloneable
 		this.groupedFields = null;
 		this.uniqueFields = null;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	/**
 	 * Filters these properties by what can be preserved through a user function's constant fields set.
-	 * 
+	 *
 	 * @param node The optimizer node that potentially modifies the properties.
 	 * @param input The input of the node which is relevant.
-	 * 
+	 *
 	 * @return True, if the resulting properties are non trivial.
 	 */
 	public LocalProperties filterByNodesConstantSet(OptimizerNode node, int input)
@@ -168,7 +168,7 @@ public class LocalProperties implements Cloneable
 		Ordering no = this.ordering;
 		FieldList ngf = this.groupedFields;
 		Set<FieldSet> nuf = this.uniqueFields;
-		
+
 		if (this.ordering != null) {
 			final FieldList involvedIndexes = this.ordering.getInvolvedIndexes();
 			for (int i = 0; i < involvedIndexes.size(); i++) {
@@ -191,7 +191,7 @@ public class LocalProperties implements Cloneable
 				}
 			}
 		}
-		
+
 		// check, whether the local key grouping is preserved
 		if (this.uniqueFields != null) {
 			Set<FieldSet> s = new HashSet<FieldSet>(this.uniqueFields);
@@ -207,9 +207,9 @@ public class LocalProperties implements Cloneable
 				nuf = s;
 			}
 		}
-		
+
 		return (no == this.ordering && ngf == this.groupedFields && nuf == this.uniqueFields) ? this :
-			   (no == null && ngf == null && nuf == null) ? new LocalProperties() :
+			(no == null && ngf == null && nuf == null) ? new LocalProperties() :
 					new LocalProperties(no, ngf, nuf);
 	}
 
@@ -248,9 +248,9 @@ public class LocalProperties implements Cloneable
 		return new LocalProperties(this.ordering, this.groupedFields,
 			this.uniqueFields == null ? null : new HashSet<FieldSet>(this.uniqueFields));
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public static LocalProperties combine(LocalProperties lp1, LocalProperties lp2) {
 		if (lp1.ordering != null) {
 			return lp1;

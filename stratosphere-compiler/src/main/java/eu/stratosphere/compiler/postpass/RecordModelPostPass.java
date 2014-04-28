@@ -15,12 +15,12 @@ package eu.stratosphere.compiler.postpass;
 import eu.stratosphere.api.common.operators.DualInputOperator;
 import eu.stratosphere.api.common.operators.GenericDataSink;
 import eu.stratosphere.api.common.operators.Ordering;
+import eu.stratosphere.api.common.operators.RecordOperator;
 import eu.stratosphere.api.common.operators.SingleInputOperator;
 import eu.stratosphere.api.common.operators.base.CoGroupOperatorBase;
 import eu.stratosphere.api.common.operators.base.GroupReduceOperatorBase;
 import eu.stratosphere.api.common.operators.util.FieldList;
 import eu.stratosphere.api.common.typeutils.TypeSerializerFactory;
-import eu.stratosphere.api.common.operators.RecordOperator;
 import eu.stratosphere.compiler.CompilerException;
 import eu.stratosphere.compiler.CompilerPostPassException;
 import eu.stratosphere.compiler.plan.DualInputPlanNode;
@@ -36,22 +36,22 @@ import eu.stratosphere.types.Key;
  * serializers and comparators.
  */
 public class RecordModelPostPass extends GenericFlatTypePostPass<Class<? extends Key>, SparseKeySchema> {
-	
+
 	// --------------------------------------------------------------------------------------------
 	//  Type specific methods that extract schema information
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	protected SparseKeySchema createEmptySchema() {
 		return new SparseKeySchema();
 	}
-	
+
 	@Override
 	protected void getSinkSchema(SinkPlanNode sinkPlanNode, SparseKeySchema schema) throws CompilerPostPassException {
 		GenericDataSink sink = sinkPlanNode.getSinkNode().getPactContract();
 		Ordering partitioning = sink.getPartitionOrdering();
 		Ordering sorting = sink.getLocalOrder();
-		
+
 		try {
 			if (partitioning != null) {
 				addOrderingToSchema(partitioning, schema);
@@ -64,7 +64,7 @@ public class RecordModelPostPass extends GenericFlatTypePostPass<Class<? extends
 					"Probable reason is contradicting type infos for partitioning and sorting ordering.");
 		}
 	}
-	
+
 	@Override
 	protected void getSingleInputNodeSchema(SingleInputPlanNode node, SparseKeySchema schema)
 			throws CompilerPostPassException, ConflictingFieldTypeInfoException
@@ -75,14 +75,14 @@ public class RecordModelPostPass extends GenericFlatTypePostPass<Class<? extends
 			throw new CompilerPostPassException("Error: Operator is not a Record based contract. Wrong compiler invokation.");
 		}
 		RecordOperator recContract = (RecordOperator) contract;
-		
+
 		// add the information to the schema
 		int[] localPositions = contract.getKeyColumns(0);
 		Class<? extends Key>[] types = recContract.getKeyClasses();
 		for (int i = 0; i < localPositions.length; i++) {
 			schema.addType(localPositions[i], types[i]);
 		}
-		
+
 		// this is a temporary fix, we should solve this more generic
 		if (contract instanceof GroupReduceOperatorBase) {
 			Ordering groupOrder = ((GroupReduceOperatorBase<?>) contract).getGroupOrder();
@@ -91,7 +91,7 @@ public class RecordModelPostPass extends GenericFlatTypePostPass<Class<? extends
 			}
 		}
 	}
-	
+
 	@Override
 	protected void getDualInputNodeSchema(DualInputPlanNode node, SparseKeySchema input1Schema, SparseKeySchema input2Schema)
 			throws CompilerPostPassException, ConflictingFieldTypeInfoException
@@ -101,29 +101,29 @@ public class RecordModelPostPass extends GenericFlatTypePostPass<Class<? extends
 		if (! (contract instanceof RecordOperator)) {
 			throw new CompilerPostPassException("Error: Operator is not a Pact Record based contract. Wrong compiler invokation.");
 		}
-		
+
 		RecordOperator recContract = (RecordOperator) contract;
 		int[] localPositions1 = contract.getKeyColumns(0);
 		int[] localPositions2 = contract.getKeyColumns(1);
 		Class<? extends Key>[] types = recContract.getKeyClasses();
-		
+
 		if (localPositions1.length != localPositions2.length) {
 			throw new CompilerException("Error: The keys for the first and second input have a different number of fields.");
 		}
-		
+
 		for (int i = 0; i < localPositions1.length; i++) {
 			input1Schema.addType(localPositions1[i], types[i]);
 		}
 		for (int i = 0; i < localPositions2.length; i++) {
 			input2Schema.addType(localPositions2[i], types[i]);
 		}
-		
-		
+
+
 		// this is a temporary fix, we should solve this more generic
 		if (contract instanceof CoGroupOperatorBase) {
 			Ordering groupOrder1 = ((CoGroupOperatorBase<?>) contract).getGroupOrderForInputOne();
 			Ordering groupOrder2 = ((CoGroupOperatorBase<?>) contract).getGroupOrderForInputTwo();
-			
+
 			if (groupOrder1 != null) {
 				addOrderingToSchema(groupOrder1, input1Schema);
 			}
@@ -140,16 +140,16 @@ public class RecordModelPostPass extends GenericFlatTypePostPass<Class<? extends
 			schema.addType(pos, type);
 		}
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 	//  Methods to create serializers and comparators
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	protected TypeSerializerFactory<?> createSerializer(SparseKeySchema schema) {
 		return RecordSerializerFactory.get();
 	}
-	
+
 	@Override
 	protected RecordComparatorFactory createComparator(FieldList fields, boolean[] directions, SparseKeySchema schema)
 			throws MissingFieldTypeInfoException
@@ -158,9 +158,9 @@ public class RecordModelPostPass extends GenericFlatTypePostPass<Class<? extends
 		Class<? extends Key>[] keyTypes = PostPassUtils.getKeys(schema, positions);
 		return new RecordComparatorFactory(positions, keyTypes, directions);
 	}
-	
+
 	@Override
-	protected RecordPairComparatorFactory createPairComparator(FieldList fields1, FieldList fields2, boolean[] sortDirections, 
+	protected RecordPairComparatorFactory createPairComparator(FieldList fields1, FieldList fields2, boolean[] sortDirections,
 			SparseKeySchema schema1, SparseKeySchema schema2)
 	{
 		return RecordPairComparatorFactory.get();

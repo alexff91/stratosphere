@@ -43,7 +43,7 @@ import eu.stratosphere.nephele.jobmanager.JobManager.ExecutionMode;
  * memory channels and don't go through the network stack.
  */
 public class LocalDistributedExecutor extends PlanExecutor {
-	
+
 	private static final int JOB_MANAGER_RPC_PORT = 6498;
 
 	private static final int SLEEP_TIME = 100;
@@ -83,11 +83,11 @@ public class LocalDistributedExecutor extends PlanExecutor {
 		if (this.running) {
 			return;
 		}
-		
+
 		Configuration conf = NepheleMiniCluster.getMiniclusterDefaultConfig(
 				JOB_MANAGER_RPC_PORT, 6500, 7501, null, true, true, false);
 		GlobalConfiguration.includeConfiguration(conf);
-			
+
 		// start job manager
 		JobManager jobManager;
 		try {
@@ -101,7 +101,7 @@ public class LocalDistributedExecutor extends PlanExecutor {
 		this.jobManagerThread = new JobManagerThread(jobManager);
 		this.jobManagerThread.setDaemon(true);
 		this.jobManagerThread.start();
-		
+
 		// start the task managers
 		for (int tm = 0; tm < numTaskMgr; tm++) {
 			// The whole thing can only work if we assign different ports to each TaskManager
@@ -207,19 +207,19 @@ public class LocalDistributedExecutor extends PlanExecutor {
 			return run(plan);
 		}
 	}
-	
+
 	@Override
 	public String getOptimizerPlanAsJSON(Plan plan) throws Exception {
 		if (!this.running) {
 			throw new IllegalStateException("LocalDistributedExecutor has not been started.");
 		}
-		
+
 		PactCompiler pc = new PactCompiler(new DataStatistics());
 		OptimizedPlan op = pc.compile(plan);
 		PlanJSONDumpGenerator dumper = new PlanJSONDumpGenerator();
 		return dumper.getOptimizerPlanAsJSON(op);
 	}
-	
+
 	public JobExecutionResult run(JobGraph jobGraph) throws Exception {
 		if (!this.running) {
 			throw new IllegalStateException("LocalDistributedExecutor has not been started.");
@@ -227,7 +227,7 @@ public class LocalDistributedExecutor extends PlanExecutor {
 
 		return runNepheleJobGraph(jobGraph);
 	}
-	
+
 	public JobExecutionResult run(Plan plan) throws Exception {
 		if (!this.running) {
 			throw new IllegalStateException("LocalDistributedExecutor has not been started.");
@@ -235,7 +235,7 @@ public class LocalDistributedExecutor extends PlanExecutor {
 
 		PactCompiler pc = new PactCompiler(new DataStatistics());
 		OptimizedPlan op = pc.compile(plan);
-		
+
 		NepheleJobGraphGenerator jgg = new NepheleJobGraphGenerator();
 		JobGraph jobGraph = jgg.compileJobGraph(op);
 

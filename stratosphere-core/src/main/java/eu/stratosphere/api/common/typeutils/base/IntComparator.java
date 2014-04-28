@@ -25,7 +25,7 @@ public final class IntComparator extends BasicTypeComparator<Integer> {
 
 	private static final long serialVersionUID = 1L;
 
-	
+
 	public IntComparator(boolean ascending) {
 		super(ascending);
 	}
@@ -56,7 +56,7 @@ public final class IntComparator extends BasicTypeComparator<Integer> {
 	@Override
 	public void putNormalizedKey(Integer iValue, MemorySegment target, int offset, int numBytes) {
 		int value = iValue.intValue() - Integer.MIN_VALUE;
-		
+
 		// see IntValue for an explanation of the logic
 		if (numBytes == 4) {
 			// default case, full normalized key

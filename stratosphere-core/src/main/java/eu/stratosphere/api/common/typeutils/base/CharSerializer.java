@@ -25,9 +25,9 @@ import eu.stratosphere.core.memory.DataOutputView;
 public class CharSerializer extends TypeSerializer<Character> implements ImmutableTypeUtil {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	public static final CharSerializer INSTANCE = new CharSerializer();
-	
+
 	private static final Character ZERO = Character.valueOf((char)0);
 
 

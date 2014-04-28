@@ -37,7 +37,7 @@ public abstract class AbstractChannel {
 
 	/**
 	 * Auxiliary constructor for channels
-	 * 
+	 *
 	 * @param channelIndex
 	 *        the index of the channel in either the output or input gate
 	 * @param channelID
@@ -55,7 +55,7 @@ public abstract class AbstractChannel {
 
 	/**
 	 * Returns the ID of the channel.
-	 * 
+	 *
 	 * @return the ID of the channel.
 	 */
 	public ChannelID getID() {
@@ -64,7 +64,7 @@ public abstract class AbstractChannel {
 
 	/**
 	 * Returns the channel's input at the associated gate.
-	 * 
+	 *
 	 * @return the channel's input at the associated gate
 	 */
 	public int getChannelIndex() {
@@ -73,14 +73,14 @@ public abstract class AbstractChannel {
 
 	/**
 	 * Returns the type of the channel.
-	 * 
+	 *
 	 * @return the type of the channel.
 	 */
 	public abstract ChannelType getType();
 
 	/**
 	 * Checks if the channel is closed, i.e. no more records can be transported through the channel.
-	 * 
+	 *
 	 * @return <code>true</code> if the channel is closed, <code>false</code> otherwise
 	 * @throws IOException
 	 *         thrown if an error occurred while closing the channel
@@ -89,7 +89,7 @@ public abstract class AbstractChannel {
 	 */
 	public abstract boolean isClosed() throws IOException, InterruptedException;
 
-	
+
 	public ChannelID getConnectedChannelID() {
 		return this.connectedChannelID;
 	}
@@ -97,19 +97,19 @@ public abstract class AbstractChannel {
 
 	/**
 	 * Returns the ID of the job this channel belongs to.
-	 * 
+	 *
 	 * @return the ID of the job this channel belongs to
 	 */
 	public abstract JobID getJobID();
 
 	/**
 	 * Returns <code>true</code> if this channel is an input channel, <code>false</code> otherwise.
-	 * 
+	 *
 	 * @return <code>true</code> if this channel is an input channel, <code>false</code> otherwise
 	 */
 	public abstract boolean isInputChannel();
 
-	
+
 	public abstract void transferEvent(AbstractEvent event) throws IOException, InterruptedException;
 
 	/**
@@ -120,7 +120,7 @@ public abstract class AbstractChannel {
 
 	/**
 	 * Returns the number of bytes which have been transmitted through this channel since its instantiation.
-	 * 
+	 *
 	 * @return the number of bytes which have been transmitted through this channel since its instantiation
 	 */
 	public abstract long getAmountOfDataTransmitted();

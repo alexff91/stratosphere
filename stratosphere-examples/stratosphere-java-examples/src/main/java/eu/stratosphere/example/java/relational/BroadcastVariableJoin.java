@@ -29,85 +29,85 @@ import eu.stratosphere.configuration.Configuration;
 import eu.stratosphere.util.Collector;
 
 public class BroadcastVariableJoin {
-	
+
 	public static class User {
-		
+
 		private int id;
 		private String name;
 		private String password;
-		
+
 		public User() {}
-		
+
 		public User(Integer id, String name, String password) {
 			super();
 			this.id = id;
 			this.name = name;
 			this.password = password;
 		}
-		
+
 		public int getId() {
 			return id;
 		}
-		
+
 		public void setId(Integer id) {
 			this.id = id;
 		}
-		
+
 		public String getName() {
 			return name;
 		}
-		
+
 		public void setName(String name) {
 			this.name = name;
 		}
-		
+
 		public String getPassword() {
 			return password;
 		}
-		
+
 		public void setPassword(String password) {
 			this.password = password;
 		}
-		
+
 		@Override
 		public String toString() {
 			return "User (" + id + ", " + name + ", " + password + ")";
 		}
 	}
-	
+
 	public static class Comment {
-		
+
 		private int uid;
-		
+
 		private String comment;
-		
+
 		public Comment() {}
-		
+
 		public Comment(int u) {
 			uid = u;
 			comment = "Hello Stratosphere!";
 		}
-		
+
 		public int getUid() {
 			return uid;
 		}
-		
+
 		public String getComment() {
 			return comment;
 		}
-		
+
 		@Override
 		public String toString() {
 			return "Comment (" + uid + ", " + comment + ")";
 		}
 	}
-	
+
 	public static class CommentsGenerator implements Iterator<Comment>, Serializable {
-		
+
 		private static final long serialVersionUID = 1L;
-		
+
 		private int i = 0;
-		
+
 		@Override
 		public boolean hasNext() {
 			return i++ < 500;
@@ -120,9 +120,9 @@ public class BroadcastVariableJoin {
 
 		@Override
 		public void remove() {}
-		
+
 	}
-	
+
 	public static class ToUserObject extends MapFunction<Tuple3<Integer, String, String>, User> {
 
 		private static final long serialVersionUID = 1L;
@@ -132,13 +132,13 @@ public class BroadcastVariableJoin {
 			return new User( value.f0, value.f1, value.f2);
 		}
 	}
-	
+
 	public static class HandJoin extends FlatMapFunction<User, Tuple2<User, Comment>> {
 
 		private static final long serialVersionUID = 1L;
-		
+
 		private Collection<Comment> com;
-		
+
 		@Override
 		public void open(Configuration parameters) throws Exception {
 			com = getRuntimeContext().getBroadcastVariable("comments");
@@ -154,21 +154,21 @@ public class BroadcastVariableJoin {
 			}
 		}
 	}
-	
+
 	public static void main(String[] args) throws Exception {
-		
+
 		final ExecutionEnvironment context = ExecutionEnvironment.getExecutionEnvironment();
-		
+
 		DataSet<Comment> userComments = context.fromCollection(new CommentsGenerator(), Comment.class);
-		
+
 		DataSet<Tuple3<Integer, String, String>> usersTuples = context.readCsvFile("file:///home/cicero/Desktop/users.csv").types(Integer.class, String.class, String.class);
 		DataSet<User> usersUsers = usersTuples.map(new ToUserObject());
-		
+
 		DataSet<Tuple2<User, Comment>> joined = usersUsers.flatMap(new HandJoin()).withBroadcastSet(userComments, "comments");
-		
+
 		joined.print();
-		
+
 		context.execute();
-		
+
 	}
 }

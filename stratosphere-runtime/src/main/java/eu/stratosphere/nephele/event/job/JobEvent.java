@@ -24,7 +24,7 @@ import eu.stratosphere.nephele.util.EnumUtils;
 /**
  * A job event object is used by the job manager to inform a client about
  * changes of the job's status.
- * 
+ *
  */
 public class JobEvent extends AbstractEvent {
 
@@ -40,7 +40,7 @@ public class JobEvent extends AbstractEvent {
 
 	/**
 	 * Constructs a new job event object.
-	 * 
+	 *
 	 * @param timestamp
 	 *        the timestamp of the event
 	 * @param currentJobStatus
@@ -92,7 +92,7 @@ public class JobEvent extends AbstractEvent {
 
 	/**
 	 * Returns the current status of the job.
-	 * 
+	 *
 	 * @return the current status of the job
 	 */
 	public JobStatus getCurrentJobStatus() {
@@ -101,7 +101,7 @@ public class JobEvent extends AbstractEvent {
 
 	/**
 	 * Returns the optional message that is possibly attached to this event.
-	 * 
+	 *
 	 * @return the optional message, possibly <code>null</code>.
 	 */
 	public String getOptionalMessage() {

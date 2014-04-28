@@ -46,7 +46,7 @@ public final class TestData {
 	 */
 	public static class Key extends IntValue {
 		private static final long serialVersionUID = 1L;
-		
+
 		public Key() {
 			super();
 		}
@@ -58,7 +58,7 @@ public final class TestData {
 		public int getKey() {
 			return getValue();
 		}
-		
+
 		public void setKey(int key) {
 			setValue(key);
 		}
@@ -77,7 +77,7 @@ public final class TestData {
 		public Value(String v) {
 			super(v);
 		}
-		
+
 		/*
 		 * (non-Javadoc)
 		 * @see java.lang.Object#equals(java.lang.Object)
@@ -88,18 +88,20 @@ public final class TestData {
 			if (this == obj) {
 				return true;
 			}
-			
+
 			if (obj.getClass() == TestData.Value.class) {
 				final StringValue other = (StringValue) obj;
 				int len = this.length();
-				
+
 				if (len == other.length()) {
 					final char[] tc = this.getCharArray();
 					final char[] oc = other.getCharArray();
 					int i = 0, j = 0;
-					
+
 					while (len-- != 0) {
-						if (tc[i++] != oc[j++]) return false;
+						if (tc[i++] != oc[j++]) {
+						return false;
+						}
 					}
 					return true;
 				}
@@ -148,7 +150,7 @@ public final class TestData {
 		{
 			this(seed, keyMax, valueLength, keyMode, valueMode, null);
 		}
-		
+
 		public Generator(long seed, int keyMax, int valueLength, KeyMode keyMode, ValueMode valueMode, Value constant) {
 			this.seed = seed;
 			this.keyMax = keyMax;
@@ -158,7 +160,7 @@ public final class TestData {
 
 			this.random = new Random(seed);
 			this.counter = 0;
-			
+
 			this.key = new Key();
 			this.value = constant == null ? new Value() : constant;
 		}
@@ -227,12 +229,12 @@ public final class TestData {
 		}
 
 	}
-	
+
 	/**
 	 * Record reader mock.
 	 */
 	public static class GeneratorIterator implements MutableObjectIterator<Record> {
-		
+
 		private final Generator generator;
 
 		private final int numberOfRecords;
@@ -256,35 +258,35 @@ public final class TestData {
 				return null;
 			}
 		}
-		
+
 		public void reset() {
 			this.counter = 0;
 		}
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public static class ConstantValueIterator implements MutableObjectIterator<Record>
 	{
 		private final Key key;
 		private final Value value;
-		
+
 		private final String valueValue;
-		
-		
+
+
 		private final int numPairs;
-		
+
 		private int pos;
-		
-		
+
+
 		public ConstantValueIterator(int keyValue, String valueValue, int numPairs)
 		{
 			this.key = new Key(keyValue);
-			this.value = new Value();			
+			this.value = new Value();
 			this.valueValue = valueValue;
 			this.numPairs = numPairs;
 		}
-		
+
 		@Override
 		public Record next(Record reuse) {
 			if (pos < this.numPairs) {
@@ -298,7 +300,7 @@ public final class TestData {
 				return null;
 			}
 		}
-		
+
 		public void reset() {
 			this.pos = 0;
 		}

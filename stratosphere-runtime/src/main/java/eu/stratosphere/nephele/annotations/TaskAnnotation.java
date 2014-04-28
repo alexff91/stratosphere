@@ -24,6 +24,6 @@ public @interface TaskAnnotation {
 
 	boolean statefull();
 	double selektivity() default 1;
-	
+
 }
 

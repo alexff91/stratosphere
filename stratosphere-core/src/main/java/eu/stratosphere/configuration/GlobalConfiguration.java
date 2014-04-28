@@ -13,19 +13,6 @@
 
 package eu.stratosphere.configuration;
 
-import eu.stratosphere.util.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
-import org.xml.sax.SAXException;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,6 +22,21 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
+import org.xml.sax.SAXException;
+
+import eu.stratosphere.util.StringUtils;
 
 /**
  * Global configuration object in Nephele. Similar to Java properties configuration
@@ -66,7 +68,7 @@ public final class GlobalConfiguration {
 
 	/**
 	 * Retrieves the singleton object of the global configuration.
-	 * 
+	 *
 	 * @return the global configuration object
 	 */
 	private static synchronized GlobalConfiguration get() {
@@ -86,7 +88,7 @@ public final class GlobalConfiguration {
 
 	/**
 	 * Returns the value associated with the given key as a string.
-	 * 
+	 *
 	 * @param key
 	 *        the key pointing to the associated value
 	 * @param defaultValue
@@ -100,7 +102,7 @@ public final class GlobalConfiguration {
 
 	/**
 	 * Returns the value associated with the given key as a string.
-	 * 
+	 *
 	 * @param key
 	 *        key the key pointing to the associated value
 	 * @param defaultValue
@@ -121,7 +123,7 @@ public final class GlobalConfiguration {
 
 	/**
 	 * Returns the value associated with the given key as a long integer.
-	 * 
+	 *
 	 * @param key
 	 *        the key pointing to the associated value
 	 * @param defaultValue
@@ -135,7 +137,7 @@ public final class GlobalConfiguration {
 
 	/**
 	 * Returns the value associated with the given key as a long integer.
-	 * 
+	 *
 	 * @param key
 	 *        the key pointing to the associated value
 	 * @param defaultValue
@@ -165,7 +167,7 @@ public final class GlobalConfiguration {
 
 	/**
 	 * Returns the value associated with the given key as an integer.
-	 * 
+	 *
 	 * @param key
 	 *        the key pointing to the associated value
 	 * @param defaultValue
@@ -179,7 +181,7 @@ public final class GlobalConfiguration {
 
 	/**
 	 * Returns the value associated with the given key as an integer.
-	 * 
+	 *
 	 * @param key
 	 *        the key pointing to the associated value
 	 * @param defaultValue
@@ -206,10 +208,10 @@ public final class GlobalConfiguration {
 
 		return retVal;
 	}
-	
+
 	/**
 	 * Returns the value associated with the given key as a float.
-	 * 
+	 *
 	 * @param key
 	 *        the key pointing to the associated value
 	 * @param defaultValue
@@ -223,7 +225,7 @@ public final class GlobalConfiguration {
 
 	/**
 	 * Returns the value associated with the given key as an integer.
-	 * 
+	 *
 	 * @param key
 	 *        the key pointing to the associated value
 	 * @param defaultValue
@@ -253,7 +255,7 @@ public final class GlobalConfiguration {
 
 	/**
 	 * Returns the value associated with the given key as a boolean.
-	 * 
+	 *
 	 * @param key
 	 *        the key pointing to the associated value
 	 * @param defaultValue
@@ -267,7 +269,7 @@ public final class GlobalConfiguration {
 
 	/**
 	 * Returns the value associated with the given key as a boolean.
-	 * 
+	 *
 	 * @param key
 	 *        the key pointing to the associated value
 	 * @param defaultValue
@@ -294,7 +296,7 @@ public final class GlobalConfiguration {
 	 * <p>
 	 * XML and YAML are supported as configuration files. If both XML and YAML files exist in the configuration
 	 * directory, keys from YAML will overwrite keys from XML.
-	 * 
+	 *
 	 * @param configDir
 	 *        the directory which contains the configuration files
 	 */
@@ -311,7 +313,7 @@ public final class GlobalConfiguration {
 				+ ") does not describe an existing directory.");
 			return;
 		}
-		
+
 		if(confDirFile.isFile()) {
 			final File file = new File(configDir);
 			if(configDir.endsWith(".xml")) {
@@ -358,7 +360,7 @@ public final class GlobalConfiguration {
 	 * Colon and whitespace ": " separate key and value (one per line). The hash tag "#" starts a single-line comment.
 	 * <p>
 	 * Example:
-	 * 
+	 *
 	 * <pre>
 	 * jobmanager.rpc.address: localhost # network address for communication with the job manager
 	 * jobmanager.rpc.port   : 6123      # network port to connect to for communication with the job manager
@@ -368,7 +370,7 @@ public final class GlobalConfiguration {
 	 * This does not span the whole YAML specification, but only the *syntax* of simple YAML key-value pairs (see issue
 	 * #113 on GitHub). If at any point in time, there is a need to go beyond simple key-value pairs syntax
 	 * compatibility will allow to introduce a YAML parser library.
-	 * 
+	 *
 	 * @param file the YAML file to read from
 	 * @see <a href="http://www.yaml.org/spec/1.2/spec.html">YAML 1.2 specification</a>
 	 * @see <a href="https://github.com/stratosphere/stratosphere/issues/113">Issue #113</a>
@@ -398,7 +400,7 @@ public final class GlobalConfiguration {
 
 					String key = kv[0].trim();
 					String value = kv[1].trim();
-					
+
 					// sanity check
 					if (key.length() == 0 || value.length() == 0) {
 						LOG.warn("Error after splitting key and value in configuration file " + file + ": " + line);
@@ -423,7 +425,7 @@ public final class GlobalConfiguration {
 
 	/**
 	 * Loads an XML document of key-values pairs.
-	 * 
+	 *
 	 * @param file
 	 *        the XML document file
 	 */
@@ -544,7 +546,7 @@ public final class GlobalConfiguration {
 	/**
 	 * Copies the key/value pairs stored in the global configuration to
 	 * a {@link Configuration} object and returns it.
-	 * 
+	 *
 	 * @return the {@link Configuration} object including the key/value pairs
 	 */
 	public static Configuration getConfiguration() {
@@ -557,7 +559,7 @@ public final class GlobalConfiguration {
 	 * a {@link Configuration} object and returns it. The subset is defined by the
 	 * given array of keys. If <code>keys</code> is <code>null</code>, the entire
 	 * global configuration is copied.
-	 * 
+	 *
 	 * @param keys
 	 *        array of keys specifying the subset of pairs to copy.
 	 * @return the {@link Configuration} object including the key/value pairs
@@ -569,7 +571,7 @@ public final class GlobalConfiguration {
 
 	/**
 	 * Internal non-static method to return configuration.
-	 * 
+	 *
 	 * @param keys
 	 *        array of keys specifying the subset of pairs to copy.
 	 * @return the {@link Configuration} object including the key/value pairs
@@ -611,7 +613,7 @@ public final class GlobalConfiguration {
 	 * configuration. If a key/value pair with an identical already
 	 * exists in the global configuration, it is overwritten by the
 	 * pair of the {@link Configuration} object.
-	 * 
+	 *
 	 * @param conf
 	 *        the {@link Configuration} object to merge into the global configuration
 	 */
@@ -622,7 +624,7 @@ public final class GlobalConfiguration {
 
 	/**
 	 * Internal non-static method to include configuration.
-	 * 
+	 *
 	 * @param conf
 	 *        the {@link Configuration} object to merge into the global configuration
 	 */
@@ -644,10 +646,10 @@ public final class GlobalConfiguration {
 			}
 		}
 	}
-	
+
 	/**
 	 * Filters files in directory which have the specified suffix (e.g. ".xml").
-	 * 
+	 *
 	 * @param dirToFilter
 	 *        directory to filter
 	 * @param suffix
@@ -666,7 +668,7 @@ public final class GlobalConfiguration {
 					if (dir.equals(dirToFilter) && name != null && name.endsWith(suffix)) {
 						return true;
 					}
- 				}
+				}
 
 				return false;
 			}

@@ -31,7 +31,7 @@ import eu.stratosphere.nephele.taskmanager.transferenvelope.TransferEnvelope;
  * The network connection manager manages incoming and outgoing network connection from and to other hosts.
  * <p>
  * This class is thread-safe.
- * 
+ *
  */
 public final class NetworkConnectionManager {
 
@@ -97,7 +97,7 @@ public final class NetworkConnectionManager {
 
 	/**
 	 * Randomly selects one of the active threads dealing with outgoing connections.
-	 * 
+	 *
 	 * @return one of the active threads dealing with outgoing connections
 	 */
 	private OutgoingConnectionThread getOutgoingConnectionThread() {
@@ -107,7 +107,7 @@ public final class NetworkConnectionManager {
 
 	/**
 	 * Queues an envelope for transfer to a particular target host.
-	 * 
+	 *
 	 * @param remoteReceiver
 	 *        the address of the remote receiver
 	 * @param transferEnvelope
@@ -120,7 +120,7 @@ public final class NetworkConnectionManager {
 
 	/**
 	 * Returns (and possibly creates) the outgoing connection for the given target address.
-	 * 
+	 *
 	 * @param targetAddress
 	 *        the address of the connection target
 	 * @return the outgoing connection object

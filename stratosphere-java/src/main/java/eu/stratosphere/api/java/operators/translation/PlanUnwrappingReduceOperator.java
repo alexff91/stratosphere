@@ -14,6 +14,8 @@
  **********************************************************************************************************************/
 package eu.stratosphere.api.java.operators.translation;
 
+import java.util.Iterator;
+
 import eu.stratosphere.api.common.functions.GenericGroupReduce;
 import eu.stratosphere.api.common.operators.base.GroupReduceOperatorBase;
 import eu.stratosphere.api.java.functions.ReduceFunction;
@@ -21,8 +23,6 @@ import eu.stratosphere.api.java.operators.Keys;
 import eu.stratosphere.api.java.tuple.Tuple2;
 import eu.stratosphere.api.java.typeutils.TypeInformation;
 import eu.stratosphere.util.Collector;
-
-import java.util.Iterator;
 
 /**
  *
@@ -32,7 +32,7 @@ public class PlanUnwrappingReduceOperator<T, K> extends GroupReduceOperatorBase<
 {
 
 	private final TypeInformation<T> type;
-	
+
 	private final TypeInformation<Tuple2<K, T>> typeInfoWithKey;
 
 
@@ -41,11 +41,11 @@ public class PlanUnwrappingReduceOperator<T, K> extends GroupReduceOperatorBase<
 	{
 		super(new ReduceGroupWrapper<T, K>(udf), key.computeLogicalKeyPositions(), name);
 		this.type = type;
-		
+
 		this.typeInfoWithKey = typeInfoWithKey;
 	}
-	
-	
+
+
 	@Override
 	public TypeInformation<T> getReturnType() {
 		return this.type;
@@ -55,16 +55,16 @@ public class PlanUnwrappingReduceOperator<T, K> extends GroupReduceOperatorBase<
 	public TypeInformation<Tuple2<K, T>> getInputType() {
 		return this.typeInfoWithKey;
 	}
-	
-	
+
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public static final class ReduceGroupWrapper<T, K> extends WrappingFunction<ReduceFunction<T>>
 		implements GenericGroupReduce<Tuple2<K, T>, T>
 	{
 
 		private static final long serialVersionUID = 1L;
-		
+
 
 		private ReduceGroupWrapper(ReduceFunction<T> wrapped) {
 			super(wrapped);
@@ -74,19 +74,19 @@ public class PlanUnwrappingReduceOperator<T, K> extends GroupReduceOperatorBase<
 		@Override
 		public void reduce(Iterator<Tuple2<K, T>> values, Collector<T> out) throws Exception {
 			T curr = values.next().f1;
-			
+
 			while (values.hasNext()) {
 				curr = this.wrappedFunction.reduce(curr, values.next().f1);
 			}
-			
+
 			out.collect(curr);
 		}
 
 		@Override
 		public void combine(Iterator<Tuple2<K, T>> values, Collector<Tuple2<K, T>> out) throws Exception {
-			
+
 			Tuple2<K, T> currentTuple = values.next();
-			
+
 			T curr = currentTuple.f1;
 
 			while (values.hasNext()) {

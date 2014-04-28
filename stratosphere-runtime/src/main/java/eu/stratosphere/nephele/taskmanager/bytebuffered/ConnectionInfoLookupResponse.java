@@ -128,7 +128,7 @@ public class ConnectionInfoLookupResponse implements IOReadableWritable {
 
 	/**
 	 * Constructor used to generate a plain ConnectionInfoLookupResponse object to be filled with multicast targets.
-	 * 
+	 *
 	 * @return
 	 */
 	public static ConnectionInfoLookupResponse createReceiverFoundAndReady() {

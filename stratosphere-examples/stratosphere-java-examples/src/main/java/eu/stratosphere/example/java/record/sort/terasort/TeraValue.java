@@ -38,16 +38,16 @@ public final class TeraValue implements Value {
 	 * The buffer to store the value.
 	 */
 	private byte[] value;
-	
+
 	/**
 	 * The offset to the value byte sequence.
 	 */
 	private int offset;
 
 	/**
-	 * Constructs a new value object. The value points to the subsequence in the given array, i.e. it 
+	 * Constructs a new value object. The value points to the subsequence in the given array, i.e. it
 	 * is sharing the byte array.
-	 * 
+	 *
 	 * @param srcBuf The source buffer to read the value from.
 	 * @param offset The offset in the byte array where the value subsequence starts.
 	 */
@@ -62,11 +62,11 @@ public final class TeraValue implements Value {
 	public TeraValue() {
 		this.value = new byte[VALUE_SIZE];
 	}
-	
+
 	/**
-	 * Sets the value of this value object. This value will point to the subsequence in the given array, i.e. it 
+	 * Sets the value of this value object. This value will point to the subsequence in the given array, i.e. it
 	 * is sharing the byte array.
-	 * 
+	 *
 	 * @param data The source buffer to read the value from.
 	 * @param offset The offset in the byte array where the value subsequence starts.
 	 */
@@ -85,15 +85,15 @@ public final class TeraValue implements Value {
 		in.readFully(this.value, 0, VALUE_SIZE);
 		this.offset = 0;
 	}
-	
+
 	@Override
 	public String toString() {
 		return new String(this.value, this.offset, VALUE_SIZE);
 	}
-	
+
 	/**
 	 * Copies the value to the given byte buffer.
-	 * 
+	 *
 	 * @param buf
 	 *        the buffer to copy the value to
 	 */

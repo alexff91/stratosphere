@@ -17,7 +17,7 @@ package eu.stratosphere.compiler.dataproperties;
  * An enumeration tracking the different types of sharding strategies.
  */
 public enum PartitioningProperty {
-	
+
 	/**
 	 * Constant indicating no particular partitioning (i.e. random) data distribution.
 	 */
@@ -37,7 +37,7 @@ public enum PartitioningProperty {
 	 * Constant indicating any not further specified disjunct partitioning.
 	 */
 	ANY_PARTITIONING,
-	
+
 	/**
 	 * Constant indicating full replication of the data to each parallel instance.
 	 */
@@ -46,27 +46,27 @@ public enum PartitioningProperty {
 	/**
 	 * Checks, if this property represents in fact a partitioning. That is,
 	 * whether this property is not equal to <tt>PartitionProperty.FULL_REPLICATION</tt>.
-	 * 
+	 *
 	 * @return True, if this enum constant is unequal to <tt>PartitionProperty.FULL_REPLICATION</tt>,
 	 *         false otherwise.
 	 */
 	public boolean isPartitioned() {
 		return this != FULL_REPLICATION;
 	}
-	
+
 	/**
 	 * Checks, if this property represents a full replication.
-	 * 
+	 *
 	 * @return True, if this enum constant is equal to <tt>PartitionProperty.FULL_REPLICATION</tt>,
 	 *         false otherwise.
 	 */
 	public boolean isReplication() {
 		return this == FULL_REPLICATION;
 	}
-	
+
 	/**
 	 * Checks if this property presents a partitioning that is not random, but on a partitioning key.
-	 * 
+	 *
 	 * @return True, if the data is partitioned on a key.
 	 */
 	public boolean isPartitionedOnKey() {
@@ -80,7 +80,7 @@ public enum PartitioningProperty {
 	 * <p>
 	 * Examples for computable partitioning schemes are hash- or range-partitionings. An example for a non-computable
 	 * partitioning is the implicit partitioning that exists though a globally unique key.
-	 * 
+	 *
 	 * @return True, if this enum constant is a re-computable partitioning.
 	 */
 	public boolean isComputablyPartitioned() {

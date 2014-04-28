@@ -20,7 +20,7 @@ import eu.stratosphere.types.Record;
 
 public final class DummyOutputFormat extends DelimitedOutputFormat {
 	private static final long serialVersionUID = 1L;
-	
+
 	@Override
 	public int serializeRecord(Record rec, byte[] target) throws Exception {
 		return 0;

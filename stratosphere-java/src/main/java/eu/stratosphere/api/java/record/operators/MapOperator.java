@@ -30,33 +30,33 @@ import eu.stratosphere.types.Key;
 
 /**
  * MapOperator that applies a {@link MapFunction} to each record independently.
- * 
+ *
  * @see MapFunction
  */
 public class MapOperator extends MapOperatorBase<MapFunction> implements RecordOperator {
-	
+
 	private static String DEFAULT_NAME = "<Unnamed Mapper>";
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Creates a Builder with the provided {@link MapFunction} implementation.
-	 * 
+	 *
 	 * @param udf The {@link MapFunction} implementation for this Map operator.
 	 */
 	public static Builder builder(MapFunction udf) {
 		return new Builder(new UserCodeObjectWrapper<MapFunction>(udf));
 	}
-	
+
 	/**
 	 * Creates a Builder with the provided {@link MapFunction} implementation.
-	 * 
+	 *
 	 * @param udf The {@link MapFunction} implementation for this Map operator.
 	 */
 	public static Builder builder(Class<? extends MapFunction> udf) {
 		return new Builder(new UserCodeClassWrapper<MapFunction>(udf));
 	}
-	
+
 	/**
 	 * The private constructor that only gets invoked from the Builder.
 	 * @param builder
@@ -67,7 +67,7 @@ public class MapOperator extends MapOperatorBase<MapFunction> implements RecordO
 		setBroadcastVariables(builder.broadcastInputs);
 		setSemanticProperties(FunctionAnnotation.readSingleConstantAnnotations(builder.udf));
 	}
-	
+
 
 	@Override
 	public Class<? extends Key>[] getKeyClasses() {
@@ -75,23 +75,23 @@ public class MapOperator extends MapOperatorBase<MapFunction> implements RecordO
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Builder pattern, straight from Joshua Bloch's Effective Java (2nd Edition).
 	 */
 	public static class Builder {
-		
+
 		/* The required parameters */
 		private final UserCodeWrapper<MapFunction> udf;
-		
+
 		/* The optional parameters */
 		private List<Operator> inputs;
 		private Map<String, Operator> broadcastInputs;
 		private String name = DEFAULT_NAME;
-		
+
 		/**
 		 * Creates a Builder with the provided {@link MapFunction} implementation.
-		 * 
+		 *
 		 * @param udf The {@link MapFunction} implementation for this Map operator.
 		 */
 		private Builder(UserCodeWrapper<MapFunction> udf) {
@@ -99,10 +99,10 @@ public class MapOperator extends MapOperatorBase<MapFunction> implements RecordO
 			this.inputs = new ArrayList<Operator>();
 			this.broadcastInputs = new HashMap<String, Operator>();
 		}
-		
+
 		/**
 		 * Sets one or several inputs (union).
-		 * 
+		 *
 		 * @param inputs
 		 */
 		public Builder input(Operator ...inputs) {
@@ -112,26 +112,26 @@ public class MapOperator extends MapOperatorBase<MapFunction> implements RecordO
 			}
 			return this;
 		}
-		
+
 		/**
 		 * Sets the inputs.
-		 * 
+		 *
 		 * @param inputs
 		 */
 		public Builder inputs(List<Operator> inputs) {
 			this.inputs = inputs;
 			return this;
 		}
-		
+
 		/**
-		 * Binds the result produced by a plan rooted at {@code root} to a 
+		 * Binds the result produced by a plan rooted at {@code root} to a
 		 * variable used by the UDF wrapped in this operator.
 		 */
 		public Builder setBroadcastVariable(String name, Operator input) {
 			this.broadcastInputs.put(name, input);
 			return this;
 		}
-		
+
 		/**
 		 * Binds multiple broadcast variables.
 		 */
@@ -140,21 +140,21 @@ public class MapOperator extends MapOperatorBase<MapFunction> implements RecordO
 			this.broadcastInputs.putAll(inputs);
 			return this;
 		}
-		
+
 		/**
 		 * Sets the name of this operator.
-		 * 
+		 *
 		 * @param name
 		 */
 		public Builder name(String name) {
 			this.name = name;
 			return this;
 		}
-		
+
 		/**
-		 * Creates and returns a MapOperator from using the values given 
+		 * Creates and returns a MapOperator from using the values given
 		 * to the builder.
-		 * 
+		 *
 		 * @return The created operator
 		 */
 		public MapOperator build() {

@@ -25,9 +25,9 @@ public final class S3FileStatus implements FileStatus {
 	private final boolean isDir;
 
 	private final long modificationTime;
-	
+
 	private final long accessTime;
-	
+
 	S3FileStatus(final Path path, final long length, final boolean isDir, final long modificationTime,
 			final long accessTime) {
 		this.path = path;
@@ -61,14 +61,14 @@ public final class S3FileStatus implements FileStatus {
 
 	@Override
 	public long getModificationTime() {
-		
+
 		return this.modificationTime;
 	}
 
 
 	@Override
 	public long getAccessTime() {
-		
+
 		return this.accessTime;
 	}
 

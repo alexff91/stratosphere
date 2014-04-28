@@ -142,7 +142,7 @@ public class NetworkNode implements IOReadableWritable {
 
 	/**
 	 * Returns the network topology that is associated with this network node.
-	 * 
+	 *
 	 * @return the network topology that is associated with this network node
 	 */
 	public NetworkTopology getNetworkTopology() {
@@ -152,7 +152,7 @@ public class NetworkNode implements IOReadableWritable {
 	/**
 	 * Determines the distance to the given network node. The distance is determined as the number of internal network
 	 * nodes that must be traversed in order to send a packet from one node to the other plus one.
-	 * 
+	 *
 	 * @param networkNode
 	 *        the node to determine the distance for
 	 * @return the distance to the given network node or <code>Integer.MAX_VALUE</code> if the given node is not part of
@@ -179,7 +179,7 @@ public class NetworkNode implements IOReadableWritable {
 	/**
 	 * Checks whether this node is a predecessor or the identity (the node itself) of the given network node in the
 	 * network topology tree.
-	 * 
+	 *
 	 * @param networkNode
 	 *        a potential child network node
 	 * @return If this node node is a predecessor of given node in the network topology tree, the return value

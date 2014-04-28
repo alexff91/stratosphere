@@ -28,64 +28,64 @@ import eu.stratosphere.configuration.Configuration;
 
 @SuppressWarnings("serial")
 public class KMeans {
-	
+
 	/**
 	 * A simple three-dimensional point.
 	 */
 	public static class Point implements Serializable {
-		
+
 		public double x, y;
-		
+
 		public Point() {}
 
 		public Point(double x, double y) {
 			this.x = x;
 			this.y = y;
 		}
-		
+
 		public Point add(Point other) {
 			x += other.x;
 			y += other.y;
 			return this;
 		}
-		
+
 		public Point div(long val) {
 			x /= val;
 			y /= val;
 			return this;
 		}
-		
+
 		public double euclideanDistance(Point other) {
 			return Math.sqrt((x-other.x)*(x-other.x) + (y-other.y)*(y-other.y));
 		}
-		
+
 		public void clear() {
 			x = y = 0.0;
 		}
-		
+
 		@Override
 		public String toString() {
 			return "(" + x + "|" + y + ")";
 		}
 	}
-	
+
 	public static class Centroid extends Point {
-		
+
 		public int id;
-		
+
 		public Centroid() {}
-		
+
 		public Centroid(int id, double x, double y) {
 			super(x,y);
 			this.id = id;
 		}
-		
+
 		public Centroid(int id, Point p) {
 			super(p.x, p.y);
 			this.id = id;
 		}
 	}
-	
+
 	/**
 	 * Determines the closest cluster center for a data point.
 	 */
@@ -102,16 +102,16 @@ public class KMeans {
 
 		@Override
 		public Tuple3<Integer, Point, Long> map(Point p) throws Exception {
-			
+
 			double nearestDistance = Double.MAX_VALUE;
 			int centroidId = 0;
-			
+
 			// check all cluster centers
 			for (Centroid centroid : centroids) {
 				// compute distance
 				double distance = p.euclideanDistance(centroid);
-				
-				// update nearest cluster if necessary 
+
+				// update nearest cluster if necessary
 				if (distance < nearestDistance) {
 					nearestDistance = distance;
 					centroidId = centroid.id;
@@ -122,8 +122,8 @@ public class KMeans {
 			return new Tuple3<Integer, Point, Long>(centroidId, p, 1L);
 		}
 	}
-	
-	
+
+
 	/** The input and output types are (centroid-id, point-sum, count) */
 	public static class CentroidAccumulator extends ReduceFunction<Tuple3<Integer, Point, Long>> {
 		private static final long serialVersionUID = 1L;
@@ -134,7 +134,7 @@ public class KMeans {
 		}
 	}
 
-	
+
 	/** The input and output types are (centroid-id, point-sum, count) */
 	public static class CentroidAverager extends MapFunction<Tuple3<Integer, Point, Long>, Centroid> {
 		private static final long serialVersionUID = 1L;
@@ -144,31 +144,31 @@ public class KMeans {
 			return new Centroid(value.f0,  value.f1.div(value.f2));
 		}
 	}
-	
-	
+
+
 	public static void main(String[] args) throws Exception {
-		
+
 		ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
-		
+
 		DataSet<Point> points = env.fromElements(new Point(-3.78, -42.01), new Point(-45.96, 30.67), new Point(8.96, -41.58),
-		                                         new Point(-22.96, 40.73), new Point(4.79, -35.58), new Point(-41.27, 32.42),
-		                                         new Point(-2.61, -30.43), new Point(-23.33, 26.23), new Point(-9.22, -31.23),
-		                                         new Point(-45.37, 36.42));
-		
+							new Point(-22.96, 40.73), new Point(4.79, -35.58), new Point(-41.27, 32.42),
+							new Point(-2.61, -30.43), new Point(-23.33, 26.23), new Point(-9.22, -31.23),
+							new Point(-45.37, 36.42));
+
 		DataSet<Centroid> centroids = env.fromElements(new Centroid(0, 43.28, 47.89),
-		                                               new Centroid(1, -0.06, -48.97));
-		
+							new Centroid(1, -0.06, -48.97));
+
 		IterativeDataSet<Centroid> loop = centroids.iterate(20);
-		
+
 		DataSet<Centroid> newCentriods = points
 			.map(new SelectNearestCenter()).withBroadcastSet(loop, "centroids")
 			.groupBy(0).reduce(new CentroidAccumulator())
 			.map(new CentroidAverager());
-		
+
 		DataSet<Centroid> result = loop.closeWith(newCentriods);
-		
+
 		result.print();
-		
+
 		env.execute("KMeans 2d example");
 	}
 }

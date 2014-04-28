@@ -14,7 +14,7 @@
 /**
  * This file is based on source code from the Hadoop Project (http://hadoop.apache.org/), licensed by the Apache
  * Software Foundation (ASF) under the Apache License, Version 2.0. See the NOTICE file distributed with this work for
- * additional information regarding copyright ownership. 
+ * additional information regarding copyright ownership.
  */
 
 package eu.stratosphere.core.fs.local;
@@ -40,7 +40,7 @@ import eu.stratosphere.util.OperatingSystem;
 /**
  * The class <code>LocalFile</code> provides an implementation of the {@link FileSystem} interface for the local file
  * system.
- * 
+ *
  */
 public class LocalFileSystem extends FileSystem {
 
@@ -186,7 +186,7 @@ public class LocalFileSystem extends FileSystem {
 
 	/**
 	 * Deletes the given file or directory.
-	 * 
+	 *
 	 * @param f
 	 *        the file to be deleted
 	 * @return <code>true</code> if all files were deleted successfully, <code>false</code> otherwise
@@ -215,7 +215,7 @@ public class LocalFileSystem extends FileSystem {
 
 	/**
 	 * Recursively creates the directory specified by the provided path.
-	 * 
+	 *
 	 * @return <code>true</code>if the directories either already existed or have been created successfully,
 	 *         <code>false</code> otherwise
 	 * @throws IOException

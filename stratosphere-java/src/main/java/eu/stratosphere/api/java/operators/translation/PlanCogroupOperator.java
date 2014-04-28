@@ -19,10 +19,10 @@ import eu.stratosphere.api.common.operators.base.CoGroupOperatorBase;
 import eu.stratosphere.api.java.functions.CoGroupFunction;
 import eu.stratosphere.api.java.typeutils.TypeInformation;
 
-public class PlanCogroupOperator<IN1, IN2, OUT> 
+public class PlanCogroupOperator<IN1, IN2, OUT>
 	extends CoGroupOperatorBase<GenericCoGrouper<IN1, IN2, OUT>>
 	implements BinaryJavaPlanNode<IN1, IN2, OUT> {
-	
+
 	private final TypeInformation<IN1> inType1;
 	private final TypeInformation<IN2> inType2;
 	private final TypeInformation<OUT> outType;
@@ -31,7 +31,7 @@ public class PlanCogroupOperator<IN1, IN2, OUT>
 			CoGroupFunction<IN1, IN2, OUT> udf,
 			int[] keyPositions1, int[] keyPositions2, String name, TypeInformation<IN1> inType1, TypeInformation<IN2> inType2, TypeInformation<OUT> outType) {
 		super(udf, keyPositions1, keyPositions2, name);
-		
+
 		this.inType1 = inType1;
 		this.inType2 = inType2;
 		this.outType = outType;

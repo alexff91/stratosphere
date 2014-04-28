@@ -42,7 +42,7 @@ import eu.stratosphere.types.Record;
 import eu.stratosphere.util.MutableObjectIterator;
 
 public class MockEnvironment implements Environment {
-	
+
 	private final MemoryManager memManager;
 
 	private final IOManager ioManager;
@@ -89,7 +89,7 @@ public class MockEnvironment implements Environment {
 	public MemoryManager getMemoryManager() {
 		return this.memManager;
 	}
-	
+
 	@Override
 	public IOManager getIOManager() {
 		return this.ioManager;
@@ -102,7 +102,7 @@ public class MockEnvironment implements Environment {
 
 
 	private static class MockInputGate extends RuntimeInputGate<Record> {
-		
+
 		private MutableObjectIterator<Record> it;
 
 		public MockInputGate(int id, MutableObjectIterator<Record> it) {
@@ -115,7 +115,7 @@ public class MockEnvironment implements Environment {
 			super.registerRecordAvailabilityListener(listener);
 			this.notifyRecordIsAvailable(0);
 		}
-		
+
 		@Override
 		public InputChannelResult readRecord(Record target) throws IOException, InterruptedException {
 
@@ -130,7 +130,7 @@ public class MockEnvironment implements Environment {
 	}
 
 	private static class MockOutputGate extends RuntimeOutputGate<Record> {
-		
+
 		private List<Record> out;
 
 		public MockOutputGate(int index, List<Record> outList) {
@@ -264,7 +264,7 @@ public class MockEnvironment implements Environment {
 	public int getNumberOfInputChannels() {
 		return this.inputs.size();
 	}
-	
+
 	@Override
 	public AccumulatorProtocol getAccumulatorProtocolProxy() {
 		throw new UnsupportedOperationException(

@@ -13,23 +13,21 @@
 
 package eu.stratosphere.nephele.topology;
 
-import java.io.File;
-import java.io.IOException;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
+import java.io.File;
+import java.io.IOException;
+
 import org.junit.Test;
 
-import eu.stratosphere.nephele.topology.NetworkNode;
-import eu.stratosphere.nephele.topology.NetworkTopology;
 import eu.stratosphere.nephele.util.ManagementTestUtils;
 
 /**
  * This class contains unit tests which address the correctness of the network topology implementation.
- * 
+ *
  */
 public class NetworkTopologyTest {
 
@@ -113,7 +111,7 @@ public class NetworkTopologyTest {
 
 	/**
 	 * Locates the file which contains the network topology. The network topology file is required for these tests.
-	 * 
+	 *
 	 * @return a file object pointing to the network topology file
 	 * @throws IOException
 	 *         thrown if the network topology could not be located within the test resources

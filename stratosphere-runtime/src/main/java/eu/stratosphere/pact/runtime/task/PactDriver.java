@@ -22,64 +22,64 @@ import eu.stratosphere.api.common.functions.Function;
  * <i>map</i> or <i>reduce</i> specific code.
  *
  * @see PactTaskContext
- * 
+ *
  * @param <S> The type of stub driven by this driver.
  * @param <OT> The data type of the records produced by this driver.
  */
 public interface PactDriver<S extends Function, OT> {
-	
+
 	void setup(PactTaskContext<S, OT> context);
-	
+
 	/**
 	 * Gets the number of inputs (= Nephele Gates and Readers) that the task has.
-	 * 
+	 *
 	 * @return The number of inputs.
 	 */
 	int getNumberOfInputs();
-	
+
 	/**
 	 * Gets the class of the stub type that is run by this task. For example, a <tt>MapTask</tt> should return
-	 * <code>MapFunction.class</code>.   
-	 * 
+	 * <code>MapFunction.class</code>.
+	 *
 	 * @return The class of the stub type run by the task.
 	 */
 	Class<S> getStubType();
-	
+
 	/**
 	 * Flag indicating whether the inputs require always comparators or not.
-	 * 
+	 *
 	 * @return True, if the initialization should look for and create comparators, false otherwise.
 	 */
 	boolean requiresComparatorOnInput();
-	
+
 	/**
 	 * This method is called before the user code is opened. An exception thrown by this method
 	 * signals failure of the task.
-	 * 
+	 *
 	 * @throws Exception Exceptions may be forwarded and signal task failure.
 	 */
 	void prepare() throws Exception;
-	
+
 	/**
 	 * The main operation method of the task. It should call the user code with the data subsets until
 	 * the input is depleted.
-	 * 
+	 *
 	 * @throws Exception Any exception thrown by this method signals task failure. Because exceptions in the user
 	 *                   code typically signal situations where this instance in unable to proceed, exceptions
 	 *                   from the user code should be forwarded.
 	 */
-	void run() throws Exception; 
-	
+	void run() throws Exception;
+
 	/**
 	 * This method is invoked in any case (clean termination and exception) at the end of the tasks operation.
-	 * 
+	 *
 	 * @throws Exception Exceptions may be forwarded.
 	 */
 	void cleanup() throws Exception;
-	
+
 	/**
 	 * This method is invoked when the driver must aborted in mid processing. It is invoked asynchronously by a different thread.
-	 * 
+	 *
 	 * @throws Exception Exceptions may be forwarded.
 	 */
 	void cancel() throws Exception;

@@ -24,7 +24,7 @@ public class ProgramInvocationException extends Exception {
 
 	/**
 	 * Creates a <tt>ProgramInvocationException</tt> with the given message.
-	 * 
+	 *
 	 * @param message
 	 *        The message for the exception.
 	 */
@@ -34,7 +34,7 @@ public class ProgramInvocationException extends Exception {
 
 	/**
 	 * Creates a <tt>ProgramInvocationException</tt> for the given exception.
-	 * 
+	 *
 	 * @param cause
 	 *        The exception that causes the program invocation to fail.
 	 */
@@ -45,7 +45,7 @@ public class ProgramInvocationException extends Exception {
 	/**
 	 * Creates a <tt>ProgramInvocationException</tt> for the given exception with an
 	 * additional message.
-	 * 
+	 *
 	 * @param message
 	 *        The additional message.
 	 * @param cause

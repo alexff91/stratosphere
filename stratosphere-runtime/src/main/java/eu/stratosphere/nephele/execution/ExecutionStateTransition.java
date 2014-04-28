@@ -13,14 +13,14 @@
 
 package eu.stratosphere.nephele.execution;
 
+import static eu.stratosphere.nephele.execution.ExecutionState.FAILED;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import static eu.stratosphere.nephele.execution.ExecutionState.*;
-
 /**
  * This class is a utility class to check the consistency of Nephele's execution state model.
- * 
+ *
  */
 public final class ExecutionStateTransition {
 
@@ -37,7 +37,7 @@ public final class ExecutionStateTransition {
 
 	/**
 	 * Checks the transition of the execution state and outputs an error in case of an unexpected state transition.
-	 * 
+	 *
 	 * @param jobManager
 	 *        <code>true</code> to indicate the method is called by the job manager,
 	 *        <code>false/<code> to indicate it is called by a task manager
@@ -107,7 +107,7 @@ public final class ExecutionStateTransition {
 			// any state may fail
 			unexpectedStateChange = false;
 		}
-		
+
 		// This is a regular transition as a result of a cancel operation.
 		else if (oldState == ExecutionState.RUNNING && newState == ExecutionState.CANCELING) {
 			unexpectedStateChange = false;

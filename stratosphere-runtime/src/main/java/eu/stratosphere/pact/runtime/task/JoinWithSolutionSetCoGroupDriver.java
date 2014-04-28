@@ -28,69 +28,69 @@ import eu.stratosphere.pact.runtime.util.KeyGroupedIterator;
 import eu.stratosphere.util.Collector;
 
 public abstract class JoinWithSolutionSetCoGroupDriver<IT1, IT2, OT> implements ResettablePactDriver<GenericCoGrouper<IT1, IT2, OT>, OT> {
-	
+
 	protected PactTaskContext<GenericCoGrouper<IT1, IT2, OT>, OT> taskContext;
-	
+
 	protected MutableHashTable<?, ?> hashTable;
-	
+
 	private TypeSerializer<IT1> serializer1;
 	private TypeSerializer<IT2> serializer2;
 	private TypeComparator<IT1> comparator1;
 	private TypeComparator<IT2> comparator2;
-	
+
 	private IT1 rec1;
 	private IT2 rec2;
-	
+
 	protected volatile boolean running;
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	protected abstract int getSolutionSetInputIndex();
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public void setup(PactTaskContext<GenericCoGrouper<IT1, IT2, OT>, OT> context) {
 		this.taskContext = context;
 		this.running = true;
 	}
-	
+
 	@Override
 	public int getNumberOfInputs() {
 		return 1;
 	}
-	
+
 	@Override
 	public Class<GenericCoGrouper<IT1, IT2, OT>> getStubType() {
 		@SuppressWarnings("unchecked")
 		final Class<GenericCoGrouper<IT1, IT2, OT>> clazz = (Class<GenericCoGrouper<IT1, IT2, OT>>) (Class<?>) GenericCoGrouper.class;
 		return clazz;
 	}
-	
+
 	@Override
 	public boolean requiresComparatorOnInput() {
 		return true;
 	}
-	
+
 	@Override
 	public boolean isInputResettable(int inputNum) {
 		if (inputNum < 0 || inputNum > 1) {
 			throw new IndexOutOfBoundsException();
 		}
-		
+
 		// from the perspective of the task that runs this operator, there is only one input, which is not resettable
 		// we implement the resettable interface only in order to avoid that this class is re-instantiated for
 		// every iteration
 		return false;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	@Override
 	public void initialize() throws Exception {
 		TaskConfig config = taskContext.getTaskConfig();
 		ClassLoader classLoader = taskContext.getUserCodeClassLoader();
-		
+
 		int ssIndex = getSolutionSetInputIndex();
 		if (ssIndex == 0) {
 			TypeSerializerFactory<IT1> sSerializerFact = config.getSolutionSetSerializer(classLoader);
@@ -109,10 +109,10 @@ public abstract class JoinWithSolutionSetCoGroupDriver<IT1, IT2, OT> implements 
 		} else {
 			throw new Exception();
 		}
-		
+
 		rec1 = serializer1.createInstance();
 		rec2 = serializer2.createInstance();
-		
+
 		// grab a handle to the hash table from the iteration broker
 		if (taskContext instanceof AbstractIterativePactTask) {
 			AbstractIterativePactTask<?, ?> iterativeTaskContext = (AbstractIterativePactTask<?, ?>) taskContext;
@@ -135,16 +135,16 @@ public abstract class JoinWithSolutionSetCoGroupDriver<IT1, IT2, OT> implements 
 
 		final GenericCoGrouper<IT1, IT2, OT> coGroupStub = taskContext.getStub();
 		final Collector<OT> collector = taskContext.getOutputCollector();
-		
+
 		if (getSolutionSetInputIndex() == 0) {
 			IT1 buildSideRecord = rec1;
-			
+
 			@SuppressWarnings("unchecked")
 			final MutableHashTable<IT1, IT2> join = (MutableHashTable<IT1, IT2>) hashTable;
-			
+
 			final KeyGroupedIterator<IT2> probeSideInput = new KeyGroupedIterator<IT2>(taskContext.<IT2>getInput(0), serializer2, comparator2);
 			final SingleRecordIterator<IT1> siIter = new SingleRecordIterator<IT1>();
-			
+
 			while (this.running && probeSideInput.nextKey()) {
 				IT2 current = probeSideInput.getCurrent();
 				final MutableHashTable.HashBucketIterator<IT1, IT2> bucket = join.getMatchesFor(current);
@@ -159,13 +159,13 @@ public abstract class JoinWithSolutionSetCoGroupDriver<IT1, IT2, OT> implements 
 			}
 		} else if (getSolutionSetInputIndex() == 1) {
 			IT2 buildSideRecord = rec2;
-			
+
 			@SuppressWarnings("unchecked")
 			final MutableHashTable<IT2, IT1> join = (MutableHashTable<IT2, IT1>) hashTable;
-			
+
 			final KeyGroupedIterator<IT1> probeSideInput = new KeyGroupedIterator<IT1>(taskContext.<IT1>getInput(0), serializer1, comparator1);
 			final SingleRecordIterator<IT2> siIter = new SingleRecordIterator<IT2>();
-			
+
 			while (this.running && probeSideInput.nextKey()) {
 				IT1 current = probeSideInput.getCurrent();
 				final MutableHashTable.HashBucketIterator<IT2, IT1> bucket = join.getMatchesFor(current);
@@ -185,7 +185,7 @@ public abstract class JoinWithSolutionSetCoGroupDriver<IT1, IT2, OT> implements 
 
 	@Override
 	public void cleanup() throws Exception {}
-	
+
 	@Override
 	public void reset() throws Exception {}
 
@@ -198,12 +198,12 @@ public abstract class JoinWithSolutionSetCoGroupDriver<IT1, IT2, OT> implements 
 	public void cancel() {
 		this.running = false;
 	}
-	
+
 	private static final class SingleRecordIterator<E> implements Iterator<E> {
-		
+
 		private E current;
 		private boolean available = false;
-		
+
 		void set(E current) {
 			this.current = current;
 			this.available = true;
@@ -229,10 +229,10 @@ public abstract class JoinWithSolutionSetCoGroupDriver<IT1, IT2, OT> implements 
 			throw new UnsupportedOperationException();
 		}
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 	// --------------------------------------------------------------------------------------------
-	
+
 	public static final class SolutionSetFirstCoGroupDriver<IT1, IT2, OT> extends JoinWithSolutionSetCoGroupDriver<IT1, IT2, OT> {
 
 		@Override
@@ -240,7 +240,7 @@ public abstract class JoinWithSolutionSetCoGroupDriver<IT1, IT2, OT> implements 
 			return 0;
 		}
 	}
-	
+
 	public static final class SolutionSetSecondCoGroupDriver<IT1, IT2, OT> extends JoinWithSolutionSetCoGroupDriver<IT1, IT2, OT> {
 
 		@Override

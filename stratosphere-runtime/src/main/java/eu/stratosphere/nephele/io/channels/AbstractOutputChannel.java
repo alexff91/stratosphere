@@ -23,7 +23,7 @@ import eu.stratosphere.nephele.jobgraph.JobID;
  * OutputChannel is an abstract base class to all different kinds of concrete
  * output channels that can be used. Input channels are always parameterized to
  * a specific type that can be transported through the channel.
- * 
+ *
  * @param <T>
  *        The Type of the record that can be transported through the channel.
  */
@@ -33,7 +33,7 @@ public abstract class AbstractOutputChannel<T extends IOReadableWritable> extend
 
 	/**
 	 * Creates a new output channel object.
-	 * 
+	 *
 	 * @param outputGate
 	 *        the output gate this channel is connected to
 	 * @param channelIndex
@@ -53,7 +53,7 @@ public abstract class AbstractOutputChannel<T extends IOReadableWritable> extend
 
 	/**
 	 * Returns the output gate this channel is connected to.
-	 * 
+	 *
 	 * @return the output gate this channel is connected to
 	 */
 	public OutputGate<T> getOutputGate() {
@@ -63,7 +63,7 @@ public abstract class AbstractOutputChannel<T extends IOReadableWritable> extend
 	/**
 	 * Writes a record to the channel. The operation may block until the record
 	 * is completely written to the channel.
-	 * 
+	 *
 	 * @param record
 	 *        the record to be written to the channel
 	 * @throws IOException
@@ -75,7 +75,7 @@ public abstract class AbstractOutputChannel<T extends IOReadableWritable> extend
 	 * Requests the output channel to close. After calling this method no more records can be written
 	 * to the channel. The channel is finally closed when all remaining data that may exist in internal buffers
 	 * are written to the channel.
-	 * 
+	 *
 	 * @throws InterruptedException
 	 *         thrown if the thread is interrupted while requesting the close operation
 	 * @throws IOException
@@ -101,7 +101,7 @@ public abstract class AbstractOutputChannel<T extends IOReadableWritable> extend
 	/**
 	 * Returns <code>true</code> if this channel is connected to an output gate which operates in broadcast mode,
 	 * <code>false</code> otherwise.
-	 * 
+	 *
 	 * @return <code>true</code> if the connected output gate operates in broadcase mode, <code>false</code> otherwise
 	 */
 	public boolean isBroadcastChannel() {

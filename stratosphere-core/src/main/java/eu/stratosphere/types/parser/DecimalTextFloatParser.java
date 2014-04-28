@@ -19,19 +19,19 @@ import eu.stratosphere.types.FloatValue;
  * Parses a text field into a {@link FloatValue}
  */
 public class DecimalTextFloatParser extends FieldParser<FloatValue> {
-	
+
 	private FloatValue result;
-	
+
 	@Override
 	public int parseField(byte[] bytes, int startPos, int limit, char delim, FloatValue reusable) {
-		
+
 		int i = startPos;
 		final byte delByte = (byte) delim;
-		
+
 		while (i < limit && bytes[i] != delByte) {
 			i++;
 		}
-		
+
 		String str = new String(bytes, startPos, i-startPos);
 		try {
 			float value = Float.parseFloat(str);
@@ -43,7 +43,7 @@ public class DecimalTextFloatParser extends FieldParser<FloatValue> {
 			return -1;
 		}
 	}
-	
+
 	@Override
 	public FloatValue createValue() {
 		return new FloatValue();

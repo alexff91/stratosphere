@@ -25,21 +25,21 @@ import com.google.common.base.Preconditions;
  */
 public class UserCodeObjectWrapper<T> implements UserCodeWrapper<T> {
 	private static final long serialVersionUID = 1L;
-	
+
 	private final T userCodeObject;
-	
+
 	public UserCodeObjectWrapper(T userCodeObject) {
 		Preconditions.checkNotNull(userCodeObject, "The user code object may not be null.");
 		Preconditions.checkArgument(userCodeObject instanceof Serializable, "User code object is not serializable: " + userCodeObject.getClass().getName());
-		
+
 		this.userCodeObject = userCodeObject;
-		
+
 		// Remove non serializable objects from the user code object as well as from outer objects
 		Object current = userCodeObject;
 		try {
 			while (null != current) {
 				Object newCurrent = null;
-				
+
 				/**
 				 * Check if the usercode class has custom serialization methods.
 				 * (See http://docs.oracle.com/javase/7/docs/api/java/io/Serializable.html for details).
@@ -54,7 +54,7 @@ public class UserCodeObjectWrapper<T> implements UserCodeWrapper<T> {
 				} catch (Exception e) {
 					// we can ignore exceptions here.
 				}
-				
+
 				if (customSerializer != null && customDeserializer != null) {
 					hasCustomSerialization = true;
 				}
@@ -70,10 +70,10 @@ public class UserCodeObjectWrapper<T> implements UserCodeWrapper<T> {
 						// field not relevant for serialization
 						continue;
 					}
-					
+
 					Object fieldContents = f.get(current);
 					if (fieldContents != null &&  !(fieldContents instanceof Serializable)) {
-						throw new RuntimeException("User-defined object " + userCodeObject + " (" + 
+						throw new RuntimeException("User-defined object " + userCodeObject + " (" +
 							userCodeObject.getClass().getName() + ") contains non-serializable field " +
 							f.getName() + " = " + f.get(current));
 					}
@@ -87,23 +87,23 @@ public class UserCodeObjectWrapper<T> implements UserCodeWrapper<T> {
 			throw new RuntimeException("Could not access the fields of the user defined class while checking for serializability.", e);
 		}
 	}
-	
+
 	@Override
 	public T getUserCodeObject(Class<? super T> superClass, ClassLoader cl) {
 		return userCodeObject;
 	}
-	
+
 	@Override
 	public T getUserCodeObject() {
 		return userCodeObject;
-		
+
 	}
 
 	@Override
 	public <A extends Annotation> A getUserCodeAnnotation(Class<A> annotationClass) {
 		return userCodeObject.getClass().getAnnotation(annotationClass);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<? extends T> getUserCodeClass() {

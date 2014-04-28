@@ -23,7 +23,6 @@ import junit.framework.Assert;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -41,9 +40,9 @@ import eu.stratosphere.pact.runtime.plugable.pactrecord.RecordComparator;
 import eu.stratosphere.pact.runtime.plugable.pactrecord.RecordSerializer;
 import eu.stratosphere.pact.runtime.test.util.DummyInvokable;
 import eu.stratosphere.pact.runtime.test.util.TestData;
-import eu.stratosphere.pact.runtime.test.util.TestData.Key;
 import eu.stratosphere.pact.runtime.test.util.TestData.Generator.KeyMode;
 import eu.stratosphere.pact.runtime.test.util.TestData.Generator.ValueMode;
+import eu.stratosphere.pact.runtime.test.util.TestData.Key;
 import eu.stratosphere.pact.runtime.util.KeyGroupedIterator;
 import eu.stratosphere.types.IntValue;
 import eu.stratosphere.types.Record;
@@ -53,7 +52,7 @@ import eu.stratosphere.util.MutableObjectIterator;
 
 
 public class CombiningUnilateralSortMergerITCase {
-	
+
 	private static final Log LOG = LogFactory.getLog(CombiningUnilateralSortMergerITCase.class);
 
 	private static final long SEED = 649180756312423613L;
@@ -67,27 +66,27 @@ public class CombiningUnilateralSortMergerITCase {
 	public static final int MEMORY_SIZE = 1024 * 1024 * 256;
 
 	private final AbstractTask parentTask = new DummyInvokable();
-	
+
 	private IOManager ioManager;
 
 	private MemoryManager memoryManager;
 
 	private TypeSerializer<Record> serializer;
-	
+
 	private TypeComparator<Record> comparator;
 
-	
+
 	@BeforeClass
 	public static void setup() {
 		LogUtils.initializeDefaultTestConsoleLogger();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Before
 	public void beforeTest() {
 		this.memoryManager = new DefaultMemoryManager(MEMORY_SIZE);
 		this.ioManager = new IOManager();
-		
+
 		this.serializer = RecordSerializer.get();
 		this.comparator = new RecordComparator(new int[] {0}, new Class[] {TestData.Key.class});
 	}
@@ -98,9 +97,9 @@ public class CombiningUnilateralSortMergerITCase {
 		if (!this.ioManager.isProperlyShutDown()) {
 			Assert.fail("I/O Manager was not properly shut down.");
 		}
-		
+
 		if (this.memoryManager != null) {
-			Assert.assertTrue("Memory leak: not all segments have been returned to the memory manager.", 
+			Assert.assertTrue("Memory leak: not all segments have been returned to the memory manager.",
 				this.memoryManager.verifyEmpty());
 			this.memoryManager.shutdown();
 			this.memoryManager = null;
@@ -116,17 +115,17 @@ public class CombiningUnilateralSortMergerITCase {
 		MockRecordReader reader = new MockRecordReader();
 
 		LOG.debug("initializing sortmerger");
-		
+
 		TestCountCombiner comb = new TestCountCombiner();
-		
-		Sorter<Record> merger = new CombiningUnilateralSortMerger<Record>(comb, 
+
+		Sorter<Record> merger = new CombiningUnilateralSortMerger<Record>(comb,
 				this.memoryManager, this.ioManager, reader, this.parentTask, this.serializer, this.comparator,
 				64 * 1024 * 1024, 64, 0.7f);
 
 		final Record rec = new Record();
 		rec.setField(1, new IntValue(1));
 		final TestData.Key key = new TestData.Key();
-		
+
 		for (int i = 0; i < noKeyCnt; i++) {
 			for (int j = 0; j < noKeys; j++) {
 				key.setKey(j);
@@ -135,20 +134,20 @@ public class CombiningUnilateralSortMergerITCase {
 			}
 		}
 		reader.close();
-		
+
 		MutableObjectIterator<Record> iterator = merger.getIterator();
 
 		Iterator<Integer> result = getReducingIterator(iterator, serializer, comparator.duplicate());
 		while (result.hasNext()) {
 			Assert.assertEquals(noKeyCnt, result.next().intValue());
 		}
-		
+
 		merger.close();
-		
+
 		// if the combiner was opened, it must have been closed
 		Assert.assertTrue(comb.opened == comb.closed);
 	}
-	
+
 	@Test
 	public void testCombineSpilling() throws Exception {
 		int noKeys = 100;
@@ -157,17 +156,17 @@ public class CombiningUnilateralSortMergerITCase {
 		MockRecordReader reader = new MockRecordReader();
 
 		LOG.debug("initializing sortmerger");
-		
+
 		TestCountCombiner comb = new TestCountCombiner();
-		
-		Sorter<Record> merger = new CombiningUnilateralSortMerger<Record>(comb, 
+
+		Sorter<Record> merger = new CombiningUnilateralSortMerger<Record>(comb,
 				this.memoryManager, this.ioManager, reader, this.parentTask, this.serializer, this.comparator,
 				3 * 1024 * 1024, 64, 0.005f);
 
 		final Record rec = new Record();
 		rec.setField(1, new IntValue(1));
 		final TestData.Key key = new TestData.Key();
-		
+
 		for (int i = 0; i < noKeyCnt; i++) {
 			for (int j = 0; j < noKeys; j++) {
 				key.setKey(j);
@@ -176,16 +175,16 @@ public class CombiningUnilateralSortMergerITCase {
 			}
 		}
 		reader.close();
-		
+
 		MutableObjectIterator<Record> iterator = merger.getIterator();
 
 		Iterator<Integer> result = getReducingIterator(iterator, serializer, comparator.duplicate());
 		while (result.hasNext()) {
 			Assert.assertEquals(noKeyCnt, result.next().intValue());
 		}
-		
+
 		merger.close();
-		
+
 		// if the combiner was opened, it must have been closed
 		Assert.assertTrue(comb.opened == comb.closed);
 	}
@@ -206,10 +205,10 @@ public class CombiningUnilateralSortMergerITCase {
 
 		// merge iterator
 		LOG.debug("initializing sortmerger");
-		
+
 		TestCountCombiner2 comb = new TestCountCombiner2();
-		
-		Sorter<Record> merger = new CombiningUnilateralSortMerger<Record>(comb, 
+
+		Sorter<Record> merger = new CombiningUnilateralSortMerger<Record>(comb,
 				this.memoryManager, this.ioManager, reader, this.parentTask, this.serializer, this.comparator,
 				64 * 1024 * 1024, 2, 0.7f);
 
@@ -218,13 +217,13 @@ public class CombiningUnilateralSortMergerITCase {
 		TestData.Generator generator = new TestData.Generator(SEED, KEY_MAX, VALUE_LENGTH, KeyMode.RANDOM, ValueMode.FIX_LENGTH);
 		Record rec = new Record();
 		final TestData.Value value = new TestData.Value("1");
-		
+
 		for (int i = 0; i < NUM_PAIRS; i++) {
 			Assert.assertTrue((rec = generator.next(rec)) != null);
 			final TestData.Key key = rec.getField(0, TestData.Key.class);
 			rec.setField(1, value);
 			reader.emit(rec);
-			
+
 			countTable.put(new TestData.Key(key.getKey()), countTable.get(key) + 1);
 		}
 		reader.close();
@@ -232,22 +231,22 @@ public class CombiningUnilateralSortMergerITCase {
 
 		// check order
 		MutableObjectIterator<Record> iterator = merger.getIterator();
-		
+
 		LOG.debug("checking results");
-		
+
 		Record rec1 = new Record();
 		Record rec2 = new Record();
-		
+
 		Assert.assertTrue((rec1 = iterator.next(rec1)) != null);
 		countTable.put(new TestData.Key(rec1.getField(0, TestData.Key.class).getKey()), countTable.get(rec1.getField(0, TestData.Key.class)) - (Integer.parseInt(rec1.getField(1, TestData.Value.class).toString())));
 
 		while ((rec2 = iterator.next(rec2)) != null) {
 			final Key k1 = rec1.getField(0, TestData.Key.class);
 			final Key k2 = rec2.getField(0, TestData.Key.class);
-			
-			Assert.assertTrue(keyComparator.compare(k1, k2) <= 0); 
+
+			Assert.assertTrue(keyComparator.compare(k1, k2) <= 0);
 			countTable.put(new TestData.Key(k2.getKey()), countTable.get(k2) - (Integer.parseInt(rec2.getField(1, TestData.Value.class).toString())));
-			
+
 			Record tmp = rec1;
 			rec1 = rec2;
 			k1.setKey(k2.getKey());
@@ -257,25 +256,25 @@ public class CombiningUnilateralSortMergerITCase {
 		for (Integer cnt : countTable.values()) {
 			Assert.assertTrue(cnt == 0);
 		}
-		
+
 		merger.close();
-		
+
 		// if the combiner was opened, it must have been closed
 		Assert.assertTrue(comb.opened == comb.closed);
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	public static class TestCountCombiner extends ReduceFunction {
 		private static final long serialVersionUID = 1L;
-		
+
 		private final IntValue count = new IntValue();
-		
+
 		public volatile boolean opened = false;
-		
+
 		public volatile boolean closed = false;
-		
-		
+
+
 		@Override
 		public void combine(Iterator<Record> values, Collector<Record> out) {
 			Record rec = null;
@@ -284,7 +283,7 @@ public class CombiningUnilateralSortMergerITCase {
 				rec = values.next();
 				cnt += rec.getField(1, IntValue.class).getValue();
 			}
-			
+
 			this.count.setValue(cnt);
 			rec.setField(1, this.count);
 			out.collect(rec);
@@ -292,12 +291,12 @@ public class CombiningUnilateralSortMergerITCase {
 
 		@Override
 		public void reduce(Iterator<Record> values, Collector<Record> out) {}
-		
+
 		@Override
 		public void open(Configuration parameters) throws Exception {
 			opened = true;
 		}
-		
+
 		@Override
 		public void close() throws Exception {
 			closed = true;
@@ -306,11 +305,11 @@ public class CombiningUnilateralSortMergerITCase {
 
 	public static class TestCountCombiner2 extends ReduceFunction {
 		private static final long serialVersionUID = 1L;
-		
+
 		public volatile boolean opened = false;
-		
+
 		public volatile boolean closed = false;
-		
+
 		@Override
 		public void combine(Iterator<Record> values, Collector<Record> out) {
 			Record rec = null;
@@ -327,24 +326,24 @@ public class CombiningUnilateralSortMergerITCase {
 		public void reduce(Iterator<Record> values, Collector<Record> out) {
 			// yo, nothing, mon
 		}
-		
+
 		@Override
 		public void open(Configuration parameters) throws Exception {
 			opened = true;
 		}
-		
+
 		@Override
 		public void close() throws Exception {
 			closed = true;
 		}
 	}
-	
+
 	private static Iterator<Integer> getReducingIterator(MutableObjectIterator<Record> data, TypeSerializer<Record> serializer, TypeComparator<Record> comparator) {
-		
+
 		final KeyGroupedIterator<Record> groupIter = new KeyGroupedIterator<Record>(data, serializer, comparator);
-		
+
 		return new Iterator<Integer>() {
-			
+
 			private boolean hasNext = false;
 
 			@Override
@@ -352,7 +351,7 @@ public class CombiningUnilateralSortMergerITCase {
 				if (hasNext) {
 					return true;
 				}
-				
+
 				try {
 					hasNext = groupIter.nextKey();
 				} catch (IOException e) {
@@ -365,16 +364,16 @@ public class CombiningUnilateralSortMergerITCase {
 			public Integer next() {
 				if (hasNext()) {
 					hasNext = false;
-					
+
 					Iterator<Record> values = groupIter.getValues();
-					
+
 					Record rec = null;
 					int cnt = 0;
 					while (values.hasNext()) {
 						rec = values.next();
 						cnt += rec.getField(1, IntValue.class).getValue();
 					}
-					
+
 					return cnt;
 				} else {
 					throw new NoSuchElementException();
@@ -385,7 +384,7 @@ public class CombiningUnilateralSortMergerITCase {
 			public void remove() {
 				throw new UnsupportedOperationException();
 			}
-			
+
 		};
 	}
 }

@@ -19,15 +19,15 @@ import eu.stratosphere.types.Value;
  *
  */
 public interface IterationRuntimeContext extends RuntimeContext {
-	
+
 	/**
 	 * Gets the number of the current superstep. Superstep numbers start at <i>1</i>.
-	 * 
+	 *
 	 * @return The number of the current superstep.
 	 */
 	int getSuperstepNumber();
-	
+
 	<T extends Value> Aggregator<T> getIterationAggregator(String name);
-	
+
 	<T extends Value> T getPreviousIterationAggregate(String name);
 }

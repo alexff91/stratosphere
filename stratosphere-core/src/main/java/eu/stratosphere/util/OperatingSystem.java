@@ -12,6 +12,8 @@
  **********************************************************************************************************************/
 package eu.stratosphere.util;
 
+import org.omg.CORBA.UNKNOWN;
+
 
 /**
  * An enumeration indicating the operating system that the engine runs on.
@@ -19,32 +21,32 @@ package eu.stratosphere.util;
 public enum OperatingSystem {
 
 	// --------------------------------------------------------------------------------------------
-	//  Constants to extract the OS type from the java environment 
+	//  Constants to extract the OS type from the java environment
 	// --------------------------------------------------------------------------------------------
-	
+
 	LINUX,
 	WINDOWS,
 	MAC_OS,
 	FREE_BSD,
 	UNKNOWN;
-	
+
 	// --------------------------------------------------------------------------------------------
-	//  Constants to extract the OS type from the java environment 
+	//  Constants to extract the OS type from the java environment
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Gets the operating system that the JVM runs on from the java system properties.
 	 * this method returns {@link UNKNOWN}, if the operating system was not successfully determined.
-	 * 
+	 *
 	 * @return The enum constant for the operating system, or {@link UNKNOWN}, if it was not possible to determine.
 	 */
 	public static OperatingSystem getCurrentOperatingSystem() {
 		return os;
 	}
-	
+
 	/**
 	 * Checks whether the operating system this JVM runs on is Windows.
-	 * 
+	 *
 	 * @return <code>true</code> if the operating system this JVM runs on is
 	 *         Windows, <code>false</code> otherwise
 	 */
@@ -54,7 +56,7 @@ public enum OperatingSystem {
 
 	/**
 	 * Checks whether the operating system this JVM runs on is Linux.
-	 * 
+	 *
 	 * @return <code>true</code> if the operating system this JVM runs on is
 	 *         Linux, <code>false</code> otherwise
 	 */
@@ -64,7 +66,7 @@ public enum OperatingSystem {
 
 	/**
 	 * Checks whether the operating system this JVM runs on is Windows.
-	 * 
+	 *
 	 * @return <code>true</code> if the operating system this JVM runs on is
 	 *         Windows, <code>false</code> otherwise
 	 */
@@ -74,46 +76,50 @@ public enum OperatingSystem {
 
 	/**
 	 * Checks whether the operating system this JVM runs on is FreeBSD.
-	 * 
+	 *
 	 * @return <code>true</code> if the operating system this JVM runs on is
 	 *         FreeBSD, <code>false</code> otherwise
 	 */
 	public static boolean isFreeBSD() {
 		return getCurrentOperatingSystem() == FREE_BSD;
 	}
-	
+
 	/**
 	 * The enum constant for the operating system.
 	 */
 	private static final OperatingSystem os = readOSFromSystemProperties();
-	
+
 	/**
 	 * Parses the operating system that the JVM runs on from the java system properties.
 	 * If the operating system was not successfully determined, this method returns {@link UNKNOWN}.
-	 * 
+	 *
 	 * @return The enum constant for the operating system, or {@link UNKNOWN}, if it was not possible to determine.
 	 */
 	private static OperatingSystem readOSFromSystemProperties() {
 		String osName = System.getProperty(OS_KEY);
-		
-		if (osName.startsWith(LINUX_OS_PREFIX))
-			return LINUX;
-		if (osName.startsWith(WINDOWS_OS_PREFIX))
-			return WINDOWS;
-		if (osName.startsWith(MAC_OS_PREFIX))
-			return MAC_OS;
-		if (osName.startsWith(FREEBSD_OS_PREFIX))
-			return FREE_BSD;
-		
+
+		if (osName.startsWith(LINUX_OS_PREFIX)) {
+		return LINUX;
+		}
+		if (osName.startsWith(WINDOWS_OS_PREFIX)) {
+		return WINDOWS;
+		}
+		if (osName.startsWith(MAC_OS_PREFIX)) {
+		return MAC_OS;
+		}
+		if (osName.startsWith(FREEBSD_OS_PREFIX)) {
+		return FREE_BSD;
+		}
+
 		return UNKNOWN;
 	}
-	
-	
-	
+
+
+
 	// --------------------------------------------------------------------------------------------
-	//  Constants to extract the OS type from the java environment 
+	//  Constants to extract the OS type from the java environment
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * The key to extract the operating system name from the system properties.
 	 */

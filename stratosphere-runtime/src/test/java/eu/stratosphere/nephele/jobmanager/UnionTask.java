@@ -30,8 +30,8 @@ public class UnionTask extends AbstractTask {
 	private UnionRecordReader<StringRecord> unionReader;
 
 	private RecordWriter<StringRecord> writer;
-	
-	
+
+
 	@Override
 	public void registerInputOutput() {
 
@@ -40,7 +40,7 @@ public class UnionTask extends AbstractTask {
 		recordReaders[0] = new MutableRecordReader<StringRecord>(this);
 		recordReaders[1] = new MutableRecordReader<StringRecord>(this);
 		this.unionReader = new UnionRecordReader<StringRecord>(recordReaders, StringRecord.class);
-		
+
 		this.writer = new RecordWriter<StringRecord>(this, StringRecord.class);
 	}
 

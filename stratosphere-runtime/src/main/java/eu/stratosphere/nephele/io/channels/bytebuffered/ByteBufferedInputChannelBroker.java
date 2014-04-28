@@ -24,7 +24,7 @@ public interface ByteBufferedInputChannelBroker {
 
 	/**
 	 * Forwards the given event to the connected network output channel on a best effort basis.
-	 * 
+	 *
 	 * @param event
 	 *        the event to be transferred
 	 * @throws InterruptedException

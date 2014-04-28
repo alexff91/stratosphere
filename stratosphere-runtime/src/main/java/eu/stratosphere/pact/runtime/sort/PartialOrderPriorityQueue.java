@@ -14,7 +14,7 @@
 /**
  * This file is based on source code from the Hadoop Project (http://hadoop.apache.org/), licensed by the Apache
  * Software Foundation (ASF) under the Apache License, Version 2.0. See the NOTICE file distributed with this work for
- * additional information regarding copyright ownership. 
+ * additional information regarding copyright ownership.
  */
 
 package eu.stratosphere.pact.runtime.sort;
@@ -29,7 +29,7 @@ import java.util.Queue;
  * This class implements a priority-queue, which maintains a partial
  * ordering of its elements such that the+ least element can always be found
  * in constant time. Put()'s and pop()'s require log(size) time.
- * 
+ *
  */
 public class PartialOrderPriorityQueue<T> extends AbstractQueue<T> implements Queue<T> {
 	/**
@@ -62,7 +62,7 @@ public class PartialOrderPriorityQueue<T> extends AbstractQueue<T> implements Qu
 
 	/**
 	 * Determines the ordering of objects in this priority queue.
-	 * 
+	 *
 	 * @param a
 	 *        The first element.
 	 * @param b
@@ -75,7 +75,7 @@ public class PartialOrderPriorityQueue<T> extends AbstractQueue<T> implements Qu
 
 	/**
 	 * Returns the remaining capacity of the backing array.
-	 * 
+	 *
 	 * @return The remaining capacity of the backing array.
 	 */
 	public int remainingCapacity() {
@@ -96,7 +96,7 @@ public class PartialOrderPriorityQueue<T> extends AbstractQueue<T> implements Qu
 	/**
 	 * Adds element to the PriorityQueue in log(size) time if either the
 	 * PriorityQueue is not full, or not lessThan(element, top()).
-	 * 
+	 *
 	 * @param element
 	 *        The element to insert,
 	 * @return True, if element is added, false otherwise.
@@ -117,7 +117,7 @@ public class PartialOrderPriorityQueue<T> extends AbstractQueue<T> implements Qu
 	/**
 	 * Returns the least element of the PriorityQueue in constant time, but
 	 * does not remove it from the priority queue.
-	 * 
+	 *
 	 * @return The least element.
 	 */
 	public final T peek() {
@@ -131,7 +131,7 @@ public class PartialOrderPriorityQueue<T> extends AbstractQueue<T> implements Qu
 	/**
 	 * Removes and returns the least element of the PriorityQueue in
 	 * log(size) time.
-	 * 
+	 *
 	 * @return The least element.
 	 */
 	public final T poll() {
@@ -150,16 +150,16 @@ public class PartialOrderPriorityQueue<T> extends AbstractQueue<T> implements Qu
 	/**
 	 * Should be called when the Object at top changes values. Still log(n)
 	 * worst case, but it's at least twice as fast to
-	 * 
+	 *
 	 * <pre>
 	 * {
 	 * 	pq.top().change();
 	 * 	pq.adjustTop();
 	 * }
 	 * </pre>
-	 * 
+	 *
 	 * instead of
-	 * 
+	 *
 	 * <pre>
 	 * {
 	 * 	o = pq.pop();
@@ -174,7 +174,7 @@ public class PartialOrderPriorityQueue<T> extends AbstractQueue<T> implements Qu
 
 	/**
 	 * Returns the number of elements currently stored in the PriorityQueue.
-	 * 
+	 *
 	 * @return The number of elements in the queue.
 	 */
 	public final int size() {

@@ -33,19 +33,19 @@ package eu.stratosphere.example.java.wordcount;
 //
 //
 //public class WordCount4 {
-//	
+//
 //	public static class WC {
-//		
+//
 //		public String word;
 //		public int count;
-//		
+//
 //		public WC() {}
-//		
+//
 //		public WC(String word, int count) {
 //			this.word = word;
 //			this.count = count;
 //		}
-//		
+//
 //		@Override
 //		public String toString() {
 //			return "(" + word + ", " + count + ")";
@@ -58,34 +58,34 @@ package eu.stratosphere.example.java.wordcount;
 //		@Override
 //		public void reduce(String Key, Iterator<Integer> values, Collector<Tuple2<String, Integer>> out) {
 //			// TODO Auto-generated method stub
-//			
+//
 //		}
-//		
+//
 //	}
-//	
+//
 //	@SuppressWarnings("serial")
 //	public static void main(String[] args) {
 //		if (args.length < 2) {
 //			System.out.println("Usage: <input path> <output path>");
 //			return;
 //		}
-//		
+//
 //		final String inputPath = args[0];
 //		final String outputPath = args[1];
-//		
+//
 //		final ExecutionEnvironment context = ExecutionEnvironment.getExecutionEnvironment();
-//		
+//
 //		DataSet<String> text = context.readTextFile(inputPath);
-//		
+//
 //		DataSet<WC> tokenized = text.flatMap((value, collector) -> {
 //			String[] tokens = value.toLowerCase().split("\\W");
 //			for (String token : tokens) {
 //				out.collect(new WC(token, 1));
 //			}
 //		});
-//		
+//
 //		DataSet<WC> result = tokenized.reduceWithKey("word", "count", new MyReducer());
-//		
+//
 //		result.writeAsText(new Path(outputPath));
 //	}
 //}

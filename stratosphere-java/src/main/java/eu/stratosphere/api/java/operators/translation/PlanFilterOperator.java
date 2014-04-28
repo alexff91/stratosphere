@@ -27,13 +27,13 @@ public class PlanFilterOperator<T> extends FlatMapOperatorBase<GenericFlatMap<T,
 	implements UnaryJavaPlanNode<T, T>
 {
 	private final TypeInformation<T> type;
-	
-	
+
+
 	public PlanFilterOperator(FilterFunction<T> udf, String name, TypeInformation<T> type) {
 		super(new FlatMapFilter<T>(udf), name);
 		this.type = type;
 	}
-	
+
 	@Override
 	public TypeInformation<T> getReturnType() {
 		return this.type;
@@ -43,16 +43,16 @@ public class PlanFilterOperator<T> extends FlatMapOperatorBase<GenericFlatMap<T,
 	public TypeInformation<T> getInputType() {
 		return this.type;
 	}
-	
-	
+
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public static final class FlatMapFilter<T> extends WrappingFunction<FilterFunction<T>>
 		implements GenericFlatMap<T, T>
 	{
 
 		private static final long serialVersionUID = 1L;
-		
+
 		private FlatMapFilter(FilterFunction<T> wrapped) {
 			super(wrapped);
 		}

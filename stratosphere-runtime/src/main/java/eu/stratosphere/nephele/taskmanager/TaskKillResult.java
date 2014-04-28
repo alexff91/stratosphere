@@ -19,13 +19,13 @@ import eu.stratosphere.nephele.executiongraph.ExecutionVertexID;
  * A <code>TaskKillResult</code> is used to report the results
  * of a task kill attempt. It contains the ID of the task to be killed, a return code and
  * a description. In case of an error during the kill operation the description includes an error message.
- * 
+ *
  */
 public class TaskKillResult extends AbstractTaskResult {
 
 	/**
 	 * Constructs a new task kill result.
-	 * 
+	 *
 	 * @param vertexID
 	 *        the task ID this result belongs to
 	 * @param returnCode

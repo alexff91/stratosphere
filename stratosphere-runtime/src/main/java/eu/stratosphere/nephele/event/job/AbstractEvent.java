@@ -25,7 +25,7 @@ import eu.stratosphere.core.io.IOReadableWritable;
 /**
  * An abstract event is transmitted from the job manager to the
  * job client in order to inform the user about the job progress.
- * 
+ *
  */
 public abstract class AbstractEvent implements IOReadableWritable {
 
@@ -51,7 +51,7 @@ public abstract class AbstractEvent implements IOReadableWritable {
 
 	/**
 	 * Constructs a new abstract event object.
-	 * 
+	 *
 	 * @param timestamp
 	 *        the timestamp of the event.
 	 */
@@ -92,7 +92,7 @@ public abstract class AbstractEvent implements IOReadableWritable {
 
 	/**
 	 * Returns the timestamp of the event.
-	 * 
+	 *
 	 * @return the timestamp of the event
 	 */
 	public long getTimestamp() {
@@ -102,7 +102,7 @@ public abstract class AbstractEvent implements IOReadableWritable {
 	/**
 	 * Converts the timestamp of an event from its "milliseconds since beginning the epoch"
 	 * representation into a unified string representation.
-	 * 
+	 *
 	 * @param timestamp
 	 *        the timestamp in milliseconds since the beginning of "the epoch"
 	 * @return the string unified representation of the timestamp

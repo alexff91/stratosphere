@@ -19,7 +19,7 @@ import eu.stratosphere.core.io.IOReadableWritable;
 
 /**
  * A reader interface to read records from an input.
- * 
+ *
  * @param <T> The type of the record that can be emitted with this record writer
  */
 public interface Reader<T extends IOReadableWritable> extends ReaderBase {

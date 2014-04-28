@@ -22,19 +22,19 @@ import eu.stratosphere.nephele.event.task.EventNotificationManager;
  * and dealing with reads from single gates (single end points) or multiple gates (union).
  */
 public abstract class AbstractRecordReader implements ReaderBase {
-	
-	
+
+
 	private final EventNotificationManager eventHandler = new EventNotificationManager();
-	
+
 	private int numEventsUntilEndOfSuperstep = -1;
-	
+
 	private int endOfSuperstepEventsCount;
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Subscribes the listener object to receive events of the given type.
-	 * 
+	 *
 	 * @param eventListener
 	 *        the listener object to register
 	 * @param eventType
@@ -47,7 +47,7 @@ public abstract class AbstractRecordReader implements ReaderBase {
 
 	/**
 	 * Removes the subscription for events of the given type for the listener object.
-	 * 
+	 *
 	 * @param eventListener The listener object to cancel the subscription for.
 	 * @param eventType The type of the event to cancel the subscription for.
 	 */
@@ -55,12 +55,12 @@ public abstract class AbstractRecordReader implements ReaderBase {
 	public void unsubscribeFromEvent(EventListener eventListener, Class<? extends AbstractTaskEvent> eventType) {
 		this.eventHandler.unsubscribeFromEvent(eventListener, eventType);
 	}
-	
-	
+
+
 	protected void handleEvent(AbstractTaskEvent evt) {
 		this.eventHandler.deliverEvent(evt);
 	}
-	
+
 	@Override
 	public void setIterative(int numEventsUntilEndOfSuperstep) {
 		this.numEventsUntilEndOfSuperstep = numEventsUntilEndOfSuperstep;
@@ -76,21 +76,23 @@ public abstract class AbstractRecordReader implements ReaderBase {
 		}
 		this.endOfSuperstepEventsCount = 0;
 	}
-	
+
 	@Override
 	public boolean hasReachedEndOfSuperstep() {
 		return endOfSuperstepEventsCount== numEventsUntilEndOfSuperstep;
 	}
-	
+
 	protected boolean incrementEndOfSuperstepEventAndCheck() {
-		if (numEventsUntilEndOfSuperstep == -1)
-			throw new IllegalStateException("Received EndOfSuperstep event in a non-iterative reader.");
-		
+		if (numEventsUntilEndOfSuperstep == -1) {
+		throw new IllegalStateException("Received EndOfSuperstep event in a non-iterative reader.");
+		}
+
 		endOfSuperstepEventsCount++;
-		
-		if (endOfSuperstepEventsCount > numEventsUntilEndOfSuperstep)
-			throw new IllegalStateException("Received EndOfSuperstep events beyond the number to indicate the end of the superstep");
-		
+
+		if (endOfSuperstepEventsCount > numEventsUntilEndOfSuperstep) {
+		throw new IllegalStateException("Received EndOfSuperstep events beyond the number to indicate the end of the superstep");
+		}
+
 		return endOfSuperstepEventsCount== numEventsUntilEndOfSuperstep;
 	}
 }

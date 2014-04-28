@@ -24,7 +24,7 @@ import eu.stratosphere.nephele.util.ManagementTestUtils;
 
 /**
  * This test checks the proper serialization and deserialization of profiling events.
- * 
+ *
  */
 public class ProfilingTypesTest {
 

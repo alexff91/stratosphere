@@ -27,11 +27,11 @@ public class WritableWrapperConverter<K extends WritableComparable, V extends Wr
 		stratosphereRecord.setField(0, convertKey(hadoopKey));
 		stratosphereRecord.setField(1, convertValue(hadoopValue));
 	}
-	
+
 	private final Value convertKey(K in) {
 		return new WritableComparableWrapper<K>(in);
 	}
-	
+
 	private final Value convertValue(V in) {
 		return new WritableWrapper<V>(in);
 	}

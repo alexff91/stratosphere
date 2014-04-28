@@ -23,15 +23,15 @@ import eu.stratosphere.compiler.dataproperties.RequestedGlobalProperties;
 
 
 public abstract class AbstractJoinDescriptor extends OperatorDescriptorDual {
-	
+
 	protected AbstractJoinDescriptor(FieldList keys1, FieldList keys2) {
 		super(keys1, keys2);
 	}
-	
+
 	@Override
 	protected List<GlobalPropertiesPair> createPossibleGlobalProperties() {
 		ArrayList<GlobalPropertiesPair> pairs = new ArrayList<GlobalPropertiesPair>();
-		
+
 		{ // partition both (hash)
 			RequestedGlobalProperties partitioned1 = new RequestedGlobalProperties();
 			partitioned1.setHashPartitioned(this.keys1);

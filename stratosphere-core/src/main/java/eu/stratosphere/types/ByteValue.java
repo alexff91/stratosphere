@@ -24,12 +24,12 @@ import eu.stratosphere.core.memory.MemorySegment;
 /**
  * Boxed serializable and comparable byte type, representing the primitive
  * type {@code byte} (signed 8 bit integer).
- * 
+ *
  * @see eu.stratosphere.types.Key
  */
 public class ByteValue implements Key, NormalizableKey, ResettableValue<ByteValue>, CopyableValue<ByteValue> {
 	private static final long serialVersionUID = 1L;
-	
+
 	private byte value;
 
 	/**
@@ -41,16 +41,16 @@ public class ByteValue implements Key, NormalizableKey, ResettableValue<ByteValu
 
 	/**
 	 * Initializes the encapsulated byte with the provided value.
-	 * 
+	 *
 	 * @param value Initial value of the encapsulated byte.
 	 */
 	public ByteValue(byte value) {
 		this.value = value;
 	}
-	
+
 	/**
 	 * Returns the value of the encapsulated byte.
-	 * 
+	 *
 	 * @return the value of the encapsulated byte.
 	 */
 	public byte getValue() {
@@ -59,7 +59,7 @@ public class ByteValue implements Key, NormalizableKey, ResettableValue<ByteValu
 
 	/**
 	 * Sets the encapsulated byte to the specified value.
-	 * 
+	 *
 	 * @param value
 	 *        the new value of the encapsulated byte.
 	 */
@@ -67,13 +67,13 @@ public class ByteValue implements Key, NormalizableKey, ResettableValue<ByteValu
 		this.value = value;
 	}
 
-    @Override
-    public void setValue(ByteValue value) {
-        this.value = value.value;
-    }
+@Override
+public void setValue(ByteValue value) {
+	this.value = value.value;
+}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public void read(DataInput in) throws IOException {
 		this.value = in.readByte();
@@ -85,16 +85,17 @@ public class ByteValue implements Key, NormalizableKey, ResettableValue<ByteValu
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public String toString() {
 		return String.valueOf(this.value);
 	}
-	
+
 	@Override
 	public int compareTo(Key o) {
-		if (!(o instanceof ByteValue))
-			throw new ClassCastException("Cannot compare " + o.getClass().getName() + " to ByteValue!");
+		if (!(o instanceof ByteValue)) {
+		throw new ClassCastException("Cannot compare " + o.getClass().getName() + " to ByteValue!");
+		}
 
 		final byte other = ((ByteValue) o).value;
 		return this.value < other ? -1 : this.value > other ? 1 : 0;
@@ -112,7 +113,7 @@ public class ByteValue implements Key, NormalizableKey, ResettableValue<ByteValu
 		}
 		return false;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	@Override
@@ -143,12 +144,12 @@ public class ByteValue implements Key, NormalizableKey, ResettableValue<ByteValu
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public int getBinaryLength() {
 		return 1;
 	}
-	
+
 	@Override
 	public void copyTo(ByteValue target) {
 		target.value = this.value;

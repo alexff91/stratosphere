@@ -19,7 +19,7 @@ import eu.stratosphere.core.io.IOReadableWritable;
 
 /**
  * Reads elements by deserializing them with their regular serialization/deserialization functionality.
- * 
+ *
  * @see SerializedOutputFormat
  */
 public class SerializedInputFormat<T extends IOReadableWritable> extends BinaryInputFormat<T> {

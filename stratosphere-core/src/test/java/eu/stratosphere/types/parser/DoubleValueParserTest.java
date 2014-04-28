@@ -21,14 +21,14 @@ public class DoubleValueParserTest extends ParserTestBase<DoubleValue> {
 	@Override
 	public String[] getValidTestValues() {
 		return new String[] {
-			"0", "0.0", "123.4", "0.124", ".623", "1234", "-12.34", 
+			"0", "0.0", "123.4", "0.124", ".623", "1234", "-12.34",
 			String.valueOf(Double.MAX_VALUE), String.valueOf(Double.MIN_VALUE),
 			String.valueOf(Double.NEGATIVE_INFINITY), String.valueOf(Double.POSITIVE_INFINITY),
 			String.valueOf(Double.NaN),
 			"1.234E2", "1.234e3", "1.234E-2"
 		};
 	}
-	
+
 	@Override
 	public DoubleValue[] getValidTestResults() {
 		return new DoubleValue[] {

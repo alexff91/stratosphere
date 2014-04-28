@@ -25,58 +25,58 @@ import eu.stratosphere.core.io.GenericInputSplit;
  * The process is started outside of the JVM via a provided start command and can be an arbitrary program, e.g., a data generator or a shell script.
  * The input format checks the exit code of the process to validate whether the process terminated correctly. A list of allowed exit codes can be provided.
  * The input format requires ({@link ExternalProcessInputSplit} objects that hold the command to execute.
- * 
- * <b> Attention! </b><br>  
- * You must take care to read from (and process) both output streams of the process, standard out (stdout) and standard error (stderr). 
- * Otherwise, the input format might get deadlocked! 
- * 
+ *
+ * <b> Attention! </b><br>
+ * You must take care to read from (and process) both output streams of the process, standard out (stdout) and standard error (stderr).
+ * Otherwise, the input format might get deadlocked!
+ *
  *
  * @param <T>, The type of the input split (must extend ExternalProcessInputSplit)
  */
 public abstract class ExternalProcessInputFormat<T extends ExternalProcessInputSplit> extends GenericInputFormat {
 	private static final long serialVersionUID = 1L;
-	 
+
 	/**
 	 * The config parameter lists (comma separated) all allowed exit codes
 	 */
 	public static final String ALLOWEDEXITCODES_PARAMETER_KEY = "pact.input.externalProcess.allowedExitCodes";
-	
+
 	/**
 	 * The external process
 	 */
 	private Process extProc;
-	
+
 	/**
 	 * The stdout stream of the external process
 	 */
 	protected InputStream extProcOutStream;
-	
+
 	/**
 	 * The stderr stream of the external process
 	 */
 	protected InputStream extProcErrStream;
-	
+
 	/**
 	 * Array of allowed exit codes
 	 */
 	protected int[] allowedExitCodes;
-	
+
 
 	@Override
 	public void configure(Configuration parameters) {
 		// get allowed exit codes
 		String allowedExitCodesList = parameters.getString(ALLOWEDEXITCODES_PARAMETER_KEY, "0");
-		
+
 		// parse allowed exit codes
 		StringTokenizer st = new StringTokenizer(allowedExitCodesList, ",");
 		this.allowedExitCodes = new int[st.countTokens()];
-		
+
 		for(int i=0; i<this.allowedExitCodes.length; i++) {
 			this.allowedExitCodes[i] = Integer.parseInt(st.nextToken().trim());
 		}
-		
+
 	}
-	
+
 	@Override
 	public void close() throws IOException {
 		try {
@@ -108,13 +108,13 @@ public abstract class ExternalProcessInputFormat<T extends ExternalProcessInputS
 
 	@Override
 	public void open(GenericInputSplit split) throws IOException {
-		
+
 		if(!(split instanceof ExternalProcessInputSplit)) {
 			throw new IOException("Invalid InputSplit type.");
 		}
-		
-		ExternalProcessInputSplit epSplit = (ExternalProcessInputSplit)split;		
-		
+
+		ExternalProcessInputSplit epSplit = (ExternalProcessInputSplit)split;
+
 		// check if process command is valid string
 		if(epSplit.getExternalProcessCommand() != null && !epSplit.getExternalProcessCommand().equals("")) {
 			try {
@@ -130,7 +130,7 @@ public abstract class ExternalProcessInputFormat<T extends ExternalProcessInputS
 			throw new IllegalArgumentException("External Process Command not set");
 		}
 	}
-	
+
 	public void waitForProcessToFinish() throws InterruptedException {
 		extProc.waitFor();
 	}

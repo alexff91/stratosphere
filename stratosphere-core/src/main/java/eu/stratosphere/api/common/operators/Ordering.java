@@ -23,20 +23,20 @@ import eu.stratosphere.types.Key;
  *
  */
 public class Ordering {
-	
+
 	protected final FieldList indexes = new FieldList();
-	
+
 	protected final ArrayList<Class<? extends Key>> types = new ArrayList<Class<? extends Key>>();
-	
+
 	protected final ArrayList<Order> orders = new ArrayList<Order>();
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
-	 * 
+	 *
 	 */
 	public Ordering() {}
-	
+
 	/**
 	 * @param index
 	 * @param type
@@ -45,14 +45,14 @@ public class Ordering {
 	public Ordering(int index, Class<? extends Key> type, Order order) {
 		appendOrdering(index, type, order);
 	}
-	
+
 	/**
 	 * Extends this ordering by appending an additional order requirement.
-	 * 
+	 *
 	 * @param index Field index of the appended order requirement.
 	 * @param type Type of the appended order requirement.
 	 * @param order Order of the appended order requirement.
-	 * 
+	 *
 	 * @return This ordering with an additional appended order requirement.
 	 */
 	public Ordering appendOrdering(Integer index, Class<? extends Key> type, Order order) {
@@ -65,51 +65,51 @@ public class Ordering {
 		if (order == Order.NONE) {
 			throw new IllegalArgumentException("An ordering must not be created with a NONE order.");
 		}
-		
+
 		this.indexes.add(index);
 		this.types.add(type);
 		this.orders.add(order);
 		return this;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public int getNumberOfFields() {
 		return this.indexes.size();
 	}
-	
+
 	public FieldList getInvolvedIndexes() {
 		return this.indexes;
 	}
-	
+
 	public Integer getFieldNumber(int index) {
 		if (index < 0 || index >= this.indexes.size()) {
 			throw new IndexOutOfBoundsException(String.valueOf(index));
 		}
 		return this.indexes.get(index);
 	}
-	
+
 	public Class<? extends Key> getType(int index) {
 		if (index < 0 || index >= this.types.size()) {
 			throw new IndexOutOfBoundsException(String.valueOf(index));
 		}
 		return this.types.get(index);
 	}
-	
+
 	public Order getOrder(int index) {
 		if (index < 0 || index >= this.types.size()) {
 			throw new IndexOutOfBoundsException(String.valueOf(index));
 		}
 		return orders.get(index);
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	@SuppressWarnings("unchecked")
 	public Class<? extends Key>[] getTypes() {
 		return this.types.toArray(new Class[this.types.size()]);
 	}
-	
+
 	public int[] getFieldPositions() {
 		final int[] ia = new int[this.indexes.size()];
 		for (int i = 0; i < ia.length; i++) {
@@ -117,31 +117,31 @@ public class Ordering {
 		}
 		return ia;
 	}
-	
+
 	public Order[] getFieldOrders() {
 		return this.orders.toArray(new Order[this.orders.size()]);
-	}	
-	
+	}
+
 	public boolean[] getFieldSortDirections() {
 		final boolean[] directions = new boolean[this.orders.size()];
 		for (int i = 0; i < directions.length; i++) {
-			directions[i] = this.orders.get(i) != Order.DESCENDING; 
+			directions[i] = this.orders.get(i) != Order.DESCENDING;
 		}
 		return directions;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public boolean isMetBy(Ordering otherOrdering) {
 		if (otherOrdering == null || this.indexes.size() > otherOrdering.indexes.size()) {
 			return false;
 		}
-		
+
 		for (int i = 0; i < this.indexes.size(); i++) {
 			if (this.indexes.get(i) != otherOrdering.indexes.get(i)) {
 				return false;
 			}
-			
+
 			// if this one request no order, everything is good
 			if (this.orders.get(i) != Order.NONE) {
 				if (this.orders.get(i) == Order.ANY) {
@@ -157,27 +157,27 @@ public class Ordering {
 		}
 		return true;
 	}
-	
+
 	public boolean isOrderEqualOnFirstNFields(Ordering other, int n) {
 		if (n > getNumberOfFields() || n > other.getNumberOfFields()) {
 			throw new IndexOutOfBoundsException();
 		}
-		
+
 		for (int i = 0; i < n; i++) {
 			final Order o = this.orders.get(i);
 			if (o == Order.NONE || o == Order.ANY || o != other.orders.get(i)) {
 				return false;
 			}
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Creates a new ordering the represents an ordering on a prefix of the fields. If the
 	 * exclusive index up to which to create the ordering is <code>0</code>, then there is
 	 * no resulting ordering and this method return <code>null</code>.
-	 * 
+	 *
 	 * @param exclusiveIndex The index (exclusive) up to which to create the ordering.
 	 * @return The new ordering on the prefix of the fields, or <code>null</code>, if the prefix is empty.
 	 */
@@ -191,23 +191,24 @@ public class Ordering {
 		}
 		return newOrdering;
 	}
-	
+
 	public boolean groupsFields(FieldSet fields) {
 		if (fields.size() > this.indexes.size()) {
 			return false;
 		}
-		
+
 		for (int i = 0; i < fields.size(); i++) {
-			if (!fields.contains(this.indexes.get(i)))
-				return false;
+			if (!fields.contains(this.indexes.get(i))) {
+			return false;
+			}
 		}
 		return true;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
-	
-	
+
+
+
 
 	public Ordering clone()
 	{
@@ -217,7 +218,7 @@ public class Ordering {
 		newOrdering.orders.addAll(this.orders);
 		return newOrdering;
 	}
-	
+
 
 	@Override
 	public int hashCode() {
@@ -232,28 +233,37 @@ public class Ordering {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		if (this == obj) {
+		return true;
+		}
+		if (obj == null) {
+		return false;
+		}
+		if (getClass() != obj.getClass()) {
+		return false;
+		}
 		Ordering other = (Ordering) obj;
 		if (indexes == null) {
-			if (other.indexes != null)
-				return false;
-		} else if (!indexes.equals(other.indexes))
+			if (other.indexes != null) {
 			return false;
+			}
+		} else if (!indexes.equals(other.indexes)) {
+		return false;
+		}
 		if (orders == null) {
-			if (other.orders != null)
-				return false;
-		} else if (!orders.equals(other.orders))
+			if (other.orders != null) {
 			return false;
+			}
+		} else if (!orders.equals(other.orders)) {
+		return false;
+		}
 		if (types == null) {
-			if (other.types != null)
-				return false;
-		} else if (!types.equals(other.types))
+			if (other.types != null) {
 			return false;
+			}
+		} else if (!types.equals(other.types)) {
+		return false;
+		}
 		return true;
 	}
 

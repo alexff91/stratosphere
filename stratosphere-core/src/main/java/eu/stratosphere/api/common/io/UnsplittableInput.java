@@ -17,7 +17,7 @@ package eu.stratosphere.api.common.io;
  * This interface acts as a marker for input formats for inputs which cannot be split.
  * Data sources with unsplittable input formats are always executed with a degree-of-parallelism
  * of one.
- * 
+ *
  * @see InputFormat
  */
 public interface UnsplittableInput {

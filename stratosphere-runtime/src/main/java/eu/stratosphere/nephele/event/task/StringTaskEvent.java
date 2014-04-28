@@ -13,13 +13,13 @@
 
 /*
  *  Copyright 2010 casp.
- * 
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- * 
+ *
  *       http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -37,7 +37,7 @@ import eu.stratosphere.core.io.StringRecord;
 
 /**
  * This class provides a simple implementation of an event that holds a string value.
- * 
+ *
  */
 public class StringTaskEvent extends AbstractTaskEvent {
 
@@ -54,7 +54,7 @@ public class StringTaskEvent extends AbstractTaskEvent {
 
 	/**
 	 * Constructs a new string task event with the given string message.
-	 * 
+	 *
 	 * @param message
 	 *        the string message that shall be stored in this event
 	 */
@@ -64,7 +64,7 @@ public class StringTaskEvent extends AbstractTaskEvent {
 
 	/**
 	 * Returns the stored string.
-	 * 
+	 *
 	 * @return the stored string or <code>null</code> if no string is set
 	 */
 	public String getString() {

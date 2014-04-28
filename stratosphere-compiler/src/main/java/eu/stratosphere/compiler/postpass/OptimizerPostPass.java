@@ -20,11 +20,11 @@ import eu.stratosphere.compiler.plan.OptimizedPlan;
  * finalization or the generation/parameterization of utilities for the actual data model.
  */
 public interface OptimizerPostPass {
-	
+
 	/**
 	 * Central post processing function. Invoked by the optimizer after the best plan has
 	 * been determined.
-	 * 
+	 *
 	 * @param plan The plan to be post processed.
 	 */
 	void postPass(OptimizedPlan plan);

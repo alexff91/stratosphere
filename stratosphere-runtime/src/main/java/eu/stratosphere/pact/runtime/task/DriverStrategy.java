@@ -13,16 +13,17 @@
 
 package eu.stratosphere.pact.runtime.task;
 
-import eu.stratosphere.pact.runtime.task.chaining.ChainedDriver;
+import static eu.stratosphere.pact.runtime.task.DamBehavior.FULL_DAM;
+import static eu.stratosphere.pact.runtime.task.DamBehavior.MATERIALIZING;
+import static eu.stratosphere.pact.runtime.task.DamBehavior.PIPELINED;
 import eu.stratosphere.pact.runtime.task.chaining.ChainedCollectorMapDriver;
+import eu.stratosphere.pact.runtime.task.chaining.ChainedDriver;
 import eu.stratosphere.pact.runtime.task.chaining.ChainedFlatMapDriver;
 import eu.stratosphere.pact.runtime.task.chaining.ChainedMapDriver;
 import eu.stratosphere.pact.runtime.task.chaining.SynchronousChainedCombineDriver;
 
-import static eu.stratosphere.pact.runtime.task.DamBehavior.*;
-
 /**
- * Enumeration of all available operator strategies. 
+ * Enumeration of all available operator strategies.
  */
 public enum DriverStrategy {
 	// no local strategy, as for sources and sinks
@@ -65,25 +66,25 @@ public enum DriverStrategy {
 	UNION(null, null, FULL_DAM, FULL_DAM, false),
 	// explicit binary union between a streamed and a cached input
 	UNION_WITH_CACHED(UnionWithTempOperator.class, null, FULL_DAM, PIPELINED, false);
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	private final Class<? extends PactDriver<?, ?>> driverClass;
-	
+
 	private final Class<? extends ChainedDriver<?, ?>> pushChainDriver;
-	
+
 	private final DamBehavior dam1;
 	private final DamBehavior dam2;
-	
+
 	private final int numInputs;
-	
+
 	private final boolean requiresComparator;
-	
+
 
 	@SuppressWarnings("unchecked")
 	private DriverStrategy(
-			@SuppressWarnings("rawtypes") Class<? extends PactDriver> driverClass, 
-			@SuppressWarnings("rawtypes") Class<? extends ChainedDriver> pushChainDriverClass, 
+			@SuppressWarnings("rawtypes") Class<? extends PactDriver> driverClass,
+			@SuppressWarnings("rawtypes") Class<? extends ChainedDriver> pushChainDriverClass,
 			DamBehavior dam, boolean comparator)
 	{
 		this.driverClass = (Class<? extends PactDriver<?, ?>>) driverClass;
@@ -93,11 +94,11 @@ public enum DriverStrategy {
 		this.dam2 = null;
 		this.requiresComparator = comparator;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private DriverStrategy(
-			@SuppressWarnings("rawtypes") Class<? extends PactDriver> driverClass, 
-			@SuppressWarnings("rawtypes") Class<? extends ChainedDriver> pushChainDriverClass, 
+			@SuppressWarnings("rawtypes") Class<? extends PactDriver> driverClass,
+			@SuppressWarnings("rawtypes") Class<? extends ChainedDriver> pushChainDriverClass,
 			DamBehavior firstDam, DamBehavior secondDam, boolean comparator)
 	{
 		this.driverClass = (Class<? extends PactDriver<?, ?>>) driverClass;
@@ -107,25 +108,25 @@ public enum DriverStrategy {
 		this.dam2 = secondDam;
 		this.requiresComparator = comparator;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public Class<? extends PactDriver<?, ?>> getDriverClass() {
 		return this.driverClass;
 	}
-	
+
 	public Class<? extends ChainedDriver<?, ?>> getPushChainDriverClass() {
 		return this.pushChainDriver;
 	}
-	
+
 	public int getNumInputs() {
 		return this.numInputs;
 	}
-	
+
 	public DamBehavior firstDam() {
 		return this.dam1;
 	}
-	
+
 	public DamBehavior secondDam() {
 		if (this.numInputs == 2) {
 			return this.dam2;
@@ -133,7 +134,7 @@ public enum DriverStrategy {
 			throw new IllegalArgumentException("The given strategy does not work on two inputs.");
 		}
 	}
-	
+
 	public DamBehavior damOnInput(int num) {
 		if (num < this.numInputs) {
 			if (num == 0) {
@@ -144,11 +145,11 @@ public enum DriverStrategy {
 		}
 		throw new IllegalArgumentException();
 	}
-	
+
 	public boolean isMaterializing() {
 		return this.dam1.isMaterializing() || (this.dam2 != null && this.dam2.isMaterializing());
 	}
-	
+
 	public boolean requiresComparator() {
 		return this.requiresComparator;
 	}

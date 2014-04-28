@@ -16,19 +16,19 @@ package eu.stratosphere.api.java.aggregation;
 
 
 public abstract class SumAggregationFunction<T> extends AggregationFunction<T> {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	@Override
 	public String toString() {
 		return "SUM";
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public static final class ByteSumAgg extends SumAggregationFunction<Byte> {
 		private static final long serialVersionUID = 1L;
-		
+
 		private long agg;
 
 		@Override
@@ -46,10 +46,10 @@ public abstract class SumAggregationFunction<T> extends AggregationFunction<T> {
 			return (byte) agg;
 		}
 	}
-	
+
 	public static final class ShortSumAgg extends SumAggregationFunction<Short> {
 		private static final long serialVersionUID = 1L;
-		
+
 		private long agg;
 
 		@Override
@@ -67,10 +67,10 @@ public abstract class SumAggregationFunction<T> extends AggregationFunction<T> {
 			return (short) agg;
 		}
 	}
-	
+
 	public static final class IntSumAgg extends SumAggregationFunction<Integer> {
 		private static final long serialVersionUID = 1L;
-		
+
 		private long agg;
 
 		@Override
@@ -88,10 +88,10 @@ public abstract class SumAggregationFunction<T> extends AggregationFunction<T> {
 			return (int) agg;
 		}
 	}
-	
+
 	public static final class LongSumAgg extends SumAggregationFunction<Long> {
 		private static final long serialVersionUID = 1L;
-		
+
 		private long agg;
 
 		@Override
@@ -109,10 +109,10 @@ public abstract class SumAggregationFunction<T> extends AggregationFunction<T> {
 			return agg;
 		}
 	}
-	
+
 	public static final class FloatSumAgg extends SumAggregationFunction<Float> {
 		private static final long serialVersionUID = 1L;
-		
+
 		private float agg;
 
 		@Override
@@ -130,10 +130,10 @@ public abstract class SumAggregationFunction<T> extends AggregationFunction<T> {
 			return agg;
 		}
 	}
-	
+
 	public static final class DoubleSumAgg extends SumAggregationFunction<Double> {
 		private static final long serialVersionUID = 1L;
-		
+
 		private double agg;
 
 		@Override
@@ -151,12 +151,12 @@ public abstract class SumAggregationFunction<T> extends AggregationFunction<T> {
 			return agg;
 		}
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public static final class SumAggregationFunctionFactory implements AggregationFunctionFactory {
 		private static final long serialVersionUID = 1L;
-		
+
 		@SuppressWarnings("unchecked")
 		@Override
 		public <T> AggregationFunction<T> createAggregationFunction(Class<T> type) {
@@ -179,7 +179,7 @@ public abstract class SumAggregationFunction<T> extends AggregationFunction<T> {
 				return (AggregationFunction<T>) new ShortSumAgg();
 			}
 			else {
-				throw new UnsupportedAggregationTypeException("The type " + type.getName() + 
+				throw new UnsupportedAggregationTypeException("The type " + type.getName() +
 					" has currently not supported for built-in sum aggregations.");
 			}
 		}

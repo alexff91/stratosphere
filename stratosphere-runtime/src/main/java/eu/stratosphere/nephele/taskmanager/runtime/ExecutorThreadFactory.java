@@ -16,17 +16,17 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ExecutorThreadFactory implements ThreadFactory {
-	
+
 	public static final ExecutorThreadFactory INSTANCE = new ExecutorThreadFactory();
 
 	private static final String THREAD_NAME = "Nephele Executor Thread ";
-	
+
 	private final AtomicInteger threadNumber = new AtomicInteger(1);
-	
-	
+
+
 	private ExecutorThreadFactory() {}
-	
-	
+
+
 	public Thread newThread(Runnable target) {
 		Thread t = new Thread(target, THREAD_NAME + threadNumber.getAndIncrement());
 		t.setDaemon(true);

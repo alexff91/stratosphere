@@ -27,28 +27,28 @@ import eu.stratosphere.core.memory.MemoryUtils;
  * fashion in the memory.
  */
 public class UnsafeMemorySegment {
-	
+
 	// flag to enable / disable boundary checks. Note that the compiler eliminates the check code
 	// paths (as dead code) when this constant is set to false.
 	private static final boolean CHECKED = false;
-	
+
 	/**
 	 * The array in which the data is stored.
 	 */
 	protected byte[] memory;
-	
+
 	/**
 	 * Wrapper for I/O requests.
 	 */
 	protected ByteBuffer wrapper;
-	
+
 	// -------------------------------------------------------------------------
 	//                             Constructors
 	// -------------------------------------------------------------------------
 
 	/**
 	 * Creates a new memory segment of given size with the provided views.
-	 * 
+	 *
 	 * @param size The size of the memory segment.
 	 * @param inputView The input view to use.
 	 * @param outputView The output view to use.
@@ -60,33 +60,33 @@ public class UnsafeMemorySegment {
 	// -------------------------------------------------------------------------
 	//                        MemorySegment Accessors
 	// -------------------------------------------------------------------------
-	
+
 	/**
 	 * Checks whether this memory segment has already been freed. In that case, the
 	 * segment must not be used any more.
-	 * 
+	 *
 	 * @return True, if the segment has been freed, false otherwise.
 	 */
 	public final boolean isFreed() {
 		return this.memory == null;
 	}
-	
+
 	/**
 	 * Gets the size of the memory segment, in bytes. Because segments
 	 * are backed by arrays, they cannot be larger than two GiBytes.
-	 * 
+	 *
 	 * @return The size in bytes.
 	 */
 	public final int size() {
 		return this.memory.length;
 	}
-	
+
 	/**
 	 * Gets the byte array that backs the memory segment and this random access view.
 	 * Since different regions of the backing array are used by different segments, the logical
 	 * positions in this view do not correspond to the indexes in the backing array and need
 	 * to be translated via the {@link #translateOffset(int)} method.
-	 * 
+	 *
 	 * @return The backing byte array.
 	 */
 	@Deprecated
@@ -96,7 +96,7 @@ public class UnsafeMemorySegment {
 
 	/**
 	 * Translates the given offset for this view into the offset for the backing array.
-	 * 
+	 *
 	 * @param offset The offset to be translated.
 	 * @return The corresponding position in the backing array.
 	 */
@@ -104,16 +104,16 @@ public class UnsafeMemorySegment {
 	public final int translateOffset(int offset) {
 		return offset;
 	}
-	
+
 	// -------------------------------------------------------------------------
 	//                       Helper methods
 	// -------------------------------------------------------------------------
-	
+
 
 	/**
-	 * Wraps the chunk of the underlying memory located between <tt>offset<tt> and 
+	 * Wraps the chunk of the underlying memory located between <tt>offset<tt> and
 	 * <tt>length</tt> in a NIO ByteBuffer.
-	 * 
+	 *
 	 * @param offset The offset in the memory segment.
 	 * @param length The number of bytes to be wrapped as a buffer.
 	 * @return A <tt>ByteBuffer</tt> backed by the specified portion of the memory segment.
@@ -124,7 +124,7 @@ public class UnsafeMemorySegment {
 		if (offset > this.memory.length || offset > this.memory.length - length) {
 			throw new IndexOutOfBoundsException();
 		}
-		
+
 		if (this.wrapper == null) {
 			this.wrapper = ByteBuffer.wrap(this.memory, offset, length);
 		}
@@ -132,7 +132,7 @@ public class UnsafeMemorySegment {
 			this.wrapper.position(offset);
 			this.wrapper.limit(offset + length);
 		}
-		
+
 		return this.wrapper;
 	}
 
@@ -153,10 +153,10 @@ public class UnsafeMemorySegment {
 
 	/**
 	 * Reads the byte at the given position.
-	 * 
+	 *
 	 * @param position The position from which the byte will be read
 	 * @return The byte at the given position.
-	 * 
+	 *
 	 * @throws IndexOutOfBoundsException Thrown, if the index is negative, or larger or equal to the size of
 	 *                                   the memory segment.
 	 */
@@ -166,11 +166,11 @@ public class UnsafeMemorySegment {
 
 	/**
 	 * Writes the given byte into this buffer at the given position.
-	 * 
+	 *
 	 * @param position The position at which the byte will be written.
 	 * @param b The byte value to be written.
 	 * @return This view itself.
-	 * 
+	 *
 	 * @throws IndexOutOfBoundsException Thrown, if the index is negative, or larger or equal to the size of
 	 *                                   the memory segment.
 	 */
@@ -181,12 +181,12 @@ public class UnsafeMemorySegment {
 	/**
 	 * Bulk get method. Copies dst.length memory from the specified position to
 	 * the destination memory.
-	 * 
+	 *
 	 * @param position The position at which the first byte will be read.
 	 * @param dst The memory into which the memory will be copied.
 	 * @return This view itself.
-	 * 
-	 * @throws IndexOutOfBoundsException Thrown, if the index is negative, or too large that the data between the 
+	 *
+	 * @throws IndexOutOfBoundsException Thrown, if the index is negative, or too large that the data between the
 	 *                                   index and the memory segment end is not enough to fill the destination array.
 	 */
 	public final void get(int index, byte[] dst) {
@@ -196,14 +196,14 @@ public class UnsafeMemorySegment {
 	/**
 	 * Bulk put method. Copies src.length memory from the source memory into the
 	 * memory segment beginning at the specified position.
-	 * 
+	 *
 	 * @param index The position in the memory segment array, where the data is put.
 	 * @param src The source array to copy the data from.
 	 * @return This random access view itself.
-	 * 
-	 * @throws IndexOutOfBoundsException Thrown, if the index is negative, or too large such that the array 
+	 *
+	 * @throws IndexOutOfBoundsException Thrown, if the index is negative, or too large such that the array
 	 *                                   size exceed the amount of memory between the index and the memory
-	 *                                   segment's end. 
+	 *                                   segment's end.
 	 */
 	public final void put(int index, byte[] src) {
 		put(index, src, 0, src.length);
@@ -212,7 +212,7 @@ public class UnsafeMemorySegment {
 	/**
 	 * Bulk get method. Copies length memory from the specified position to the
 	 * destination memory, beginning at the given offset
-	 * 
+	 *
 	 * @param position
 	 *        The position at which the first byte will be read.
 	 * @param dst
@@ -222,8 +222,8 @@ public class UnsafeMemorySegment {
 	 * @param length
 	 *        The number of bytes to be copied.
 	 * @return This view itself.
-	 * 
-	 * @throws IndexOutOfBoundsException Thrown, if the index is negative, or too large that the requested number of 
+	 *
+	 * @throws IndexOutOfBoundsException Thrown, if the index is negative, or too large that the requested number of
 	 *                                   bytes exceed the amount of memory between the index and the memory
 	 *                                   segment's end.
 	 */
@@ -235,14 +235,14 @@ public class UnsafeMemorySegment {
 	 * Bulk put method. Copies length memory starting at position offset from
 	 * the source memory into the memory segment starting at the specified
 	 * index.
-	 * 
+	 *
 	 * @param index The position in the memory segment array, where the data is put.
 	 * @param src The source array to copy the data from.
 	 * @param offset The offset in the source array where the copying is started.
 	 * @param length The number of bytes to copy.
 	 * @return This random access view itself.
-	 * 
-	 * @throws IndexOutOfBoundsException Thrown, if the index is negative, or too large such that the array 
+	 *
+	 * @throws IndexOutOfBoundsException Thrown, if the index is negative, or too large such that the array
 	 *                                   portion to copy exceed the amount of memory between the index and the memory
 	 *                                   segment's end.
 	 */
@@ -253,12 +253,12 @@ public class UnsafeMemorySegment {
 	/**
 	 * Bulk get method. Copies length memory from the specified offset to the
 	 * provided <tt>DataOutput</tt>.
-	 * 
+	 *
 	 * @param out The data output object to copy the data to.
 	 * @param offset The first byte to by copied.
 	 * @param length The number of bytes to copy.
 	 * @return This view itself.
-	 * 
+	 *
 	 * @throws IOException Thrown, if the DataOutput encountered a problem upon writing.
 	 */
 	public final void get(DataOutput out, int offset, int length) throws IOException {
@@ -268,12 +268,12 @@ public class UnsafeMemorySegment {
 	/**
 	 * Bulk put method. Copies length memory from the given DataInput to the
 	 * memory starting at position offset.
-	 * 
+	 *
 	 * @param in The DataInput to get the data from.
 	 * @param offset The position in the memory segment to copy the chunk to.
-	 * @param length The number of bytes to get. 
+	 * @param length The number of bytes to get.
 	 * @return This random access view itself.
-	 * 
+	 *
 	 * @throws IOException Thrown, if the DataInput encountered a problem upon reading,
 	 *                     such as an End-Of-File.
 	 */
@@ -284,10 +284,10 @@ public class UnsafeMemorySegment {
 	/**
 	 * Reads one byte at the given position and returns its boolean
 	 * representation.
-	 * 
+	 *
 	 * @param position The position from which the memory will be read.
 	 * @return The char value at the given position.
-	 * 
+	 *
 	 * @throws IndexOutOfBoundsException Thrown, if the index is negative, or larger then the segment
 	 *                                   size minus 1.
 	 */
@@ -298,11 +298,11 @@ public class UnsafeMemorySegment {
 	/**
 	 * Writes one byte containing the byte value into this buffer at the given
 	 * position.
-	 * 
+	 *
 	 * @param position The position at which the memory will be written.
 	 * @param value The char value to be written.
 	 * @return This view itself.
-	 * 
+	 *
 	 * @throws IndexOutOfBoundsException Thrown, if the index is negative, or larger then the segment
 	 *                                   size minus 1.
 	 */
@@ -313,26 +313,26 @@ public class UnsafeMemorySegment {
 	/**
 	 * Reads two memory at the given position, composing them into a char value
 	 * according to the current byte order.
-	 * 
+	 *
 	 * @param position The position from which the memory will be read.
 	 * @return The char value at the given position.
-	 * 
+	 *
 	 * @throws IndexOutOfBoundsException Thrown, if the index is negative, or larger then the segment
 	 *                                   size minus 2.
 	 */
 	public final char getChar(int index) {
-		return (char) ( ((this.memory[index    ] & 0xff) << 8) | 
-		                 (this.memory[index + 1] & 0xff) );
+		return (char) ( ((this.memory[index    ] & 0xff) << 8) |
+				(this.memory[index + 1] & 0xff) );
 	}
 
 	/**
 	 * Writes two memory containing the given char value, in the current byte
 	 * order, into this buffer at the given position.
-	 * 
+	 *
 	 * @param position The position at which the memory will be written.
 	 * @param value The char value to be written.
 	 * @return This view itself.
-	 * 
+	 *
 	 * @throws IndexOutOfBoundsException Thrown, if the index is negative, or larger then the segment
 	 *                                   size minus 2.
 	 */
@@ -344,10 +344,10 @@ public class UnsafeMemorySegment {
 	/**
 	 * Reads two memory at the given position, composing them into a short value
 	 * according to the current byte order.
-	 * 
+	 *
 	 * @param position The position from which the memory will be read.
 	 * @return The short value at the given position.
-	 * 
+	 *
 	 * @throws IndexOutOfBoundsException Thrown, if the index is negative, or larger then the segment
 	 *                                   size minus 2.
 	 */
@@ -360,10 +360,10 @@ public class UnsafeMemorySegment {
 	/**
 	 * Writes the given short value into this buffer at the given position, using
 	 * the native byte order of the system.
-	 * 
+	 *
 	 * @param position The position at which the value will be written.
 	 * @param value The short value to be written.
-	 * 
+	 *
 	 * @throws IndexOutOfBoundsException Thrown, if the index is negative, or larger then the segment
 	 *                                   size minus 2.
 	 */
@@ -371,18 +371,18 @@ public class UnsafeMemorySegment {
 		this.memory[index    ] = (byte) (value >> 8);
 		this.memory[index + 1] = (byte) value;
 	}
-	
+
 	/**
 	 * Reads an int value (32bit, 4 bytes) from the given position, in the system's native byte order.
 	 * This method offers the best speed for integer reading and should be used
 	 * unless a specific byte order is required. In most cases, it suffices to know that the
-	 * byte order in which the value is written is the same as the one in which it is read 
+	 * byte order in which the value is written is the same as the one in which it is read
 	 * (such as transient storage in memory, or serialization for I/O and network), making this
 	 * method the preferable choice.
-	 * 
+	 *
 	 * @param position The position from which the value will be read.
 	 * @return The int value at the given position.
-	 * 
+	 *
 	 * @throws IndexOutOfBoundsException Thrown, if the index is negative, or larger then the segment
 	 *                                   size minus 4.
 	 */
@@ -398,18 +398,18 @@ public class UnsafeMemorySegment {
 			return UNSAFE.getInt(this.memory, BASE_OFFSET + index);
 		}
 	}
-	
+
 	/**
 	 * Reads an int value (32bit, 4 bytes) from the given position, in little endian byte order.
 	 * This method's speed depends on the system's native byte order, and it
-	 * is possibly slower than {@link #getInt(int)}. For most cases (such as 
+	 * is possibly slower than {@link #getInt(int)}. For most cases (such as
 	 * transient storage in memory or serialization for I/O and network),
 	 * it suffices to know that the byte order in which the value is written is the same as the
 	 * one in which it is read, and {@link #getInt(int)} is the preferable choice.
-	 * 
+	 *
 	 * @param position The position from which the value will be read.
 	 * @return The int value at the given position.
-	 * 
+	 *
 	 * @throws IndexOutOfBoundsException Thrown, if the index is negative, or larger then the segment
 	 *                                   size minus 4.
 	 */
@@ -420,18 +420,18 @@ public class UnsafeMemorySegment {
 			return Integer.reverseBytes(getInt(index));
 		}
 	}
-	
+
 	/**
 	 * Reads an int value (32bit, 4 bytes) from the given position, in big endian byte order.
 	 * This method's speed depends on the system's native byte order, and it
-	 * is possibly slower than {@link #getInt(int)}. For most cases (such as 
+	 * is possibly slower than {@link #getInt(int)}. For most cases (such as
 	 * transient storage in memory or serialization for I/O and network),
 	 * it suffices to know that the byte order in which the value is written is the same as the
 	 * one in which it is read, and {@link #getInt(int)} is the preferable choice.
-	 * 
+	 *
 	 * @param position The position from which the value will be read.
 	 * @return The int value at the given position.
-	 * 
+	 *
 	 * @throws IndexOutOfBoundsException Thrown, if the index is negative, or larger then the segment
 	 *                                   size minus 4.
 	 */
@@ -447,13 +447,13 @@ public class UnsafeMemorySegment {
 	 * Writes the given int value (32bit, 4 bytes) to the given position in the system's native
 	 * byte order. This method offers the best speed for integer writing and should be used
 	 * unless a specific byte order is required. In most cases, it suffices to know that the
-	 * byte order in which the value is written is the same as the one in which it is read 
+	 * byte order in which the value is written is the same as the one in which it is read
 	 * (such as transient storage in memory, or serialization for I/O and network), making this
 	 * method the preferable choice.
-	 * 
+	 *
 	 * @param position The position at which the value will be written.
 	 * @param value The int value to be written.
-	 * 
+	 *
 	 * @throws IndexOutOfBoundsException Thrown, if the index is negative, or larger then the segment
 	 *                                   size minus 4.
 	 */
@@ -469,18 +469,18 @@ public class UnsafeMemorySegment {
 			UNSAFE.putInt(this.memory, BASE_OFFSET + index, value);
 		}
 	}
-	
+
 	/**
 	 * Writes the given int value (32bit, 4 bytes) to the given position in little endian
 	 * byte order. This method's speed depends on the system's native byte order, and it
-	 * is possibly slower than {@link #putInt(int, int)}. For most cases (such as 
+	 * is possibly slower than {@link #putInt(int, int)}. For most cases (such as
 	 * transient storage in memory or serialization for I/O and network),
 	 * it suffices to know that the byte order in which the value is written is the same as the
 	 * one in which it is read, and {@link #putInt(int, int)} is the preferable choice.
-	 * 
+	 *
 	 * @param position The position at which the value will be written.
 	 * @param value The int value to be written.
-	 * 
+	 *
 	 * @throws IndexOutOfBoundsException Thrown, if the index is negative, or larger then the segment
 	 *                                   size minus 4.
 	 */
@@ -491,18 +491,18 @@ public class UnsafeMemorySegment {
 			putInt(index, Integer.reverseBytes(value));
 		}
 	}
-	
+
 	/**
 	 * Writes the given int value (32bit, 4 bytes) to the given position in big endian
 	 * byte order. This method's speed depends on the system's native byte order, and it
-	 * is possibly slower than {@link #putInt(int, int)}. For most cases (such as 
+	 * is possibly slower than {@link #putInt(int, int)}. For most cases (such as
 	 * transient storage in memory or serialization for I/O and network),
 	 * it suffices to know that the byte order in which the value is written is the same as the
 	 * one in which it is read, and {@link #putInt(int, int)} is the preferable choice.
-	 * 
+	 *
 	 * @param position The position at which the value will be written.
 	 * @param value The int value to be written.
-	 * 
+	 *
 	 * @throws IndexOutOfBoundsException Thrown, if the index is negative, or larger then the segment
 	 *                                   size minus 4.
 	 */
@@ -513,18 +513,18 @@ public class UnsafeMemorySegment {
 			putInt(index, value);
 		}
 	}
-	
+
 	/**
 	 * Reads a long value (64bit, 8 bytes) from the given position, in the system's native byte order.
 	 * This method offers the best speed for long integer reading and should be used
 	 * unless a specific byte order is required. In most cases, it suffices to know that the
-	 * byte order in which the value is written is the same as the one in which it is read 
+	 * byte order in which the value is written is the same as the one in which it is read
 	 * (such as transient storage in memory, or serialization for I/O and network), making this
 	 * method the preferable choice.
-	 * 
+	 *
 	 * @param position The position from which the value will be read.
 	 * @return The long value at the given position.
-	 * 
+	 *
 	 * @throws IndexOutOfBoundsException Thrown, if the index is negative, or larger then the segment
 	 *                                   size minus 8.
 	 */
@@ -540,18 +540,18 @@ public class UnsafeMemorySegment {
 			return UNSAFE.getLong(this.memory, BASE_OFFSET + index);
 		}
 	}
-	
+
 	/**
 	 * Reads a long integer value (64bit, 8 bytes) from the given position, in little endian byte order.
 	 * This method's speed depends on the system's native byte order, and it
-	 * is possibly slower than {@link #getLong(int)}. For most cases (such as 
+	 * is possibly slower than {@link #getLong(int)}. For most cases (such as
 	 * transient storage in memory or serialization for I/O and network),
 	 * it suffices to know that the byte order in which the value is written is the same as the
 	 * one in which it is read, and {@link #getLong(int)} is the preferable choice.
-	 * 
+	 *
 	 * @param position The position from which the value will be read.
 	 * @return The long value at the given position.
-	 * 
+	 *
 	 * @throws IndexOutOfBoundsException Thrown, if the index is negative, or larger then the segment
 	 *                                   size minus 8.
 	 */
@@ -562,18 +562,18 @@ public class UnsafeMemorySegment {
 			return Long.reverseBytes(getLong(index));
 		}
 	}
-	
+
 	/**
 	 * Reads a long integer value (64bit, 8 bytes) from the given position, in big endian byte order.
 	 * This method's speed depends on the system's native byte order, and it
-	 * is possibly slower than {@link #getLong(int)}. For most cases (such as 
+	 * is possibly slower than {@link #getLong(int)}. For most cases (such as
 	 * transient storage in memory or serialization for I/O and network),
 	 * it suffices to know that the byte order in which the value is written is the same as the
 	 * one in which it is read, and {@link #getLong(int)} is the preferable choice.
-	 * 
+	 *
 	 * @param position The position from which the value will be read.
 	 * @return The long value at the given position.
-	 * 
+	 *
 	 * @throws IndexOutOfBoundsException Thrown, if the index is negative, or larger then the segment
 	 *                                   size minus 8.
 	 */
@@ -589,13 +589,13 @@ public class UnsafeMemorySegment {
 	 * Writes the given long value (64bit, 8 bytes) to the given position in the system's native
 	 * byte order. This method offers the best speed for long integer writing and should be used
 	 * unless a specific byte order is required. In most cases, it suffices to know that the
-	 * byte order in which the value is written is the same as the one in which it is read 
+	 * byte order in which the value is written is the same as the one in which it is read
 	 * (such as transient storage in memory, or serialization for I/O and network), making this
 	 * method the preferable choice.
-	 * 
+	 *
 	 * @param position The position at which the value will be written.
 	 * @param value The long value to be written.
-	 * 
+	 *
 	 * @throws IndexOutOfBoundsException Thrown, if the index is negative, or larger then the segment
 	 *                                   size minus 8.
 	 */
@@ -611,18 +611,18 @@ public class UnsafeMemorySegment {
 			UNSAFE.putLong(this.memory, BASE_OFFSET + index, value);
 		}
 	}
-	
+
 	/**
 	 * Writes the given long value (64bit, 8 bytes) to the given position in little endian
 	 * byte order. This method's speed depends on the system's native byte order, and it
-	 * is possibly slower than {@link #putLong(int, long)}. For most cases (such as 
+	 * is possibly slower than {@link #putLong(int, long)}. For most cases (such as
 	 * transient storage in memory or serialization for I/O and network),
 	 * it suffices to know that the byte order in which the value is written is the same as the
 	 * one in which it is read, and {@link #putLong(int, long)} is the preferable choice.
-	 * 
+	 *
 	 * @param position The position at which the value will be written.
 	 * @param value The long value to be written.
-	 * 
+	 *
 	 * @throws IndexOutOfBoundsException Thrown, if the index is negative, or larger then the segment
 	 *                                   size minus 8.
 	 */
@@ -633,18 +633,18 @@ public class UnsafeMemorySegment {
 			putLong(index, Long.reverseBytes(value));
 		}
 	}
-	
+
 	/**
 	 * Writes the given long value (64bit, 8 bytes) to the given position in big endian
 	 * byte order. This method's speed depends on the system's native byte order, and it
-	 * is possibly slower than {@link #putLong(int, long)}. For most cases (such as 
+	 * is possibly slower than {@link #putLong(int, long)}. For most cases (such as
 	 * transient storage in memory or serialization for I/O and network),
 	 * it suffices to know that the byte order in which the value is written is the same as the
 	 * one in which it is read, and {@link #putLong(int, long)} is the preferable choice.
-	 * 
+	 *
 	 * @param position The position at which the value will be written.
 	 * @param value The long value to be written.
-	 * 
+	 *
 	 * @throws IndexOutOfBoundsException Thrown, if the index is negative, or larger then the segment
 	 *                                   size minus 8.
 	 */
@@ -655,54 +655,54 @@ public class UnsafeMemorySegment {
 			putLong(index, value);
 		}
 	}
-	
+
 	/**
 	 * Reads a single-precision floating point value (32bit, 4 bytes) from the given position, in the system's
 	 * native byte order. This method offers the best speed for float reading and should be used
 	 * unless a specific byte order is required. In most cases, it suffices to know that the
-	 * byte order in which the value is written is the same as the one in which it is read 
+	 * byte order in which the value is written is the same as the one in which it is read
 	 * (such as transient storage in memory, or serialization for I/O and network), making this
 	 * method the preferable choice.
-	 * 
+	 *
 	 * @param position The position from which the value will be read.
 	 * @return The float value at the given position.
-	 * 
+	 *
 	 * @throws IndexOutOfBoundsException Thrown, if the index is negative, or larger then the segment
 	 *                                   size minus 4.
 	 */
 	public final float getFloat(int index) {
 		return Float.intBitsToFloat(getInt(index));
 	}
-	
+
 	/**
 	 * Reads a single-precision floating point value (32bit, 4 bytes) from the given position, in little endian
 	 * byte order. This method's speed depends on the system's native byte order, and it
-	 * is possibly slower than {@link #getFloat(int)}. For most cases (such as 
+	 * is possibly slower than {@link #getFloat(int)}. For most cases (such as
 	 * transient storage in memory or serialization for I/O and network),
 	 * it suffices to know that the byte order in which the value is written is the same as the
 	 * one in which it is read, and {@link #getFloat(int)} is the preferable choice.
-	 * 
+	 *
 	 * @param position The position from which the value will be read.
 	 * @return The long value at the given position.
-	 * 
+	 *
 	 * @throws IndexOutOfBoundsException Thrown, if the index is negative, or larger then the segment
 	 *                                   size minus 8.
 	 */
 	public final float getFloatLittleEndian(int index) {
 		return Float.intBitsToFloat(getIntLittleEndian(index));
 	}
-	
+
 	/**
 	 * Reads a single-precision floating point value (32bit, 4 bytes) from the given position, in big endian
 	 * byte order. This method's speed depends on the system's native byte order, and it
-	 * is possibly slower than {@link #getFloat(int)}. For most cases (such as 
+	 * is possibly slower than {@link #getFloat(int)}. For most cases (such as
 	 * transient storage in memory or serialization for I/O and network),
 	 * it suffices to know that the byte order in which the value is written is the same as the
 	 * one in which it is read, and {@link #getFloat(int)} is the preferable choice.
-	 * 
+	 *
 	 * @param position The position from which the value will be read.
 	 * @return The long value at the given position.
-	 * 
+	 *
 	 * @throws IndexOutOfBoundsException Thrown, if the index is negative, or larger then the segment
 	 *                                   size minus 8.
 	 */
@@ -714,103 +714,103 @@ public class UnsafeMemorySegment {
 	 * Writes the given single-precision float value (32bit, 4 bytes) to the given position in the system's native
 	 * byte order. This method offers the best speed for float writing and should be used
 	 * unless a specific byte order is required. In most cases, it suffices to know that the
-	 * byte order in which the value is written is the same as the one in which it is read 
+	 * byte order in which the value is written is the same as the one in which it is read
 	 * (such as transient storage in memory, or serialization for I/O and network), making this
 	 * method the preferable choice.
-	 * 
+	 *
 	 * @param position The position at which the value will be written.
 	 * @param value The float value to be written.
-	 * 
+	 *
 	 * @throws IndexOutOfBoundsException Thrown, if the index is negative, or larger then the segment
 	 *                                   size minus 4.
 	 */
 	public final void putFloat(int index, float value) {
 		putInt(index, Float.floatToRawIntBits(value));
 	}
-	
+
 	/**
 	 * Writes the given single-precision float value (32bit, 4 bytes) to the given position in little endian
 	 * byte order. This method's speed depends on the system's native byte order, and it
-	 * is possibly slower than {@link #putFloat(int, float)}. For most cases (such as 
+	 * is possibly slower than {@link #putFloat(int, float)}. For most cases (such as
 	 * transient storage in memory or serialization for I/O and network),
 	 * it suffices to know that the byte order in which the value is written is the same as the
 	 * one in which it is read, and {@link #putFloat(int, float)} is the preferable choice.
-	 * 
+	 *
 	 * @param position The position at which the value will be written.
 	 * @param value The long value to be written.
-	 * 
+	 *
 	 * @throws IndexOutOfBoundsException Thrown, if the index is negative, or larger then the segment
 	 *                                   size minus 8.
 	 */
 	public final void putFloatLittleEndian(int index, float value) {
 		putIntLittleEndian(index, Float.floatToRawIntBits(value));
 	}
-	
+
 	/**
 	 * Writes the given single-precision float value (32bit, 4 bytes) to the given position in big endian
 	 * byte order. This method's speed depends on the system's native byte order, and it
-	 * is possibly slower than {@link #putFloat(int, float)}. For most cases (such as 
+	 * is possibly slower than {@link #putFloat(int, float)}. For most cases (such as
 	 * transient storage in memory or serialization for I/O and network),
 	 * it suffices to know that the byte order in which the value is written is the same as the
 	 * one in which it is read, and {@link #putFloat(int, float)} is the preferable choice.
-	 * 
+	 *
 	 * @param position The position at which the value will be written.
 	 * @param value The long value to be written.
-	 * 
+	 *
 	 * @throws IndexOutOfBoundsException Thrown, if the index is negative, or larger then the segment
 	 *                                   size minus 8.
 	 */
 	public final void putFloatBigEndian(int index, float value) {
 		putIntBigEndian(index, Float.floatToRawIntBits(value));
 	}
-	
+
 	/**
 	 * Reads a double-precision floating point value (64bit, 8 bytes) from the given position, in the system's
 	 * native byte order. This method offers the best speed for double reading and should be used
 	 * unless a specific byte order is required. In most cases, it suffices to know that the
-	 * byte order in which the value is written is the same as the one in which it is read 
+	 * byte order in which the value is written is the same as the one in which it is read
 	 * (such as transient storage in memory, or serialization for I/O and network), making this
 	 * method the preferable choice.
-	 * 
+	 *
 	 * @param position The position from which the value will be read.
 	 * @return The double value at the given position.
-	 * 
+	 *
 	 * @throws IndexOutOfBoundsException Thrown, if the index is negative, or larger then the segment
 	 *                                   size minus 8.
 	 */
 	public final double getDouble(int index) {
 		return Double.longBitsToDouble(getLong(index));
 	}
-	
+
 	/**
 	 * Reads a double-precision floating point value (64bit, 8 bytes) from the given position, in little endian
 	 * byte order. This method's speed depends on the system's native byte order, and it
-	 * is possibly slower than {@link #getDouble(int)}. For most cases (such as 
+	 * is possibly slower than {@link #getDouble(int)}. For most cases (such as
 	 * transient storage in memory or serialization for I/O and network),
 	 * it suffices to know that the byte order in which the value is written is the same as the
 	 * one in which it is read, and {@link #getDouble(int)} is the preferable choice.
-	 * 
+	 *
 	 * @param position The position from which the value will be read.
 	 * @return The long value at the given position.
-	 * 
+	 *
 	 * @throws IndexOutOfBoundsException Thrown, if the index is negative, or larger then the segment
 	 *                                   size minus 8.
 	 */
 	public final double getDoubleLittleEndian(int index) {
 		return Double.longBitsToDouble(getLongLittleEndian(index));
 	}
-	
+
 	/**
 	 * Reads a double-precision floating point value (64bit, 8 bytes) from the given position, in big endian
 	 * byte order. This method's speed depends on the system's native byte order, and it
-	 * is possibly slower than {@link #getDouble(int)}. For most cases (such as 
+	 * is possibly slower than {@link #getDouble(int)}. For most cases (such as
 	 * transient storage in memory or serialization for I/O and network),
 	 * it suffices to know that the byte order in which the value is written is the same as the
 	 * one in which it is read, and {@link #getDouble(int)} is the preferable choice.
-	 * 
+	 *
 	 * @param position The position from which the value will be read.
 	 * @return The long value at the given position.
-	 * 
+	 *
 	 * @throws IndexOutOfBoundsException Thrown, if the index is negative, or larger then the segment
 	 *                                   size minus 8.
 	 */
@@ -822,66 +822,66 @@ public class UnsafeMemorySegment {
 	 * Writes the given double-precision floating-point value (64bit, 8 bytes) to the given position in the
 	 * system's native byte order. This method offers the best speed for double writing and should be used
 	 * unless a specific byte order is required. In most cases, it suffices to know that the
-	 * byte order in which the value is written is the same as the one in which it is read 
+	 * byte order in which the value is written is the same as the one in which it is read
 	 * (such as transient storage in memory, or serialization for I/O and network), making this
 	 * method the preferable choice.
-	 * 
+	 *
 	 * @param position The position at which the memory will be written.
 	 * @param value The double value to be written.
 	 * @return This view itself.
-	 * 
+	 *
 	 * @throws IndexOutOfBoundsException Thrown, if the index is negative, or larger then the segment
 	 *                                   size minus 8.
 	 */
 	public final void putDouble(int index, double value) {
 		putLong(index, Double.doubleToRawLongBits(value));
 	}
-	
+
 	/**
 	 * Writes the given double-precision floating-point value (64bit, 8 bytes) to the given position in little endian
 	 * byte order. This method's speed depends on the system's native byte order, and it
-	 * is possibly slower than {@link #putDouble(int, double)}. For most cases (such as 
+	 * is possibly slower than {@link #putDouble(int, double)}. For most cases (such as
 	 * transient storage in memory or serialization for I/O and network),
 	 * it suffices to know that the byte order in which the value is written is the same as the
 	 * one in which it is read, and {@link #putDouble(int, double)} is the preferable choice.
-	 * 
+	 *
 	 * @param position The position at which the value will be written.
 	 * @param value The long value to be written.
-	 * 
+	 *
 	 * @throws IndexOutOfBoundsException Thrown, if the index is negative, or larger then the segment
 	 *                                   size minus 8.
 	 */
 	public final void putDoubleLittleEndian(int index, double value) {
 		putLongLittleEndian(index, Double.doubleToRawLongBits(value));
 	}
-	
+
 	/**
 	 * Writes the given double-precision floating-point value (64bit, 8 bytes) to the given position in big endian
 	 * byte order. This method's speed depends on the system's native byte order, and it
-	 * is possibly slower than {@link #putDouble(int, double)}. For most cases (such as 
+	 * is possibly slower than {@link #putDouble(int, double)}. For most cases (such as
 	 * transient storage in memory or serialization for I/O and network),
 	 * it suffices to know that the byte order in which the value is written is the same as the
 	 * one in which it is read, and {@link #putDouble(int, double)} is the preferable choice.
-	 * 
+	 *
 	 * @param position The position at which the value will be written.
 	 * @param value The long value to be written.
-	 * 
+	 *
 	 * @throws IndexOutOfBoundsException Thrown, if the index is negative, or larger then the segment
 	 *                                   size minus 8.
 	 */
 	public final void putDoubleBigEndian(int index, double value) {
 		putLongBigEndian(index, Double.doubleToRawLongBits(value));
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 	// Utilities for native memory accesses and checks
 	// --------------------------------------------------------------------------------------------
-	
+
 	@SuppressWarnings("restriction")
 	private static final sun.misc.Unsafe UNSAFE = MemoryUtils.UNSAFE;
-	
+
 	@SuppressWarnings("restriction")
 	private static final long BASE_OFFSET = UNSAFE.arrayBaseOffset(byte[].class);
-	
+
 	private static final boolean LITTLE_ENDIAN = (MemoryUtils.NATIVE_BYTE_ORDER == ByteOrder.LITTLE_ENDIAN);
 }

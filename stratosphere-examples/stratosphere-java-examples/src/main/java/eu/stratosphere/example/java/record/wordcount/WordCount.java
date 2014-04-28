@@ -41,7 +41,7 @@ import eu.stratosphere.util.Collector;
  * the occurrences of each word in the file.
  */
 public class WordCount implements Program, ProgramDescription {
-	
+
 	private static final long serialVersionUID = 1L;
 
 
@@ -60,13 +60,13 @@ public class WordCount implements Program, ProgramDescription {
 
 			// normalize the line
 			line = line.replaceAll("\\W+", " ").toLowerCase();
-			
+
 			// tokenize the line
 			StringTokenizer tokenizer = new StringTokenizer(line);
 			while (tokenizer.hasMoreTokens()) {
 				String word = tokenizer.nextToken();
-				
-				// we emit a (word, 1) pair 
+
+				// we emit a (word, 1) pair
 				collector.collect(new Record(new StringValue(word), new IntValue(1)));
 			}
 		}
@@ -79,9 +79,9 @@ public class WordCount implements Program, ProgramDescription {
 	@Combinable
 	@ConstantFields(0)
 	public static class CountWords extends ReduceFunction {
-		
+
 		private static final long serialVersionUID = 1L;
-		
+
 		@Override
 		public void reduce(Iterator<Record> records, Collector<Record> out) throws Exception {
 			Record element = null;
@@ -95,7 +95,7 @@ public class WordCount implements Program, ProgramDescription {
 			element.setField(1, new IntValue(sum));
 			out.collect(element);
 		}
-		
+
 		@Override
 		public void combine(Iterator<Record> records, Collector<Record> out) throws Exception {
 			// the logic is the same as in the reduce function, so simply call the reduce method
@@ -122,7 +122,7 @@ public class WordCount implements Program, ProgramDescription {
 			.build();
 		@SuppressWarnings("unchecked")
 		FileDataSink out = new FileDataSink(new CsvOutputFormat("\n", " ", StringValue.class, IntValue.class), output, reducer, "Word Counts");
-		
+
 		Plan plan = new Plan(out, "WordCount Example");
 		plan.setDefaultParallelism(numSubTasks);
 		return plan;
@@ -134,17 +134,17 @@ public class WordCount implements Program, ProgramDescription {
 		return "Parameters: <numSubStasks> <input> <output>";
 	}
 
-	
+
 	public static void main(String[] args) throws Exception {
 		WordCount wc = new WordCount();
-		
+
 		if (args.length < 3) {
 			System.err.println(wc.getDescription());
 			System.exit(1);
 		}
-		
+
 		Plan plan = wc.getPlan(args);
-		
+
 		// This will execute the word-count embedded in a local context. replace this line by the commented
 		// succeeding line to send the job to a local installation or to a cluster for execution
 		JobExecutionResult result = LocalExecutor.execute(plan);

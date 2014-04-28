@@ -27,7 +27,7 @@ import eu.stratosphere.nephele.util.EnumUtils;
 /**
  * This class can be used to propagate updates about a task's execution state from the
  * task manager to the job manager.
- * 
+ *
  */
 public class TaskExecutionState implements IOReadableWritable {
 
@@ -41,7 +41,7 @@ public class TaskExecutionState implements IOReadableWritable {
 
 	/**
 	 * Creates a new task execution state.
-	 * 
+	 *
 	 * @param jobID
 	 *        the ID of the job the task belongs to
 	 * @param id
@@ -67,7 +67,7 @@ public class TaskExecutionState implements IOReadableWritable {
 
 	/**
 	 * Returns the description of this task execution state.
-	 * 
+	 *
 	 * @return the description of this task execution state or <code>null</code> if there is no description available
 	 */
 	public String getDescription() {
@@ -76,7 +76,7 @@ public class TaskExecutionState implements IOReadableWritable {
 
 	/**
 	 * Returns the ID of the task this result belongs to
-	 * 
+	 *
 	 * @return the ID of the task this result belongs to
 	 */
 	public ExecutionVertexID getID() {
@@ -85,7 +85,7 @@ public class TaskExecutionState implements IOReadableWritable {
 
 	/**
 	 * Returns the new execution state of the task.
-	 * 
+	 *
 	 * @return the new execution state of the task
 	 */
 	public ExecutionState getExecutionState() {
@@ -94,7 +94,7 @@ public class TaskExecutionState implements IOReadableWritable {
 
 	/**
 	 * The ID of the job the task belongs to
-	 * 
+	 *
 	 * @return the ID of the job the task belongs to
 	 */
 	public JobID getJobID() {

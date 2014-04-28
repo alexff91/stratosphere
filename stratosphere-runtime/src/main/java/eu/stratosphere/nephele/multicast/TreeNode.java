@@ -25,7 +25,7 @@ import eu.stratosphere.nephele.taskmanager.bytebuffered.RemoteReceiver;
 /**
  * Each physical node (instance) within a multicast tree is represented by a TreeNode object.
  * It contains the connection info for the certain node and a list of the local output channels.
- * 
+ *
  */
 
 public class TreeNode implements Comparable<TreeNode> {
@@ -143,7 +143,7 @@ public class TreeNode implements Comparable<TreeNode> {
 	 * This method should be called on the root node (sender node).
 	 * It traverses the Tree and returns a full forwarding table
 	 * including all local and remote receivers.
-	 * 
+	 *
 	 * @return
 	 */
 	public MulticastForwardingTable createForwardingTable() {
@@ -154,7 +154,7 @@ public class TreeNode implements Comparable<TreeNode> {
 
 	/**
 	 * Private recursive method to generate forwarding table
-	 * 
+	 *
 	 * @param table
 	 */
 	private void generateRecursiveForwardingTable(MulticastForwardingTable table) {
@@ -189,7 +189,7 @@ public class TreeNode implements Comparable<TreeNode> {
 
 	/**
 	 * Prints the tree in a human readable format, starting with the actual node as root.
-	 * 
+	 *
 	 * @return
 	 */
 	public String printTree() {

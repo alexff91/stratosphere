@@ -38,7 +38,7 @@ public class SpillingResettableIteratorTest {
 	private static final int NUM_TESTRECORDS = 50000;
 
 	private static final int MEMORY_CAPACITY = 10 * 1024 * 1024;
-	
+
 	private final AbstractInvokable memOwner = new DummyInvokable();
 
 	private IOManager ioman;
@@ -46,10 +46,10 @@ public class SpillingResettableIteratorTest {
 	private MemoryManager memman;
 
 	private Iterator<IntValue> reader;
-	
+
 	private final TypeSerializer<IntValue> serializer = new IntValueSerializer();
 
-	
+
 	@Before
 	public void startup() {
 		// set up IO and memory manager
@@ -101,18 +101,20 @@ public class SpillingResettableIteratorTest {
 			}
 			// now test walking through the iterator
 			int count = 0;
-			while (iterator.hasNext())
-				Assert.assertEquals("In initial run, element " + count + " does not match expected value!", count++,
-					iterator.next().getValue());
+			while (iterator.hasNext()) {
+			Assert.assertEquals("In initial run, element " + count + " does not match expected value!", count++,
+				iterator.next().getValue());
+			}
 			Assert.assertEquals("Too few elements were deserialzied in initial run!", NUM_TESTRECORDS, count);
 			// test resetting the iterator a few times
 			for (int j = 0; j < 10; ++j) {
 				count = 0;
 				iterator.reset();
 				// now we should get the same results
-				while (iterator.hasNext())
-					Assert.assertEquals("After reset nr. " + j + 1 + " element " + count
-						+ " does not match expected value!", count++, iterator.next().getValue());
+				while (iterator.hasNext()) {
+				Assert.assertEquals("After reset nr. " + j + 1 + " element " + count
+					+ " does not match expected value!", count++, iterator.next().getValue());
+				}
 				Assert.assertEquals("Too few elements were deserialzied after reset nr. " + j + 1 + "!", NUM_TESTRECORDS,
 					count);
 			}
@@ -143,18 +145,20 @@ public class SpillingResettableIteratorTest {
 			}
 			// now test walking through the iterator
 			int count = 0;
-			while (iterator.hasNext())
-				Assert.assertEquals("In initial run, element " + count + " does not match expected value!", count++,
-					iterator.next().getValue());
+			while (iterator.hasNext()) {
+			Assert.assertEquals("In initial run, element " + count + " does not match expected value!", count++,
+				iterator.next().getValue());
+			}
 			Assert.assertEquals("Too few elements were deserialzied in initial run!", NUM_TESTRECORDS, count);
 			// test resetting the iterator a few times
 			for (int j = 0; j < 10; ++j) {
 				count = 0;
 				iterator.reset();
 				// now we should get the same results
-				while (iterator.hasNext())
-					Assert.assertEquals("After reset nr. " + j + 1 + " element " + count
-						+ " does not match expected value!", count++, iterator.next().getValue());
+				while (iterator.hasNext()) {
+				Assert.assertEquals("After reset nr. " + j + 1 + " element " + count
+					+ " does not match expected value!", count++, iterator.next().getValue());
+				}
 				Assert.assertEquals("Too few elements were deserialzied after reset nr. " + j + 1 + "!", NUM_TESTRECORDS,
 					count);
 			}
@@ -182,17 +186,17 @@ public class SpillingResettableIteratorTest {
 			} catch (IOException e) {
 				Assert.fail("Could not open resettable iterator:" + e.getMessage());
 			}
-	
+
 			int cnt = 0;
 			while (iterator.hasNext()) {
 				iterator.hasNext();
 				iterator.next();
 				cnt++;
 			}
-	
+
 			Assert.assertTrue(cnt + " elements read from iterator, but " + NUM_TESTRECORDS + " expected",
 				cnt == NUM_TESTRECORDS);
-			
+
 			iterator.close();
 		} catch (Exception ex)  {
 			ex.printStackTrace();
@@ -216,7 +220,7 @@ public class SpillingResettableIteratorTest {
 			} catch (IOException e) {
 				Assert.fail("Could not open resettable iterator:" + e.getMessage());
 			}
-	
+
 			IntValue record;
 			int cnt = 0;
 			while (cnt < NUM_TESTRECORDS) {
@@ -224,14 +228,14 @@ public class SpillingResettableIteratorTest {
 				Assert.assertTrue("Record was not read from iterator", record != null);
 				cnt++;
 			}
-	
+
 			try {
 				record = iterator.next();
 				Assert.fail("Too many records were read from iterator.");
 			} catch (NoSuchElementException nseex) {
 				// expected
 			}
-			
+
 			iterator.close();
 		} catch (Exception ex)  {
 			ex.printStackTrace();

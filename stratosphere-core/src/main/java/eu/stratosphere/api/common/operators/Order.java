@@ -17,7 +17,7 @@ package eu.stratosphere.api.common.operators;
  * Enumeration representing order. May represent no order, an ascending order or a descending order.
  */
 public enum Order {
-	
+
 	/**
 	 * Indicates no order.
 	 */
@@ -39,20 +39,20 @@ public enum Order {
 	 * is desirable.
 	 */
 	ANY;
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	/**
 	 * Checks, if this enum constant represents in fact an order. That is,
 	 * whether this property is not equal to <tt>Order.NONE</tt>.
-	 * 
+	 *
 	 * @return True, if this enum constant is unequal to <tt>Order.NONE</tt>,
 	 *         false otherwise.
 	 */
 	public boolean isOrdered() {
 		return this != Order.NONE;
 	}
-	
+
 	public String getShortName() {
 		return this == ASCENDING ? "ASC" : this == DESCENDING ? "DESC" : this == ANY ? "*" : "-";
 	}

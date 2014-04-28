@@ -14,7 +14,8 @@
  **********************************************************************************************************************/
 package eu.stratosphere.types;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -34,15 +35,15 @@ import eu.stratosphere.util.StringUtils;
 public class StringSerializationTest {
 
 	private final Random rnd = new Random(2093486528937460234L);
-	
-	
+
+
 	@Test
 	public void testNonNullValues() {
 		try {
 			String[] testStrings = new String[] {
 				"a", "", "bcd", "jbmbmner8 jhk hj \n \t üäßß@µ", "", "non-empty"
 			};
-			
+
 			testSerialization(testStrings);
 		}
 		catch (Exception e) {
@@ -51,14 +52,14 @@ public class StringSerializationTest {
 			fail("Exception in test: " + e.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void testNullValues() {
 		try {
 			String[] testStrings = new String[] {
 				"a", null, "", null, "bcd", null, "jbmbmner8 jhk hj \n \t üäßß@µ", null, "", null, "non-empty"
 			};
-			
+
 			testSerialization(testStrings);
 		}
 		catch (Exception e) {
@@ -67,7 +68,7 @@ public class StringSerializationTest {
 			fail("Exception in test: " + e.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void testLongValues() {
 		try {
@@ -77,7 +78,7 @@ public class StringSerializationTest {
 				StringUtils.getRandomString(rnd, 10000, 1024 * 1024 * 2),
 				StringUtils.getRandomString(rnd, 10000, 1024 * 1024 * 2)
 			};
-			
+
 			testSerialization(testStrings);
 		}
 		catch (Exception e) {
@@ -86,7 +87,7 @@ public class StringSerializationTest {
 			fail("Exception in test: " + e.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void testMixedValues() {
 		try {
@@ -102,7 +103,7 @@ public class StringSerializationTest {
 				"",
 				null
 			};
-			
+
 			testSerialization(testStrings);
 		}
 		catch (Exception e) {
@@ -111,7 +112,7 @@ public class StringSerializationTest {
 			fail("Exception in test: " + e.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void testBinaryCopyOfLongStrings() {
 		try {
@@ -127,7 +128,7 @@ public class StringSerializationTest {
 				"",
 				null
 			};
-			
+
 			testCopy(testStrings);
 		}
 		catch (Exception e) {
@@ -136,64 +137,64 @@ public class StringSerializationTest {
 			fail("Exception in test: " + e.getMessage());
 		}
 	}
-	
+
 	public static final void testSerialization(String[] values) throws IOException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream(4096);
 		DataOutputStream serializer = new DataOutputStream(baos);
-		
+
 		for (String value : values) {
 			StringValue.writeString(value, serializer);
 		}
-		
+
 		serializer.close();
 		baos.close();
-		
+
 		ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
 		DataInputStream deserializer = new DataInputStream(bais);
-		
+
 		int num = 0;
 		while (deserializer.available() > 0) {
 			String deser = StringValue.readString(deserializer);
-			
+
 			assertEquals("DeserializedString differs from original string.", values[num], deser);
 			num++;
 		}
-		
+
 		assertEquals("Wrong number of deserialized values", values.length, num);
 	}
 
 	public static final void testCopy(String[] values) throws IOException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream(4096);
 		DataOutputStream serializer = new DataOutputStream(baos);
-		
+
 		for (String value : values) {
 			StringValue.writeString(value, serializer);
 		}
-		
+
 		serializer.close();
 		baos.close();
-		
+
 		ByteArrayInputStream sourceInput = new ByteArrayInputStream(baos.toByteArray());
 		DataInputStream source = new DataInputStream(sourceInput);
 		ByteArrayOutputStream targetOutput = new ByteArrayOutputStream(4096);
 		DataOutputStream target = new DataOutputStream(targetOutput);
-		
+
 		for (int i = 0; i < values.length; i++) {
 			StringValue.copyString(source, target);
 		}
-		
+
 		ByteArrayInputStream validateInput = new ByteArrayInputStream(targetOutput.toByteArray());
 		DataInputStream validate = new DataInputStream(validateInput);
-		
+
 		int num = 0;
 		while (validate.available() > 0) {
 			String deser = StringValue.readString(validate);
-			
+
 			assertEquals("DeserializedString differs from original string.", values[num], deser);
 			num++;
 		}
-		
+
 		assertEquals("Wrong number of deserialized values", values.length, num);
 	}
-	
+
 }

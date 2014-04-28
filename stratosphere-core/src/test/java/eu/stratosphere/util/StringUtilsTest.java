@@ -14,8 +14,8 @@
  **********************************************************************************************************************/
 package eu.stratosphere.util;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
@@ -27,7 +27,7 @@ public class StringUtilsTest {
 		String controlString = StringUtils.showControlCharacters(testString);
 		assertEquals("\\b \\t \\n \\f \\r default", controlString);
 	}
-	
+
 	@Test
 	public void testArrayToString() {
 		double[] array = {1.0};
@@ -41,7 +41,7 @@ public class StringUtilsTest {
 		String controlString = StringUtils.escapeHtml(testString);
 		assertEquals("\\b \\t \\/ <br> \\f \\r &lt;default&gt;", controlString);
 	}
-	
+
 	@Test
 	public void testStringToHexArray() {
 		String hex = "019f314a";
@@ -49,7 +49,7 @@ public class StringUtilsTest {
 		byte[] expectedArray = new byte[]{1, -97, 49, 74 };
 		assertArrayEquals(expectedArray, hexArray);
 	}
-	
+
 	@Test
 	public void testHexArrayToString() {
 		byte[] byteArray = new byte[]{1, -97, 49, 74 };

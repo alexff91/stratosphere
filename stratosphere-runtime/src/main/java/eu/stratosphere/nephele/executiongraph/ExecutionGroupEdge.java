@@ -20,7 +20,7 @@ import eu.stratosphere.nephele.io.channels.ChannelType;
  * An execution group edge represents an edge between two execution group vertices.
  * <p>
  * This class is thread-safe.
- * 
+ *
  */
 public class ExecutionGroupEdge {
 
@@ -72,7 +72,7 @@ public class ExecutionGroupEdge {
 
 	/**
 	 * Constructs a new group edge.
-	 * 
+	 *
 	 * @param sourceVertex
 	 *        the source vertex this edge originates from
 	 * @param indexOfOutputGate
@@ -110,7 +110,7 @@ public class ExecutionGroupEdge {
 
 	/**
 	 * Returns the channel type assigned to this edge.
-	 * 
+	 *
 	 * @return the channel type assigned to this edge
 	 */
 	public ChannelType getChannelType() {
@@ -119,7 +119,7 @@ public class ExecutionGroupEdge {
 
 	/**
 	 * Changes the channel type for this edge.
-	 * 
+	 *
 	 * @param newChannelType
 	 *        the channel type for this edge
 	 * @throws GraphConversionException
@@ -136,7 +136,7 @@ public class ExecutionGroupEdge {
 
 	/**
 	 * Returns the group vertex connected to this edge.
-	 * 
+	 *
 	 * @return the group vertex connected to this edge
 	 */
 	public ExecutionGroupVertex getTargetVertex() {
@@ -145,7 +145,7 @@ public class ExecutionGroupEdge {
 
 	/**
 	 * Sets the edge's connection ID.
-	 * 
+	 *
 	 * @param connectionID
 	 *        the edge's connection ID
 	 */
@@ -155,7 +155,7 @@ public class ExecutionGroupEdge {
 
 	/**
 	 * Returns the edge's connection ID.
-	 * 
+	 *
 	 * @return the edge's connection ID
 	 */
 	public int getConnectionID() {
@@ -164,7 +164,7 @@ public class ExecutionGroupEdge {
 
 	/**
 	 * Returns if the edge's channel type is user defined.
-	 * 
+	 *
 	 * @return <code>true</code> if the channel type is user defined, <code>false</code> otherwise
 	 */
 	public boolean isChannelTypeUserDefined() {
@@ -173,7 +173,7 @@ public class ExecutionGroupEdge {
 
 	/**
 	 * Returns the index of the input gate this edge starts from.
-	 * 
+	 *
 	 * @return the index of the input gate this edge starts from
 	 */
 	public int getIndexOfInputGate() {
@@ -182,7 +182,7 @@ public class ExecutionGroupEdge {
 
 	/**
 	 * Returns the source vertex this edge starts from.
-	 * 
+	 *
 	 * @return the source vertex this edge starts from
 	 */
 	public ExecutionGroupVertex getSourceVertex() {
@@ -191,7 +191,7 @@ public class ExecutionGroupEdge {
 
 	/**
 	 * Returns the index of the output gate this edge arrives at.
-	 * 
+	 *
 	 * @return the index of the output gate this edge arrives at
 	 */
 	public int getIndexOfOutputGate() {
@@ -200,7 +200,7 @@ public class ExecutionGroupEdge {
 
 	/**
 	 * Returns the distribution pattern to create the wiring between the group members.
-	 * 
+	 *
 	 * @return the distribution pattern to create the wiring between the group members
 	 */
 	public DistributionPattern getDistributionPattern() {
@@ -209,7 +209,7 @@ public class ExecutionGroupEdge {
 
 	/**
 	 * Checks if the edge is part of a broadcast group.
-	 * 
+	 *
 	 * @return <code>true</code> if the edge is part of a broadcast group, <code>false</code> otherwise
 	 */
 	public boolean isBroadcast() {

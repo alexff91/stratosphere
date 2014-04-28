@@ -32,17 +32,17 @@ import eu.stratosphere.types.Value;
  * Record delimiter separate records from each other ('\n' is common). Field
  * delimiters separate fields within a record. Record and field delimiters can
  * be configured using the CsvOutputFormat {@link Configuration}.
- * 
+ *
  * The number of fields to serialize must be configured as well. For each field
  * the type of the {@link Value} must be specified using the
  * {@link CsvOutputFormat#FIELD_TYPE_PARAMETER_PREFIX} config key and an index
  * running from 0 to the number of fields.
- * 
+ *
  * The position within the {@link Record} can be configured for each field using
  * the {@link CsvOutputFormat#RECORD_POSITION_PARAMETER_PREFIX} config key.
  * Either all {@link Record} positions must be configured or none. If none is
  * configured, the index of the config key is used.
- * 
+ *
  * @see Value
  * @see Configuration
  * @see Record
@@ -84,7 +84,7 @@ public class CsvOutputFormat extends FileOutputFormat {
 	private String charsetName;
 
 	private boolean lenient;
-	
+
 	private boolean ctorInstantiation = false;
 
 	// --------------------------------------------------------------------------------------------
@@ -99,7 +99,7 @@ public class CsvOutputFormat extends FileOutputFormat {
 	 * record is determined by the order in which the classes are given to this
 	 * constructor. As the default value for separating records '\n' is used.
 	 * The default field delimiter is ','.
-	 * 
+	 *
 	 * @param fieldDelimiter
 	 *            The delimiter that is used to separate the different fields in
 	 *            the record.
@@ -114,7 +114,7 @@ public class CsvOutputFormat extends FileOutputFormat {
 	 * Creates an instance of CsvOutputFormat. The position of the fields in the
 	 * record is determined by the order in which the classes are given to this
 	 * constructor. As the default value for separating records '\n' is used.
-	 * 
+	 *
 	 * @param fieldDelimiter
 	 *            The delimiter that is used to separate the different fields in
 	 *            the record.
@@ -129,7 +129,7 @@ public class CsvOutputFormat extends FileOutputFormat {
 	 * Creates an instance of CsvOutputFormat. The position of the fields in the
 	 * record is determined by the order in which the classes are given to this
 	 * constructor.
-	 * 
+	 *
 	 * @param recordDelimiter
 	 *            The delimiter that is used to separate the different records.
 	 * @param fieldDelimiter
@@ -156,7 +156,7 @@ public class CsvOutputFormat extends FileOutputFormat {
 		setTypes(types);
 		ctorInstantiation = true;
 	}
-	
+
 	public void setTypes(Class<? extends Value>... types) {
 		this.classes = types;
 		this.numFields = types.length;
@@ -167,16 +167,16 @@ public class CsvOutputFormat extends FileOutputFormat {
 			}
 			this.recordPositions[i] = i;
 		}
-		
+
 		if (this.fieldDelimiter == null) {
 			this.fieldDelimiter = ",";
 		}
-		
+
 		if (this.recordDelimiter == null) {
 			this.recordDelimiter = "\n";
 		}
 	}
-	
+
 	public void setLenient(boolean lenient) {
 		this.lenient = lenient;
 	}
@@ -186,18 +186,18 @@ public class CsvOutputFormat extends FileOutputFormat {
 		super.configure(parameters);
 
 		int configNumFields = parameters.getInteger(NUM_FIELDS_PARAMETER, -1);
-		
+
 		if (ctorInstantiation) {
 			if (configNumFields > 0) {
 				throw new IllegalStateException("CsvOutputFormat instantiated via both parameters and config.");
-			}				
+			}
 			return;										//already configured, no further actions required
 		}
-		
-		if (configNumFields < 1) {			
-			throw new IllegalStateException("CsvOutputFormat not configured via parameters or config.");			
+
+		if (configNumFields < 1) {
+			throw new IllegalStateException("CsvOutputFormat not configured via parameters or config.");
 		}
-		
+
 		this.numFields = configNumFields;
 
 		@SuppressWarnings("unchecked")
@@ -310,7 +310,7 @@ public class CsvOutputFormat extends FileOutputFormat {
 	/**
 	 * Creates a configuration builder that can be used to set the input
 	 * format's parameters to the config in a fluent fashion.
-	 * 
+	 *
 	 * @return A config builder for setting parameters.
 	 */
 	public static ConfigBuilder configureRecordFormat(FileDataSink target) {
@@ -328,7 +328,7 @@ public class CsvOutputFormat extends FileOutputFormat {
 
 		/**
 		 * Creates a new builder for the given configuration.
-		 * 
+		 *
 		 * @param config
 		 *            The configuration into which the parameters will be
 		 *            written.
@@ -343,7 +343,7 @@ public class CsvOutputFormat extends FileOutputFormat {
 		 * Sets the delimiter to be a single character, namely the given one.
 		 * The character must be within the value range <code>0</code> to
 		 * <code>127</code>.
-		 * 
+		 *
 		 * @param delimiter
 		 *            The delimiter character.
 		 * @return The builder itself.
@@ -364,7 +364,7 @@ public class CsvOutputFormat extends FileOutputFormat {
 		 * converted to bytes for more efficient comparison during input
 		 * parsing. The conversion will be done using the platforms default
 		 * charset.
-		 * 
+		 *
 		 * @param delimiter
 		 *            The delimiter string.
 		 * @return The builder itself.
@@ -382,7 +382,7 @@ public class CsvOutputFormat extends FileOutputFormat {
 		 * parsing. The conversion will be done using the charset with the given
 		 * name. The charset must be available on the processing nodes,
 		 * otherwise an exception will be raised at runtime.
-		 * 
+		 *
 		 * @param delimiter
 		 *            The delimiter string.
 		 * @param charsetName
@@ -400,7 +400,7 @@ public class CsvOutputFormat extends FileOutputFormat {
 		/**
 		 * Sets the delimiter that delimits the individual fields in the records
 		 * textual output representation.
-		 * 
+		 *
 		 * @param delimiter
 		 *            The character to be used as a field delimiter.
 		 * @return The builder itself.
@@ -417,7 +417,7 @@ public class CsvOutputFormat extends FileOutputFormat {
 		 * at the given position will be interpreted as the type represented by
 		 * the given class. The types {@link Object#toString()} method will be
 		 * invoked to create a textual representation.
-		 * 
+		 *
 		 * @param type
 		 *            The type of the field.
 		 * @param recordPosition
@@ -438,7 +438,7 @@ public class CsvOutputFormat extends FileOutputFormat {
 		 * Sets the leniency for the serializer. A lenient serializer simply
 		 * skips missing fields and null fields in the record, while a non
 		 * lenient one throws an exception.
-		 * 
+		 *
 		 * @param lenient
 		 *            True, if the serializer should be lenient, false
 		 *            otherwise.
@@ -459,7 +459,7 @@ public class CsvOutputFormat extends FileOutputFormat {
 	public static final class ConfigBuilder extends AbstractConfigBuilder<ConfigBuilder> {
 		/**
 		 * Creates a new builder for the given configuration.
-		 * 
+		 *
 		 * @param targetConfig
 		 *            The configuration into which the parameters will be
 		 *            written.

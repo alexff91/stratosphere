@@ -27,15 +27,15 @@ import eu.stratosphere.types.Record;
 public final class RecordSerializer extends TypeSerializer<Record>
 {
 	private static final RecordSerializer INSTANCE = new RecordSerializer(); // singleton instance
-	
+
 	private static final int MAX_BIT = 0x80;	// byte where only the most significant bit is set
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	public static final RecordSerializer get() {
 		return INSTANCE;
 	}
-	
+
 	/**
 	 * Creates a new instance of the RecordSerializers. Private to prevent instantiation.
 	 */
@@ -43,11 +43,11 @@ public final class RecordSerializer extends TypeSerializer<Record>
 	{}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 
 	@Override
 	public Record createInstance() {
-		return new Record(); 
+		return new Record();
 	}
 
 	/* (non-Javadoc)
@@ -58,7 +58,7 @@ public final class RecordSerializer extends TypeSerializer<Record>
 		from.copyTo(reuse);
 		return reuse;
 	}
-	
+
 
 	@Override
 	public int getLength() {
@@ -66,7 +66,7 @@ public final class RecordSerializer extends TypeSerializer<Record>
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	/* (non-Javadoc)
 	 * @see eu.stratosphere.pact.runtime.plugable.TypeAccessorsV2#serialize(java.lang.Object, eu.stratosphere.nephele.services.memorymanager.DataOutputViewV2)
 	 */
@@ -83,7 +83,7 @@ public final class RecordSerializer extends TypeSerializer<Record>
 		target.deserialize(source);
 		return target;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.stratosphere.pact.runtime.plugable.TypeAccessorsV2#copy(eu.stratosphere.nephele.services.memorymanager.DataInputViewV2, eu.stratosphere.nephele.services.memorymanager.DataOutputViewV2)
 	 */
@@ -91,7 +91,7 @@ public final class RecordSerializer extends TypeSerializer<Record>
 	public void copy(DataInputView source, DataOutputView target) throws IOException {
 		int val = source.readUnsignedByte();
 		target.writeByte(val);
-		
+
 		if (val >= MAX_BIT) {
 			int shift = 7;
 			int curr;
@@ -104,7 +104,7 @@ public final class RecordSerializer extends TypeSerializer<Record>
 			target.writeByte(curr);
 			val |= curr << shift;
 		}
-		
+
 		target.write(source, val);
 	}
 }

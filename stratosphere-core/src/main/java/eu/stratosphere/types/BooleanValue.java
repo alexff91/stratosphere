@@ -13,39 +13,39 @@
 
 package eu.stratosphere.types;
 
-import eu.stratosphere.core.memory.DataInputView;
-import eu.stratosphere.core.memory.DataOutputView;
-import eu.stratosphere.core.memory.MemorySegment;
-
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
+import eu.stratosphere.core.memory.DataInputView;
+import eu.stratosphere.core.memory.DataOutputView;
+import eu.stratosphere.core.memory.MemorySegment;
+
 /**
  * Boxed serializable and comparable boolean type, representing the primitive
  * type {@code boolean}.
- * 
+ *
  * @see eu.stratosphere.types.Key
  */
 public class BooleanValue implements NormalizableKey, ResettableValue<BooleanValue>, CopyableValue<BooleanValue> {
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	public static final BooleanValue TRUE = new BooleanValue(true);
-	
+
 	public static final BooleanValue FALSE = new BooleanValue(false);
-	
+
 
 	private boolean value;
 
-	
+
 	public BooleanValue() {}
-	
+
 	public BooleanValue(boolean value) {
 		this.value = value;
 	}
 
-	
+
 	public boolean get() {
 		return value;
 	}
@@ -53,7 +53,7 @@ public class BooleanValue implements NormalizableKey, ResettableValue<BooleanVal
 	public void set(boolean value) {
 		this.value = value;
 	}
-	
+
 	public boolean getValue() {
 		return value;
 	}
@@ -62,11 +62,11 @@ public class BooleanValue implements NormalizableKey, ResettableValue<BooleanVal
 		this.value = value;
 	}
 
-    @Override
-    public void setValue(BooleanValue value) {
-        this.value = value.value;
-    }
-	
+@Override
+public void setValue(BooleanValue value) {
+	this.value = value.value;
+}
+
 	// --------------------------------------------------------------------------------------------
 
 	@Override
@@ -78,18 +78,19 @@ public class BooleanValue implements NormalizableKey, ResettableValue<BooleanVal
 	public void read(DataInput in) throws IOException {
 		this.value = in.readBoolean();
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return this.value ? 1 : 0;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj.getClass() == BooleanValue.class) {
 			return ((BooleanValue) obj).value == this.value;
+		} else {
+		return false;
 		}
-		else return false;
 	}
 
 	@Override
@@ -102,7 +103,7 @@ public class BooleanValue implements NormalizableKey, ResettableValue<BooleanVal
 			throw new ClassCastException("Cannot compare " + o.getClass().getName() + " to N_Integer!");
 		}
 	}
-	
+
 	@Override
 	public String toString() {
 		return this.value ? "true" : "false";
@@ -132,7 +133,7 @@ public class BooleanValue implements NormalizableKey, ResettableValue<BooleanVal
 	public void copyNormalizedKey(MemorySegment target, int offset, int len) {
 		if (len > 0) {
 			target.put(offset, (byte) (this.value ? 1 : 0));
-			
+
 			for (offset = offset + 1; len > 1; len--) {
 				target.put(offset++, (byte) 0);
 			}

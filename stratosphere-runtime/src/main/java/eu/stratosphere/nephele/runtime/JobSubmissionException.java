@@ -16,7 +16,7 @@ package eu.stratosphere.nephele.runtime;
 /**
  * A job submission exception is thrown if an error occurs while submitting
  * a job from the client to the job manager.
- * 
+ *
  */
 public class JobSubmissionException extends Exception {
 
@@ -27,7 +27,7 @@ public class JobSubmissionException extends Exception {
 
 	/**
 	 * Constructs a new job submission exception with the given error message.
-	 * 
+	 *
 	 * @param msg
 	 *        the error message to be transported through this exception
 	 */

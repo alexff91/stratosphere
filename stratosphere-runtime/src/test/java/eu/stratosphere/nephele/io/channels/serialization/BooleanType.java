@@ -23,25 +23,25 @@ import java.util.Random;
 public class BooleanType implements SerializationTestType
 {
 	private boolean value;
-	
+
 
 	public BooleanType()
 	{
 		this.value = false;
 	}
-	
+
 	private BooleanType(boolean value)
 	{
 		this.value = value;
 	}
-	
+
 
 	@Override
 	public BooleanType getRandom(Random rnd)
 	{
 		return new BooleanType(rnd.nextBoolean());
 	}
-	
+
 
 	@Override
 	public void write(DataOutput out) throws IOException

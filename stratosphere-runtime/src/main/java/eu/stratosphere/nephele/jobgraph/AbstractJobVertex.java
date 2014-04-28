@@ -31,12 +31,12 @@ import eu.stratosphere.util.StringUtils;
 
 /**
  * An abstract base class for a job vertex in Nephele.
- * 
+ *
  */
 public abstract class AbstractJobVertex implements IOReadableWritable {
 
 	private static final String DEFAULT_NAME = "(unnamed vertex)";
-	
+
 	/**
 	 * List of outgoing edges.
 	 */
@@ -99,7 +99,7 @@ public abstract class AbstractJobVertex implements IOReadableWritable {
 
 	/**
 	 * Constructs a new job vertex and assigns it with the given name.
-	 * 
+	 *
 	 * @param name
 	 *        the name of the new job vertex
 	 * @param id
@@ -115,7 +115,7 @@ public abstract class AbstractJobVertex implements IOReadableWritable {
 
 	/**
 	 * Connects the job vertex to the specified job vertex.
-	 * 
+	 *
 	 * @param vertex
 	 *        the vertex this vertex should connect to
 	 * @throws JobGraphDefinitionException
@@ -127,7 +127,7 @@ public abstract class AbstractJobVertex implements IOReadableWritable {
 
 	/**
 	 * Connects the job vertex to the specified job vertex.
-	 * 
+	 *
 	 * @param vertex
 	 *        the vertex this vertex should connect to
 	 * @param indexOfOutputGate
@@ -146,7 +146,7 @@ public abstract class AbstractJobVertex implements IOReadableWritable {
 
 	/**
 	 * Connects the job vertex to the specified job vertex.
-	 * 
+	 *
 	 * @param vertex
 	 *        the vertex this vertex should connect to
 	 * @param channelType
@@ -162,7 +162,7 @@ public abstract class AbstractJobVertex implements IOReadableWritable {
 
 	/**
 	 * Connects the job vertex to the specified job vertex.
-	 * 
+	 *
 	 * @param vertex
 	 *        the vertex this vertex should connect to
 	 * @param channelType
@@ -180,7 +180,7 @@ public abstract class AbstractJobVertex implements IOReadableWritable {
 
 	/**
 	 * Connects the job vertex to the specified job vertex.
-	 * 
+	 *
 	 * @param vertex
 	 *        the vertex this vertex should connect to
 	 * @param channelType
@@ -236,7 +236,7 @@ public abstract class AbstractJobVertex implements IOReadableWritable {
 
 	/**
 	 * Returns the index of this vertex's first free output gate.
-	 * 
+	 *
 	 * @return the index of the first free output gate
 	 */
 	protected int getFirstFreeOutputGateIndex() {
@@ -253,7 +253,7 @@ public abstract class AbstractJobVertex implements IOReadableWritable {
 
 	/**
 	 * Returns the index of this vertex's first free input gate.
-	 * 
+	 *
 	 * @return the index of the first free input gate
 	 */
 	protected int getFirstFreeInputGateIndex() {
@@ -270,7 +270,7 @@ public abstract class AbstractJobVertex implements IOReadableWritable {
 
 	/**
 	 * Creates a backward link from a connected job vertex.
-	 * 
+	 *
 	 * @param vertex
 	 *        the job vertex to connect to
 	 * @param channelType
@@ -297,17 +297,17 @@ public abstract class AbstractJobVertex implements IOReadableWritable {
 
 	/**
 	 * Sets the name of the vertex.
-	 * 
-	 * @param name 
+	 *
+	 * @param name
 	 *        The name of the vertex.
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	/**
 	 * Returns the name of the vertex.
-	 * 
+	 *
 	 * @return the name of the vertex or <code>null</code> if no name is set.
 	 */
 	public String getName() {
@@ -316,7 +316,7 @@ public abstract class AbstractJobVertex implements IOReadableWritable {
 
 	/**
 	 * Returns the number of forward connections.
-	 * 
+	 *
 	 * @return the number of forward connections
 	 */
 	public int getNumberOfForwardConnections() {
@@ -325,7 +325,7 @@ public abstract class AbstractJobVertex implements IOReadableWritable {
 
 	/**
 	 * Returns the number of backward connections.
-	 * 
+	 *
 	 * @return the number of backward connections
 	 */
 	public int getNumberOfBackwardConnections() {
@@ -334,7 +334,7 @@ public abstract class AbstractJobVertex implements IOReadableWritable {
 
 	/**
 	 * Returns the forward edge with index <code>index</code>.
-	 * 
+	 *
 	 * @param index
 	 *        the index of the edge
 	 * @return the forward edge or <code>null</code> if no edge exists at the specified index.
@@ -350,7 +350,7 @@ public abstract class AbstractJobVertex implements IOReadableWritable {
 
 	/**
 	 * Returns the backward edge with index <code>index</code>.
-	 * 
+	 *
 	 * @param index
 	 *        the index of the edge
 	 * @return the backward edge or <code>null</code> if no edge exists at the specified index
@@ -366,7 +366,7 @@ public abstract class AbstractJobVertex implements IOReadableWritable {
 
 	/**
 	 * Returns the index of the edge which is used to connect the given job vertex to this job vertex.
-	 * 
+	 *
 	 * @param jv
 	 *        the connected job vertex
 	 * @return the index of the edge which is used to connect the given job vertex to this job vertex or -1 if the given
@@ -392,7 +392,7 @@ public abstract class AbstractJobVertex implements IOReadableWritable {
 
 	/**
 	 * Returns the ID of this job vertex.
-	 * 
+	 *
 	 * @return the ID of this job vertex
 	 */
 	public JobVertexID getID() {
@@ -545,7 +545,7 @@ public abstract class AbstractJobVertex implements IOReadableWritable {
 
 	/**
 	 * Returns the job graph this job vertex belongs to.
-	 * 
+	 *
 	 * @return the job graph this job vertex belongs to or <code>null</code> if no job graph has been set yet
 	 */
 	public JobGraph getJobGraph() {
@@ -554,7 +554,7 @@ public abstract class AbstractJobVertex implements IOReadableWritable {
 
 	/**
 	 * Sets the number of subtasks the task this vertex represents should be split into at runtime.
-	 * 
+	 *
 	 * @param numberOfSubtasks
 	 *        the number of subtasks this vertex represents should be split into at runtime
 	 */
@@ -564,7 +564,7 @@ public abstract class AbstractJobVertex implements IOReadableWritable {
 
 	/**
 	 * Returns the number of subtasks the task this vertex represents should be split into at runtime.
-	 * 
+	 *
 	 * @return the number of subtasks this vertex represents should be split into at runtime, <code>-1</code> if
 	 *         unspecified
 	 */
@@ -575,7 +575,7 @@ public abstract class AbstractJobVertex implements IOReadableWritable {
 	/**
 	 * Sets the number of retries in case of an error before the task represented by this vertex is considered as
 	 * failed.
-	 * 
+	 *
 	 * @param numberOfExecutionRetries
 	 *        the number of retries in case of an error before the task represented by this vertex is considered as
 	 *        failed
@@ -587,7 +587,7 @@ public abstract class AbstractJobVertex implements IOReadableWritable {
 	/**
 	 * Returns the number of retries in case of an error before the task represented by this vertex is considered as
 	 * failed.
-	 * 
+	 *
 	 * @return the number of retries in case of an error before the task represented by this vertex is considered as
 	 *         failed or <code>-1</code> if unspecified
 	 */
@@ -597,7 +597,7 @@ public abstract class AbstractJobVertex implements IOReadableWritable {
 
 	/**
 	 * Sets the instance type the task this vertex represents should run on.
-	 * 
+	 *
 	 * @param instanceType
 	 *        the instance type the task this vertex represents should run on
 	 */
@@ -607,7 +607,7 @@ public abstract class AbstractJobVertex implements IOReadableWritable {
 
 	/**
 	 * Returns the instance type the task this vertex represents should run on.
-	 * 
+	 *
 	 * @return the instance type the task this vertex represents should run on, <code>null</code> if unspecified
 	 */
 	public String getInstanceType() {
@@ -616,7 +616,7 @@ public abstract class AbstractJobVertex implements IOReadableWritable {
 
 	/**
 	 * Sets the number of subtasks that should be assigned to the same instance.
-	 * 
+	 *
 	 * @param numberOfSubtasksPerInstance
 	 *        the number of subtasks that should be assigned to the same instance
 	 */
@@ -626,7 +626,7 @@ public abstract class AbstractJobVertex implements IOReadableWritable {
 
 	/**
 	 * Returns the number of subtasks that should be assigned to the same instance, <code>-1</code> if undefined.
-	 * 
+	 *
 	 * @return the number of subtasks that should be assigned to the same instance, <code>-1</code> if undefined
 	 */
 	public int getNumberOfSubtasksPerInstance() {
@@ -635,7 +635,7 @@ public abstract class AbstractJobVertex implements IOReadableWritable {
 
 	/**
 	 * Sets the vertex this vertex should share its instances with at runtime.
-	 * 
+	 *
 	 * @param vertex
 	 *        the vertex this vertex should share its instances with at runtime
 	 */
@@ -645,7 +645,7 @@ public abstract class AbstractJobVertex implements IOReadableWritable {
 
 	/**
 	 * Returns the vertex this vertex should share its instance with at runtime.
-	 * 
+	 *
 	 * @return the vertex this vertex should share its instance with at runtime, <code>null</code> if undefined
 	 */
 	public AbstractJobVertex getVertexToShareInstancesWith() {
@@ -654,7 +654,7 @@ public abstract class AbstractJobVertex implements IOReadableWritable {
 
 	/**
 	 * Returns the vertex's configuration object which can be used to pass custom settings to the task at runtime.
-	 * 
+	 *
 	 * @return the vertex's configuration object
 	 */
 	public Configuration getConfiguration() {
@@ -664,7 +664,7 @@ public abstract class AbstractJobVertex implements IOReadableWritable {
 	/**
 	 * Performs task specific checks if the
 	 * respective task has been configured properly.
-	 * 
+	 *
 	 * @param invokable
 	 *        an instance of the task this vertex represents
 	 * @throws IllegalConfigurationException
@@ -691,7 +691,7 @@ public abstract class AbstractJobVertex implements IOReadableWritable {
 	/**
 	 * Returns the minimum number of subtasks the respective task
 	 * must be split into at runtime.
-	 * 
+	 *
 	 * @param invokable
 	 *        an instance of the task this vertex represents
 	 * @return the minimum number of subtasks the respective task must be split into at runtime
@@ -708,7 +708,7 @@ public abstract class AbstractJobVertex implements IOReadableWritable {
 	/**
 	 * Returns the maximum number of subtasks the respective task
 	 * can be split into at runtime.
-	 * 
+	 *
 	 * @param invokable
 	 *        an instance of the task this vertex represents
 	 * @return the maximum number of subtasks the respective task can be split into at runtime, <code>-1</code> for
@@ -725,14 +725,14 @@ public abstract class AbstractJobVertex implements IOReadableWritable {
 
 	/**
 	 * Returns the invokable class which represents the task of this vertex
-	 * 
+	 *
 	 * @return the invokable class, <code>null</code> if it is not set
 	 */
 	public Class<? extends AbstractInvokable> getInvokableClass() {
 
 		return this.invokableClass;
 	}
-	
+
 	@Override
 	public String toString() {
 		return this.name + " (" + this.invokableClass + ')';

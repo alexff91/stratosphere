@@ -13,6 +13,9 @@
 
 package eu.stratosphere.api.common;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -24,9 +27,6 @@ import eu.stratosphere.api.common.operators.Operator;
 import eu.stratosphere.util.Visitable;
 import eu.stratosphere.util.Visitor;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkArgument;
-
 /**
  * This class encapsulates a single stratosphere job (an instantiated data flow), together with some parameters.
  * Parameters include the name and a default degree of parallelism. The job is referenced by the data sinks,
@@ -35,7 +35,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class Plan implements Visitable<Operator> {
 
 	private static final int DEFAULT_PARALELLISM = -1;
-	
+
 	/**
 	 * A collection of all sinks in the plan. Since the plan is traversed from the sinks to the sources, this
 	 * collection must contain all the sinks.
@@ -51,7 +51,7 @@ public class Plan implements Visitable<Operator> {
 	 * The default parallelism to use for nodes that have no explicitly specified parallelism.
 	 */
 	protected int defaultParallelism = DEFAULT_PARALELLISM;
-	
+
 	/**
 	 * The maximal number of machines to use in the job.
 	 */
@@ -64,8 +64,8 @@ public class Plan implements Visitable<Operator> {
 	 * given data sinks.
 	 * <p>
 	 * If not all of the sinks of a data flow are given to the plan, the flow might
-	 * not be translated entirely. 
-	 *  
+	 * not be translated entirely.
+	 *
 	 * @param sinks The collection will the sinks of the job's data flow.
 	 * @param jobName The name to display for the job.
 	 */
@@ -96,7 +96,7 @@ public class Plan implements Visitable<Operator> {
 	 * If not all of the sinks of a data flow are given, the flow might
 	 * not be translated entirely, but only the parts of the flow reachable by traversing backwards
 	 * from the given data sinks.
-	 * 
+	 *
 	 * @param sink The data sink of the data flow.
 	 * @param jobName The name to display for the job.
 	 */
@@ -126,8 +126,8 @@ public class Plan implements Visitable<Operator> {
 	 * <p>
 	 * If not all of the sinks of a data flow are given, the flow might
 	 * not be translated entirely, but only the parts of the flow reachable by traversing backwards
-	 * from the given data sinks. 
-	 *  
+	 * from the given data sinks.
+	 *
 	 * @param sinks The collection will the sinks of the data flow.
 	 */
 	public Plan(Collection<GenericDataSink> sinks) {
@@ -154,8 +154,8 @@ public class Plan implements Visitable<Operator> {
 	 * The display name for the job is generated using a timestamp.
 	 * <p>
 	 * If not all of the sinks of a data flow are given to the plan, the flow might
-	 * not be translated entirely. 
-	 * 
+	 * not be translated entirely.
+	 *
 	 * @param sink The data sink of the data flow.
 	 */
 	public Plan(GenericDataSink sink) {
@@ -180,12 +180,12 @@ public class Plan implements Visitable<Operator> {
 
 	/**
 	 * Adds a data sink to the set of sinks in this program.
-	 * 
+	 *
 	 * @param sink The data sink to add.
 	 */
 	public void addDataSink(GenericDataSink sink) {
 		checkNotNull(jobName, "The data sink must not be null.");
-		
+
 		if (!this.sinks.contains(sink)) {
 			this.sinks.add(sink);
 		}
@@ -193,7 +193,7 @@ public class Plan implements Visitable<Operator> {
 
 	/**
 	 * Gets all the data sinks of this job.
-	 * 
+	 *
 	 * @return All sinks of the program.
 	 */
 	public Collection<GenericDataSink> getDataSinks() {
@@ -202,13 +202,13 @@ public class Plan implements Visitable<Operator> {
 
 	/**
 	 * Gets the name of this job.
-	 * 
+	 *
 	 * @return The name of the job.
 	 */
 	public String getJobName() {
 		return this.jobName;
 	}
-	
+
 	/**
 	 * Sets the jobName for this Plan.
 	 *
@@ -221,7 +221,7 @@ public class Plan implements Visitable<Operator> {
 
 	/**
 	 * Gets the maximum number of machines to be used for this job.
-	 * 
+	 *
 	 * @return The maximum number of machines to be used for this job.
 	 */
 	public int getMaxNumberMachines() {
@@ -230,17 +230,17 @@ public class Plan implements Visitable<Operator> {
 
 	/**
 	 * Sets the maximum number of machines to be used for this job.
-	 * 
+	 *
 	 * @param maxNumberMachines The the maximum number to set.
 	 */
 	public void setMaxNumberMachines(int maxNumberMachines) {
 		if (maxNumberMachines == 0 || maxNumberMachines < -1) {
 			throw new IllegalArgumentException("The maximum number of machines must be positive, or -1 if no limit is imposed.");
 		}
-		
+
 		this.maxNumberMachines = maxNumberMachines;
 	}
-	
+
 	/**
 	 * Gets the default degree of parallelism for this job. That degree is always used when an operator
 	 * is not explicitly given a degree of parallelism.
@@ -250,7 +250,7 @@ public class Plan implements Visitable<Operator> {
 	public int getDefaultParallelism() {
 		return this.defaultParallelism;
 	}
-	
+
 	/**
 	 * Sets the default degree of parallelism for this plan. That degree is always used when an operator
 	 * is not explicitly given a degree of parallelism.
@@ -260,10 +260,10 @@ public class Plan implements Visitable<Operator> {
 	public void setDefaultParallelism(int defaultParallelism) {
 		checkArgument(defaultParallelism >= 1 || defaultParallelism == -1,
 			"The default degree of parallelism must be positive, or -1 if the system should use the globally comfigured default.");
-		
+
 		this.defaultParallelism = defaultParallelism;
 	}
-	
+
 	/**
 	 * Gets the optimizer post-pass class for this job. The post-pass typically creates utility classes
 	 * for data types and is specific to a particular data model (record, tuple, Scala, ...)
@@ -273,12 +273,12 @@ public class Plan implements Visitable<Operator> {
 	public String getPostPassClassName() {
 		return "eu.stratosphere.compiler.postpass.RecordModelPostPass";
 	}
-	
+
 	// ------------------------------------------------------------------------
 
 	/**
 	 * Traverses the job depth first from all data sinks on towards the sources.
-	 * 
+	 *
 	 * @see Visitable#accept(Visitor)
 	 */
 	@Override

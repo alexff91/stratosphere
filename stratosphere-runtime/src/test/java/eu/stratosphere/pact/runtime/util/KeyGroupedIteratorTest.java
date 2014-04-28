@@ -24,7 +24,6 @@ import org.junit.Test;
 
 import eu.stratosphere.pact.runtime.plugable.pactrecord.RecordComparator;
 import eu.stratosphere.pact.runtime.plugable.pactrecord.RecordSerializer;
-import eu.stratosphere.pact.runtime.util.KeyGroupedIterator;
 import eu.stratosphere.types.IntValue;
 import eu.stratosphere.types.Record;
 import eu.stratosphere.types.StringValue;
@@ -33,19 +32,19 @@ import eu.stratosphere.util.MutableObjectIterator;
 /**
  * Test for the key grouped iterator, which advances in windows containing the same key and provides a sub-iterator
  * over the records with the same key.
- * 
+ *
  */
 public class KeyGroupedIteratorTest
 {
 	private MutableObjectIterator<Record> sourceIter;		// the iterator that provides the input
-	
+
 	private KeyGroupedIterator<Record> psi;						// the grouping iterator, progressing in key steps
-	
+
 	@Before
 	public void setup()
 	{
 		final ArrayList<IntStringPair> source = new ArrayList<IntStringPair>();
-		
+
 		// add elements to the source
 		source.add(new IntStringPair(new IntValue(1), new StringValue("A")));
 		source.add(new IntStringPair(new IntValue(2), new StringValue("B")));
@@ -59,11 +58,11 @@ public class KeyGroupedIteratorTest
 		source.add(new IntStringPair(new IntValue(5), new StringValue("J")));
 		source.add(new IntStringPair(new IntValue(5), new StringValue("K")));
 		source.add(new IntStringPair(new IntValue(5), new StringValue("L")));
-		
-		
+
+
 		this.sourceIter = new MutableObjectIterator<Record>() {
 			final Iterator<IntStringPair> it = source.iterator();
-			
+
 			@Override
 			public Record next(Record reuse) throws IOException {
 				if (it.hasNext()) {
@@ -77,11 +76,11 @@ public class KeyGroupedIteratorTest
 				}
 			}
 		};
-		
+
 		final RecordSerializer serializer = RecordSerializer.get();
 		@SuppressWarnings("unchecked")
 		final RecordComparator comparator = new RecordComparator(new int[] {0}, new Class[] {IntValue.class});
-		
+
 		this.psi = new KeyGroupedIterator<Record>(this.sourceIter, serializer, comparator);
 	}
 
@@ -92,26 +91,26 @@ public class KeyGroupedIteratorTest
 			Assert.assertTrue("KeyGroupedIterator must have another key.", this.psi.nextKey());
 			Assert.assertTrue("KeyGroupedIterator returned a wrong key.", this.psi.getComparatorWithCurrentReference().equalToReference(new Record(new IntValue(1))));
 			Assert.assertEquals("KeyGroupedIterator returned a wrong key.", 1, this.psi.getCurrent().getField(0, IntValue.class).getValue());
-			
+
 			Assert.assertTrue("KeyGroupedIterator must have another key.", this.psi.nextKey());
 			Assert.assertTrue("KeyGroupedIterator returned a wrong key.", this.psi.getComparatorWithCurrentReference().equalToReference(new Record(new IntValue(2))));
 			Assert.assertEquals("KeyGroupedIterator returned a wrong key.", 2, this.psi.getCurrent().getField(0, IntValue.class).getValue());
-			
+
 			Assert.assertTrue("KeyGroupedIterator must have another key.", this.psi.nextKey());
 			Assert.assertTrue("KeyGroupedIterator returned a wrong key.", this.psi.getComparatorWithCurrentReference().equalToReference(new Record(new IntValue(3))));
 			Assert.assertEquals("KeyGroupedIterator returned a wrong key.", 3, this.psi.getCurrent().getField(0, IntValue.class).getValue());
-			
+
 			Assert.assertTrue("KeyGroupedIterator must have another key.", this.psi.nextKey());
 			Assert.assertTrue("KeyGroupedIterator returned a wrong key.", this.psi.getComparatorWithCurrentReference().equalToReference(new Record(new IntValue(4))));
 			Assert.assertEquals("KeyGroupedIterator returned a wrong key.", 4, this.psi.getCurrent().getField(0, IntValue.class).getValue());
-			
+
 			Assert.assertTrue("KeyGroupedIterator must have another key.", this.psi.nextKey());
 			Assert.assertTrue("KeyGroupedIterator returned a wrong key.", this.psi.getComparatorWithCurrentReference().equalToReference(new Record(new IntValue(5))));
 			Assert.assertEquals("KeyGroupedIterator returned a wrong key.", 5, this.psi.getCurrent().getField(0, IntValue.class).getValue());
-			
+
 			Assert.assertFalse("KeyGroupedIterator must not have another key.", this.psi.nextKey());
 			Assert.assertNull("KeyGroupedIterator must not have another value.", this.psi.getValues());
-			
+
 			Assert.assertFalse("KeyGroupedIterator must not have another key.", this.psi.nextKey());
 			Assert.assertFalse("KeyGroupedIterator must not have another key.", this.psi.nextKey());
 		} catch (Exception e) {
@@ -119,7 +118,7 @@ public class KeyGroupedIteratorTest
 			Assert.fail("The test encountered an unexpected exception.");
 		}
 	}
-	
+
 	@Test
 	public void testFullIterationThroughAllValues() throws IOException
 	{
@@ -131,7 +130,7 @@ public class KeyGroupedIteratorTest
 			Assert.assertEquals("KeyGroupedIterator returned a wrong key.", 1, this.psi.getCurrent().getField(0, IntValue.class).getValue());
 			Assert.assertEquals("KeyGroupedIterator returned a wrong value.", new StringValue("A"), this.psi.getValues().next().getField(1, StringValue.class));
 			Assert.assertFalse("KeyGroupedIterator must not have another value.", this.psi.getValues().hasNext());
-			
+
 			// Key 2, Value B
 			Assert.assertTrue("KeyGroupedIterator must have another key.", this.psi.nextKey());
 			Assert.assertTrue("KeyGroupedIterator must have another value.", this.psi.getValues().hasNext());
@@ -139,7 +138,7 @@ public class KeyGroupedIteratorTest
 			Assert.assertEquals("KeyGroupedIterator returned a wrong key.", 2, this.psi.getCurrent().getField(0, IntValue.class).getValue());
 			Assert.assertEquals("KeyGroupedIterator returned a wrong value.", new StringValue("B"), this.psi.getValues().next().getField(1, StringValue.class));
 			Assert.assertFalse("KeyGroupedIterator must not have another value.", this.psi.getValues().hasNext());
-			
+
 			// Key 3, Values C, D
 			Assert.assertTrue("KeyGroupedIterator must have another key.", this.psi.nextKey());
 			Assert.assertTrue("KeyGroupedIterator must have another value.", this.psi.getValues().hasNext());
@@ -165,7 +164,7 @@ public class KeyGroupedIteratorTest
 			catch (NoSuchElementException nseex) {}
 			Assert.assertTrue("KeyGroupedIterator returned a wrong key.", this.psi.getComparatorWithCurrentReference().equalToReference(new Record(new IntValue(3))));
 			Assert.assertEquals("KeyGroupedIterator returned a wrong key.", 3, this.psi.getCurrent().getField(0, IntValue.class).getValue());
-			
+
 			// Key 4, Values E, F, G
 			Assert.assertTrue("KeyGroupedIterator must have another key.", this.psi.nextKey());
 			Assert.assertTrue("KeyGroupedIterator must have another value.", this.psi.getValues().hasNext());
@@ -185,7 +184,7 @@ public class KeyGroupedIteratorTest
 			Assert.assertFalse("KeyGroupedIterator must not have another value.", this.psi.getValues().hasNext());
 			Assert.assertTrue("KeyGroupedIterator returned a wrong key.", this.psi.getComparatorWithCurrentReference().equalToReference(new Record(new IntValue(4))));
 			Assert.assertEquals("KeyGroupedIterator returned a wrong key.", 4, this.psi.getCurrent().getField(0, IntValue.class).getValue());
-			
+
 			// Key 5, Values H, I, J, K, L
 			Assert.assertTrue("KeyGroupedIterator must have another key.", this.psi.nextKey());
 			Assert.assertTrue("KeyGroupedIterator must have another value.", this.psi.getValues().hasNext());
@@ -223,7 +222,7 @@ public class KeyGroupedIteratorTest
 				Assert.fail("A new KeyGroupedIterator must not have any value available and hence throw an exception on next().");
 			}
 			catch (NoSuchElementException nseex) {}
-			
+
 			Assert.assertFalse("KeyGroupedIterator must not have another key.", this.psi.nextKey());
 			Assert.assertFalse("KeyGroupedIterator must not have another key.", this.psi.nextKey());
 		} catch (Exception e) {
@@ -231,7 +230,7 @@ public class KeyGroupedIteratorTest
 			Assert.fail("The test encountered an unexpected exception.");
 		}
 	}
-	
+
 	@Test
 	public void testMixedProgress() throws Exception
 	{
@@ -239,10 +238,10 @@ public class KeyGroupedIteratorTest
 			// Progression only via nextKey() and hasNext() - Key 1, Value A
 			Assert.assertTrue("KeyGroupedIterator must have another key.", this.psi.nextKey());
 			Assert.assertTrue("KeyGroupedIterator must have another value.", this.psi.getValues().hasNext());
-			
+
 			// Progression only through nextKey() - Key 2, Value B
 			Assert.assertTrue("KeyGroupedIterator must have another key.", this.psi.nextKey());
-			
+
 			// Progression first though haNext() and next(), then through hasNext() - Key 3, Values C, D
 			Assert.assertTrue("KeyGroupedIterator must have another key.", this.psi.nextKey());
 			Assert.assertTrue("KeyGroupedIterator must have another value.", this.psi.getValues().hasNext());
@@ -252,12 +251,12 @@ public class KeyGroupedIteratorTest
 			Assert.assertTrue("KeyGroupedIterator must have another value.", this.psi.getValues().hasNext());
 			Assert.assertTrue("KeyGroupedIterator returned a wrong key.", this.psi.getComparatorWithCurrentReference().equalToReference(new Record(new IntValue(3))));
 			Assert.assertEquals("KeyGroupedIterator returned a wrong key.", 3, this.psi.getCurrent().getField(0, IntValue.class).getValue());
-			
+
 			// Progression first via next() only, then hasNext() only Key 4, Values E, F, G
 			Assert.assertTrue("KeyGroupedIterator must have another key.", this.psi.nextKey());
 			Assert.assertEquals("KeyGroupedIterator returned a wrong value.", new StringValue("E"), this.psi.getValues().next().getField(1, StringValue.class));
 			Assert.assertTrue("KeyGroupedIterator must have another value.", this.psi.getValues().hasNext());
-			
+
 			// Key 5, Values H, I, J, K, L
 			Assert.assertTrue("KeyGroupedIterator must have another key.", this.psi.nextKey());
 			Assert.assertEquals("KeyGroupedIterator returned a wrong value.", new StringValue("H"), this.psi.getValues().next().getField(1, StringValue.class));
@@ -266,7 +265,7 @@ public class KeyGroupedIteratorTest
 			Assert.assertEquals("KeyGroupedIterator returned a wrong key.", 5, this.psi.getCurrent().getField(0, IntValue.class).getValue());
 			Assert.assertEquals("KeyGroupedIterator returned a wrong value.", new StringValue("I"), this.psi.getValues().next().getField(1, StringValue.class));
 			Assert.assertTrue("KeyGroupedIterator must have another value.", this.psi.getValues().hasNext());
-			
+
 			// end
 			Assert.assertFalse("KeyGroupedIterator must not have another key.", this.psi.nextKey());
 			Assert.assertFalse("KeyGroupedIterator must not have another key.", this.psi.nextKey());
@@ -275,14 +274,14 @@ public class KeyGroupedIteratorTest
 			Assert.fail("The test encountered an unexpected exception.");
 		}
 	}
-	
+
 	@Test
 	public void testHasNextDoesNotOverweiteCurrentRecord() throws Exception
 	{
 		try {
 			Iterator<Record> valsIter = null;
 			Record rec = null;
-			
+
 			Assert.assertTrue("KeyGroupedIterator must have another key.", this.psi.nextKey());
 			valsIter = this.psi.getValues();
 			Assert.assertNotNull("Returned Iterator must not be null", valsIter);
@@ -292,9 +291,9 @@ public class KeyGroupedIteratorTest
 			Assert.assertEquals("KeyGroupedIterator returned a wrong value.", new StringValue("A"), rec.getField(1, StringValue.class));
 			Assert.assertFalse("KeyGroupedIterator must have another value.", valsIter.hasNext());
 			Assert.assertEquals("KeyGroupedIterator returned a wrong key.", 1, rec.getField(0, IntValue.class).getValue());
-			Assert.assertEquals("KeyGroupedIterator returned a wrong value.", new StringValue("A"), rec.getField(1, StringValue.class));			
+			Assert.assertEquals("KeyGroupedIterator returned a wrong value.", new StringValue("A"), rec.getField(1, StringValue.class));
 			Assert.assertFalse("KeyGroupedIterator's value iterator must not have another value.", valsIter.hasNext());
-			
+
 			Assert.assertTrue("KeyGroupedIterator must have another key.", this.psi.nextKey());
 			valsIter = this.psi.getValues();
 			Assert.assertNotNull("Returned Iterator must not be null", valsIter);
@@ -306,7 +305,7 @@ public class KeyGroupedIteratorTest
 			Assert.assertEquals("KeyGroupedIterator returned a wrong key.", 2, rec.getField(0, IntValue.class).getValue());
 			Assert.assertEquals("KeyGroupedIterator returned a wrong value.", new StringValue("B"), rec.getField(1, StringValue.class));
 			Assert.assertFalse("KeyGroupedIterator's value iterator must not have another value.", valsIter.hasNext());
-			
+
 			Assert.assertTrue("KeyGroupedIterator must have another key.", this.psi.nextKey());
 			valsIter = this.psi.getValues();
 			Assert.assertNotNull("Returned Iterator must not be null", valsIter);
@@ -331,7 +330,7 @@ public class KeyGroupedIteratorTest
 			Assert.fail("The test encountered an unexpected exception.");
 		}
 	}
-	
+
 	private static final class IntStringPair
 	{
 		private final IntValue integer;

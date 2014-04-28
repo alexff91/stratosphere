@@ -23,25 +23,25 @@ import java.util.Random;
 public class CharType implements SerializationTestType
 {
 	private char value;
-	
+
 
 	public CharType()
 	{
 		this.value = 0;
 	}
-	
+
 	private CharType(char value)
 	{
 		this.value = value;
 	}
-	
+
 
 	@Override
 	public CharType getRandom(Random rnd)
 	{
 		return new CharType((char) rnd.nextInt(10000));
 	}
-	
+
 
 	@Override
 	public void write(DataOutput out) throws IOException

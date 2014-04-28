@@ -23,9 +23,9 @@ import org.apache.commons.logging.LogFactory;
 
 import eu.stratosphere.api.common.io.statistics.BaseStatistics;
 import eu.stratosphere.api.common.operators.GenericDataSource;
+import eu.stratosphere.configuration.ConfigConstants;
 import eu.stratosphere.configuration.Configuration;
 import eu.stratosphere.configuration.GlobalConfiguration;
-import eu.stratosphere.configuration.ConfigConstants;
 import eu.stratosphere.core.fs.BlockLocation;
 import eu.stratosphere.core.fs.FSDataInputStream;
 import eu.stratosphere.core.fs.FileInputSplit;
@@ -34,15 +34,15 @@ import eu.stratosphere.core.fs.FileSystem;
 import eu.stratosphere.core.fs.Path;
 
 /**
- * Describes the base interface that is used for reading from a file input. For specific input types the 
+ * Describes the base interface that is used for reading from a file input. For specific input types the
  * <tt>nextRecord()</tt> and <tt>reachedEnd()</tt> methods need to be implemented. Additionally, one may override
  * <tt>open(FileInputSplit)</tt> and <tt>close()</tt> to
- * 
- * 
- * 
+ *
+ *
+ *
  * While reading the runtime checks whether the end was reached using reachedEnd()
  * and if not the next pair is read using the nextPair() method.
- * 
+ *
  * Describes the base interface that is used describe an input that produces records that are processed
  * by Stratosphere.
  * <p>
@@ -50,12 +50,12 @@ import eu.stratosphere.core.fs.Path;
  * <ul>
  *   <li>It describes how the input is split into splits that can be processed in parallel.</li>
  *   <li>It describes how to read records from the input split.</li>
- *   <li>It describes how to gather basic statistics from the input.</li> 
+ *   <li>It describes how to gather basic statistics from the input.</li>
  * </ul>
  * <p>
  * The life cycle of an input format is the following:
  * <ol>
- *   <li>After being instantiated (parameterless), it is configured with a {@link Configuration} object. 
+ *   <li>After being instantiated (parameterless), it is configured with a {@link Configuration} object.
  *       Basic fields are read from the configuration, such as for example a file path, if the format describes
  *       files as input.</li>
  *   <li>It is called to create the input splits.</li>
@@ -66,30 +66,30 @@ import eu.stratosphere.core.fs.Path;
  * </ol>
  */
 public abstract class FileInputFormat<OT> implements InputFormat<OT, FileInputSplit> {
-	
+
 	// -------------------------------------- Constants -------------------------------------------
-	
+
 	private static final Log LOG = LogFactory.getLog(FileInputFormat.class);
-	
+
 	private static final long serialVersionUID = 1L;
-	
-	
+
+
 	/**
 	 * The fraction that the last split may be larger than the others.
 	 */
 	private static final float MAX_SPLIT_SIZE_DISCREPANCY = 1.1f;
-	
+
 	/**
 	 * The timeout (in milliseconds) to wait for a filesystem stream to respond.
 	 */
 	private static long DEFAULT_OPENING_TIMEOUT;
-	
+
 	static {
 		initDefaultsFromConfiguration();
 	}
-	
+
 	private static final void initDefaultsFromConfiguration() {
-		
+
 		final long to = GlobalConfiguration.getLong(ConfigConstants.FS_STREAM_OPENING_TIMEOUT_KEY,
 			ConfigConstants.DEFAULT_FS_STREAM_OPENING_TIMEOUT);
 		if (to < 0) {
@@ -102,16 +102,16 @@ public abstract class FileInputFormat<OT> implements InputFormat<OT, FileInputSp
 			DEFAULT_OPENING_TIMEOUT = to;
 		}
 	}
-	
+
 	static final long getDefaultOpeningTimeout() {
 		return DEFAULT_OPENING_TIMEOUT;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 	//  Variables for internal operation.
-	//  They are all transient, because we do not want them so be serialized 
+	//  They are all transient, because we do not want them so be serialized
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * The input stream reading from the input file.
 	 */
@@ -126,58 +126,59 @@ public abstract class FileInputFormat<OT> implements InputFormat<OT, FileInputSp
 	 * The length of the split that this parallel instance must consume.
 	 */
 	protected transient long splitLength;
-	
-	
+
+
 	// --------------------------------------------------------------------------------------------
 	//  The configuration parameters. Configured on the instance and serialized to be shipped.
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * The path to the file that contains the input.
 	 */
 	protected Path filePath;
-	
+
 	/**
 	 * The the minimal split size, set by the configure() method.
 	 */
-	protected long minSplitSize = 0; 
-	
+	protected long minSplitSize = 0;
+
 	/**
 	 * The desired number of splits, as set by the configure() method.
 	 */
 	protected int numSplits = -1;
-	
+
 	/**
 	 * Stream opening timeout.
 	 */
 	protected long openTimeout = DEFAULT_OPENING_TIMEOUT;
 
-	
+
 	// --------------------------------------------------------------------------------------------
 	//  Constructors
-	// --------------------------------------------------------------------------------------------	
+	// --------------------------------------------------------------------------------------------
 
 	public FileInputFormat() {}
-	
+
 	protected FileInputFormat(Path filePath) {
 		if (filePath == null) {
 			throw new IllegalArgumentException("The file path must not be null.");
 		}
 		this.filePath = filePath;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 	//  Getters/setters for the configurable parameters
 	// --------------------------------------------------------------------------------------------
-	
+
 	public Path getFilePath() {
 		return filePath;
 	}
 
 	public void setFilePath(String filePath) {
-		if (filePath == null)
-			throw new IllegalArgumentException("File path may not be null.");
-		
+		if (filePath == null) {
+		throw new IllegalArgumentException("File path may not be null.");
+		}
+
 		// TODO The job-submission web interface passes empty args (and thus empty
 		// paths) to compute the preview graph. The following is a workaround for
 		// this situation and we should fix this.
@@ -185,53 +186,57 @@ public abstract class FileInputFormat<OT> implements InputFormat<OT, FileInputSp
 			setFilePath(new Path());
 			return;
 		}
-		
+
 		setFilePath(new Path(filePath));
 	}
-	
+
 	public void setFilePath(Path filePath) {
-		if (filePath == null)
-			throw new IllegalArgumentException("File path may not be null.");
-		
+		if (filePath == null) {
+		throw new IllegalArgumentException("File path may not be null.");
+		}
+
 		this.filePath = filePath;
 	}
-	
+
 	public long getMinSplitSize() {
 		return minSplitSize;
 	}
-	
+
 	public void setMinSplitSize(long minSplitSize) {
-		if (minSplitSize < 0)
-			throw new IllegalArgumentException("The minimum split size cannot be negative.");
-		
+		if (minSplitSize < 0) {
+		throw new IllegalArgumentException("The minimum split size cannot be negative.");
+		}
+
 		this.minSplitSize = minSplitSize;
 	}
-	
+
 	public int getNumSplits() {
 		return numSplits;
 	}
-	
+
 	public void setNumSplits(int numSplits) {
-		if (numSplits < -1 || numSplits == 0)
-			throw new IllegalArgumentException("The desired number of splits must be positive or -1 (= don't care).");
-		
+		if (numSplits < -1 || numSplits == 0) {
+		throw new IllegalArgumentException("The desired number of splits must be positive or -1 (= don't care).");
+		}
+
 		this.numSplits = numSplits;
 	}
-	
+
 	public long getOpenTimeout() {
 		return openTimeout;
 	}
-	
+
 	public void setOpenTimeout(long openTimeout) {
-		if (openTimeout < 0)
-			throw new IllegalArgumentException("The timeout for opening the input splits must be positive or zero (= infinite).");
+		if (openTimeout < 0) {
+		throw new IllegalArgumentException("The timeout for opening the input splits must be positive or zero (= infinite).");
+		}
 		this.openTimeout = openTimeout;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 	// Getting information about the split that is currently open
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Gets the start of the current split.
 	 *
@@ -240,7 +245,7 @@ public abstract class FileInputFormat<OT> implements InputFormat<OT, FileInputSp
 	public long getSplitStart() {
 		return splitStart;
 	}
-	
+
 	/**
 	 * Gets the length or remaining length of the current split.
 	 *
@@ -253,10 +258,10 @@ public abstract class FileInputFormat<OT> implements InputFormat<OT, FileInputSp
 	// --------------------------------------------------------------------------------------------
 	//  Pre-flight: Configuration, Splits, Sampling
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Configures the file input format by reading the file path from the configuration.
-	 * 
+	 *
 	 * @see eu.stratosphere.api.io.InputFormat#configure(eu.stratosphere.configuration.Configuration)
 	 */
 	@Override
@@ -268,48 +273,50 @@ public abstract class FileInputFormat<OT> implements InputFormat<OT, FileInputSp
 				this.filePath = new Path(filePath);
 			}
 			catch (RuntimeException rex) {
-				throw new RuntimeException("Could not create a valid URI from the given file path name: " + rex.getMessage()); 
+				throw new RuntimeException("Could not create a valid URI from the given file path name: " + rex.getMessage());
 			}
 		}
 		else if (this.filePath == null) {
-			throw new IllegalArgumentException("File path was not specified in input format, or configuration."); 
+			throw new IllegalArgumentException("File path was not specified in input format, or configuration.");
 		}
 	}
-	
+
 	/**
 	 * Obtains basic file statistics containing only file size. If the input is a directory, then the size is the sum of all contained files.
-	 * 
+	 *
 	 * @see eu.stratosphere.api.io.InputFormat#getStatistics(eu.stratosphere.api.common.io.statistics.BaseStatistics)
 	 */
 	@Override
 	public FileBaseStatistics getStatistics(BaseStatistics cachedStats) throws IOException {
-		
+
 		final FileBaseStatistics cachedFileStats = (cachedStats != null && cachedStats instanceof FileBaseStatistics) ?
 			(FileBaseStatistics) cachedStats : null;
-				
+
 		try {
 			final Path path = this.filePath;
 			final FileSystem fs = FileSystem.get(path.toUri());
-			
+
 			return getFileStats(cachedFileStats, path, fs, new ArrayList<FileStatus>(1));
 		} catch (IOException ioex) {
-			if (LOG.isWarnEnabled())
-				LOG.warn("Could not determine statistics for file '" + this.filePath + "' due to an io error: "
-						+ ioex.getMessage());
+			if (LOG.isWarnEnabled()) {
+			LOG.warn("Could not determine statistics for file '" + this.filePath + "' due to an io error: "
+					+ ioex.getMessage());
+			}
 		}
 		catch (Throwable t) {
-			if (LOG.isErrorEnabled())
-				LOG.error("Unexpected problen while getting the file statistics for file '" + this.filePath + "': "
-						+ t.getMessage(), t);
+			if (LOG.isErrorEnabled()) {
+			LOG.error("Unexpected problen while getting the file statistics for file '" + this.filePath + "': "
+					+ t.getMessage(), t);
+			}
 		}
-		
+
 		// no statistics available
 		return null;
 	}
-	
+
 	protected FileBaseStatistics getFileStats(FileBaseStatistics cachedStats, Path filePath, FileSystem fs,
 			ArrayList<FileStatus> files) throws IOException {
-		
+
 		// get the file info and check whether the cached statistics are still valid.
 		final FileStatus file = fs.getFileStatus(filePath);
 		long latestModTime = file.getModificationTime();
@@ -318,7 +325,7 @@ public abstract class FileInputFormat<OT> implements InputFormat<OT, FileInputSp
 		if (file.isDir()) {
 			FileStatus[] fss = fs.listStatus(filePath);
 			files.ensureCapacity(fss.length);
-			
+
 			for (FileStatus s : fss) {
 				if (!s.isDir()) {
 					files.add(s);
@@ -333,7 +340,7 @@ public abstract class FileInputFormat<OT> implements InputFormat<OT, FileInputSp
 		if (cachedStats != null && latestModTime <= cachedStats.getLastModificationTime()) {
 			return cachedStats;
 		}
-		
+
 		// calculate the whole length
 		long len = 0;
 		for (FileStatus s : files) {
@@ -344,7 +351,7 @@ public abstract class FileInputFormat<OT> implements InputFormat<OT, FileInputSp
 		if (len <= 0) {
 			len = BaseStatistics.SIZE_UNKNOWN;
 		}
-		
+
 		return new FileBaseStatistics(latestModTime, len, BaseStatistics.AVG_RECORD_BYTES_UNKNOWN);
 	}
 
@@ -357,10 +364,10 @@ public abstract class FileInputFormat<OT> implements InputFormat<OT, FileInputSp
 	 * Computes the input splits for the file. By default, one file block is one split. If more splits
 	 * are requested than blocks are available, then a split may by a fraction of a block and splits may cross
 	 * block boundaries.
-	 * 
+	 *
 	 * @param minNumSplits The minimum desired number of file splits.
 	 * @return The computed file splits.
-	 * 
+	 *
 	 * @see eu.stratosphere.api.io.InputFormat#createInputSplits(int)
 	 */
 	@Override
@@ -368,10 +375,10 @@ public abstract class FileInputFormat<OT> implements InputFormat<OT, FileInputSp
 		if (minNumSplits < 1) {
 			throw new IllegalArgumentException("Number of input splits has to be at least 1.");
 		}
-		
+
 		// take the desired number of splits into account
 		minNumSplits = Math.max(minNumSplits, this.numSplits);
-		
+
 		final Path path = this.filePath;
 		final List<FileInputSplit> inputSplits = new ArrayList<FileInputSplit>(minNumSplits);
 
@@ -408,15 +415,16 @@ public abstract class FileInputFormat<OT> implements InputFormat<OT, FileInputSp
 
 			final long len = file.getLen();
 			final long blockSize = file.getBlockSize();
-			
+
 			final long minSplitSize;
 			if (this.minSplitSize <= blockSize) {
 				minSplitSize = this.minSplitSize;
 			}
 			else {
-				if (LOG.isWarnEnabled())
-					LOG.warn("Minimal split size of " + this.minSplitSize + " is larger than the block size of " + 
-						blockSize + ". Decreasing minimal split size to block size.");
+				if (LOG.isWarnEnabled()) {
+				LOG.warn("Minimal split size of " + this.minSplitSize + " is larger than the block size of " +
+					blockSize + ". Decreasing minimal split size to block size.");
+				}
 				minSplitSize = blockSize;
 			}
 
@@ -477,7 +485,7 @@ public abstract class FileInputFormat<OT> implements InputFormat<OT, FileInputSp
 	 * A simple hook to filter files and directories from the input.
 	 * The method may be overridden. Hadoop's FileInputFormat has a similar mechanism and applies the
 	 * same filters by default.
-	 * 
+	 *
 	 * @param fileStatus
 	 * @return true, if the given file or directory is accepted
 	 */
@@ -489,7 +497,7 @@ public abstract class FileInputFormat<OT> implements InputFormat<OT, FileInputSp
 	/**
 	 * Retrieves the index of the <tt>BlockLocation</tt> that contains the part of the file described by the given
 	 * offset.
-	 * 
+	 *
 	 * @param blocks The different blocks of the file. Must be ordered by their offset.
 	 * @param offset The offset of the position in the file.
 	 * @param startIndex The earliest index to look at.
@@ -513,50 +521,51 @@ public abstract class FileInputFormat<OT> implements InputFormat<OT, FileInputSp
 		}
 		throw new IllegalArgumentException("The given offset is not contained in the any block.");
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	/**
 	 * Opens an input stream to the file defined in the input format.
 	 * The stream is positioned at the beginning of the given split.
 	 * <p>
-	 * The stream is actually opened in an asynchronous thread to make sure any interruptions to the thread 
+	 * The stream is actually opened in an asynchronous thread to make sure any interruptions to the thread
 	 * working on the input format do not reach the file system.
-	 * 
+	 *
 	 * @see eu.stratosphere.api.io.InputFormat#open(eu.stratosphere.nephele.template.InputSplit)
 	 */
 	@Override
 	public void open(FileInputSplit split) throws IOException {
-		
+
 		if (!(split instanceof FileInputSplit)) {
 			throw new IllegalArgumentException("File Input Formats can only be used with FileInputSplits.");
 		}
-		
+
 		final FileInputSplit fileSplit = (FileInputSplit) split;
-		
+
 		this.splitStart = fileSplit.getStart();
 		this.splitLength = fileSplit.getLength();
 
-		if (LOG.isDebugEnabled())
-			LOG.debug("Opening input split " + fileSplit.getPath() + " [" + this.splitStart + "," + this.splitLength + "]");
+		if (LOG.isDebugEnabled()) {
+		LOG.debug("Opening input split " + fileSplit.getPath() + " [" + this.splitStart + "," + this.splitLength + "]");
+		}
 
-		
+
 		// open the split in an asynchronous thread
 		final InputSplitOpenThread isot = new InputSplitOpenThread(fileSplit, this.openTimeout);
 		isot.start();
-		
+
 		try {
 			this.stream = isot.waitForCompletion();
 		}
 		catch (Throwable t) {
-			throw new IOException("Error opening the Input Split " + fileSplit.getPath() + 
+			throw new IOException("Error opening the Input Split " + fileSplit.getPath() +
 					" [" + splitStart + "," + splitLength + "]: " + t.getMessage(), t);
 		}
-		
+
 		// get FSDataInputStream
 		this.stream.seek(this.splitStart);
 	}
-	
+
 	/**
 	 * Closes the file input stream of the input format.
 	 */
@@ -568,23 +577,23 @@ public abstract class FileInputFormat<OT> implements InputFormat<OT, FileInputSp
 			stream = null;
 		}
 	}
-	
+
 
 	public String toString() {
-		return this.filePath == null ? 
+		return this.filePath == null ?
 			"File Input (unknown file)" :
 			"File Input (" + this.filePath.toString() + ')';
 	}
-	
+
 	// ============================================================================================
-	
+
 	/**
 	 * Encapsulation of the basic statistics the optimizer obtains about a file. Contained are the size of the file
 	 * and the average bytes of a single record. The statistics also have a time-stamp that records the modification
 	 * time of the file and indicates as such for which time the statistics were valid.
 	 */
 	public static class FileBaseStatistics implements BaseStatistics {
-		
+
 		protected final long fileModTime; // timestamp of the last modification
 
 		protected final long fileSize; // size of the file(s) in bytes
@@ -593,7 +602,7 @@ public abstract class FileInputFormat<OT> implements InputFormat<OT, FileInputSp
 
 		/**
 		 * Creates a new statistics object.
-		 * 
+		 *
 		 * @param fileModTime
 		 *        The timestamp of the latest modification of any of the involved files.
 		 * @param fileSize
@@ -609,7 +618,7 @@ public abstract class FileInputFormat<OT> implements InputFormat<OT, FileInputSp
 
 		/**
 		 * Gets the timestamp of the last modification.
-		 * 
+		 *
 		 * @return The timestamp of the last modification.
 		 */
 		public long getLastModificationTime() {
@@ -618,7 +627,7 @@ public abstract class FileInputFormat<OT> implements InputFormat<OT, FileInputSp
 
 		/**
 		 * Gets the file size.
-		 * 
+		 *
 		 * @return The fileSize.
 		 * @see eu.stratosphere.api.common.io.statistics.BaseStatistics#getTotalInputSize()
 		 */
@@ -630,19 +639,19 @@ public abstract class FileInputFormat<OT> implements InputFormat<OT, FileInputSp
 		/**
 		 * Gets the estimates number of records in the file, computed as the file size divided by the
 		 * average record width, rounded up.
-		 * 
+		 *
 		 * @return The estimated number of records in the file.
 		 * @see eu.stratosphere.api.common.io.statistics.BaseStatistics#getNumberOfRecords()
 		 */
 		@Override
 		public long getNumberOfRecords() {
-			return (this.fileSize == SIZE_UNKNOWN || this.avgBytesPerRecord == AVG_RECORD_BYTES_UNKNOWN) ? 
+			return (this.fileSize == SIZE_UNKNOWN || this.avgBytesPerRecord == AVG_RECORD_BYTES_UNKNOWN) ?
 				NUM_RECORDS_UNKNOWN : (long) Math.ceil(this.fileSize / this.avgBytesPerRecord);
 		}
 
 		/**
 		 * Gets the estimated average number of bytes per record.
-		 * 
+		 *
 		 * @return The average number of bytes per record.
 		 * @see eu.stratosphere.api.common.io.statistics.BaseStatistics#getAverageRecordWidth()
 		 */
@@ -650,35 +659,35 @@ public abstract class FileInputFormat<OT> implements InputFormat<OT, FileInputSp
 		public float getAverageRecordWidth() {
 			return this.avgBytesPerRecord;
 		}
-		
+
 		@Override
 		public String toString() {
 			return "size=" + this.fileSize + ", recWidth=" + this.avgBytesPerRecord + ", modAt=" + this.fileModTime;
 		}
 	}
-	
+
 	// ============================================================================================
-	
+
 	/**
 	 * Obtains a DataInputStream in an thread that is not interrupted.
 	 * This is a necessary hack around the problem that the HDFS client is very sensitive to InterruptedExceptions.
 	 */
 	public static class InputSplitOpenThread extends Thread {
-		
+
 		private final FileInputSplit split;
-		
+
 		private final long timeout;
 
 		private volatile FSDataInputStream fdis;
 
 		private volatile Throwable error;
-		
+
 		private volatile boolean aborted;
 
 		public InputSplitOpenThread(FileInputSplit split, long timeout) {
 			super("Transient InputSplit Opener");
 			setDaemon(true);
-			
+
 			this.split = split;
 			this.timeout = timeout;
 		}
@@ -688,7 +697,7 @@ public abstract class FileInputFormat<OT> implements InputFormat<OT, FileInputSp
 			try {
 				final FileSystem fs = FileSystem.get(this.split.getPath().toUri());
 				this.fdis = fs.open(this.split.getPath());
-				
+
 				// check for canceling and close the stream in that case, because no one will obtain it
 				if (this.aborted) {
 					final FSDataInputStream f = this.fdis;
@@ -700,11 +709,11 @@ public abstract class FileInputFormat<OT> implements InputFormat<OT, FileInputSp
 				this.error = t;
 			}
 		}
-		
+
 		public FSDataInputStream waitForCompletion() throws Throwable {
 			final long start = System.currentTimeMillis();
 			long remaining = this.timeout;
-			
+
 			do {
 				try {
 					// wait for the task completion
@@ -718,7 +727,7 @@ public abstract class FileInputFormat<OT> implements InputFormat<OT, FileInputSp
 			}
 			while (this.error == null && this.fdis == null &&
 					(remaining = this.timeout + start - System.currentTimeMillis()) > 0);
-			
+
 			if (this.error != null) {
 				throw this.error;
 			}
@@ -730,17 +739,17 @@ public abstract class FileInputFormat<OT> implements InputFormat<OT, FileInputSp
 				// b) the flag was set such that the stream did not see it and we have a valid stream
 				// In any case, close the stream and throw an exception.
 				abortWait();
-				
+
 				final boolean stillAlive = this.isAlive();
 				final StringBuilder bld = new StringBuilder(256);
 				for (StackTraceElement e : this.getStackTrace()) {
 					bld.append("\tat ").append(e.toString()).append('\n');
 				}
-				throw new IOException("Input opening request timed out. Opener was " + (stillAlive ? "" : "NOT ") + 
+				throw new IOException("Input opening request timed out. Opener was " + (stillAlive ? "" : "NOT ") +
 					" alive. Stack of split open thread:\n" + bld.toString());
 			}
 		}
-		
+
 		/**
 		 * Double checked procedure setting the abort flag and closing the stream.
 		 */
@@ -755,31 +764,31 @@ public abstract class FileInputFormat<OT> implements InputFormat<OT, FileInputSp
 			}
 		}
 	}
-	
+
 	// ============================================================================================
 	//  Parameterization via configuration
 	// ============================================================================================
-	
+
 	// ------------------------------------- Config Keys ------------------------------------------
-	
+
 	/**
 	 * The config parameter which defines the input file path.
 	 */
 	private static final String FILE_PARAMETER_KEY = "input.file.path";
-	
-	
+
+
 	// ----------------------------------- Config Builder -----------------------------------------
-	
+
 	/**
 	 * Creates a configuration builder that can be used to set the input format's parameters to the config in a fluent
 	 * fashion.
-	 * 
+	 *
 	 * @return A config builder for setting parameters.
 	 */
 	public static ConfigBuilder configureFileFormat(GenericDataSource<?> target) {
 		return new ConfigBuilder(target.getParameters());
 	}
-	
+
 	/**
 	 * Abstract builder used to set parameters to the input format's configuration in a fluent way.
 	 */
@@ -788,23 +797,23 @@ public abstract class FileInputFormat<OT> implements InputFormat<OT, FileInputSp
 		 * The configuration into which the parameters will be written.
 		 */
 		protected final Configuration config;
-		
+
 		// --------------------------------------------------------------------
-		
+
 		/**
 		 * Creates a new builder for the given configuration.
-		 * 
+		 *
 		 * @param targetConfig The configuration into which the parameters will be written.
 		 */
 		protected AbstractConfigBuilder(Configuration targetConfig) {
 			this.config = targetConfig;
 		}
-		
+
 		// --------------------------------------------------------------------
-		
+
 		/**
 		 * Sets the path to the file or directory to be read by this file input format.
-		 * 
+		 *
 		 * @param filePath The path to the file or directory.
 		 * @return The builder itself.
 		 */
@@ -815,20 +824,20 @@ public abstract class FileInputFormat<OT> implements InputFormat<OT, FileInputSp
 			return ret;
 		}
 	}
-	
+
 	/**
 	 * A builder used to set parameters to the input format's configuration in a fluent way.
 	 */
 	public static class ConfigBuilder extends AbstractConfigBuilder<ConfigBuilder> {
-		
+
 		/**
 		 * Creates a new builder for the given configuration.
-		 * 
+		 *
 		 * @param targetConfig The configuration into which the parameters will be written.
 		 */
 		protected ConfigBuilder(Configuration targetConfig) {
 			super(targetConfig);
 		}
-		
+
 	}
 }

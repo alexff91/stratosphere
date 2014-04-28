@@ -28,12 +28,12 @@ import eu.stratosphere.util.Collector;
 @ConstantFieldsFirst({0,1})
 public class ComputeDistance extends CrossFunction implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	private final DoubleValue distance = new DoubleValue();
-	
+
 	/**
 	 * Computes the distance of one data point to one cluster center.
-	 * 
+	 *
 	 * Output Format:
 	 * 0: pointID
 	 * 1: pointVector
@@ -42,18 +42,18 @@ public class ComputeDistance extends CrossFunction implements Serializable {
 	 */
 	@Override
 	public void cross(Record dataPointRecord, Record clusterCenterRecord, Collector<Record> out) {
-		
+
 		CoordVector dataPoint = dataPointRecord.getField(1, CoordVector.class);
-		
+
 		IntValue clusterCenterId = clusterCenterRecord.getField(0, IntValue.class);
 		CoordVector clusterPoint = clusterCenterRecord.getField(1, CoordVector.class);
-	
+
 		this.distance.setValue(dataPoint.computeEuclidianDistance(clusterPoint));
-		
-		// add cluster center id and distance to the data point record 
+
+		// add cluster center id and distance to the data point record
 		dataPointRecord.setField(2, clusterCenterId);
 		dataPointRecord.setField(3, this.distance);
-		
+
 		out.collect(dataPointRecord);
 	}
 }

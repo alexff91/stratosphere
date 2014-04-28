@@ -16,7 +16,7 @@ package eu.stratosphere.nephele.jobmanager.scheduler;
 /**
  * Scheduling exceptions are thrown to indicate problems or errors
  * related to Nephele's scheduler.
- * 
+ *
  */
 public class SchedulingException extends Exception {
 
@@ -27,7 +27,7 @@ public class SchedulingException extends Exception {
 
 	/**
 	 * Constructs a new scheduling exception object.
-	 * 
+	 *
 	 * @param msg
 	 *        the error message of the exception
 	 */

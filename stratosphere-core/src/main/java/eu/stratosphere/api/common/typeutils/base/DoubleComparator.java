@@ -25,7 +25,7 @@ public final class DoubleComparator extends BasicTypeComparator<Double> {
 
 	private static final long serialVersionUID = 1L;
 
-	
+
 	public DoubleComparator(boolean ascending) {
 		super(ascending);
 	}

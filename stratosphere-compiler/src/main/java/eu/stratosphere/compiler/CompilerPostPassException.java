@@ -19,7 +19,7 @@ package eu.stratosphere.compiler;
  * because it is thrown by user-specified optimizer extensions.
  */
 public class CompilerPostPassException extends CompilerException {
-	
+
 	/**
 	 * Serial version UID for serialization interoperability.
 	 */
@@ -32,7 +32,7 @@ public class CompilerPostPassException extends CompilerException {
 
 	/**
 	 * Creates a post pass exception with the given message and no cause.
-	 * 
+	 *
 	 * @param message The message for the exception.
 	 */
 	public CompilerPostPassException(String message) {
@@ -41,7 +41,7 @@ public class CompilerPostPassException extends CompilerException {
 
 	/**
 	 * Creates a post pass exception with the given cause and no message.
-	 * 
+	 *
 	 * @param cause The <tt>Throwable</tt> that caused this exception.
 	 */
 	public CompilerPostPassException(Throwable cause) {
@@ -50,7 +50,7 @@ public class CompilerPostPassException extends CompilerException {
 
 	/**
 	 * Creates a post pass exception with the given message and cause.
-	 * 
+	 *
 	 * @param message The message for the exception.
 	 * @param cause The <tt>Throwable</tt> that caused this exception.
 	 */

@@ -61,7 +61,7 @@ import eu.stratosphere.util.LogUtils;
 
 /**
  * This class contains test concerning the correct conversion from {@link JobGraph} to {@link ExecutionGraph} objects.
- * 
+ *
  */
 public class ExecutionGraphTest {
 
@@ -72,7 +72,7 @@ public class ExecutionGraphTest {
 
 	/**
 	 * A test implementation of an {@link InstanceManager} which is used as a stub in these tests.
-	 * 
+	 *
 	 */
 	private static final class TestInstanceManager implements InstanceManager {
 
@@ -214,7 +214,7 @@ public class ExecutionGraphTest {
 	public static void reduceLogLevel() {
 		LogUtils.initializeDefaultConsoleLogger(Level.WARN);
 	}
-	
+
 	/*
 	 * input1 -> task1 -> output1
 	 * output1 shares instance with input1
@@ -597,7 +597,7 @@ public class ExecutionGraphTest {
 			t3.setTaskClass(ForwardTask2Inputs1Output.class);
 			t3.setNumberOfSubtasks(2);
 
-			
+
 			// output vertex
 			final JobFileOutputVertex o1 = new JobFileOutputVertex("Output 1", jg);
 			o1.setFileOutputClass(FileLineWriter.class);
@@ -883,7 +883,7 @@ public class ExecutionGraphTest {
 			ExecutionStage executionStage = eg.getCurrentExecutionStage();
 			assertNotNull(executionStage);
 			assertEquals(0, executionStage.getStageNumber());
-			
+
 			executionStage.collectRequiredInstanceTypes(instanceRequestMap, ExecutionState.CREATED);
 			assertEquals(1, instanceRequestMap.size());
 			assertEquals(8,

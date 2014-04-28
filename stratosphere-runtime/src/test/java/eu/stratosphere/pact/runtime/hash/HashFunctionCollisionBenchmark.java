@@ -34,8 +34,8 @@ import eu.stratosphere.pact.runtime.hash.util.StepRangeIterator;
 
 /**
  * Test distribution of hash function for multiple levels
- * 
- * 
+ *
+ *
  */
 public class HashFunctionCollisionBenchmark {
 
@@ -47,7 +47,7 @@ public class HashFunctionCollisionBenchmark {
 	public void testStepSeventeen() {
 
 		// Define numbers of buckets on each level
-		RangeCalculator[] rangeCalculators = { 
+		RangeCalculator[] rangeCalculators = {
 				new LastBitsToRange(10), // 2^10=1024 Buckets on level 0
 				new LastBitsToRange(10), // 2^10=1024 Buckets on level 1
 				new LastBitsToRange(10) }; // 2^10=1024 Buckets on level 2
@@ -74,7 +74,7 @@ public class HashFunctionCollisionBenchmark {
 	public void testThreeLevel() {
 
 		// Define numbers of buckets on each level
-		RangeCalculator[] rangeCalculators = { 
+		RangeCalculator[] rangeCalculators = {
 				new LastBitsToRange(10), // 2^10=1024 Buckets on level 0
 				new LastBitsToRange(10), // 2^10=1024 Buckets on level 1
 				new LastBitsToRange(10) }; // 2^10=1024 Buckets on level 2
@@ -100,7 +100,7 @@ public class HashFunctionCollisionBenchmark {
 	public void testRandom() {
 
 		// Define numbers of buckets on each level
-		RangeCalculator[] rangeCalculators = { 
+		RangeCalculator[] rangeCalculators = {
 				new LastBitsToRange(10), // 2^10=1024 Buckets on level 0
 				new LastBitsToRange(10), // 2^10=1024 Buckets on level 1
 				new LastBitsToRange(10) }; // 2^10=1024 Buckets on level 2
@@ -126,7 +126,7 @@ public class HashFunctionCollisionBenchmark {
 	public void testTwoLevel() {
 
 		// Define numbers of buckets on each level
-		RangeCalculator[] rangeCalculators = { 
+		RangeCalculator[] rangeCalculators = {
 				new LastBitsToRange(12),	// 2^12=4096 Buckets on level 0
 				new LastBitsToRange(12) };	// 2^12=4096 Buckets on level 1
 
@@ -158,7 +158,7 @@ class MultiLevelHashTester {
 	private final ArrayList<SortedMap<Integer, Integer>> bucketSizesPerLevel;
 
 	/**
-	 * 
+	 *
 	 * @param hashFunction
 	 *            HashFunction to be tested
 	 * @param importIterator
@@ -183,7 +183,7 @@ class MultiLevelHashTester {
 	/**
 	 * Run the test by: - Adding values from iterator to map - Creating
 	 * histogram over bucket sizes per level - Printing histogram informations
-	 * 
+	 *
 	 * @param boundaries
 	 *            Expected results for each level
 	 */
@@ -327,7 +327,7 @@ class MultiLevelHashTester {
 
 	/**
 	 * Create histogram over bucket sizes
-	 * 
+	 *
 	 * @param map
 	 *            Map to be analyzed
 	 * @param level
@@ -383,7 +383,7 @@ class MultiLevelHashTester {
 
 	/**
 	 * Expected results for bucket sizes per level
-	 * 
+	 *
 	 *
 	 */
 	static class BucketBoundaries {
@@ -395,8 +395,8 @@ class MultiLevelHashTester {
 		private double percentOutOfRange;
 
 		/**
-		 * 
-		 * 
+		 *
+		 *
 		 * @param lowerBound Lower bound for bucket sizes
 		 * @param upperBound Upper bound for bucket sizes
 		 * @param maxEmpty Maximum number of empty buckets
@@ -411,15 +411,15 @@ class MultiLevelHashTester {
 		}
 
 		/**
-		 * 
+		 *
 		 * @return Lower bound for bucket sizes
 		 */
 		public int getLowerBound() {
 			return lowerBound;
 		}
-		
+
 		/**
-		 * 
+		 *
 		 * @return Upper bound for bucket sizes
 		 */
 		public int getUpperBound() {
@@ -427,7 +427,7 @@ class MultiLevelHashTester {
 		}
 
 		/**
-		 * 
+		 *
 		 * @return Maximum number of empty buckets
 		 */
 		public int getMaxEmpty() {
@@ -435,7 +435,7 @@ class MultiLevelHashTester {
 		}
 
 		/**
-		 * 
+		 *
 		 * @return Maximum percentage of buckets out of range
 		 */
 		public double getPercentOutOfRange() {

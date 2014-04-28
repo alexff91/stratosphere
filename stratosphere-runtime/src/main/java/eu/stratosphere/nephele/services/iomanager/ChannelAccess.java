@@ -24,8 +24,8 @@ import java.nio.channels.FileChannel;
  * A base class for readers and writers that read data from I/O manager channels, or write data to them.
  * Requests handled by channels that inherit from this class are executed asynchronously, which allows
  * write-behind for writers and pre-fetching for readers.
- * 
- * 
+ *
+ *
  * @param <T> The buffer type used for the underlying IO operations.
  */
 public abstract class ChannelAccess<T, R extends IORequest>
@@ -39,25 +39,25 @@ public abstract class ChannelAccess<T, R extends IORequest>
 	 * A file channel for NIO access to the file.
 	 */
 	protected final FileChannel fileChannel;
-	
+
 	/**
 	 * A request queue for submitting asynchronous requests to the corresponding
 	 * IO worker thread.
 	 */
 	protected final RequestQueue<R> requestQueue;
-	
+
 	/**
 	 * An exception that was encountered by the asynchronous request handling thread.
 	 */
 	protected volatile IOException exception;
-	
-	
+
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Creates a new channel to the path indicated by the given ID. The channel hands IO requests to
 	 * the given request queue to be processed.
-	 * 
+	 *
 	 * @param channelID The id describing the path of the file that the channel accessed.
 	 * @param requestQueue The queue that this channel hands its IO requests to.
 	 * @param writeEnabled Flag describing whether the channel should be opened in read/write mode, rather
@@ -70,10 +70,10 @@ public abstract class ChannelAccess<T, R extends IORequest>
 		if (channelID == null || requestQueue == null) {
 			throw new NullPointerException();
 		}
-		
+
 		this.id = channelID;
 		this.requestQueue = requestQueue;
-		
+
 		try {
 			RandomAccessFile file = new RandomAccessFile(id.getPath(), writeEnabled ? "rw" : "r");
 			this.fileChannel = file.getChannel();
@@ -82,40 +82,40 @@ public abstract class ChannelAccess<T, R extends IORequest>
 			throw new IOException("Channel to path '" + channelID.getPath() + "' could not be opened.", e);
 		}
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Checks, whether this channel has been closed;
-	 * 
+	 *
 	 * @return True, if the channel has been closed, false otherwise.
 	 */
 	public abstract boolean isClosed();
-	
+
 	/**
 	 * This method is invoked by the asynchronous I/O thread to return a buffer after the I/O request
 	 * completed.
-	 * 
+	 *
 	 * @param buffer The buffer to be returned.
 	 */
-	protected abstract void returnBuffer(T buffer); 
-	
+	protected abstract void returnBuffer(T buffer);
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Gets the channel ID of this channel.
-	 * 
+	 *
 	 * @return This channel's ID.
 	 */
 	public final Channel.ID getChannelID()
 	{
 		return this.id;
 	}
-	
+
 	/**
 	 * Checks the exception state of this channel. The channel is erroneous, if one of its requests could not
 	 * be processed correctly.
-	 * 
+	 *
 	 * @throws IOException Thrown, if the channel is erroneous. The thrown exception contains the original exception
 	 *                     that defined the erroneous state as its cause.
 	 */
@@ -125,7 +125,7 @@ public abstract class ChannelAccess<T, R extends IORequest>
 			throw new IOException("The channel is erroneous.", this.exception);
 		}
 	}
-	
+
 	/**
 	 * Deletes this channel by physically removing the file beneath it.
 	 * This method may only be called on a closed channel.
@@ -135,7 +135,7 @@ public abstract class ChannelAccess<T, R extends IORequest>
 		if (this.fileChannel.isOpen()) {
 			throw new IllegalStateException("Cannot delete a channel that is open.");
 		}
-	
+
 		// make a best effort to delete the file. Don't report exceptions.
 		try {
 			File f = new File(this.id.getPath());
@@ -144,22 +144,22 @@ public abstract class ChannelAccess<T, R extends IORequest>
 			}
 		} catch (Throwable t) {}
 	}
-	
+
 	/**
 	 * Handles a processed <tt>Buffer</tt>. This method is invoked by the
 	 * asynchronous IO worker threads upon completion of the IO request with the
 	 * provided buffer and/or an exception that occurred while processing the request
 	 * for that buffer.
-	 * 
+	 *
 	 * @param buffer The buffer to be processed.
 	 * @param ex The exception that occurred in the I/O threads when processing the buffer's request.
 	 */
 	final void handleProcessedBuffer(T buffer, IOException ex) {
-		
+
 		if (ex != null && this.exception == null) {
 			this.exception = ex;
 		}
-		
+
 		returnBuffer(buffer);
 	}
 }

@@ -19,8 +19,8 @@ import eu.stratosphere.util.Visitor;
  *
  */
 public interface IterationPlanNode {
-	
+
 	void acceptForStepFunction(Visitor<PlanNode> visitor);
-	
+
 	IterationNode getIterationNode();
 }

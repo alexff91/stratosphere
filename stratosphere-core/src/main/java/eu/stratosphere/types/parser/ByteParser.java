@@ -15,25 +15,25 @@ package eu.stratosphere.types.parser;
 
 
 public class ByteParser extends FieldParser<Byte> {
-	
+
 	private byte result;
-	
+
 	@Override
 	public int parseField(byte[] bytes, int startPos, int limit, char delimiter, Byte reusable) {
 		int val = 0;
 		boolean neg = false;
-		
+
 		if (bytes[startPos] == '-') {
 			neg = true;
 			startPos++;
-			
+
 			// check for empty field with only the sign
 			if (startPos == limit || bytes[startPos] == delimiter) {
 				setErrorState(ParseErrorState.NUMERIC_VALUE_ORPHAN_SIGN);
 				return -1;
 			}
 		}
-		
+
 		for (int i = startPos; i < limit; i++) {
 			if (bytes[i] == delimiter) {
 				this.result = (byte) (neg ? -val : val);
@@ -45,17 +45,17 @@ public class ByteParser extends FieldParser<Byte> {
 			}
 			val *= 10;
 			val += bytes[i] - 48;
-			
+
 			if (val > Byte.MAX_VALUE && (!neg || val > -Byte.MIN_VALUE)) {
 				setErrorState(ParseErrorState.NUMERIC_VALUE_OVERFLOW_UNDERFLOW);
 				return -1;
 			}
 		}
-		
+
 		this.result = (byte) (neg ? -val : val);
 		return limit;
 	}
-	
+
 	@Override
 	public Byte createValue() {
 		return Byte.MIN_VALUE;

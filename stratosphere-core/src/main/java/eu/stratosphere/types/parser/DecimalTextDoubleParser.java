@@ -19,19 +19,19 @@ import eu.stratosphere.types.DoubleValue;
  * Parses a text field into a DoubleValue.
  */
 public class DecimalTextDoubleParser extends FieldParser<DoubleValue> {
-	
+
 	private DoubleValue result;
-	
+
 	@Override
 	public int parseField(byte[] bytes, int startPos, int limit, char delim, DoubleValue reusable) {
-		
+
 		int i = startPos;
 		final byte delByte = (byte) delim;
-		
+
 		while (i < limit && bytes[i] != delByte) {
 			i++;
 		}
-		
+
 		String str = new String(bytes, startPos, i-startPos);
 		try {
 			double value = Double.parseDouble(str);
@@ -43,7 +43,7 @@ public class DecimalTextDoubleParser extends FieldParser<DoubleValue> {
 			return -1;
 		}
 	}
-	
+
 	@Override
 	public DoubleValue createValue() {
 		return new DoubleValue();

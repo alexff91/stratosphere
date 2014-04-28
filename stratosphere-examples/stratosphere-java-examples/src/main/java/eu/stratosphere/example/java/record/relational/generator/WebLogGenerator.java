@@ -73,7 +73,7 @@ public class WebLogGenerator {
 	 * Generates the files for the documents relation. The entries apply the
 	 * following format: <br />
 	 * <code>URL | Content</code>
-	 * 
+	 *
 	 * @param noDocs
 	 *            Number of entries for the documents relation
 	 * @param noFiles
@@ -133,7 +133,7 @@ public class WebLogGenerator {
 	 * Generates the files for the ranks relation. The ranks entries apply the
 	 * following format: <br />
 	 * <code>Rank | URL | Average Duration |\n</code>
-	 * 
+	 *
 	 * @param noDocs
 	 *            Number of entries in the documents relation
 	 * @param noFiles
@@ -180,7 +180,7 @@ public class WebLogGenerator {
 	 * Generates the files for the visits relation. The visits entries apply the
 	 * following format:<br />
 	 * <code>IP Address | URL | Date (YYYY-MM-DD) | Misc. Data (e.g. User-Agent) |\n</code>
-	 * 
+	 *
 	 * @param noVisits
 	 *            Number of entries for the visits relation
 	 * @param noDocs

@@ -28,31 +28,31 @@ public abstract class MessagingFunction<VertexKey extends Key, VertexValue exten
 	// --------------------------------------------------------------------------------------------
 	//  Public API Methods
 	// --------------------------------------------------------------------------------------------
-	
+
 	public abstract void sendMessages(VertexKey vertexKey, VertexValue vertexValue) throws Exception;
-	
+
 	public void setup(Configuration config) throws Exception {}
-	
+
 	public void preSuperstep() throws Exception {}
-	
+
 	public void postSuperstep() throws Exception {}
-	
-	
+
+
 	public Iterator<Edge<VertexKey, EdgeValue>> getOutgoingEdges() {
 		if (edgesUsed) {
 			throw new IllegalStateException("Can use either 'getOutgoingEdges()' or 'sendMessageToAllTargets()'.");
 		}
-		
+
 		edgesUsed = true;
 		edgeIter.set(edges);
 		return edgeIter;
 	}
-	
+
 	public void sendMessageToAllNeighbors(Message m) {
 		if (edgesUsed) {
 			throw new IllegalStateException("Can use either 'getOutgoingEdges()' or 'sendMessageToAllTargets()'.");
 		}
-		
+
 		edgesUsed = true;
 		while (edges.hasNext()) {
 			Record next = edges.next();
@@ -62,7 +62,7 @@ public abstract class MessagingFunction<VertexKey extends Key, VertexValue exten
 			out.collect(outValue);
 		}
 	}
-	
+
 	public void sendMessageTo(VertexKey target, Message m) {
 		outValue.setField(0, target);
 		outValue.setField(1, m);
@@ -70,15 +70,15 @@ public abstract class MessagingFunction<VertexKey extends Key, VertexValue exten
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	public int getSuperstep() {
 		return this.runtimeContext.getSuperstepNumber();
 	}
-	
+
 	public <T extends Value> Aggregator<T> getIterationAggregator(String name) {
 		return this.runtimeContext.<T>getIterationAggregator(name);
 	}
-	
+
 	public <T extends Value> T getPreviousIterationAggregate(String name) {
 		return this.runtimeContext.<T>getPreviousIterationAggregate(name);
 	}
@@ -86,22 +86,22 @@ public abstract class MessagingFunction<VertexKey extends Key, VertexValue exten
 	// --------------------------------------------------------------------------------------------
 	//  internal methods and state
 	// --------------------------------------------------------------------------------------------
-	
+
 	private Record outValue;
-	
+
 	private IterationRuntimeContext runtimeContext;
-	
+
 	private Iterator<Record> edges;
-	
+
 	private Collector<Record> out;
-	
+
 	private EdgesIterator<VertexKey, EdgeValue> edgeIter;
-	
+
 	private Class<VertexKey> keyClass;
-	
+
 	private boolean edgesUsed;
-	
-	
+
+
 	@SuppressWarnings("unchecked")
 	void init(IterationRuntimeContext context, VertexKey keyHolder, EdgeValue edgeValueHolder) {
 		this.runtimeContext = context;
@@ -109,32 +109,32 @@ public abstract class MessagingFunction<VertexKey extends Key, VertexValue exten
 		this.outValue = new Record();
 		this.keyClass = (Class<VertexKey>) keyHolder.getClass();
 	}
-	
+
 	void set(Iterator<Record> edges, Collector<Record> out) {
 		this.edges = edges;
 		this.out = out;
 		this.edgesUsed = false;
 	}
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	private static final class EdgesIterator<VertexKey extends Key, EdgeValue extends Value> implements Iterator<Edge<VertexKey, EdgeValue>> {
 
 		private Iterator<Record> input;
 		private VertexKey keyHolder;
 		private EdgeValue edgeValueHolder;
-		
+
 		private Edge<VertexKey, EdgeValue> edge = new Edge<VertexKey, EdgeValue>();
-		
+
 		EdgesIterator(VertexKey keyHolder, EdgeValue edgeValueHolder) {
 			this.keyHolder = keyHolder;
 			this.edgeValueHolder = edgeValueHolder;
 		}
-		
+
 		void set(Iterator<Record> input) {
 			this.input = input;
 		}
-		
+
 		@Override
 		public boolean hasNext() {
 			return input.hasNext();

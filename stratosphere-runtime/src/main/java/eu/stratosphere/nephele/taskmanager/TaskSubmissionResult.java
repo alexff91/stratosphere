@@ -19,13 +19,13 @@ import eu.stratosphere.nephele.executiongraph.ExecutionVertexID;
  * A <code>TaskSubmissionResult</code> is used to report the results
  * of a task submission. It contains the ID of the submitted task, a return code and
  * a description. In case of a submission error the description includes an error message.
- * 
+ *
  */
 public class TaskSubmissionResult extends AbstractTaskResult {
 
 	/**
 	 * Constructs a new task submission result.
-	 * 
+	 *
 	 * @param vertexID
 	 *        the task ID this result belongs to
 	 * @param returnCode

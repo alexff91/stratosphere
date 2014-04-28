@@ -23,7 +23,7 @@ import eu.stratosphere.types.Value;
 import eu.stratosphere.util.Collector;
 
 /**
- * 
+ *
  * <VertexKey> The vertex key type.
  * <VertexValue> The vertex value type.
  * <Message> The message type.
@@ -33,52 +33,52 @@ public abstract class VertexUpdateFunction<VertexKey extends Key, VertexValue ex
 	// --------------------------------------------------------------------------------------------
 	//  Public API Methods
 	// --------------------------------------------------------------------------------------------
-	
+
 	public abstract void updateVertex(VertexKey vertexKey, VertexValue vertexValue, MessageIterator<Message> inMessages) throws Exception;
-	
+
 	public void setup(Configuration config) throws Exception {}
-	
+
 	public void preSuperstep() throws Exception {}
-	
+
 	public void postSuperstep() throws Exception {}
-	
+
 	public void setNewVertexValue(VertexValue newValue) {
 		outVal.setField(1, newValue);
 		out.collect(outVal);
 	}
-	
+
 	public int getSuperstep() {
 		return this.runtimeContext.getSuperstepNumber();
 	}
-	
+
 	public <T extends Value> Aggregator<T> getIterationAggregator(String name) {
 		return this.runtimeContext.<T>getIterationAggregator(name);
 	}
-	
+
 	public <T extends Value> T getPreviousIterationAggregate(String name) {
 		return this.runtimeContext.<T>getPreviousIterationAggregate(name);
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 	//  internal methods
 	// --------------------------------------------------------------------------------------------
-	
+
 	private IterationRuntimeContext runtimeContext;
-	
+
 	private Collector<Record> out;
-	
+
 	private Record outVal;
-	
-	
+
+
 	void init(IterationRuntimeContext context) {
 		this.runtimeContext = context;
 	}
-	
+
 	void setOutput(Record val, Collector<Record> out) {
 		this.out = out;
 		this.outVal = val;
 	}
-	
+
 	// serializability
 	private static final long serialVersionUID = 1L;
 }

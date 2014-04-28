@@ -18,7 +18,7 @@ import eu.stratosphere.nephele.template.AbstractGenericInputTask;
 
 /**
  * This class implements the producer task which produces test records for the speed test.
- * 
+ *
  */
 public final class SpeedTestProducer extends AbstractGenericInputTask {
 

@@ -19,14 +19,14 @@ import java.util.Iterator;
 import eu.stratosphere.api.common.Plan;
 import eu.stratosphere.api.common.Program;
 import eu.stratosphere.api.common.ProgramDescription;
+import eu.stratosphere.api.common.operators.DeltaIteration;
 import eu.stratosphere.api.common.operators.FileDataSink;
 import eu.stratosphere.api.common.operators.FileDataSource;
-import eu.stratosphere.api.common.operators.DeltaIteration;
+import eu.stratosphere.api.java.record.functions.FunctionAnnotation.ConstantFields;
+import eu.stratosphere.api.java.record.functions.FunctionAnnotation.ConstantFieldsFirst;
 import eu.stratosphere.api.java.record.functions.JoinFunction;
 import eu.stratosphere.api.java.record.functions.MapFunction;
 import eu.stratosphere.api.java.record.functions.ReduceFunction;
-import eu.stratosphere.api.java.record.functions.FunctionAnnotation.ConstantFields;
-import eu.stratosphere.api.java.record.functions.FunctionAnnotation.ConstantFieldsFirst;
 import eu.stratosphere.api.java.record.io.CsvInputFormat;
 import eu.stratosphere.api.java.record.io.CsvOutputFormat;
 import eu.stratosphere.api.java.record.operators.JoinOperator;
@@ -41,7 +41,7 @@ import eu.stratosphere.util.Collector;
  *
  */
 public class WorksetConnectedComponents implements Program, ProgramDescription {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	public static final class DuplicateLongMap extends MapFunction implements Serializable {
@@ -53,7 +53,7 @@ public class WorksetConnectedComponents implements Program, ProgramDescription {
 			out.collect(record);
 		}
 	}
-	
+
 	/**
 	 * UDF that joins a (Vertex-ID, Component-ID) pair that represents the current component that
 	 * a vertex is associated with, with a (Source-Vertex-ID, Target-VertexID) edge. The function
@@ -71,7 +71,7 @@ public class WorksetConnectedComponents implements Program, ProgramDescription {
 			out.collect(this.result);
 		}
 	}
-	
+
 	/**
 	 * Minimum aggregation over (Vertex-ID, Component-ID) pairs, selecting the pair with the smallest Comonent-ID.
 	 */
@@ -83,13 +83,13 @@ public class WorksetConnectedComponents implements Program, ProgramDescription {
 		private final Record result = new Record();
 		private final LongValue vertexId = new LongValue();
 		private final LongValue minComponentId = new LongValue();
-		
+
 		@Override
 		public void reduce(Iterator<Record> records, Collector<Record> out) {
 
 			final Record first = records.next();
 			final long vertexID = first.getField(0, LongValue.class).getValue();
-			
+
 			long minimumComponentID = first.getField(1, LongValue.class).getValue();
 
 			while (records.hasNext()) {
@@ -98,7 +98,7 @@ public class WorksetConnectedComponents implements Program, ProgramDescription {
 					minimumComponentID = candidateComponentID;
 				}
 			}
-			
+
 			this.vertexId.setValue(vertexID);
 			this.minComponentId.setValue(minimumComponentID);
 			this.result.setField(0, this.vertexId);
@@ -106,7 +106,7 @@ public class WorksetConnectedComponents implements Program, ProgramDescription {
 			out.collect(this.result);
 		}
 	}
-	
+
 	/**
 	 * UDF that joins a candidate (Vertex-ID, Component-ID) pair with another (Vertex-ID, Component-ID) pair.
 	 * Returns the candidate pair, if the candidate's Component-ID is smaller.
@@ -117,16 +117,16 @@ public class WorksetConnectedComponents implements Program, ProgramDescription {
 
 		@Override
 		public void join(Record newVertexWithComponent, Record currentVertexWithComponent, Collector<Record> out){
-	
+
 			long candidateComponentID = newVertexWithComponent.getField(1, LongValue.class).getValue();
 			long currentComponentID = currentVertexWithComponent.getField(1, LongValue.class).getValue();
-	
+
 			if (candidateComponentID < currentComponentID) {
 				out.collect(newVertexWithComponent);
 			}
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public Plan getPlan(String... args) {
@@ -139,16 +139,16 @@ public class WorksetConnectedComponents implements Program, ProgramDescription {
 
 		// data source for initial vertices
 		FileDataSource initialVertices = new FileDataSource(new CsvInputFormat(' ', LongValue.class), verticesInput, "Vertices");
-		
+
 		MapOperator verticesWithId = MapOperator.builder(DuplicateLongMap.class).input(initialVertices).name("Assign Vertex Ids").build();
-		
+
 		// the loop takes the vertices as the solution set and changed vertices as the workset
 		// initially, all vertices are changed
 		DeltaIteration iteration = new DeltaIteration(0, "Connected Components Iteration");
 		iteration.setInitialSolutionSet(verticesWithId);
 		iteration.setInitialWorkset(verticesWithId);
 		iteration.setMaximumNumberOfIterations(maxIterations);
-		
+
 		// data source for the edges
 		FileDataSource edges = new FileDataSource(new CsvInputFormat(' ', LongValue.class, LongValue.class), edgeInput, "Edges");
 
@@ -164,14 +164,14 @@ public class WorksetConnectedComponents implements Program, ProgramDescription {
 				.input(joinWithNeighbors)
 				.name("Find Minimum Candidate Id")
 				.build();
-		
+
 		// join candidates with the solution set and update if the candidate component-id is smaller
 		JoinOperator updateComponentId = JoinOperator.builder(new UpdateComponentIdMatch(), LongValue.class, 0, 0)
 				.input1(minCandidateId)
 				.input2(iteration.getSolutionSet())
 				.name("Update Component Id")
 				.build();
-		
+
 		iteration.setNextWorkset(updateComponentId);
 		iteration.setSolutionSetDelta(updateComponentId);
 

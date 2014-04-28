@@ -31,7 +31,7 @@ public class IntegerRecord implements IOReadableWritable {
 
 	/**
 	 * Constructs a new integer record with the given integer value.
-	 * 
+	 *
 	 * @param value
 	 *        the integer value this record should wrap up
 	 */
@@ -47,7 +47,7 @@ public class IntegerRecord implements IOReadableWritable {
 
 	/**
 	 * Returns the value of this integer record.
-	 * 
+	 *
 	 * @return the value of this integer record
 	 */
 	public int getValue() {
@@ -56,7 +56,7 @@ public class IntegerRecord implements IOReadableWritable {
 
 	/**
 	 * Set the value of this integer record.
-	 * 
+	 *
 	 * @param value
 	 *        the new value for this integer record
 	 */

@@ -24,11 +24,6 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.stratosphere.types.DoubleValue;
-import eu.stratosphere.types.IntValue;
-import eu.stratosphere.types.NullValue;
-import eu.stratosphere.types.StringValue;
-
 public class PrimitiveDataTypeTest {
 
 	private DataOutputStream mOut;
@@ -158,7 +153,7 @@ public class PrimitiveDataTypeTest {
 			string7.charAt(5);
 			Assert.fail("Exception should have been thrown when accessing characters out of bounds.");
 		} catch (IndexOutOfBoundsException iOOBE) {}
-		
+
 		// test stream out/input
 		try {
 			string0.write(mOut);
@@ -190,38 +185,38 @@ public class PrimitiveDataTypeTest {
 				string7n.charAt(5);
 				Assert.fail("Exception should have been thrown when accessing characters out of bounds.");
 			} catch (IndexOutOfBoundsException iOOBE) {}
-			
+
 		} catch (Exception e) {
 			Assert.assertTrue(false);
 		}
 	}
-	
+
 	@Test
 	public void testPactNull() {
-		
+
 		final NullValue pn1 = new NullValue();
 		final NullValue pn2 = new NullValue();
-		
+
 		Assert.assertEquals("PactNull not equal to other PactNulls.", pn1, pn2);
 		Assert.assertEquals("PactNull not equal to other PactNulls.", pn2, pn1);
-		
+
 		Assert.assertFalse("PactNull equal to other null.", pn1.equals(null));
-		
+
 		// test serialization
 		final NullValue pn = new NullValue();
 		final int numWrites = 13;
-		
+
 		try {
 			// write it multiple times
 			for (int i = 0; i < numWrites; i++) {
 				pn.write(mOut);
 			}
-			
+
 			// read it multiple times
 			for (int i = 0; i < numWrites; i++) {
 				pn.read(mIn);
 			}
-			
+
 			Assert.assertEquals("Reading PactNull does not consume the same data as was written.", mIn.available(), 0);
 		}
 		catch (IOException ioex) {

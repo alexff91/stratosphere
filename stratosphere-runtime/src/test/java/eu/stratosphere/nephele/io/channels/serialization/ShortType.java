@@ -23,25 +23,25 @@ import java.util.Random;
 public class ShortType implements SerializationTestType
 {
 	private short value;
-	
+
 
 	public ShortType()
 	{
 		this.value = (short) 0;
 	}
-	
+
 	private ShortType(short value)
 	{
 		this.value = value;
 	}
-	
+
 
 	@Override
 	public ShortType getRandom(Random rnd)
 	{
 		return new ShortType((short) rnd.nextInt(65536));
 	}
-	
+
 
 	@Override
 	public void write(DataOutput out) throws IOException

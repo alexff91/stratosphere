@@ -16,6 +16,8 @@ package eu.stratosphere.pact.runtime.resettable;
 import java.util.ArrayList;
 import java.util.List;
 
+import junit.framework.Assert;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,24 +27,22 @@ import eu.stratosphere.nephele.services.memorymanager.MemoryManager;
 import eu.stratosphere.nephele.services.memorymanager.spi.DefaultMemoryManager;
 import eu.stratosphere.nephele.template.AbstractInvokable;
 import eu.stratosphere.pact.runtime.plugable.pactrecord.RecordSerializer;
-import eu.stratosphere.pact.runtime.resettable.BlockResettableMutableObjectIterator;
 import eu.stratosphere.pact.runtime.test.util.DummyInvokable;
 import eu.stratosphere.pact.runtime.test.util.MutableObjectIteratorWrapper;
 import eu.stratosphere.types.IntValue;
 import eu.stratosphere.types.Record;
 import eu.stratosphere.util.MutableObjectIterator;
-import junit.framework.Assert;
 
 public class BlockResettableMutableObjectIteratorTest
 {
 	private static final int MEMORY_CAPACITY = 3 * 128 * 1024;
-	
+
 	private static final int NUM_VALUES = 20000;
-	
+
 	private final TypeSerializer<Record> serializer = RecordSerializer.get();
-	
+
 	private final AbstractInvokable memOwner = new DummyInvokable();
-	
+
 	private MemoryManager memman;
 
 	private MutableObjectIterator<Record> reader;
@@ -53,26 +53,26 @@ public class BlockResettableMutableObjectIteratorTest
 	public void startup() {
 		// set up IO and memory manager
 		this.memman = new DefaultMemoryManager(MEMORY_CAPACITY);
-		
+
 		// create test objects
 		this.objects = new ArrayList<Record>(20000);
 		for (int i = 0; i < NUM_VALUES; ++i) {
 			this.objects.add(new Record(new IntValue(i)));
 		}
-		
+
 		// create the reader
 		this.reader = new MutableObjectIteratorWrapper(this.objects.iterator());
 	}
-	
+
 	@After
 	public void shutdown() {
 		this.objects = null;
-		
+
 		// check that the memory manager got all segments back
 		if (!this.memman.verifyEmpty()) {
 			Assert.fail("A memory leak has occurred: Not all memory was properly returned to the memory manager.");
 		}
-		
+
 		this.memman.shutdown();
 		this.memman = null;
 	}

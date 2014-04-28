@@ -25,7 +25,7 @@ public final class ShortComparator extends BasicTypeComparator<Short> {
 
 	private static final long serialVersionUID = 1L;
 
-	
+
 	public ShortComparator(boolean ascending) {
 		super(ascending);
 	}

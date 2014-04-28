@@ -23,7 +23,7 @@ import eu.stratosphere.nephele.managementgraph.ManagementVertexID;
 /**
  * A {@link VertexAssignmentEvent} can be used to notify other objects about changes in the assignment of vertices to
  * instances.
- * 
+ *
  */
 public final class VertexAssignmentEvent extends AbstractEvent implements ManagementEvent {
 
@@ -44,7 +44,7 @@ public final class VertexAssignmentEvent extends AbstractEvent implements Manage
 
 	/**
 	 * Constructs a new event.
-	 * 
+	 *
 	 * @param timestamp
 	 *        the timestamp of the event
 	 * @param managementVertexID
@@ -74,7 +74,7 @@ public final class VertexAssignmentEvent extends AbstractEvent implements Manage
 
 	/**
 	 * Returns the ID of the vertex this event refers to.
-	 * 
+	 *
 	 * @return the ID of the vertex this event refers to
 	 */
 	public ManagementVertexID getVertexID() {
@@ -83,7 +83,7 @@ public final class VertexAssignmentEvent extends AbstractEvent implements Manage
 
 	/**
 	 * Returns the name of the instance the vertex is now assigned to.
-	 * 
+	 *
 	 * @return the name of the instance the vertex is now assigned to
 	 */
 	public String getInstanceName() {
@@ -92,7 +92,7 @@ public final class VertexAssignmentEvent extends AbstractEvent implements Manage
 
 	/**
 	 * Returns the type of the instance the vertex is now assigned to.
-	 * 
+	 *
 	 * @return the type of the instance the vertex is now assigned to
 	 */
 	public String getInstanceType() {

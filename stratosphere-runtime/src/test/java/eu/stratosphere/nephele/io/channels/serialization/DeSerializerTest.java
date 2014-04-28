@@ -52,13 +52,13 @@ public class DeSerializerTest
 		new UnsignedShortType(),
 		new UTFStringType()
 	};
-	
+
 	private static final long SEED = 64871654635745873L;
-	
+
 	private Random rnd;
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Before
 	public void setup()
 	{
@@ -66,20 +66,20 @@ public class DeSerializerTest
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Test
 	public void testSequenceOfIntegersWithAlignedBuffers()
 	{
 		try {
 			final Random rnd = this.rnd;
 			final int NUM_INTS = 1000000;
-			
+
 			final Iterator<SerializationTestType> intSource = new Iterator<SerializationTestType>()
 			{
 				private final Random random = rnd;
 				private final int limit = NUM_INTS;
 				private int pos = 0;
-				
+
 				@Override
 				public boolean hasNext() {
 					return this.pos < this.limit;
@@ -98,7 +98,7 @@ public class DeSerializerTest
 					throw new UnsupportedOperationException();
 				}
 			};
-			
+
 			testSequenceOfTypes(intSource, 2048);
 		}
 		catch (Exception e) {
@@ -106,20 +106,20 @@ public class DeSerializerTest
 			fail("Test encountered an unexpected exception.");
 		}
 	}
-	
+
 	@Test
 	public void testSequenceOfIntegersWithUnalignedBuffers()
 	{
 		try {
 			final Random rnd = this.rnd;
 			final int NUM_INTS = 1000000;
-			
+
 			final Iterator<SerializationTestType> intSource = new Iterator<SerializationTestType>()
 			{
 				private final Random random = rnd;
 				private final int limit = NUM_INTS;
 				private int pos = 0;
-				
+
 				@Override
 				public boolean hasNext() {
 					return this.pos < this.limit;
@@ -138,7 +138,7 @@ public class DeSerializerTest
 					throw new UnsupportedOperationException();
 				}
 			};
-			
+
 			testSequenceOfTypes(intSource, 2047);
 		}
 		catch (Exception e) {
@@ -146,20 +146,20 @@ public class DeSerializerTest
 			fail("Test encountered an unexpected exception.");
 		}
 	}
-	
+
 	@Test
 	public void testRandomTypes()
 	{
 		try {
 			final Random rnd = this.rnd;
 			final int NUM_TYPES = 1000000;
-			
+
 			final Iterator<SerializationTestType> randomSource = new Iterator<SerializationTestType>()
 			{
 				private final Random random = rnd;
 				private final int limit = NUM_TYPES;
 				private int pos = 0;
-				
+
 				@Override
 				public boolean hasNext() {
 					return this.pos < this.limit;
@@ -178,7 +178,7 @@ public class DeSerializerTest
 					throw new UnsupportedOperationException();
 				}
 			};
-			
+
 			// test with an odd buffer size to force many unaligned cases
 			testSequenceOfTypes(randomSource, 512 * 7);
 		}
@@ -187,29 +187,29 @@ public class DeSerializerTest
 			fail("Test encountered an unexpected exception.");
 		}
 	}
-	
+
 	private static final void testSequenceOfTypes(Iterator<SerializationTestType> sequence, int bufferSize) throws Exception
 	{
 		final ArrayDeque<SerializationTestType> elements = new ArrayDeque<SerializationTestType>(512);
-		
+
 		final PipeChannel channel = new PipeChannel(bufferSize);
 		final SerializationBuffer<SerializationTestType> serBuffer = new SerializationBuffer<SerializationTestType>();
 		final DefaultDeserializer<SerializationTestType> deserBuffer = new DefaultDeserializer<SerializationTestType>(null);
-		
+
 		while (sequence.hasNext()) {
 			final SerializationTestType type = sequence.next();
-			
+
 			// serialize the record
 			serBuffer.serialize(type);
 			elements.addLast(type);
-			
+
 			// write the serialized record
 			while (true) {
 				serBuffer.read(channel);
 				if (serBuffer.dataLeftFromPreviousSerialization()) {
 					// current buffer is full, we need to start de-serializing to make space
 					channel.flip();
-					
+
 					while (!elements.isEmpty()) {
 						final SerializationTestType reference = elements.pollFirst();
 						final SerializationTestType result = deserBuffer.readData(reference.getClass().newInstance(), channel);
@@ -222,50 +222,50 @@ public class DeSerializerTest
 							assertEquals("The deserialized element is not equal to the serialized element.", reference, result);
 						}
 					}
-					
+
 					channel.clear();
 				} else {
 					break;
 				}
 			}
 		}
-		
+
 		// check the remaining records in the buffers...
 		channel.flip();
 		while (!elements.isEmpty()) {
 			final SerializationTestType reference = elements.pollFirst();
 			final SerializationTestType result = deserBuffer.readData(reference.getClass().newInstance(), channel);
-			
+
 			assertNotNull(result);
 			assertEquals("The deserialized element is not equal to the serialized element.", reference, result);
 		}
 	}
-	
+
 	// ============================================================================================
-	
+
 	private static final class PipeChannel implements WritableByteChannel, ReadableByteChannel
 	{
 		private final byte[] buffer;
-		
+
 		private int position;
 		private int limit;
-		
-		
+
+
 		PipeChannel(int capacity) {
 			this.buffer = new byte[capacity];
 			this.limit = capacity;
 		}
-		
+
 		public void flip() {
 			this.limit = this.position;
 			this.position = 0;
 		}
-		
+
 		public void clear() {
 			this.position = 0;
 			this.limit = this.buffer.length;
 		}
-		
+
 		@Override
 		public boolean isOpen() {
 			return true;
@@ -294,6 +294,6 @@ public class DeSerializerTest
 			this.position += toPut;
 			return toPut;
 		}
-		
+
 	}
 }

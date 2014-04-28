@@ -23,25 +23,25 @@ import java.util.Random;
 public class UnsignedByteType implements SerializationTestType
 {
 	private int value;
-	
+
 
 	public UnsignedByteType()
 	{
 		this.value = 0;
 	}
-	
+
 	private UnsignedByteType(int value)
 	{
 		this.value = value;
 	}
-	
+
 
 	@Override
 	public UnsignedByteType getRandom(Random rnd)
 	{
 		return new UnsignedByteType(rnd.nextInt(128) + 128);
 	}
-	
+
 
 	@Override
 	public void write(DataOutput out) throws IOException

@@ -38,7 +38,7 @@ import eu.stratosphere.nephele.util.EnumUtils;
  * client interface, however, without exposing Nephele's internal scheduling data structures.
  * <p>
  * This class is not thread-safe.
- * 
+ *
  */
 public final class ManagementGraph extends ManagementAttachment implements IOReadableWritable {
 
@@ -64,7 +64,7 @@ public final class ManagementGraph extends ManagementAttachment implements IORea
 
 	/**
 	 * Constructs a new management graph with the given job ID.
-	 * 
+	 *
 	 * @param jobID
 	 *        the job ID of the graph.
 	 */
@@ -81,7 +81,7 @@ public final class ManagementGraph extends ManagementAttachment implements IORea
 
 	/**
 	 * Adds a new management stage to the graph.
-	 * 
+	 *
 	 * @param mangementStage
 	 *        the management stage to be added.
 	 */
@@ -92,7 +92,7 @@ public final class ManagementGraph extends ManagementAttachment implements IORea
 
 	/**
 	 * Returns the ID of the job this graph describes.
-	 * 
+	 *
 	 * @return the ID of the job this graph describes
 	 */
 	public JobID getJobID() {
@@ -101,7 +101,7 @@ public final class ManagementGraph extends ManagementAttachment implements IORea
 
 	/**
 	 * Adds the given vertex to the graph's internal vertex map.
-	 * 
+	 *
 	 * @param id
 	 *        the ID of the vertex to be added
 	 * @param vertex
@@ -114,7 +114,7 @@ public final class ManagementGraph extends ManagementAttachment implements IORea
 
 	/**
 	 * Returns the vertex with the given ID from the graph's internal vertex map.
-	 * 
+	 *
 	 * @param id
 	 *        the ID of the vertex to be returned
 	 * @return the vertex with the given ID or <code>null</code> if no such vertex exists
@@ -126,7 +126,7 @@ public final class ManagementGraph extends ManagementAttachment implements IORea
 
 	/**
 	 * Returns the group vertex with the given ID from the graph's internal group vertex map.
-	 * 
+	 *
 	 * @param id
 	 *        the ID of the group vertex to be returned
 	 * @return the group vertex with the given ID or <code>null</code> if no such group vertex exists
@@ -138,7 +138,7 @@ public final class ManagementGraph extends ManagementAttachment implements IORea
 
 	/**
 	 * Adds the given group vertex to the graph's internal group vertex map.
-	 * 
+	 *
 	 * @param id
 	 *        the ID of the group vertex to be added
 	 * @param groupVertex
@@ -151,7 +151,7 @@ public final class ManagementGraph extends ManagementAttachment implements IORea
 
 	/**
 	 * Returns the number of stages in this management graph.
-	 * 
+	 *
 	 * @return the number of stages in this management graph
 	 */
 	public int getNumberOfStages() {
@@ -161,7 +161,7 @@ public final class ManagementGraph extends ManagementAttachment implements IORea
 
 	/**
 	 * Returns the management stage with the given index.
-	 * 
+	 *
 	 * @param index
 	 *        the index of the management stage to be returned
 	 * @return the management stage with the given index or <code>null</code> if no such management stage exists
@@ -177,7 +177,7 @@ public final class ManagementGraph extends ManagementAttachment implements IORea
 
 	/**
 	 * Returns the number of input group vertices in the management stage with the given index.
-	 * 
+	 *
 	 * @param stage
 	 *        the index to the management stage
 	 * @return the number of input group vertices in this stage, possibly 0.
@@ -193,7 +193,7 @@ public final class ManagementGraph extends ManagementAttachment implements IORea
 
 	/**
 	 * Returns the number of output group vertices in the management stage with the given index.
-	 * 
+	 *
 	 * @param stage
 	 *        the index to the management stage
 	 * @return the number of output group vertices in this stage, possibly 0.
@@ -209,7 +209,7 @@ public final class ManagementGraph extends ManagementAttachment implements IORea
 
 	/**
 	 * Returns the input group vertex at the given index in the given stage.
-	 * 
+	 *
 	 * @param stage
 	 *        the index to the management stage
 	 * @param index
@@ -228,7 +228,7 @@ public final class ManagementGraph extends ManagementAttachment implements IORea
 
 	/**
 	 * Returns the output group vertex at the given index in the given stage.
-	 * 
+	 *
 	 * @param stage
 	 *        the index to the management stage
 	 * @param index
@@ -247,7 +247,7 @@ public final class ManagementGraph extends ManagementAttachment implements IORea
 
 	/**
 	 * Returns the number of input vertices for the given stage.
-	 * 
+	 *
 	 * @param stage
 	 *        the index of the management stage
 	 * @return the number of input vertices for the given stage
@@ -263,7 +263,7 @@ public final class ManagementGraph extends ManagementAttachment implements IORea
 
 	/**
 	 * Returns the number of output vertices for the given stage.
-	 * 
+	 *
 	 * @param stage
 	 *        the index of the management stage
 	 * @return the number of input vertices for the given stage
@@ -279,7 +279,7 @@ public final class ManagementGraph extends ManagementAttachment implements IORea
 
 	/**
 	 * Returns the input vertex with the specified index for the given stage.
-	 * 
+	 *
 	 * @param stage
 	 *        the index of the stage
 	 * @param index
@@ -298,7 +298,7 @@ public final class ManagementGraph extends ManagementAttachment implements IORea
 
 	/**
 	 * Returns the output vertex with the specified index for the given stage.
-	 * 
+	 *
 	 * @param stage
 	 *        the index of the stage
 	 * @param index
@@ -317,7 +317,7 @@ public final class ManagementGraph extends ManagementAttachment implements IORea
 
 	/**
 	 * Returns an unmodifiable collection of all group vertices with no guarantees on their order.
-	 * 
+	 *
 	 * @return an unmodifiable collection of all group vertices with no guarantees on their order
 	 */
 	public Collection<ManagementGroupVertex> getGroupVertices() {
@@ -326,7 +326,7 @@ public final class ManagementGraph extends ManagementAttachment implements IORea
 
 	/**
 	 * Returns a list of group vertices sorted in topological order.
-	 * 
+	 *
 	 * @return a list of group vertices sorted in topological order
 	 */
 	public List<ManagementGroupVertex> getGroupVerticesInTopologicalOrder() {
@@ -366,7 +366,7 @@ public final class ManagementGraph extends ManagementAttachment implements IORea
 
 	/**
 	 * Returns a list of group vertices sorted in reverse topological order.
-	 * 
+	 *
 	 * @return a list of group vertices sorted in reverse topological order
 	 */
 	public List<ManagementGroupVertex> getGroupVerticesInReverseTopologicalOrder() {

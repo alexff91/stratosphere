@@ -20,7 +20,7 @@ import java.util.LinkedList;
 
 /**
  * This class represents a cluster of hosts within a multicast-tree.
- * 
+ *
  */
 
 public class MulticastCluster {
@@ -42,7 +42,7 @@ public class MulticastCluster {
 
 	/**
 	 * Returns the master-node of the current cluster.
-	 * 
+	 *
 	 * @return
 	 */
 	public TreeNode getMaster() {
@@ -64,7 +64,7 @@ public class MulticastCluster {
 
 	/**
 	 * Splits the cluster into an arbitrary number of clusters not exceeding maxsize.
-	 * 
+	 *
 	 * @param maxsize
 	 * @return
 	 */

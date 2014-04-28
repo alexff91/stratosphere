@@ -34,11 +34,11 @@ import eu.stratosphere.nephele.types.IntegerRecord;
 import eu.stratosphere.pact.runtime.iterative.event.AllWorkersDoneEvent;
 import eu.stratosphere.pact.runtime.iterative.event.TerminationEvent;
 import eu.stratosphere.pact.runtime.iterative.event.WorkerDoneEvent;
-//import eu.stratosphere.pact.runtime.iterative.monitoring.IterationMonitoring;
 import eu.stratosphere.pact.runtime.task.RegularPactTask;
 import eu.stratosphere.pact.runtime.task.util.TaskConfig;
 import eu.stratosphere.types.Value;
 import eu.stratosphere.util.InstantiationUtil;
+//import eu.stratosphere.pact.runtime.iterative.monitoring.IterationMonitoring;
 
 /**
  * The task responsible for synchronizing all iteration heads, implemented as an {@link AbstractOutputTask}. This task
@@ -51,26 +51,26 @@ public class IterationSynchronizationSinkTask extends AbstractOutputTask impleme
 	private static final Log log = LogFactory.getLog(IterationSynchronizationSinkTask.class);
 
 	private MutableRecordReader<IntegerRecord> headEventReader;
-	
+
 	private ClassLoader userCodeClassLoader;
-	
+
 	private SyncEventHandler eventHandler;
 
 	private ConvergenceCriterion<Value> convergenceCriterion;
-	
+
 	private Map<String, Aggregator<?>> aggregators;
 
 	private String convergenceAggregatorName;
 
 	private int currentIteration = 1;
-	
+
 	private int maxNumberOfIterations;
 
 	private final AtomicBoolean terminated = new AtomicBoolean(false);
 
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public void registerInputOutput() {
 		this.headEventReader = new MutableRecordReader<IntegerRecord>(this);
@@ -80,14 +80,14 @@ public class IterationSynchronizationSinkTask extends AbstractOutputTask impleme
 	public void invoke() throws Exception {
 		userCodeClassLoader = LibraryCacheManager.getClassLoader(getEnvironment().getJobID());
 		TaskConfig taskConfig = new TaskConfig(getTaskConfiguration());
-		
+
 		// instantiate all aggregators
 		this.aggregators = new HashMap<String, Aggregator<?>>();
 		for (AggregatorWithName<?> aggWithName : taskConfig.getIterationAggregators()) {
 			Aggregator<?> agg = InstantiationUtil.instantiate(aggWithName.getAggregator(), Aggregator.class);
 			aggregators.put(aggWithName.getName(), agg);
 		}
-		
+
 		// instantiate the aggregator convergence criterion
 		if (taskConfig.usesConvergenceCriterion()) {
 			Class<? extends ConvergenceCriterion<Value>> convClass = taskConfig.getConvergenceCriterion();
@@ -95,16 +95,16 @@ public class IterationSynchronizationSinkTask extends AbstractOutputTask impleme
 			convergenceAggregatorName = taskConfig.getConvergenceCriterionAggregatorName();
 			Preconditions.checkNotNull(convergenceAggregatorName);
 		}
-		
+
 		maxNumberOfIterations = taskConfig.getNumberOfIterations();
-		
+
 		// set up the event handler
 		int numEventsTillEndOfSuperstep = taskConfig.getNumberOfEventsUntilInterruptInIterativeGate(0);
 		eventHandler = new SyncEventHandler(numEventsTillEndOfSuperstep, aggregators, userCodeClassLoader);
 		headEventReader.subscribeToEvent(eventHandler, WorkerDoneEvent.class);
 
 		IntegerRecord dummy = new IntegerRecord();
-		
+
 		while (!terminationRequested()) {
 
 //			notifyMonitor(IterationMonitoring.Event.SYNC_STARTING, currentIteration);
@@ -136,12 +136,12 @@ public class IterationSynchronizationSinkTask extends AbstractOutputTask impleme
 
 				AllWorkersDoneEvent allWorkersDoneEvent = new AllWorkersDoneEvent(aggregators);
 				sendToAllWorkers(allWorkersDoneEvent);
-				
+
 				// reset all aggregators
 				for (Aggregator<?> agg : aggregators.values()) {
 					agg.reset();
 				}
-				
+
 //				notifyMonitor(IterationMonitoring.Event.SYNC_FINISHED, currentIteration);
 				currentIteration++;
 			}
@@ -169,7 +169,7 @@ public class IterationSynchronizationSinkTask extends AbstractOutputTask impleme
 			if (aggregator == null) {
 				throw new RuntimeException("Error: Aggregator for convergence criterion was null.");
 			}
-			
+
 			Value aggregate = aggregator.getAggregate();
 
 			if (convergenceCriterion.isConverged(currentIteration, aggregate)) {
@@ -180,14 +180,14 @@ public class IterationSynchronizationSinkTask extends AbstractOutputTask impleme
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 
 	private void readHeadEventChannel(IntegerRecord rec) throws IOException {
 		// reset the handler
 		eventHandler.resetEndOfSuperstep();
-		
+
 		// read (and thereby process all events in the handler's event handling functions)
 		try {
 			while (this.headEventReader.next(rec)) {
@@ -208,9 +208,9 @@ public class IterationSynchronizationSinkTask extends AbstractOutputTask impleme
 	private String formatLogString(String message) {
 		return RegularPactTask.constructLogString(message, getEnvironment().getTaskName(), this);
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public boolean terminationRequested() {
 		return terminated.get();

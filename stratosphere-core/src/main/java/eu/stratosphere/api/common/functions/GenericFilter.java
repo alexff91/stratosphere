@@ -15,6 +15,6 @@ package eu.stratosphere.api.common.functions;
 
 
 public interface GenericFilter<T> extends Function {
-	
+
 	boolean filter(T value) throws Exception;
 }

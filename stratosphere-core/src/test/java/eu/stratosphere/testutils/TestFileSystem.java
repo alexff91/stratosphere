@@ -25,17 +25,17 @@ import eu.stratosphere.core.fs.local.LocalFileStatus;
 import eu.stratosphere.core.fs.local.LocalFileSystem;
 
 public class TestFileSystem extends LocalFileSystem {
-	
+
 	private static int streamOpenCounter;
-	
+
 	public static int getNumtimeStreamOpened() {
 		return streamOpenCounter;
 	}
-	
+
 	public static void resetStreamOpenCounter() {
 		streamOpenCounter = 0;
 	}
-	
+
 	@Override
 	public FSDataInputStream open(Path f, int bufferSize) throws IOException {
 		streamOpenCounter++;
@@ -47,13 +47,13 @@ public class TestFileSystem extends LocalFileSystem {
 		streamOpenCounter++;
 		return super.open(f);
 	}
-	
+
 	@Override
 	public FileStatus getFileStatus(Path f) throws IOException {
 		LocalFileStatus status = (LocalFileStatus) super.getFileStatus(f);
 		return new LocalFileStatus(status.getFile(), this);
 	}
-	
+
 	@Override
 	public FileStatus[] listStatus(Path f) throws IOException {
 		FileStatus[] stati = super.listStatus(f);
@@ -63,16 +63,16 @@ public class TestFileSystem extends LocalFileSystem {
 		}
 		return newStati;
 	}
-	
+
 	public static void registerTestFileSysten() throws Exception {
 		Class<FileSystem> fsClass = FileSystem.class;
 		Field dirField = fsClass.getDeclaredField("FSDIRECTORY");
-		
+
 		dirField.setAccessible(true);
 		@SuppressWarnings("unchecked")
 		Map<String, String> map = (Map<String, String>) dirField.get(null);
 		dirField.setAccessible(false);
-		
+
 		map.put("test", TestFileSystem.class.getName());
 	}
 

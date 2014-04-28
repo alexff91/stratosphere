@@ -22,13 +22,13 @@ import eu.stratosphere.nephele.template.AbstractTask;
 /**
  * A record writer connects an input gate to an application. It allows the application
  * query for incoming records and read them from input gate.
- * 
+ *
  * @param <T> The type of the record that can be read from this record reader.
  */
 public class RecordReader<T extends IOReadableWritable> extends AbstractSingleGateRecordReader<T> implements Reader<T> {
-	
+
 	private final Class<T> recordType;
-	
+
 	/**
 	 * Stores the last read record.
 	 */
@@ -40,10 +40,10 @@ public class RecordReader<T extends IOReadableWritable> extends AbstractSingleGa
 	private boolean noMoreRecordsWillFollow;
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Constructs a new record reader and registers a new input gate with the application's environment.
-	 * 
+	 *
 	 * @param taskBase
 	 *        The application that instantiated the record reader.
 	 * @param recordType
@@ -56,7 +56,7 @@ public class RecordReader<T extends IOReadableWritable> extends AbstractSingleGa
 
 	/**
 	 * Constructs a new record reader and registers a new input gate with the application's environment.
-	 * 
+	 *
 	 * @param outputBase
 	 *        The application that instantiated the record reader.
 	 * @param recordType
@@ -66,13 +66,13 @@ public class RecordReader<T extends IOReadableWritable> extends AbstractSingleGa
 		super(outputBase, MutableRecordDeserializerFactory.<T>get(), 0);
 		this.recordType = recordType;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Checks if at least one more record can be read from the associated input gate. This method may block
 	 * until the associated input gate is able to read the record from one of its input channels.
-	 * 
+	 *
 	 * @return <code>true</code>it at least one more record can be read from the associated input gate, otherwise
 	 *         <code>false</code>
 	 */
@@ -84,9 +84,9 @@ public class RecordReader<T extends IOReadableWritable> extends AbstractSingleGa
 			if (this.noMoreRecordsWillFollow) {
 				return false;
 			}
-			
+
 			T record = instantiateRecordType();
-			
+
 			while (true) {
 				InputChannelResult result = this.inputGate.readRecord(record);
 				switch (result) {
@@ -94,21 +94,23 @@ public class RecordReader<T extends IOReadableWritable> extends AbstractSingleGa
 					case LAST_RECORD_FROM_BUFFER:
 						this.lookahead = record;
 						return true;
-						
+
 					case END_OF_SUPERSTEP:
-						if (incrementEndOfSuperstepEventAndCheck())
-							return false;
-						else 
-							break; // fall through and wait for next record/event
-						
+						if (incrementEndOfSuperstepEventAndCheck()) {
+						return false;
+						}
+						else {
+						break; // fall through and wait for next record/event
+						}
+
 					case TASK_EVENT:
 						handleEvent(this.inputGate.getCurrentEvent());
 						break;
-						
+
 					case END_OF_STREAM:
 						this.noMoreRecordsWillFollow = true;
 						return false;
-				
+
 					default:
 						; // fall through the loop
 				}
@@ -118,7 +120,7 @@ public class RecordReader<T extends IOReadableWritable> extends AbstractSingleGa
 
 	/**
 	 * Reads the current record from the associated input gate.
-	 * 
+	 *
 	 * @return the current record from the associated input gate.
 	 * @throws IOException
 	 *         thrown if any error occurs while reading the record from the input gate
@@ -133,12 +135,12 @@ public class RecordReader<T extends IOReadableWritable> extends AbstractSingleGa
 			return null;
 		}
 	}
-	
+
 	@Override
 	public boolean isInputClosed() {
 		return this.noMoreRecordsWillFollow;
 	}
-	
+
 	private T instantiateRecordType() {
 		try {
 			return this.recordType.newInstance();

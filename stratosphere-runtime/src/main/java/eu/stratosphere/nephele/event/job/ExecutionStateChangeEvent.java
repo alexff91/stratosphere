@@ -23,7 +23,7 @@ import eu.stratosphere.nephele.util.EnumUtils;
 
 /**
  * An {@link ExecutionStateChangeEvent} can be used to notify other objects about an execution state change of a vertex.
- * 
+ *
  */
 public final class ExecutionStateChangeEvent extends AbstractEvent implements ManagementEvent {
 
@@ -39,7 +39,7 @@ public final class ExecutionStateChangeEvent extends AbstractEvent implements Ma
 
 	/**
 	 * Constructs a new vertex event object.
-	 * 
+	 *
 	 * @param timestamp
 	 *        the timestamp of the event
 	 * @param managementVertexID
@@ -68,7 +68,7 @@ public final class ExecutionStateChangeEvent extends AbstractEvent implements Ma
 
 	/**
 	 * Returns the ID of the vertex this event refers to.
-	 * 
+	 *
 	 * @return the ID of the vertex this event refers to
 	 */
 	public ManagementVertexID getVertexID() {
@@ -77,7 +77,7 @@ public final class ExecutionStateChangeEvent extends AbstractEvent implements Ma
 
 	/**
 	 * Returns the new execution state of the vertex this event refers to.
-	 * 
+	 *
 	 * @return the new execution state of the vertex this event refers to
 	 */
 	public ExecutionState getNewExecutionState() {

@@ -24,13 +24,13 @@ import eu.stratosphere.nephele.taskmanager.bytebuffered.ConnectionInfoLookupResp
 /**
  * The channel lookup protocol can be used to resolve the ID of an output channel to all recipients which shall receive
  * the data of this channel.
- * 
+ *
  */
 public interface ChannelLookupProtocol extends VersionedProtocol {
 
 	/**
 	 * Retrieves all recipients of a data for the given <code>sourceChannelID</code>.
-	 * 
+	 *
 	 * @param caller
 	 *        the {@link InstanceConnectionInfo} object of the task manager which calls this method
 	 * @param jobID

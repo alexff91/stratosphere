@@ -35,8 +35,8 @@ import eu.stratosphere.util.MutableObjectIterator;
 /**
  * Implementation of a resettable iterator. While iterating the first time over the data, the iterator writes the
  * records to a spillable buffer. Any subsequent iteration re-reads the data from that buffer.
- * 
- * 
+ *
+ *
  * @param <T> The type of record that the iterator handles.
  */
 public class SpillingResettableMutableObjectIterator<T> implements ResettableMutableObjectIterator<T>
@@ -46,40 +46,40 @@ public class SpillingResettableMutableObjectIterator<T> implements ResettableMut
 	// ------------------------------------------------------------------------
 
 	protected DataInputView inView;
-	
+
 	protected final TypeSerializer<T> serializer;
-	
+
 	private int elementCount;
-	
+
 	private int currentElementNum;
-	
+
 	protected final SpillingBuffer buffer;
-	
+
 	protected final MutableObjectIterator<T> input;
-	
+
 	protected final MemoryManager memoryManager;
-	
+
 	private final List<MemorySegment> memorySegments;
-	
+
 	private final boolean releaseMemoryOnClose;
-	
+
 	// ------------------------------------------------------------------------
 
-	public SpillingResettableMutableObjectIterator(MutableObjectIterator<T> input, TypeSerializer<T> serializer, 
+	public SpillingResettableMutableObjectIterator(MutableObjectIterator<T> input, TypeSerializer<T> serializer,
 			MemoryManager memoryManager, IOManager ioManager,
 			int numPages, AbstractInvokable parentTask)
 	throws MemoryAllocationException
 	{
 		this(input, serializer, memoryManager, ioManager, memoryManager.allocatePages(parentTask, numPages), true);
 	}
-	
+
 	public SpillingResettableMutableObjectIterator(MutableObjectIterator<T> input, TypeSerializer<T> serializer,
 			MemoryManager memoryManager, IOManager ioManager,
 			List<MemorySegment> memory)
 	{
 		this(input, serializer, memoryManager, ioManager, memory, false);
 	}
-	
+
 	private SpillingResettableMutableObjectIterator(MutableObjectIterator<T> input, TypeSerializer<T> serializer,
 			MemoryManager memoryManager, IOManager ioManager,
 			List<MemorySegment> memory, boolean releaseMemOnClose)
@@ -89,10 +89,11 @@ public class SpillingResettableMutableObjectIterator<T> implements ResettableMut
 		this.serializer = serializer;
 		this.memorySegments = memory;
 		this.releaseMemoryOnClose = releaseMemOnClose;
-		
-		if (LOG.isDebugEnabled())
-			LOG.debug("Creating spilling resettable iterator with " + memory.size() + " pages of memory.");
-		
+
+		if (LOG.isDebugEnabled()) {
+		LOG.debug("Creating spilling resettable iterator with " + memory.size() + " pages of memory.");
+		}
+
 		this.buffer = new SpillingBuffer(ioManager, new ListMemorySegmentSource(memory), memoryManager.getPageSize());
 	}
 
@@ -109,15 +110,16 @@ public class SpillingResettableMutableObjectIterator<T> implements ResettableMut
 
 	public List<MemorySegment> close() throws IOException
 	{
-		if (LOG.isDebugEnabled())
-			LOG.debug("Spilling Resettable Iterator closing. Stored " + this.elementCount + " records.");
+		if (LOG.isDebugEnabled()) {
+		LOG.debug("Spilling Resettable Iterator closing. Stored " + this.elementCount + " records.");
+		}
 
 		this.inView = null;
-		
+
 		final List<MemorySegment> memory = this.buffer.close();
 		memory.addAll(this.memorySegments);
 		this.memorySegments.clear();
-		
+
 		if (this.releaseMemoryOnClose) {
 			this.memoryManager.release(memory);
 			return Collections.emptyList();

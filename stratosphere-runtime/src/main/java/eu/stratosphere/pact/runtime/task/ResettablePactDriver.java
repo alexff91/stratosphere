@@ -22,17 +22,17 @@ import eu.stratosphere.api.common.functions.Function;
  *
  * @see PactDriver
  * @see PactTaskContext
- * 
+ *
  * @param <S> The type of stub driven by this driver.
  * @param <OT> The data type of the records produced by this driver.
  */
 public interface ResettablePactDriver<S extends Function, OT> extends PactDriver<S, OT> {
-	
+
 	boolean isInputResettable(int inputNum);
-	
+
 	void initialize() throws Exception;
-	
+
 	void reset() throws Exception;
-	
+
 	void teardown() throws Exception;
 }

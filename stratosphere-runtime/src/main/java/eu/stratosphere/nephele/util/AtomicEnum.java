@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * {@link AtomicReference} object to guarantee the atomicity.
  * <p>
  * This class is thread-safe.
- * 
+ *
  */
 public final class AtomicEnum<T extends Enum<T>> {
 
@@ -31,7 +31,7 @@ public final class AtomicEnum<T extends Enum<T>> {
 
 	/**
 	 * Constructs a new atomic enumeration object.
-	 * 
+	 *
 	 * @param initialValue
 	 *        the initial value of the enumeration
 	 */
@@ -42,7 +42,7 @@ public final class AtomicEnum<T extends Enum<T>> {
 
 	/**
 	 * Sets to the given value.
-	 * 
+	 *
 	 * @param newValue
 	 *        the new value
 	 */
@@ -53,7 +53,7 @@ public final class AtomicEnum<T extends Enum<T>> {
 
 	/**
 	 * Gets the current value.
-	 * 
+	 *
 	 * @return the current value.
 	 */
 	public T get() {
@@ -63,7 +63,7 @@ public final class AtomicEnum<T extends Enum<T>> {
 
 	/**
 	 * Sets the given value and returns the old value.
-	 * 
+	 *
 	 * @param newValue
 	 *        the new value
 	 * @return the previous value
@@ -75,7 +75,7 @@ public final class AtomicEnum<T extends Enum<T>> {
 
 	/**
 	 * Atomically set the value to the given updated value if the current value == the expected value.
-	 * 
+	 *
 	 * @param expect
 	 *        the expected value
 	 * @param update

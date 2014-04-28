@@ -24,7 +24,7 @@ import eu.stratosphere.core.io.StringRecord;
  * An instance type describes the hardware resources a task manager runs on. According
  * to its type an instance has a specific number of CPU cores, computation units, a certain
  * amount of main memory and disk space. In addition, it has a specific price per hour.
- * 
+ *
  */
 public final class InstanceType implements IOReadableWritable {
 
@@ -71,7 +71,7 @@ public final class InstanceType implements IOReadableWritable {
 
 	/**
 	 * Creates a new instance type.
-	 * 
+	 *
 	 * @param identifier
 	 *        identifier for this instance type
 	 * @param numberOfComputeUnits
@@ -99,7 +99,7 @@ public final class InstanceType implements IOReadableWritable {
 
 	/**
 	 * Returns the instance type's number of computational units.
-	 * 
+	 *
 	 * @return the instance type's number of computational units
 	 */
 	public int getNumberOfComputeUnits() {
@@ -108,7 +108,7 @@ public final class InstanceType implements IOReadableWritable {
 
 	/**
 	 * Returns the instance type's number of CPU cores.
-	 * 
+	 *
 	 * @return the instance type's number of CPU cores
 	 */
 	public int getNumberOfCores() {
@@ -117,7 +117,7 @@ public final class InstanceType implements IOReadableWritable {
 
 	/**
 	 * Returns the instance type's amount of main memory.
-	 * 
+	 *
 	 * @return the instance type's amount of main memory
 	 */
 	public int getMemorySize() {
@@ -126,7 +126,7 @@ public final class InstanceType implements IOReadableWritable {
 
 	/**
 	 * Returns the instance type's disk capacity.
-	 * 
+	 *
 	 * @return the instance type's disk capacity
 	 */
 	public int getDiskCapacity() {
@@ -135,7 +135,7 @@ public final class InstanceType implements IOReadableWritable {
 
 	/**
 	 * Returns the instance type's price per hour.
-	 * 
+	 *
 	 * @return the instance type's price per hour
 	 */
 	public int getPricePerHour() {
@@ -144,7 +144,7 @@ public final class InstanceType implements IOReadableWritable {
 
 	/**
 	 * Returns the instance type's identifier.
-	 * 
+	 *
 	 * @return the instance type's identifier
 	 */
 	public String getIdentifier() {

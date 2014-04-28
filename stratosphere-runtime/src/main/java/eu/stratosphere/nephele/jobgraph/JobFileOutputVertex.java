@@ -29,7 +29,7 @@ import eu.stratosphere.nephele.template.AbstractInvokable;
  * A JobFileOutputVertex is a specific subtype of a {@link AbstractJobOutputVertex} and is designed
  * for Nephele tasks which write data to a local or distributed file system. As every job output vertex
  * A JobFileOutputVertex must not have any further output.
- * 
+ *
  */
 public class JobFileOutputVertex extends AbstractJobOutputVertex {
 
@@ -40,7 +40,7 @@ public class JobFileOutputVertex extends AbstractJobOutputVertex {
 
 	/**
 	 * Creates a new job file output vertex with the specified name.
-	 * 
+	 *
 	 * @param name
 	 *        the name of the new job file output vertex
 	 * @param id
@@ -54,7 +54,7 @@ public class JobFileOutputVertex extends AbstractJobOutputVertex {
 
 	/**
 	 * Creates a new job file output vertex with the specified name.
-	 * 
+	 *
 	 * @param name
 	 *        the name of the new job file output vertex
 	 * @param jobGraph
@@ -66,7 +66,7 @@ public class JobFileOutputVertex extends AbstractJobOutputVertex {
 
 	/**
 	 * Creates a new job file input vertex.
-	 * 
+	 *
 	 * @param jobGraph
 	 *        the job graph this vertex belongs to
 	 */
@@ -76,7 +76,7 @@ public class JobFileOutputVertex extends AbstractJobOutputVertex {
 
 	/**
 	 * Sets the path of the file the job file input vertex's task should write to.
-	 * 
+	 *
 	 * @param path
 	 *        the path of the file the job file input vertex's task should write to
 	 */
@@ -86,7 +86,7 @@ public class JobFileOutputVertex extends AbstractJobOutputVertex {
 
 	/**
 	 * Returns the path of the file the job file output vertex's task should write to.
-	 * 
+	 *
 	 * @return the path of the file the job file output vertex's task should write to or <code>null</code> if no path
 	 *         has yet been set
 	 */
@@ -97,7 +97,7 @@ public class JobFileOutputVertex extends AbstractJobOutputVertex {
 
 	/**
 	 * Sets the class of the vertex's output task.
-	 * 
+	 *
 	 * @param outputClass
 	 *        the class of the vertex's output task.
 	 */
@@ -107,7 +107,7 @@ public class JobFileOutputVertex extends AbstractJobOutputVertex {
 
 	/**
 	 * Returns the class of the vertex's output task.
-	 * 
+	 *
 	 * @return the class of the vertex's output task or <code>null</code> if no task has yet been set
 	 */
 	@SuppressWarnings("unchecked")

@@ -21,7 +21,7 @@ import eu.stratosphere.core.io.InputSplit;
  * The input split iterator allows an {@link AbstractInputTask} to iterator over all input splits it is supposed to
  * consume. Internally, the input split iterator calls an {@link InputSplitProvider} on each <code>next</code> call in
  * order to facilitate lazy split assignment.
- * 
+ *
  * @param <T>
  */
 public class InputSplitIterator<T extends InputSplit> implements Iterator<T> {
@@ -38,7 +38,7 @@ public class InputSplitIterator<T extends InputSplit> implements Iterator<T> {
 
 	/**
 	 * Constructs a new input split iterator.
-	 * 
+	 *
 	 * @param inputSplitProvider
 	 *        the input split provider to be called for new input splits
 	 */

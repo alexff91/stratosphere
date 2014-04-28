@@ -26,7 +26,7 @@ import eu.stratosphere.util.StringUtils;
 
 /**
  * This class provides static utility methods for the {@link JobManager}.
- * 
+ *
  */
 public class JobManagerUtils {
 
@@ -44,7 +44,7 @@ public class JobManagerUtils {
 	/**
 	 * Tries to locate a class with given name and to
 	 * instantiate a {@link AbstractScheduler} object from it.
-	 * 
+	 *
 	 * @param schedulerClassName
 	 *        the name of the class to instantiate the scheduler object from
 	 * @param deploymentManager
@@ -103,7 +103,7 @@ public class JobManagerUtils {
 	/**
 	 * Tries to locate a class with given name and to
 	 * instantiate a instance manager from it.
-	 * 
+	 *
 	 * @param instanceManagerClassName
 	 *        the name of the class to instantiate the instance manager object from
 	 * @return the {@link InstanceManager} object instantiated from the class with the provided name
@@ -137,7 +137,7 @@ public class JobManagerUtils {
 	/**
 	 * Tries to read the class name of the {@link AbstractScheduler} implementation from the global configuration which
 	 * is set to be used for the provided execution mode.
-	 * 
+	 *
 	 * @param executionMode The Nephele execution mode.
 	 * @return the class name of the {@link AbstractScheduler} implementation to be used or <code>null</code> if no
 	 *         implementation is configured for the given execution mode
@@ -164,7 +164,7 @@ public class JobManagerUtils {
 	/**
 	 * Tries to read the class name of the {@link InstanceManager} implementation from the global configuration which is
 	 * set to be used for the provided execution mode.
-	 * 
+	 *
 	 * @param executionMode The Nephele execution mode.
 	 * @return the class name of the {@link InstanceManager} implementation to be used or <code>null</code> if no
 	 *         implementation is configured for the given execution mode
@@ -178,7 +178,7 @@ public class JobManagerUtils {
 		default:
 			throw new RuntimeException("Unrecognized Execution Mode.");
 		}
-//		
+//
 //		final String modeClass = getClassStringForMode(executionMode);
 //		final String instanceManagerClassNameKey = "jobmanager.instancemanager." + modeClass + ".classname";
 //		return GlobalConfiguration.getString(instanceManagerClassNameKey, null);

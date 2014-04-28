@@ -22,7 +22,7 @@ import eu.stratosphere.nephele.jobgraph.JobID;
 
 /**
  * A single instance profiling event encapsulates profiling information for one particular instance.
- * 
+ *
  */
 public final class SingleInstanceProfilingEvent extends InstanceProfilingEvent {
 
@@ -30,7 +30,7 @@ public final class SingleInstanceProfilingEvent extends InstanceProfilingEvent {
 
 	/**
 	 * Constructs a new instance profiling event.
-	 * 
+	 *
 	 * @param profilingInterval
 	 *        the interval of time this profiling event covers in milliseconds
 	 * @param ioWaitCPU
@@ -89,7 +89,7 @@ public final class SingleInstanceProfilingEvent extends InstanceProfilingEvent {
 
 	/**
 	 * Returns the name of the instance.
-	 * 
+	 *
 	 * @return the name of the instance
 	 */
 	public String getInstanceName() {

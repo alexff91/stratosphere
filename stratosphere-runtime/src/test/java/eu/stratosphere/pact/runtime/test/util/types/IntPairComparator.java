@@ -24,22 +24,22 @@ import eu.stratosphere.core.memory.MemorySegment;
 public class IntPairComparator extends TypeComparator<IntPair>
 {
 	private int reference;
-	
+
 	@Override
 	public int hash(IntPair object) {
 		return object.getKey() * 73;
 	}
-	
+
 	@Override
 	public void setReference(IntPair toCompare) {
 		this.reference = toCompare.getKey();
 	}
-	
+
 	@Override
 	public boolean equalToReference(IntPair candidate) {
 		return candidate.getKey() == this.reference;
 	}
-	
+
 	@Override
 	public int compareToReference(TypeComparator<IntPair> referencedAccessors) {
 		final IntPairComparator comp = (IntPairComparator) referencedAccessors;
@@ -70,7 +70,7 @@ public class IntPairComparator extends TypeComparator<IntPair>
 	public void putNormalizedKey(IntPair record, MemorySegment target, int offset, int len) {
 		// see IntValue for a documentation of the logic
 		final int value = record.getKey() - Integer.MIN_VALUE;
-		
+
 		if (len == 4) {
 			target.putIntBigEndian(offset, value);
 		}
@@ -103,7 +103,7 @@ public class IntPairComparator extends TypeComparator<IntPair>
 	public boolean supportsSerializationWithKeyNormalization() {
 		return true;
 	}
-	
+
 	@Override
 	public void writeWithKeyNormalization(IntPair record, DataOutputView target) throws IOException {
 		target.writeInt(record.getKey() - Integer.MIN_VALUE);

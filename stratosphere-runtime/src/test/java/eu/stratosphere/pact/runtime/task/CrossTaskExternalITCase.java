@@ -27,74 +27,74 @@ import eu.stratosphere.types.Record;
 public class CrossTaskExternalITCase extends DriverTestBase<GenericCrosser<Record, Record, Record>>
 {
 	private static final long CROSS_MEM = 1024 * 1024;
-	
+
 	private final CountingOutputCollector output = new CountingOutputCollector();
 
 	public CrossTaskExternalITCase() {
 		super(CROSS_MEM, 0);
 	}
-	
+
 	@Test
 	public void testExternalBlockCrossTask() {
 
 		int keyCnt1 = 2;
 		int valCnt1 = 1;
-		
+
 		// 43690 fit into memory, 43691 do not!
 		int keyCnt2 = 43700;
 		int valCnt2 = 1;
-		
+
 		final int expCnt = keyCnt1*valCnt1*keyCnt2*valCnt2;
-		
+
 		setOutput(this.output);
-		
+
 		addInput(new UniformRecordGenerator(keyCnt1, valCnt1, false));
 		addInput(new UniformRecordGenerator(keyCnt2, valCnt2, false));
-				
+
 		getTaskConfig().setDriverStrategy(DriverStrategy.NESTEDLOOP_BLOCKED_OUTER_FIRST);
 		getTaskConfig().setMemoryDriver(CROSS_MEM);
-		
+
 		final CrossDriver<Record, Record, Record> testTask = new CrossDriver<Record, Record, Record>();
-		
+
 		try {
 			testDriver(testTask, MockCrossStub.class);
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail("Test failed due to an exception.");
 		}
-		
+
 		Assert.assertEquals("Wrong result size.", expCnt, this.output.getNumberOfRecords());
 	}
-	
+
 	@Test
 	public void testExternalStreamCrossTask() {
 
 		int keyCnt1 = 2;
 		int valCnt1 = 1;
-		
+
 		// 87381 fit into memory, 87382 do not!
 		int keyCnt2 = 87385;
 		int valCnt2 = 1;
-		
+
 		final int expCnt = keyCnt1*valCnt1*keyCnt2*valCnt2;
-		
+
 		setOutput(this.output);
-		
+
 		addInput(new UniformRecordGenerator(keyCnt1, valCnt1, false));
 		addInput(new UniformRecordGenerator(keyCnt2, valCnt2, false));
-				
+
 		getTaskConfig().setDriverStrategy(DriverStrategy.NESTEDLOOP_STREAMED_OUTER_FIRST);
 		getTaskConfig().setMemoryDriver(CROSS_MEM);
-		
+
 		final CrossDriver<Record, Record, Record> testTask = new CrossDriver<Record, Record, Record>();
-		
+
 		try {
 			testDriver(testTask, MockCrossStub.class);
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail("Test failed due to an exception.");
 		}
-		
+
 		Assert.assertEquals("Wrong result size.", expCnt, this.output.getNumberOfRecords());
 	}
 }

@@ -25,12 +25,12 @@ import eu.stratosphere.core.memory.MemorySegment;
  * Null base type for PACT programs that implements the Key interface.
  * This type can be used if no key or value is required and serializes into a zero-length byte stream.
  * So no data is shipped or stored using this type.
- * 
+ *
  * @see eu.stratosphere.types.Key
  */
 public final class NullValue implements Key, NormalizableKey, CopyableValue<NullValue> {
 	private static final long serialVersionUID = 1L;
-	
+
 	/**
 	 * The PactNull singleton instance.
 	 */
@@ -38,7 +38,7 @@ public final class NullValue implements Key, NormalizableKey, CopyableValue<Null
 
 	/**
 	 * Returns PactNull's singleton instance.
-	 *  
+	 *
 	 * @return PactNull's singleton instance.
 	 */
 	public static NullValue getInstance() {
@@ -46,13 +46,13 @@ public final class NullValue implements Key, NormalizableKey, CopyableValue<Null
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Creates a PactNull object.
 	 */
 	public NullValue() {
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	/*
@@ -63,9 +63,9 @@ public final class NullValue implements Key, NormalizableKey, CopyableValue<Null
 	public String toString() {
 		return "(null)";
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see eu.stratosphere.nephele.io.IOReadableWritable#read(java.io.DataInput)
@@ -83,7 +83,7 @@ public final class NullValue implements Key, NormalizableKey, CopyableValue<Null
 	public void write(DataOutput out) throws IOException {
 		out.writeBoolean(false);
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	/*
@@ -116,7 +116,7 @@ public final class NullValue implements Key, NormalizableKey, CopyableValue<Null
 	public int hashCode() {
 		return 53;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	@Override
@@ -130,14 +130,14 @@ public final class NullValue implements Key, NormalizableKey, CopyableValue<Null
 			target.put(i, (byte) 0);
 		}
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public int getBinaryLength() {
 		return 1;
 	}
-	
+
 	@Override
 	public void copyTo(NullValue target) {
 	}

@@ -25,32 +25,32 @@ import eu.stratosphere.core.memory.DataOutputView;
 public final class TupleSerializer<T extends Tuple> extends TypeSerializer<T> {
 
 	private static final long serialVersionUID = 1L;
-	
-	
+
+
 	private final Class<T> tupleClass;
-	
+
 	private final TypeSerializer<Object>[] fieldSerializers;
-	
+
 	private final int arity;
-	
-	
+
+
 	@SuppressWarnings("unchecked")
 	public TupleSerializer(Class<T> tupleClass, TypeSerializer<?>[] fieldSerializers) {
 		this.tupleClass = tupleClass;
 		this.fieldSerializers = (TypeSerializer<Object>[]) fieldSerializers;
 		this.arity = fieldSerializers.length;
 	}
-	
-	
+
+
 	@Override
 	public T createInstance() {
 		try {
 			T t = tupleClass.newInstance();
-		
+
 			for (int i = 0; i < arity; i++) {
 				t.setField(fieldSerializers[i].createInstance(), i);
 			}
-			
+
 			return t;
 		}
 		catch (Exception e) {
@@ -64,7 +64,7 @@ public final class TupleSerializer<T extends Tuple> extends TypeSerializer<T> {
 			Object copy = fieldSerializers[i].copy(from.getField(i), reuse.getField(i));
 			reuse.setField(copy, i);
 		}
-		
+
 		return reuse;
 	}
 

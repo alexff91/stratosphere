@@ -25,7 +25,6 @@ import java.util.NoSuchElementException;
 import eu.stratosphere.api.common.operators.util.FieldList;
 import eu.stratosphere.api.common.typeutils.TypeComparatorFactory;
 import eu.stratosphere.api.common.typeutils.TypePairComparatorFactory;
-import eu.stratosphere.compiler.costs.Costs;
 import eu.stratosphere.compiler.dag.OptimizerNode;
 import eu.stratosphere.compiler.dag.TwoInputNode;
 import eu.stratosphere.pact.runtime.shipping.ShipStrategyType;
@@ -37,35 +36,35 @@ import eu.stratosphere.util.Visitor;
  *
  */
 public class DualInputPlanNode extends PlanNode {
-	
+
 	protected final Channel input1;
 	protected final Channel input2;
-	
+
 	protected final FieldList keys1;
 	protected final FieldList keys2;
-	
+
 	protected final boolean[] sortOrders;
-	
+
 	private TypeComparatorFactory<?> comparator1;
 	private TypeComparatorFactory<?> comparator2;
 	private TypePairComparatorFactory<?, ?> pairComparator;
-	
+
 	public Object postPassHelper1;
 	public Object postPassHelper2;
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	public DualInputPlanNode(OptimizerNode template, String nodeName, Channel input1, Channel input2, DriverStrategy diverStrategy) {
 		this(template, nodeName, input1, input2, diverStrategy, null, null, null);
 	}
-	
+
 	public DualInputPlanNode(OptimizerNode template, String nodeName, Channel input1, Channel input2,
 			DriverStrategy diverStrategy, FieldList driverKeyFields1, FieldList driverKeyFields2)
 	{
 		this(template, nodeName, input1, input2, diverStrategy, driverKeyFields1, driverKeyFields2,
 									SingleInputPlanNode.getTrueArray(driverKeyFields1.size()));
 	}
-	
+
 	public DualInputPlanNode(OptimizerNode template, String nodeName, Channel input1, Channel input2, DriverStrategy diverStrategy,
 			FieldList driverKeyFields1, FieldList driverKeyFields2, boolean[] driverSortOrders)
 	{
@@ -75,19 +74,19 @@ public class DualInputPlanNode extends PlanNode {
 		this.keys1 = driverKeyFields1;
 		this.keys2 = driverKeyFields2;
 		this.sortOrders = driverSortOrders;
-		
+
 		if (this.input1.getShipStrategy() == ShipStrategyType.BROADCAST) {
 			this.input1.setReplicationFactor(getDegreeOfParallelism());
 		}
 		if (this.input2.getShipStrategy() == ShipStrategyType.BROADCAST) {
 			this.input2.setReplicationFactor(getDegreeOfParallelism());
 		}
-		
+
 		mergeBranchPlanMaps(input1.getSource(), input2.getSource());
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	public TwoInputNode getTwoInputNode() {
 		if (this.template instanceof TwoInputNode) {
 			return (TwoInputNode) this.template;
@@ -95,78 +94,78 @@ public class DualInputPlanNode extends PlanNode {
 			throw new RuntimeException();
 		}
 	}
-	
+
 	public FieldList getKeysForInput1() {
 		return this.keys1;
 	}
-	
+
 	public FieldList getKeysForInput2() {
 		return this.keys2;
 	}
-	
+
 	public boolean[] getSortOrders() {
 		return this.sortOrders;
 	}
-	
+
 	public TypeComparatorFactory<?> getComparator1() {
 		return this.comparator1;
 	}
-	
+
 	public TypeComparatorFactory<?> getComparator2() {
 		return this.comparator2;
 	}
-	
+
 	public void setComparator1(TypeComparatorFactory<?> comparator) {
 		this.comparator1 = comparator;
 	}
-	
+
 	public void setComparator2(TypeComparatorFactory<?> comparator) {
 		this.comparator2 = comparator;
 	}
-	
+
 	public TypePairComparatorFactory<?, ?> getPairComparator() {
 		return this.pairComparator;
 	}
-	
+
 	public void setPairComparator(TypePairComparatorFactory<?, ?> comparator) {
 		this.pairComparator = comparator;
 	}
-	
+
 	/**
 	 * Gets the first input channel to this node.
-	 * 
+	 *
 	 * @return The first input channel to this node.
 	 */
 	public Channel getInput1() {
 		return this.input1;
 	}
-	
+
 	/**
 	 * Gets the second input channel to this node.
-	 * 
+	 *
 	 * @return The second input channel to this node.
 	 */
 	public Channel getInput2() {
 		return this.input2;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 
 	@Override
 	public void accept(Visitor<PlanNode> visitor) {
 		if (visitor.preVisit(this)) {
 			this.input1.getSource().accept(visitor);
 			this.input2.getSource().accept(visitor);
-			
+
 			for (Channel broadcastInput : getBroadcastInputs()) {
 				broadcastInput.getSource().accept(visitor);
 			}
-			
+
 			visitor.postVisit(this);
 		}
 	}
-	
+
 
 	@Override
 	public Iterator<PlanNode> getPredecessors() {
@@ -185,8 +184,9 @@ public class DualInputPlanNode extends PlanNode {
 					} else if (this.hasLeft == 1) {
 						this.hasLeft = 0;
 						return DualInputPlanNode.this.input2.getSource();
-					} else
-						throw new NoSuchElementException();
+					} else {
+					throw new NoSuchElementException();
+					}
 				}
 				@Override
 				public void remove() {
@@ -195,14 +195,14 @@ public class DualInputPlanNode extends PlanNode {
 			};
 		} else {
 			List<PlanNode> preds = new ArrayList<PlanNode>();
-			
+
 			preds.add(input1.getSource());
 			preds.add(input2.getSource());
 
 			for (Channel c : getBroadcastInputs()) {
 				preds.add(c.getSource());
 			}
-			
+
 			return preds.iterator();
 		}
 	}
@@ -224,8 +224,9 @@ public class DualInputPlanNode extends PlanNode {
 				} else if (this.hasLeft == 1) {
 					this.hasLeft = 0;
 					return DualInputPlanNode.this.input2;
-				} else
-					throw new NoSuchElementException();
+				} else {
+				throw new NoSuchElementException();
+				}
 			}
 			@Override
 			public void remove() {
@@ -240,7 +241,7 @@ public class DualInputPlanNode extends PlanNode {
 		if (source == this) {
 			return FOUND_SOURCE;
 		}
-		
+
 		// check first input
 		SourceAndDamReport res1 = this.input1.getSource().hasDamOnPathDownTo(source);
 		if (res1 == FOUND_SOURCE_AND_DAM) {
@@ -270,7 +271,7 @@ public class DualInputPlanNode extends PlanNode {
 			else {
 				// NOT_FOUND
 				// check the broadcast inputs
-				
+
 				for (NamedChannel nc : getBroadcastInputs()) {
 					SourceAndDamReport bcRes = nc.getSource().hasDamOnPathDownTo(source);
 					if (bcRes != NOT_FOUND) {

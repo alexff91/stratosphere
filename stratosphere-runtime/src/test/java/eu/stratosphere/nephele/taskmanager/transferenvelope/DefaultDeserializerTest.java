@@ -41,7 +41,7 @@ import eu.stratosphere.util.StringUtils;
 
 /**
  * This class contains tests covering the deserialization of a byte stream to a transfer envelope.
- * 
+ *
  */
 public class DefaultDeserializerTest {
 
@@ -69,7 +69,7 @@ public class DefaultDeserializerTest {
 	 * A dummy implementation of a {@link BufferProvider} which is used in this test.
 	 * <p>
 	 * This class is not thread-safe.
-	 * 
+	 *
 	 */
 	private static final class TestBufferProvider implements BufferProvider {
 
@@ -80,7 +80,7 @@ public class DefaultDeserializerTest {
 
 		/**
 		 * Constructs a new test buffer provider.
-		 * 
+		 *
 		 * @param numberOfBuffers
 		 *        the number of byte buffers this pool has available.
 		 */
@@ -157,7 +157,7 @@ public class DefaultDeserializerTest {
 	 * A dummy implementation of a {@link BufferProviderBroker} which is used during this test.
 	 * <p>
 	 * This class is not thread-safe.
-	 * 
+	 *
 	 */
 	private static final class TestBufferProviderBroker implements BufferProviderBroker {
 
@@ -180,7 +180,7 @@ public class DefaultDeserializerTest {
 
 	/**
 	 * Constructs an {@link InterruptibleByteChannel} from which the deserializer to be tested can read its data.
-	 * 
+	 *
 	 * @param readInterruptPositions
 	 *        the positions after which the byte stream shall be interrupted
 	 * @param testBufferSize
@@ -221,8 +221,9 @@ public class DefaultDeserializerTest {
 
 		final InterruptibleByteChannel ibc = new InterruptibleByteChannel(null, readInterruptPositions);
 
-		while (ds.write(ibc))
-			;
+		while (ds.write(ibc)) {
+		;
+		}
 
 		ibc.switchToReadPhase();
 
@@ -231,7 +232,7 @@ public class DefaultDeserializerTest {
 
 	/**
 	 * Executes the deserialization method.
-	 * 
+	 *
 	 * @param rbc
 	 *        the byte channel to read the serialized data from
 	 * @param bpb

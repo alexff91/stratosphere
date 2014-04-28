@@ -20,7 +20,7 @@ import eu.stratosphere.nephele.jobgraph.JobStatus;
  * contains all states from {@link JobStatus} but also internal states to keep track of shutdown processes.
  * <p>
  * This class is thread-safe.
- * 
+ *
  */
 public enum InternalJobStatus {
 
@@ -69,7 +69,7 @@ public enum InternalJobStatus {
 
 	/**
 	 * Converts an internal job status in a {@link JobStatus} state.
-	 * 
+	 *
 	 * @param status
 	 *        the internal job status to converted.
 	 * @return the corresponding job status or <code>null</code> if no corresponding job status exists

@@ -25,9 +25,9 @@ import eu.stratosphere.types.ByteValue;
 public class ByteValueSerializer extends TypeSerializer<ByteValue> {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	public static final ByteValueSerializer INSTANCE = new ByteValueSerializer();
-	
+
 	@Override
 	public ByteValue createInstance() {
 		return new ByteValue();

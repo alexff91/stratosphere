@@ -32,28 +32,28 @@ import eu.stratosphere.compiler.util.Utils;
 import eu.stratosphere.pact.runtime.task.DriverStrategy;
 
 /**
- * 
+ *
  */
 public class CoGroupDescriptor extends OperatorDescriptorDual {
-	
-	private final Ordering ordering1;		// ordering on the first input 
-	private final Ordering ordering2;		// ordering on the second input 
-	
-	
+
+	private final Ordering ordering1;		// ordering on the first input
+	private final Ordering ordering2;		// ordering on the second input
+
+
 	public CoGroupDescriptor(FieldList keys1, FieldList keys2) {
 		this(keys1, keys2, null, null);
 	}
-	
+
 	public CoGroupDescriptor(FieldList keys1, FieldList keys2, Ordering additionalOrdering1, Ordering additionalOrdering2) {
 		super(keys1, keys2);
-		
+
 		// if we have an additional ordering, construct the ordering to have primarily the grouping fields
 		if (additionalOrdering1 != null) {
 			this.ordering1 = new Ordering();
 			for (Integer key : this.keys1) {
 				this.ordering1.appendOrdering(key, null, Order.ANY);
 			}
-		
+
 			// and next the additional order fields
 			for (int i = 0; i < additionalOrdering1.getNumberOfFields(); i++) {
 				Integer field = additionalOrdering1.getFieldNumber(i);
@@ -63,14 +63,14 @@ public class CoGroupDescriptor extends OperatorDescriptorDual {
 		} else {
 			this.ordering1 = Utils.createOrdering(this.keys1);
 		}
-		
+
 		// if we have an additional ordering, construct the ordering to have primarily the grouping fields
 		if (additionalOrdering2 != null) {
 			this.ordering2 = new Ordering();
 			for (Integer key : this.keys2) {
 				this.ordering2.appendOrdering(key, null, Order.ANY);
 			}
-		
+
 			// and next the additional order fields
 			for (int i = 0; i < additionalOrdering2.getNumberOfFields(); i++) {
 				Integer field = additionalOrdering2.getFieldNumber(i);
@@ -81,7 +81,7 @@ public class CoGroupDescriptor extends OperatorDescriptorDual {
 			this.ordering2 = Utils.createOrdering(this.keys2);
 		}
 	}
-	
+
 	@Override
 	public DriverStrategy getStrategy() {
 		return DriverStrategy.CO_GROUP;
@@ -95,29 +95,29 @@ public class CoGroupDescriptor extends OperatorDescriptorDual {
 		partitioned2.setHashPartitioned(this.keys2);
 		return Collections.singletonList(new GlobalPropertiesPair(partitioned1, partitioned2));
 	}
-	
+
 	@Override
 	protected List<LocalPropertiesPair> createPossibleLocalProperties() {
 		RequestedLocalProperties sort1 = new RequestedLocalProperties(this.ordering1);
 		RequestedLocalProperties sort2 = new RequestedLocalProperties(this.ordering2);
 		return Collections.singletonList(new LocalPropertiesPair(sort1, sort2));
 	}
-	
+
 	@Override
 	public boolean areCoFulfilled(RequestedLocalProperties requested1, RequestedLocalProperties requested2,
 			LocalProperties produced1, LocalProperties produced2)
 	{
 		int numRelevantFields = this.keys1.size();
-		
+
 		Ordering prod1 = produced1.getOrdering();
 		Ordering prod2 = produced2.getOrdering();
-		
+
 		if (prod1 == null || prod2 == null || prod1.getNumberOfFields() < numRelevantFields ||
 				prod2.getNumberOfFields() < prod2.getNumberOfFields())
 		{
 			throw new CompilerException("The given properties do not meet this operators requirements.");
 		}
-			
+
 		for (int i = 0; i < numRelevantFields; i++) {
 			if (prod1.getOrder(i) != prod2.getOrder(i)) {
 				return false;
@@ -129,7 +129,7 @@ public class CoGroupDescriptor extends OperatorDescriptorDual {
 	@Override
 	public DualInputPlanNode instantiate(Channel in1, Channel in2, TwoInputNode node) {
 		boolean[] inputOrders = in1.getLocalProperties().getOrdering().getFieldSortDirections();
-		
+
 		if (inputOrders == null || inputOrders.length < this.keys1.size()) {
 			throw new CompilerException("BUG: The input strategy does not sufficiently describe the sort orders for a CoGroup operator.");
 		} else if (inputOrders.length > this.keys1.size()) {
@@ -137,10 +137,10 @@ public class CoGroupDescriptor extends OperatorDescriptorDual {
 			System.arraycopy(inputOrders, 0, tmp, 0, tmp.length);
 			inputOrders = tmp;
 		}
-		
+
 		return new DualInputPlanNode(node, "CoGroup("+node.getPactContract().getName()+")", in1, in2, DriverStrategy.CO_GROUP, this.keys1, this.keys2, inputOrders);
 	}
-	
+
 	@Override
 	public GlobalProperties computeGlobalProperties(GlobalProperties in1, GlobalProperties in2) {
 		GlobalProperties gp = GlobalProperties.combine(in1, in2);

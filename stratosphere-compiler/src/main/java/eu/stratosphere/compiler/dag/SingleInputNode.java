@@ -47,57 +47,57 @@ import eu.stratosphere.util.Visitor;
 
 /**
  * A node in the optimizer's program representation for a PACT with a single input.
- * 
+ *
  * This class contains all the generic logic for branch handling, interesting properties,
  * and candidate plan enumeration. The subclasses for specific operators simply add logic
  * for cost estimates and specify possible strategies for their realization.
  */
 public abstract class SingleInputNode extends OptimizerNode {
-	
+
 	protected final FieldSet keys; 			// The set of key fields
-	
+
 	protected PactConnection inConn; 		// the input of the node
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Creates a new node with a single input for the optimizer plan.
-	 * 
+	 *
 	 * @param pactContract The PACT that the node represents.
 	 */
 	protected SingleInputNode(SingleInputOperator<?> pactContract) {
 		super(pactContract);
-		
+
 		int[] k = pactContract.getKeyColumns(0);
 		this.keys = k == null || k.length == 0 ? null : new FieldSet(k);
 	}
-	
+
 	protected SingleInputNode(FieldSet keys) {
 		super(NoOpUnaryUdfOp.INSTANCE);
 		this.keys = keys;
 	}
-	
+
 	protected SingleInputNode() {
 		super(NoOpUnaryUdfOp.INSTANCE);
 		this.keys = null;
 	}
-	
+
 	protected SingleInputNode(SingleInputNode contractToCopy) {
 		super(contractToCopy);
-		
+
 		this.keys = contractToCopy.keys;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	@Override
 	public SingleInputOperator<?> getPactContract() {
 		return (SingleInputOperator<?>) super.getPactContract();
 	}
-	
+
 	/**
 	 * Gets the <tt>PactConnection</tt> through which this node receives its input.
-	 * 
+	 *
 	 * @return The input connection.
 	 */
 	public PactConnection getIncomingConnection() {
@@ -106,17 +106,17 @@ public abstract class SingleInputNode extends OptimizerNode {
 
 	/**
 	 * Sets the <tt>PactConnection</tt> through which this node receives its input.
-	 * 
+	 *
 	 * @param conn The input connection to set.
 	 */
 	public void setIncomingConnection(PactConnection inConn) {
 		this.inConn = inConn;
 	}
-	
+
 	/**
 	 * Gets the predecessor of this node.
-	 * 
-	 * @return The predecessor of this node. 
+	 *
+	 * @return The predecessor of this node.
 	 */
 	public OptimizerNode getPredecessorNode() {
 		if (this.inConn != null) {
@@ -131,27 +131,27 @@ public abstract class SingleInputNode extends OptimizerNode {
 	public List<PactConnection> getIncomingConnections() {
 		return Collections.singletonList(this.inConn);
 	}
-	
+
 
 	@Override
 	public boolean isFieldConstant(int input, int fieldNumber) {
 		if (input != 0) {
 			throw new IndexOutOfBoundsException();
 		}
-		
+
 		SingleInputOperator<?> c = getPactContract();
 		SingleInputSemanticProperties semanticProperties = c.getSemanticProperties();
-		
+
 		if (semanticProperties != null) {
 			FieldSet fs;
 			if ((fs = semanticProperties.getForwardedField(fieldNumber)) != null) {
 				return fs.contains(fieldNumber);
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 
 	@Override
 	public void setInputs(Map<Operator, OptimizerNode> contractToNode) throws CompilerException {
@@ -159,7 +159,7 @@ public abstract class SingleInputNode extends OptimizerNode {
 		final Configuration conf = getPactContract().getParameters();
 		final String shipStrategy = conf.getString(PactCompiler.HINT_SHIP_STRATEGY, null);
 		final ShipStrategyType preSet;
-		
+
 		if (shipStrategy != null) {
 			if (shipStrategy.equalsIgnoreCase(PactCompiler.HINT_SHIP_STRATEGY_REPARTITION_HASH)) {
 				preSet = ShipStrategyType.PARTITION_HASH;
@@ -175,10 +175,10 @@ public abstract class SingleInputNode extends OptimizerNode {
 		} else {
 			preSet = null;
 		}
-		
+
 		// get the predecessor node
 		List<Operator> children = ((SingleInputOperator<?>) getPactContract()).getInputs();
-		
+
 		OptimizerNode pred;
 		PactConnection conn;
 		if (children.size() == 0) {
@@ -198,15 +198,15 @@ public abstract class SingleInputNode extends OptimizerNode {
 		setIncomingConnection(conn);
 		pred.addOutgoingConnection(conn);
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 	//                             Properties and Optimization
 	// --------------------------------------------------------------------------------------------
-	
-	
-	
+
+
+
 	protected abstract List<OperatorDescriptorSingle> getPossibleProperties();
-	
+
 
 	@Override
 	public boolean isMemoryConsumer() {
@@ -225,9 +225,9 @@ public abstract class SingleInputNode extends OptimizerNode {
 
 	@Override
 	public void computeInterestingPropertiesForInputs(CostEstimator estimator) {
-		// get what we inherit and what is preserved by our user code 
+		// get what we inherit and what is preserved by our user code
 		final InterestingProperties props = getInterestingProperties().filterByCodeAnnotations(this, 0);
-		
+
 		// add all properties relevant to this node
 		for (OperatorDescriptorSingle dps : getPossibleProperties()) {
 			for (RequestedGlobalProperties gp : dps.getPossibleGlobalProperties()) {
@@ -238,12 +238,12 @@ public abstract class SingleInputNode extends OptimizerNode {
 			}
 		}
 		this.inConn.setInterestingProperties(props);
-		
+
 		for (PactConnection conn : getBroadcastConnections()) {
 			conn.setInterestingProperties(new InterestingProperties());
 		}
 	}
-	
+
 
 	@Override
 	public List<PlanNode> getAlternativePlans(CostEstimator estimator) {
@@ -255,7 +255,7 @@ public abstract class SingleInputNode extends OptimizerNode {
 		// calculate alternative sub-plans for predecessor
 		final List<? extends PlanNode> subPlans = getPredecessorNode().getAlternativePlans(estimator);
 		final Set<RequestedGlobalProperties> intGlobal = this.inConn.getInterestingProperties().getGlobalProperties();
-		
+
 		// calculate alternative sub-plans for broadcast inputs
 		final List<Set<? extends NamedChannel>> broadcastPlanChannels = new ArrayList<Set<? extends NamedChannel>>();
 		List<PactConnection> broadcastConnections = getBroadcastConnections();
@@ -264,7 +264,7 @@ public abstract class SingleInputNode extends OptimizerNode {
 			PactConnection broadcastConnection = broadcastConnections.get(i);
 			String broadcastConnectionName = broadcastConnectionNames.get(i);
 			List<PlanNode> broadcastPlanCandidates = broadcastConnection.getSource().getAlternativePlans(estimator);
-			// wrap the plan candidates in named channels 
+			// wrap the plan candidates in named channels
 			HashSet<NamedChannel> broadcastChannels = new HashSet<NamedChannel>(broadcastPlanCandidates.size());
 			for (PlanNode plan: broadcastPlanCandidates) {
 				final NamedChannel c = new NamedChannel(broadcastConnectionName, plan);
@@ -283,17 +283,17 @@ public abstract class SingleInputNode extends OptimizerNode {
 			allValidGlobals = (RequestedGlobalProperties[]) pairs.toArray(new RequestedGlobalProperties[pairs.size()]);
 		}
 		final ArrayList<PlanNode> outputPlans = new ArrayList<PlanNode>();
-		
+
 		final int dop = getDegreeOfParallelism();
 		final int subPerInstance = getSubtasksPerInstance();
 		final int inDop = getPredecessorNode().getDegreeOfParallelism();
 		final int inSubPerInstance = getPredecessorNode().getSubtasksPerInstance();
 		final int numInstances = dop / subPerInstance + (dop % subPerInstance == 0 ? 0 : 1);
 		final int inNumInstances = inDop / inSubPerInstance + (inDop % inSubPerInstance == 0 ? 0 : 1);
-		
+
 		final boolean globalDopChange = numInstances != inNumInstances;
 		final boolean localDopChange = numInstances == inNumInstances & subPerInstance != inSubPerInstance;
-		
+
 		// create all candidates
 		for (PlanNode child : subPlans) {
 			if (this.inConn.getShipStrategy() == null) {
@@ -301,17 +301,17 @@ public abstract class SingleInputNode extends OptimizerNode {
 				for (RequestedGlobalProperties igps: intGlobal) {
 					final Channel c = new Channel(child, this.inConn.getMaterializationMode());
 					igps.parameterizeChannel(c, globalDopChange, localDopChange);
-					
+
 					// if the DOP changed, make sure that we cancel out properties, unless the
 					// ship strategy preserves/establishes them even under changing DOPs
 					if (globalDopChange && !c.getShipStrategy().isNetworkStrategy()) {
 						c.getGlobalProperties().reset();
 					}
-					if (localDopChange && !(c.getShipStrategy().isNetworkStrategy() || 
+					if (localDopChange && !(c.getShipStrategy().isNetworkStrategy() ||
 								c.getShipStrategy().compensatesForLocalDOPChanges())) {
 						c.getGlobalProperties().reset();
 					}
-					
+
 					// check whether we meet any of the accepted properties
 					// we may remove this check, when we do a check to not inherit
 					// requested global properties that are incompatible with all possible
@@ -331,13 +331,13 @@ public abstract class SingleInputNode extends OptimizerNode {
 				} else {
 					c.setShipStrategy(this.inConn.getShipStrategy());
 				}
-				
+
 				if (globalDopChange) {
 					c.adjustGlobalPropertiesForFullParallelismChange();
 				} else if (localDopChange) {
 					c.adjustGlobalPropertiesForLocalParallelismChange();
 				}
-				
+
 				// check whether we meet any of the accepted properties
 				for (RequestedGlobalProperties rgps: allValidGlobals) {
 					if (rgps.isMetBy(c.getGlobalProperties())) {
@@ -347,7 +347,7 @@ public abstract class SingleInputNode extends OptimizerNode {
 				}
 			}
 		}
-		
+
 		// cost and prune the plans
 		for (PlanNode node : outputPlans) {
 			estimator.costOperator(node);
@@ -358,7 +358,7 @@ public abstract class SingleInputNode extends OptimizerNode {
 		this.cachedPlans = outputPlans;
 		return outputPlans;
 	}
-	
+
 	protected void addLocalCandidates(Channel template, List<Set<? extends NamedChannel>> broadcastPlanChannels, RequestedGlobalProperties rgps,
 			List<PlanNode> target, CostEstimator estimator)
 	{
@@ -370,7 +370,7 @@ public abstract class SingleInputNode extends OptimizerNode {
 			} else {
 				ilp.parameterizeChannel(in);
 			}
-			
+
 			// instantiate a candidate, if the instantiated local properties meet one possible local property set
 			for (OperatorDescriptorSingle dps: getPossibleProperties()) {
 				for (RequestedLocalProperties ilps : dps.getPossibleLocalProperties()) {
@@ -391,36 +391,36 @@ public abstract class SingleInputNode extends OptimizerNode {
 			for (NamedChannel nc : broadcastChannelsCombination) {
 				PlanNode bcSource = nc.getSource();
 				PlanNode inputSource = in.getSource();
-				
+
 				if (!areBranchCompatible(bcSource, inputSource)) {
 					return;
 				}
 			}
-			
+
 			final SingleInputPlanNode node = dps.instantiate(in, this);
 			node.setBroadcastInputs(broadcastChannelsCombination);
-			
+
 			// compute how the strategy affects the properties
 			GlobalProperties gProps = in.getGlobalProperties().clone();
 			LocalProperties lProps = in.getLocalProperties().clone();
 			gProps = dps.computeGlobalProperties(gProps);
 			lProps = dps.computeLocalProperties(lProps);
-			
+
 			// filter by the user code field copies
 			gProps = gProps.filterByNodesConstantSet(this, 0);
 			lProps = lProps.filterByNodesConstantSet(this, 0);
-			
+
 			// apply
 			node.initProperties(gProps, lProps);
 			node.updatePropertiesWithUniqueSets(getUniqueFields());
 			target.add(node);
 		}
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 	//                                     Branch Handling
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public void computeUnclosedBranchStack() {
 		if (this.openBranches != null) {
@@ -429,13 +429,13 @@ public abstract class SingleInputNode extends OptimizerNode {
 
 		addClosedBranches(getPredecessorNode().closedBranchingNodes);
 		List<UnclosedBranchDescriptor> fromInput = getPredecessorNode().getBranchesForParent(this.inConn);
-		
+
 		// handle the data flow branching for the broadcast inputs
 		List<UnclosedBranchDescriptor> result = computeUnclosedBranchStackForBroadcastInputs(fromInput);
-		
+
 		this.openBranches = (result == null || result.isEmpty()) ? Collections.<UnclosedBranchDescriptor>emptyList() : result;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 	//                                     Miscellaneous
 	// --------------------------------------------------------------------------------------------

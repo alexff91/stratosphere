@@ -15,7 +15,7 @@ package eu.stratosphere.compiler.dag;
 import eu.stratosphere.util.Visitor;
 
 final class InterestingPropertiesClearer implements Visitor<OptimizerNode> {
-	
+
 	static final InterestingPropertiesClearer INSTANCE = new InterestingPropertiesClearer();
 
 	@Override

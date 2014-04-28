@@ -23,7 +23,7 @@ import eu.stratosphere.core.memory.DataOutputView;
 /**
  * Boxed serializable and comparable double precision floating point type, representing the primitive
  * type {@code double}.
- * 
+ *
  * @see eu.stratosphere.types.Key
  */
 public class DoubleValue implements Key, ResettableValue<DoubleValue>, CopyableValue<DoubleValue> {
@@ -40,7 +40,7 @@ public class DoubleValue implements Key, ResettableValue<DoubleValue>, CopyableV
 
 	/**
 	 * Initializes the encapsulated double with the provided value.
-	 * 
+	 *
 	 * @param value
 	 *        Initial value of the encapsulated double.
 	 */
@@ -50,7 +50,7 @@ public class DoubleValue implements Key, ResettableValue<DoubleValue>, CopyableV
 
 	/**
 	 * Returns the value of the encapsulated primitive double.
-	 * 
+	 *
 	 * @return the value of the encapsulated primitive double.
 	 */
 	public double getValue() {
@@ -59,7 +59,7 @@ public class DoubleValue implements Key, ResettableValue<DoubleValue>, CopyableV
 
 	/**
 	 * Sets the value of the encapsulated primitive double.
-	 * 
+	 *
 	 * @param value
 	 *        the new value of the encapsulated primitive double.
 	 */
@@ -67,13 +67,13 @@ public class DoubleValue implements Key, ResettableValue<DoubleValue>, CopyableV
 		this.value = value;
 	}
 
-    @Override
-    public void setValue(DoubleValue value) {
-        this.value = value.value;
-    }
+@Override
+public void setValue(DoubleValue value) {
+	this.value = value.value;
+}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public void read(DataInput in) throws IOException {
 		this.value = in.readDouble();
@@ -83,18 +83,19 @@ public class DoubleValue implements Key, ResettableValue<DoubleValue>, CopyableV
 	public void write(DataOutput out) throws IOException {
 		out.writeDouble(this.value);
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	@Override
 	public String toString() {
 		return String.valueOf(this.value);
 	}
-	
+
 	@Override
 	public int compareTo(final Key o) {
-		if (!(o instanceof DoubleValue))
-			throw new ClassCastException("Cannot compare " + o.getClass().getName() + " to DoubleValue!");
+		if (!(o instanceof DoubleValue)) {
+		throw new ClassCastException("Cannot compare " + o.getClass().getName() + " to DoubleValue!");
+		}
 
 		final double other = ((DoubleValue) o).value;
 
@@ -117,12 +118,12 @@ public class DoubleValue implements Key, ResettableValue<DoubleValue>, CopyableV
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public int getBinaryLength() {
 		return 8;
 	}
-	
+
 	@Override
 	public void copyTo(DoubleValue target) {
 		target.value = this.value;

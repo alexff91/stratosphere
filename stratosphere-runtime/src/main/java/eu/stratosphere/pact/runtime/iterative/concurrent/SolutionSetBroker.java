@@ -31,6 +31,6 @@ public class SolutionSetBroker extends Broker<MutableHashTable<?, ?>> {
 	public static Broker<MutableHashTable<?, ?>> instance() {
 		return INSTANCE;
 	}
-	
+
 	private SolutionSetBroker() {}
 }

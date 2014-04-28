@@ -44,7 +44,7 @@ import eu.stratosphere.util.StringUtils;
  * A dummy implementation of an {@link InstanceManager} used for the {@link QueueScheduler} unit tests.
  * <p>
  * This class is thread-safe.
- * 
+ *
  */
 public final class TestInstanceManager implements InstanceManager {
 
@@ -75,13 +75,13 @@ public final class TestInstanceManager implements InstanceManager {
 
 	/**
 	 * Test implementation of {@link AbstractInstance}.
-	 * 
+	 *
 	 */
 	private static final class TestInstance extends AbstractInstance {
 
 		/**
 		 * Constructs a new test instance.
-		 * 
+		 *
 		 * @param instanceType
 		 *        the instance type
 		 * @param instanceConnectionInfo
@@ -166,7 +166,7 @@ public final class TestInstanceManager implements InstanceManager {
 
 	/**
 	 * Returns the number of times the method releaseAllocatedResource has been called.
-	 * 
+	 *
 	 * @return the number of times the method releaseAllocatedResource has been called
 	 */
 	int getNumberOfReleaseMethodCalls() {

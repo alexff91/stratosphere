@@ -24,7 +24,7 @@ import eu.stratosphere.core.io.IOReadableWritable;
 
 public abstract class BinaryOutputFormat<T extends IOReadableWritable> extends FileOutputFormat<T> {
 	private static final long serialVersionUID = 1L;
-	
+
 	/**
 	 * The config parameter which defines the fixed length of a record.
 	 */
@@ -46,7 +46,7 @@ public abstract class BinaryOutputFormat<T extends IOReadableWritable> extends F
 		this.dataOutputStream.close();
 		super.close();
 	}
-	
+
 	protected void complementBlockInfo(BlockInfo blockInfo) throws IOException {
 	}
 
@@ -56,10 +56,12 @@ public abstract class BinaryOutputFormat<T extends IOReadableWritable> extends F
 
 		// read own parameters
 		this.blockSize = parameters.getLong(BLOCK_SIZE_PARAMETER_KEY, NATIVE_BLOCK_SIZE);
-		if (this.blockSize < 1 && this.blockSize != NATIVE_BLOCK_SIZE)
-			throw new IllegalArgumentException("The block size parameter must be set and larger than 0.");
-		if (this.blockSize > Integer.MAX_VALUE)
-			throw new UnsupportedOperationException("Currently only block size up to Integer.MAX_VALUE are supported");
+		if (this.blockSize < 1 && this.blockSize != NATIVE_BLOCK_SIZE) {
+		throw new IllegalArgumentException("The block size parameter must be set and larger than 0.");
+		}
+		if (this.blockSize > Integer.MAX_VALUE) {
+		throw new UnsupportedOperationException("Currently only block size up to Integer.MAX_VALUE are supported");
+		}
 	}
 
 	protected BlockInfo createBlockInfo() {
@@ -88,7 +90,7 @@ public abstract class BinaryOutputFormat<T extends IOReadableWritable> extends F
 	/**
 	 * Writes a block info at the end of the blocks.<br>
 	 * Current implementation uses only int and not long.
-	 * 
+	 *
 	 */
 	protected class BlockBasedOutput extends FilterOutputStream {
 
@@ -114,15 +116,17 @@ public abstract class BinaryOutputFormat<T extends IOReadableWritable> extends F
 
 		@Override
 		public void close() throws IOException {
-			if (this.blockPos > 0)
-				this.writeInfo();
+			if (this.blockPos > 0) {
+			this.writeInfo();
+			}
 			super.flush();
 			super.close();
 		}
 
 		public void startRecord() {
-			if (this.firstRecordStartPos == NO_RECORD)
-				this.firstRecordStartPos = this.blockPos;
+			if (this.firstRecordStartPos == NO_RECORD) {
+			this.firstRecordStartPos = this.blockPos;
+			}
 			this.blockCount++;
 			this.totalCount++;
 		}
@@ -140,8 +144,9 @@ public abstract class BinaryOutputFormat<T extends IOReadableWritable> extends F
 				this.out.write(b, offset, blockLen);
 
 				this.blockPos += blockLen;
-				if (this.blockPos >= this.maxPayloadSize)
-					this.writeInfo();
+				if (this.blockPos >= this.maxPayloadSize) {
+				this.writeInfo();
+				}
 				remainingLength -= blockLen;
 				offset += blockLen;
 			}
@@ -150,8 +155,9 @@ public abstract class BinaryOutputFormat<T extends IOReadableWritable> extends F
 		@Override
 		public void write(int b) throws IOException {
 			super.write(b);
-			if (++this.blockPos >= this.maxPayloadSize)
-				this.writeInfo();
+			if (++this.blockPos >= this.maxPayloadSize) {
+			this.writeInfo();
+			}
 		}
 
 		private void writeInfo() throws IOException {

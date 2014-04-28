@@ -57,7 +57,7 @@ public class StringRecordTest {
 		try {
 
 			final StringRecord copy = (StringRecord) CommonTestUtils.createCopy(orig);
-			
+
 			assertEquals(orig.getLength(), copy.getLength());
 			assertEquals(orig.toString(), copy.toString());
 			assertEquals(orig, copy);
@@ -86,9 +86,9 @@ public class StringRecordTest {
 
 	@Test
 	public void shouldReadNegativeInputs() {
-		
+
 		try {
-		
+
 			when(this.inputMock.readBoolean()).thenReturn(true);
 			when(this.inputMock.readInt()).thenReturn(-1);
 		} catch(IOException ioe) {
@@ -101,6 +101,6 @@ public class StringRecordTest {
 			return;
 		}
 
-		fail("StringRecord.readString did not throw an IOException for negative length of string");		
+		fail("StringRecord.readString did not throw an IOException for negative length of string");
 	}
 }

@@ -20,13 +20,13 @@ import org.junit.Test;
 
 /**
  * This class contains unit tests for the {@link EventNotificationManager}.
- * 
+ *
  */
 public class EventNotificationManagerTest {
 
 	/**
 	 * A test implementation of an {@link EventListener}.
-	 * 
+	 *
 	 */
 	private static class TestEventListener implements EventListener {
 
@@ -47,7 +47,7 @@ public class EventNotificationManagerTest {
 		/**
 		 * Returns the event which was last received by this event listener. If no event
 		 * has been received so far the return value is <code>null</code>.
-		 * 
+		 *
 		 * @return the event which was last received, possibly <code>null</code>
 		 */
 		public AbstractTaskEvent getLastReceivedEvent() {

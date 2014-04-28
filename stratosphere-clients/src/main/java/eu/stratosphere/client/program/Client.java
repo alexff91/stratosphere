@@ -43,46 +43,46 @@ import eu.stratosphere.nephele.jobgraph.JobGraph;
  * Encapsulates the functionality necessary to submit a program to a remote cluster.
  */
 public class Client {
-	
+
 	private final Configuration configuration;	// the configuration describing the job manager address
-	
+
 	private final PactCompiler compiler;		// the compiler to compile the jobs
 
 	private boolean printStatusDuringExecution;
-	
+
 	// ------------------------------------------------------------------------
 	//                            Construction
 	// ------------------------------------------------------------------------
-	
+
 	/**
 	 * Creates a new instance of the class that submits the jobs to a job-manager.
 	 * at the given address using the default port.
-	 * 
+	 *
 	 * @param jobManagerAddress Address and port of the job-manager.
 	 */
 	public Client(InetSocketAddress jobManagerAddress, Configuration config) {
 		this.configuration = config;
 		configuration.setString(ConfigConstants.JOB_MANAGER_IPC_ADDRESS_KEY, jobManagerAddress.getAddress().getHostAddress());
 		configuration.setInteger(ConfigConstants.JOB_MANAGER_IPC_PORT_KEY, jobManagerAddress.getPort());
-		
+
 		this.compiler = new PactCompiler(new DataStatistics(), new DefaultCostEstimator(), jobManagerAddress);
 	}
 
 	/**
 	 * Creates a instance that submits the programs to the job-manager defined in the
 	 * configuration.
-	 * 
+	 *
 	 * @param config The config used to obtain the job-manager's address.
 	 */
 	public Client(Configuration config) {
 		this.configuration = config;
-		
+
 		// instantiate the address to the job manager
 		final String address = config.getString(ConfigConstants.JOB_MANAGER_IPC_ADDRESS_KEY, null);
 		if (address == null) {
 			throw new CompilerException("Cannot find address to job manager's RPC service in the global configuration.");
 		}
-		
+
 		final int port = GlobalConfiguration.getInteger(ConfigConstants.JOB_MANAGER_IPC_PORT_KEY, ConfigConstants.DEFAULT_JOB_MANAGER_IPC_PORT);
 		if (port < 0) {
 			throw new CompilerException("Cannot find port to job manager's RPC service in the global configuration.");
@@ -91,21 +91,21 @@ public class Client {
 		final InetSocketAddress jobManagerAddress = new InetSocketAddress(address, port);
 		this.compiler = new PactCompiler(new DataStatistics(), new DefaultCostEstimator(), jobManagerAddress);
 	}
-	
+
 	public void setPrintStatusDuringExecution(boolean print) {
 		this.printStatusDuringExecution = print;
 	}
 
-	
+
 	// ------------------------------------------------------------------------
 	//                      Compilation and Submission
 	// ------------------------------------------------------------------------
-	
+
 	public String getOptimizedPlanAsJson(PackagedProgram prog) throws CompilerException, ProgramInvocationException {
 		PlanJSONDumpGenerator jsonGen = new PlanJSONDumpGenerator();
 		return jsonGen.getOptimizerPlanAsJSON(getOptimizedPlan(prog));
 	}
-	
+
 	public OptimizedPlan getOptimizedPlan(PackagedProgram prog) throws CompilerException, ProgramInvocationException {
 		if (prog.isUsingProgramEntryPoint()) {
 			return getOptimizedPlan(prog.getPlanWithJars());
@@ -125,17 +125,17 @@ public class Client {
 			throw new RuntimeException();
 		}
 	}
-	
+
 	public OptimizedPlan getOptimizedPlan(Plan p) throws CompilerException {
 		ContextChecker checker = new ContextChecker();
 		checker.check(p);
 		return this.compiler.compile(p);
 	}
-	
-	
+
+
 	/**
 	 * Creates the optimized plan for a given program, using this client's compiler.
-	 *  
+	 *
 	 * @param prog The program to be compiled.
 	 * @return The compiled and optimized plan, as returned by the compiler.
 	 * @throws CompilerException Thrown, if the compiler encounters an illegal situation.
@@ -144,22 +144,22 @@ public class Client {
 	public OptimizedPlan getOptimizedPlan(JobWithJars prog) throws CompilerException, ProgramInvocationException {
 		return getOptimizedPlan(prog.getPlan());
 	}
-	
+
 	public JobGraph getJobGraph(PackagedProgram prog, OptimizedPlan optPlan) throws ProgramInvocationException {
 		return getJobGraph(optPlan, prog.getAllLibraries());
 	}
-	
+
 	private JobGraph getJobGraph(OptimizedPlan optPlan, List<File> jarFiles) {
 		NepheleJobGraphGenerator gen = new NepheleJobGraphGenerator();
 		JobGraph job = gen.compileJobGraph(optPlan);
-		
+
 		for (File jar : jarFiles) {
 			job.addJar(new Path(jar.getAbsolutePath()));
 		}
-		
+
 		return job;
 	}
-	
+
 	public JobExecutionResult run(PackagedProgram prog, boolean wait) throws ProgramInvocationException {
 		if (prog.isUsingProgramEntryPoint()) {
 			return run(prog.getPlanWithJars(), wait);
@@ -174,16 +174,16 @@ public class Client {
 			throw new RuntimeException();
 		}
 	}
-	
+
 	public JobExecutionResult run(PackagedProgram prog, OptimizedPlan optimizedPlan, boolean wait) throws ProgramInvocationException {
 		return run(optimizedPlan, prog.getAllLibraries(), wait);
 
 	}
-	
+
 	/**
 	 * Runs a program on the nephele system whose job-manager is configured in this client's configuration.
 	 * This method involves all steps, from compiling, job-graph generation to submission.
-	 * 
+	 *
 	 * @param prog The program to be executed.
 	 * @param wait A flag that indicates whether this function call should block until the program execution is done.
 	 * @throws CompilerException Thrown, if the compiler encounters an illegal situation.
@@ -196,7 +196,7 @@ public class Client {
 	public JobExecutionResult run(JobWithJars prog, boolean wait) throws CompilerException, ProgramInvocationException {
 		return run(getOptimizedPlan(prog), prog.getJarFiles(), wait);
 	}
-	
+
 
 	public JobExecutionResult run(OptimizedPlan compiledPlan, List<File> libraries, boolean wait) throws ProgramInvocationException {
 		JobGraph job = getJobGraph(compiledPlan, libraries);
@@ -211,7 +211,7 @@ public class Client {
 		catch (IOException e) {
 			throw new ProgramInvocationException("Could not open job manager: " + e.getMessage());
 		}
-		
+
 		client.setConsoleStreamForReporting(this.printStatusDuringExecution ? System.out : null);
 
 		try {
@@ -220,7 +220,7 @@ public class Client {
 			}
 			else {
 				JobSubmissionResult result = client.submitJob();
-				
+
 				if (result.getReturnCode() != ReturnCode.SUCCESS) {
 					throw new ProgramInvocationException("The job was not successfully submitted to the nephele job manager"
 						+ (result.getDescription() == null ? "." : ": " + result.getDescription()));
@@ -239,25 +239,25 @@ public class Client {
 		}
 		return new JobExecutionResult(-1, null);
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	private static final class OptimizerPlanEnvironment extends ExecutionEnvironment {
-		
+
 		private final PactCompiler compiler;
-		
+
 		private OptimizedPlan optimizerPlan;
-		
-		
+
+
 		private OptimizerPlanEnvironment(PactCompiler compiler) {
 			this.compiler = compiler;
 		}
-		
+
 		@Override
 		public JobExecutionResult execute(String jobName) throws Exception {
 			Plan plan = createProgramPlan(jobName);
 			this.optimizerPlan = compiler.compile(plan);
-			
+
 			// do not go on with anything now!
 			throw new ProgramAbortException();
 		}
@@ -266,16 +266,16 @@ public class Client {
 		public String getExecutionPlan() throws Exception {
 			Plan plan = createProgramPlan("unused");
 			this.optimizerPlan = compiler.compile(plan);
-			
+
 			// do not go on with anything now!
 			throw new ProgramAbortException();
 		}
-		
+
 		private void setAsContext() {
 			initializeContextEnvironment(this);
 		}
 	}
-	
+
 	static final class ProgramAbortException extends Error {
 		private static final long serialVersionUID = 1L;
 	}

@@ -23,19 +23,19 @@ import eu.stratosphere.api.common.operators.util.UserCodeWrapper;
  * Abstract superclass for all contracts that represent actual operators.
  */
 public abstract class AbstractUdfOperator<T extends Function> extends Operator {
-	
+
 	/**
 	 * The object or class containing the user function.
 	 */
 	protected final UserCodeWrapper<T> stub;
-	
+
 	/**
 	 * The extra inputs which parameterize the user function.
 	 */
 	protected final Map<String, Operator> broadcastInputs = new HashMap<String, Operator>();
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Creates a new abstract operator with the given name wrapping the given user function.
 	 *
@@ -46,16 +46,16 @@ public abstract class AbstractUdfOperator<T extends Function> extends Operator {
 		super(name);
 		this.stub = stub;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Gets the stub that is wrapped by this contract. The stub is the actual implementation of the
 	 * user code.
-	 * 
+	 *
 	 * This throws an exception if the pact does not contain an object but a class for the user
 	 * code.
-	 * 
+	 *
 	 * @return The object with the user function for this operator.
 	 *
 	 * @see eu.stratosphere.api.common.operators.Operator#getUserCodeWrapper()
@@ -64,22 +64,22 @@ public abstract class AbstractUdfOperator<T extends Function> extends Operator {
 	public UserCodeWrapper<T> getUserCodeWrapper() {
 		return stub;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Returns the input, or null, if none is set.
-	 * 
+	 *
 	 * @return The broadcast input root operator.
 	 */
 	public Map<String, Operator> getBroadcastInputs() {
 		return this.broadcastInputs;
 	}
-	
+
 	/**
-	 * Binds the result produced by a plan rooted at {@code root} to a variable 
+	 * Binds the result produced by a plan rooted at {@code root} to a variable
 	 * used by the UDF wrapped in this operator.
-	 * 
+	 *
 	 * @param root The root of the plan producing this input.
 	 */
 	public void setBroadcastVariable(String name, Operator root) {
@@ -89,14 +89,14 @@ public abstract class AbstractUdfOperator<T extends Function> extends Operator {
 		if (root == null) {
 			throw new IllegalArgumentException("The broadcast input root operator may not be null.");
 		}
-		
+
 		this.broadcastInputs.put(name, root);
 	}
-	
+
 	/**
 	 * Clears all previous broadcast inputs and binds the given inputs as
 	 * broadcast variables of this operator.
-	 * 
+	 *
 	 * @param inputs The <name, root> pairs to be set as broadcast inputs.
 	 */
 	public void setBroadcastVariables(Map<String, Operator> roots) {
@@ -105,28 +105,28 @@ public abstract class AbstractUdfOperator<T extends Function> extends Operator {
 			setBroadcastVariable(e.getKey(), e.getValue());
 		}
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Gets the number of inputs for this operator.
-	 * 
+	 *
 	 * @return The number of inputs for this operator.
 	 */
 	public abstract int getNumberOfInputs();
-	
+
 	/**
 	 * Gets the column numbers of the key fields in the input records for the given input.
-	 *  
+	 *
 	 * @return The column numbers of the key fields.
 	 */
 	public abstract int[] getKeyColumns(int inputNum);
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Generic utility function that wraps a single class object into an array of that class type.
-	 * 
+	 *
 	 * @param <U> The type of the classes.
 	 * @param clazz The class object to be wrapped.
 	 * @return An array wrapping the class object.
@@ -136,10 +136,10 @@ public abstract class AbstractUdfOperator<T extends Function> extends Operator {
 		Class<U>[] array = new Class[] { clazz };
 		return array;
 	}
-	
+
 	/**
 	 * Generic utility function that returns an empty class array.
-	 * 
+	 *
 	 * @param <U> The type of the classes.
 	 * @return An empty array of type <tt>Class&lt;U&gt;</tt>.
 	 */

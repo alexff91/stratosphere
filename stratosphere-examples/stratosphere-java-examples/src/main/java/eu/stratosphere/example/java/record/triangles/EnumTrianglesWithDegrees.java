@@ -38,7 +38,7 @@ import eu.stratosphere.types.IntValue;
  * enumeration of open triads.
  */
 public class EnumTrianglesWithDegrees implements Program, ProgramDescription {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	@Override
@@ -48,29 +48,29 @@ public class EnumTrianglesWithDegrees implements Program, ProgramDescription {
 		final String edgeInput = args.length > 1 ? args[1] : "";
 		final String output    = args.length > 2 ? args[2] : "";
 		final char delimiter   = args.length > 3 ? (char) Integer.parseInt(args[3]) : ',';
-		
+
 
 		FileDataSource edges = new FileDataSource(new EdgeInputFormat(), edgeInput, "Input Edges");
 		edges.setParameter(EdgeInputFormat.ID_DELIMITER_CHAR, delimiter);
 
 		// =========================== Vertex Degree ============================
-		
+
 		MapOperator projectEdge = MapOperator.builder(new ProjectEdge())
 				.input(edges).name("Project Edge").build();
-		
+
 		ReduceOperator edgeCounter = ReduceOperator.builder(new CountEdges(), IntValue.class, 0)
 				.input(projectEdge).name("Count Edges for Vertex").build();
-		
+
 		ReduceOperator countJoiner = ReduceOperator.builder(new JoinCountsAndUniquify(), IntValue.class, 0)
 				.keyField(IntValue.class, 1)
 				.input(edgeCounter).name("Join Counts").build();
-		
-		
+
+
 		// =========================== Triangle Enumeration ============================
-		
+
 		MapOperator toLowerDegreeEdge = MapOperator.builder(new ProjectToLowerDegreeVertex())
 				.input(countJoiner).name("Select lower-degree Edge").build();
-		
+
 		MapOperator projectOutCounts = MapOperator.builder(new ProjectOutCounts())
 				.input(countJoiner).name("Project out Counts").build();
 

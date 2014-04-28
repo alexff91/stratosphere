@@ -33,18 +33,18 @@ import eu.stratosphere.util.MutableObjectIterator;
  * <p>
  * The CoGroupTask group all pairs that share the same key from both inputs. Each for each key, the sets of values that
  * were pair with that key of both inputs are handed to the <code>coGroup()</code> method of the CoGroupFunction.
- * 
+ *
  * @see eu.stratosphere.api.java.record.functions.CoGroupFunction
  */
 public class CoGroupDriver<IT1, IT2, OT> implements PactDriver<GenericCoGrouper<IT1, IT2, OT>, OT>
 {
 	private static final Log LOG = LogFactory.getLog(CoGroupDriver.class);
-	
-	
+
+
 	private PactTaskContext<GenericCoGrouper<IT1, IT2, OT>, OT> taskContext;
-	
+
 	private CoGroupTaskIterator<IT1, IT2> coGroupIterator;				// the iterator that does the actual cogroup
-	
+
 	private volatile boolean running;
 
 	// ------------------------------------------------------------------------
@@ -55,13 +55,13 @@ public class CoGroupDriver<IT1, IT2, OT> implements PactDriver<GenericCoGrouper<
 		this.taskContext = context;
 		this.running = true;
 	}
-	
+
 
 	@Override
 	public int getNumberOfInputs() {
 		return 2;
 	}
-	
+
 
 	@Override
 	public Class<GenericCoGrouper<IT1, IT2, OT>> getStubType() {
@@ -69,13 +69,13 @@ public class CoGroupDriver<IT1, IT2, OT> implements PactDriver<GenericCoGrouper<
 		final Class<GenericCoGrouper<IT1, IT2, OT>> clazz = (Class<GenericCoGrouper<IT1, IT2, OT>>) (Class<?>) GenericCoGrouper.class;
 		return clazz;
 	}
-	
+
 
 	@Override
 	public boolean requiresComparatorOnInput() {
 		return true;
 	}
-	
+
 
 	@Override
 	public void prepare() throws Exception
@@ -84,16 +84,16 @@ public class CoGroupDriver<IT1, IT2, OT> implements PactDriver<GenericCoGrouper<
 		if (config.getDriverStrategy() != DriverStrategy.CO_GROUP) {
 			throw new Exception("Unrecognized driver strategy for CoGoup driver: " + config.getDriverStrategy().name());
 		}
-		
+
 		final MutableObjectIterator<IT1> in1 = this.taskContext.getInput(0);
 		final MutableObjectIterator<IT2> in2 = this.taskContext.getInput(1);
-		
+
 		// get the key positions and types
 		final TypeSerializer<IT1> serializer1 = this.taskContext.getInputSerializer(0);
 		final TypeSerializer<IT2> serializer2 = this.taskContext.getInputSerializer(1);
 		final TypeComparator<IT1> groupComparator1 = this.taskContext.getInputComparator(0);
 		final TypeComparator<IT2> groupComparator2 = this.taskContext.getInputComparator(1);
-		
+
 		final TypePairComparatorFactory<IT1, IT2> pairComparatorFactory = config.getPairComparatorFactory(
 					this.taskContext.getUserCodeClassLoader());
 		if (pairComparatorFactory == null) {
@@ -104,14 +104,15 @@ public class CoGroupDriver<IT1, IT2, OT> implements PactDriver<GenericCoGrouper<
 		this.coGroupIterator = new SortMergeCoGroupIterator<IT1, IT2>(in1, in2,
 				serializer1, groupComparator1,  serializer2, groupComparator2,
 				pairComparatorFactory.createComparator12(groupComparator1, groupComparator2));
-		
+
 		// open CoGroupTaskIterator - this triggers the sorting and blocks until the iterator is ready
 		this.coGroupIterator.open();
-		
-		if (LOG.isDebugEnabled())
-			LOG.debug(this.taskContext.formatLogString("CoGroup task iterator ready."));
+
+		if (LOG.isDebugEnabled()) {
+		LOG.debug(this.taskContext.formatLogString("CoGroup task iterator ready."));
+		}
 	}
-	
+
 
 	@Override
 	public void run() throws Exception
@@ -119,7 +120,7 @@ public class CoGroupDriver<IT1, IT2, OT> implements PactDriver<GenericCoGrouper<
 		final GenericCoGrouper<IT1, IT2, OT> coGroupStub = this.taskContext.getStub();
 		final Collector<OT> collector = this.taskContext.getOutputCollector();
 		final CoGroupTaskIterator<IT1, IT2> coGroupIterator = this.coGroupIterator;
-		
+
 		while (this.running && coGroupIterator.next()) {
 			coGroupStub.coGroup(coGroupIterator.getValues1(), coGroupIterator.getValues2(), collector);
 		}

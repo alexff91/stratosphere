@@ -44,12 +44,12 @@ public class Broker<V> {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	/** blocking retrieval and removal of the object to share */
 	public void remove(String key) {
 		mediations.remove(key);
 	}
-	
+
 	/** blocking retrieval and removal of the object to share */
 	public V get(String key) {
 		try {

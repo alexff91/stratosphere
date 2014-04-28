@@ -31,31 +31,31 @@ public class SortMergeCoGroupIterator<T1, T2> implements CoGroupTaskIterator<T1,
 	private static enum MatchStatus {
 		NONE_REMAINED, FIRST_REMAINED, SECOND_REMAINED, FIRST_EMPTY, SECOND_EMPTY
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	private MatchStatus matchStatus;
-	
+
 	private Iterator<T1> firstReturn;
-	
+
 	private Iterator<T2> secondReturn;
-	
+
 	private TypePairComparator<T1, T2> comp;
-	
+
 	private KeyGroupedIterator<T1> iterator1;
 
 	private KeyGroupedIterator<T2> iterator2;
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	public SortMergeCoGroupIterator(MutableObjectIterator<T1> input1, MutableObjectIterator<T2> input2,
 			TypeSerializer<T1> serializer1, TypeComparator<T1> groupingComparator1,
 			TypeSerializer<T2> serializer2, TypeComparator<T2> groupingComparator2,
 			TypePairComparator<T1, T2> pairComparator)
-	{		
+	{
 
 		this.comp = pairComparator;
-		
+
 		this.iterator1 = new KeyGroupedIterator<T1>(input1, serializer1, groupingComparator1);
 		this.iterator2 = new KeyGroupedIterator<T2>(input2, serializer2, groupingComparator2);
 	}
@@ -84,7 +84,7 @@ public class SortMergeCoGroupIterator<T1, T2> implements CoGroupTaskIterator<T1,
 	{
 		boolean firstEmpty = true;
 		boolean secondEmpty = true;
-		
+
 		if (this.matchStatus != MatchStatus.FIRST_EMPTY) {
 			if (this.matchStatus == MatchStatus.FIRST_REMAINED) {
 				// comparator is still set correctly
@@ -128,7 +128,7 @@ public class SortMergeCoGroupIterator<T1, T2> implements CoGroupTaskIterator<T1,
 		else {
 			// both inputs are not empty
 			final int comp = this.comp.compareToReference(this.iterator2.getCurrent());
-			
+
 			if (0 == comp) {
 				// keys match
 				this.firstReturn = this.iterator1.getValues();

@@ -26,7 +26,7 @@ import eu.stratosphere.core.io.IOReadableWritable;
  * memory which is actually available to the JVM and can be used to allocate large memory portions.
  * <p>
  * This class is thread-safe.
- * 
+ *
  */
 public final class HardwareDescription implements IOReadableWritable {
 
@@ -53,7 +53,7 @@ public final class HardwareDescription implements IOReadableWritable {
 
 	/**
 	 * Constructs a new hardware description object.
-	 * 
+	 *
 	 * @param numberOfCPUCores
 	 *        the number of CPU cores available to the JVM on the compute node
 	 * @param sizeOfPhysicalMemory
@@ -87,7 +87,7 @@ public final class HardwareDescription implements IOReadableWritable {
 
 	/**
 	 * Returns the number of CPU cores available to the JVM on the compute node.
-	 * 
+	 *
 	 * @return the number of CPU cores available to the JVM on the compute node
 	 */
 	public int getNumberOfCPUCores() {
@@ -96,7 +96,7 @@ public final class HardwareDescription implements IOReadableWritable {
 
 	/**
 	 * Returns the size of physical memory in bytes available on the compute node.
-	 * 
+	 *
 	 * @return the size of physical memory in bytes available on the compute node
 	 */
 	public long getSizeOfPhysicalMemory() {
@@ -105,7 +105,7 @@ public final class HardwareDescription implements IOReadableWritable {
 
 	/**
 	 * Returns the size of free memory in bytes available to the JVM on the compute node.
-	 * 
+	 *
 	 * @return the size of free memory in bytes available to the JVM on the compute node
 	 */
 	public long getSizeOfFreeMemory() {

@@ -18,7 +18,7 @@ package eu.stratosphere.nephele.managementgraph;
  * attachment is not included in a possible serialization/deserialization of the graph or its components.
  * <p>
  * This class is not thread-safe.
- * 
+ *
  */
 public abstract class ManagementAttachment {
 
@@ -29,7 +29,7 @@ public abstract class ManagementAttachment {
 
 	/**
 	 * Sets an attachment for this part of the {@link ManagementGraph}.
-	 * 
+	 *
 	 * @param attachment
 	 *        the attachment for this part of the {@link ManagementGraph}
 	 */
@@ -39,7 +39,7 @@ public abstract class ManagementAttachment {
 
 	/**
 	 * Returns the attachment for this part of the {@link ManagementGraph}.
-	 * 
+	 *
 	 * @return the attachment for this part of the {@link ManagementGraph} or <code>null</code> if no attachment is set
 	 */
 	public final Object getAttachment() {

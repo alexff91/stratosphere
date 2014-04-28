@@ -30,7 +30,7 @@ import eu.stratosphere.util.StringUtils;
  * with Nephele's RPC system.
  * <p>
  * This class is not thread-safe.
- * 
+ *
  * @param <K>
  *        the type of the key used in this hash map
  * @param <V>
@@ -47,7 +47,7 @@ public class SerializableHashMap<K extends IOReadableWritable, V extends IOReada
 
 	@Override
 	public void write(final DataOutput out) throws IOException {
-		
+
 		out.writeInt(size());
 
 		final Iterator<Map.Entry<K, V>> it = entrySet().iterator();
@@ -68,7 +68,7 @@ public class SerializableHashMap<K extends IOReadableWritable, V extends IOReada
 	@SuppressWarnings("unchecked")
 	@Override
 	public void read(final DataInput in) throws IOException {
-		
+
 		final int numberOfMapEntries = in.readInt();
 
 		for (int i = 0; i < numberOfMapEntries; i++) {

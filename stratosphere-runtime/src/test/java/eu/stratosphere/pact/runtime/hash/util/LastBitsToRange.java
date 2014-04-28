@@ -15,8 +15,8 @@ package eu.stratosphere.pact.runtime.hash.util;
 
 /**
  * Takes the last m bits of a hash as bucket number
- * 
- * 
+ *
+ *
  */
 public class LastBitsToRange implements RangeCalculator {
 
@@ -25,7 +25,7 @@ public class LastBitsToRange implements RangeCalculator {
 
 	/**
 	 * Create object which calculates bucket number according to the last m bits
-	 * 
+	 *
 	 * @param numberOfLastBits
 	 *            Number of bits to be used for bucket calculation
 	 */

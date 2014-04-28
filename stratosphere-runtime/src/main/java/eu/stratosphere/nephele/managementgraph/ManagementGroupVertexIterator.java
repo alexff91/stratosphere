@@ -26,7 +26,7 @@ import java.util.Stack;
  * in which the group vertices are visited corresponds to the order of their discovery in a depth first
  * search.
  * This class is not thread-safe.
- * 
+ *
  */
 public final class ManagementGroupVertexIterator implements Iterator<ManagementGroupVertex> {
 
@@ -62,7 +62,7 @@ public final class ManagementGroupVertexIterator implements Iterator<ManagementG
 
 	/**
 	 * Auxiliary class which stores which vertices have already been visited.
-	 * 
+	 *
 	 */
 	private static class TraversalEntry {
 
@@ -78,7 +78,7 @@ public final class ManagementGroupVertexIterator implements Iterator<ManagementG
 
 		/**
 		 * Constructs a new traversal entry.
-		 * 
+		 *
 		 * @param groupVertex
 		 *        the group vertex this traversal entry belongs to
 		 * @param currentEdge
@@ -91,7 +91,7 @@ public final class ManagementGroupVertexIterator implements Iterator<ManagementG
 
 		/**
 		 * Returns the group vertex this traversal entry belongs to.
-		 * 
+		 *
 		 * @return the group vertex this traversal entry belongs to
 		 */
 		public ManagementGroupVertex getGroupVertex() {
@@ -100,7 +100,7 @@ public final class ManagementGroupVertexIterator implements Iterator<ManagementG
 
 		/**
 		 * Returns the edge index to use to visit the next group vertex.
-		 * 
+		 *
 		 * @return the edge index to use to visit the next group vertex
 		 */
 		public int getCurrentEdge() {
@@ -117,7 +117,7 @@ public final class ManagementGroupVertexIterator implements Iterator<ManagementG
 
 	/**
 	 * Creates a new management group vertex iterator.
-	 * 
+	 *
 	 * @param managementGraph
 	 *        the management graph that should be traversed
 	 * @param forward
@@ -154,7 +154,7 @@ public final class ManagementGroupVertexIterator implements Iterator<ManagementG
 	/**
 	 * Collects all input group vertices (i.e. vertices with no incoming edge or incoming edges from other stages) in
 	 * the given stage and adds them to an internal list.
-	 * 
+	 *
 	 * @param stage
 	 *        the number of the stage whose input vertices should be collected
 	 */
@@ -182,7 +182,7 @@ public final class ManagementGroupVertexIterator implements Iterator<ManagementG
 	 * Checks if for the given group vertex all incoming (if forward is <code>true</code>) or outgoing edges (if forward
 	 * is <code>false</code>) come from
 	 * other stages than the one the given vertex is in.
-	 * 
+	 *
 	 * @param groupVertex
 	 *        the group vertex to check for
 	 * @param forward
@@ -265,7 +265,7 @@ public final class ManagementGroupVertexIterator implements Iterator<ManagementG
 	/**
 	 * Returns a candidate group vertex which could potentially be visited next because it is reachable from the
 	 * currently considered group vertex.
-	 * 
+	 *
 	 * @param te
 	 *        the traversal entry for the current source group vertex
 	 * @param forward

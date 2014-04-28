@@ -17,8 +17,8 @@ import java.util.Iterator;
 
 /**
  * Iterates over a range of integer values with a certain step width
- * 
- * 
+ *
+ *
  */
 public class StepRangeIterator implements Iterator<Integer> {
 
@@ -29,7 +29,7 @@ public class StepRangeIterator implements Iterator<Integer> {
 	/**
 	 * Create an iterator over the range from minValue to maxValue with a
 	 * certain step width
-	 * 
+	 *
 	 * @param minValue
 	 *            Smallest value returned by the iterator
 	 * @param maxValue

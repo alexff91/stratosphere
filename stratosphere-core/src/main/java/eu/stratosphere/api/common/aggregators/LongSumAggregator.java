@@ -22,7 +22,7 @@ public class LongSumAggregator implements Aggregator<LongValue> {
 
 	private LongValue wrapper = new LongValue();
 	private long sum;
-	
+
 	@Override
 	public LongValue getAggregate() {
 		wrapper.setValue(sum);
@@ -33,7 +33,7 @@ public class LongSumAggregator implements Aggregator<LongValue> {
 	public void aggregate(LongValue element) {
 		sum += element.getValue();
 	}
-	
+
 	public void aggregate(long value) {
 		sum += value;
 	}

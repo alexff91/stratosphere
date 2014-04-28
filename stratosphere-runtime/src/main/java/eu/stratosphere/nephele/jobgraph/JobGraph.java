@@ -42,7 +42,7 @@ import eu.stratosphere.util.ClassUtils;
 /**
  * A job graph represents an entire job in Nephele. A job graph must consists at least of one job vertex
  * and must be acyclic.
- * 
+ *
  */
 public class JobGraph implements IOReadableWritable {
 
@@ -100,7 +100,7 @@ public class JobGraph implements IOReadableWritable {
 
 	/**
 	 * Constructs a new job graph with the given name and a random job ID.
-	 * 
+	 *
 	 * @param jobName
 	 *        the name for this job graph
 	 */
@@ -111,7 +111,7 @@ public class JobGraph implements IOReadableWritable {
 
 	/**
 	 * Returns the name assigned to the job graph.
-	 * 
+	 *
 	 * @return the name assigned to the job graph
 	 */
 	public String getName() {
@@ -120,7 +120,7 @@ public class JobGraph implements IOReadableWritable {
 
 	/**
 	 * Returns the configuration object for this job if it is set.
-	 * 
+	 *
 	 * @return the configuration object for this job, or <code>null</code> if it is not set
 	 */
 	public Configuration getJobConfiguration() {
@@ -131,7 +131,7 @@ public class JobGraph implements IOReadableWritable {
 	/**
 	 * Returns the configuration object distributed among the task managers
 	 * before they start processing this job.
-	 * 
+	 *
 	 * @return the configuration object for the task managers, or <code>null</code> if it is not set
 	 */
 	public Configuration getTaskmanagerConfiguration() {
@@ -141,7 +141,7 @@ public class JobGraph implements IOReadableWritable {
 
 	/**
 	 * Adds a new input vertex to the job graph if it is not already included.
-	 * 
+	 *
 	 * @param inputVertex
 	 *        the new input vertex to be added
 	 */
@@ -154,7 +154,7 @@ public class JobGraph implements IOReadableWritable {
 
 	/**
 	 * Adds a new task vertex to the job graph if it is not already included.
-	 * 
+	 *
 	 * @param taskVertex
 	 *        the new task vertex to be added
 	 */
@@ -167,7 +167,7 @@ public class JobGraph implements IOReadableWritable {
 
 	/**
 	 * Adds a new output vertex to the job graph if it is not already included.
-	 * 
+	 *
 	 * @param outputVertex
 	 *        the new output vertex to be added
 	 */
@@ -180,7 +180,7 @@ public class JobGraph implements IOReadableWritable {
 
 	/**
 	 * Returns the number of input vertices registered with the job graph.
-	 * 
+	 *
 	 * @return the number of input vertices registered with the job graph
 	 */
 	public int getNumberOfInputVertices() {
@@ -189,7 +189,7 @@ public class JobGraph implements IOReadableWritable {
 
 	/**
 	 * Returns the number of output vertices registered with the job graph.
-	 * 
+	 *
 	 * @return the number of output vertices registered with the job graph
 	 */
 	public int getNumberOfOutputVertices() {
@@ -198,7 +198,7 @@ public class JobGraph implements IOReadableWritable {
 
 	/**
 	 * Returns the number of task vertices registered with the job graph.
-	 * 
+	 *
 	 * @return the number of task vertices registered with the job graph
 	 */
 	public int getNumberOfTaskVertices() {
@@ -207,7 +207,7 @@ public class JobGraph implements IOReadableWritable {
 
 	/**
 	 * Returns an iterator to iterate all input vertices registered with the job graph.
-	 * 
+	 *
 	 * @return an iterator to iterate all input vertices registered with the job graph
 	 */
 	public Iterator<AbstractJobInputVertex> getInputVertices() {
@@ -219,7 +219,7 @@ public class JobGraph implements IOReadableWritable {
 
 	/**
 	 * Returns an iterator to iterate all output vertices registered with the job graph.
-	 * 
+	 *
 	 * @return an iterator to iterate all output vertices registered with the job graph
 	 */
 	public Iterator<AbstractJobOutputVertex> getOutputVertices() {
@@ -231,7 +231,7 @@ public class JobGraph implements IOReadableWritable {
 
 	/**
 	 * Returns an iterator to iterate all task vertices registered with the job graph.
-	 * 
+	 *
 	 * @return an iterator to iterate all task vertices registered with the job graph
 	 */
 	public Iterator<JobTaskVertex> getTaskVertices() {
@@ -243,7 +243,7 @@ public class JobGraph implements IOReadableWritable {
 
 	/**
 	 * Returns the number of all job vertices registered with this job graph.
-	 * 
+	 *
 	 * @return the number of all job vertices registered with this job graph
 	 */
 	public int getNumberOfVertices() {
@@ -253,7 +253,7 @@ public class JobGraph implements IOReadableWritable {
 
 	/**
 	 * Returns an array of all job vertices than can be reached when traversing the job graph from the input vertices.
-	 * 
+	 *
 	 * @return an array of all job vertices than can be reached when traversing the job graph from the input vertices
 	 */
 	public AbstractJobVertex[] getAllReachableJobVertices() {
@@ -266,7 +266,7 @@ public class JobGraph implements IOReadableWritable {
 	/**
 	 * Returns an array of all job vertices that are registered with the job graph. The order in which the vertices
 	 * appear in the list is not defined.
-	 * 
+	 *
 	 * @return an array of all job vertices that are registered with the job graph
 	 */
 	public AbstractJobVertex[] getAllJobVertices() {
@@ -295,7 +295,7 @@ public class JobGraph implements IOReadableWritable {
 
 	/**
 	 * Auxiliary method to collect all vertices which are reachable from the input vertices.
-	 * 
+	 *
 	 * @param jv
 	 *        the currently considered job vertex
 	 * @param collector
@@ -324,7 +324,7 @@ public class JobGraph implements IOReadableWritable {
 
 	/**
 	 * Returns the ID of the job.
-	 * 
+	 *
 	 * @return the ID of the job
 	 */
 	public JobID getJobID() {
@@ -333,7 +333,7 @@ public class JobGraph implements IOReadableWritable {
 
 	/**
 	 * Searches for a vertex with a matching ID and returns it.
-	 * 
+	 *
 	 * @param id
 	 *        the ID of the vertex to search for
 	 * @return the vertex with the matching ID or <code>null</code> if no vertex with such ID could be found
@@ -357,7 +357,7 @@ public class JobGraph implements IOReadableWritable {
 
 	/**
 	 * Checks if the job vertex with the given ID is registered with the job graph.
-	 * 
+	 *
 	 * @param id
 	 *        the ID of the vertex to search for
 	 * @return <code>true</code> if a vertex with the given ID is registered with the job graph, <code>false</code>
@@ -382,7 +382,7 @@ public class JobGraph implements IOReadableWritable {
 
 	/**
 	 * Checks if the job graph is weakly connected.
-	 * 
+	 *
 	 * @return <code>true</code> if the job graph is weakly connected, otherwise <code>false</code>
 	 */
 	public boolean isWeaklyConnected() {
@@ -419,7 +419,7 @@ public class JobGraph implements IOReadableWritable {
 
 	/**
 	 * Checks if the job graph is acyclic.
-	 * 
+	 *
 	 * @return <code>true</code> if the job graph is acyclic, <code>false</code> otherwise
 	 */
 	public boolean isAcyclic() {
@@ -492,7 +492,7 @@ public class JobGraph implements IOReadableWritable {
 
 	/**
 	 * Checks for all registered job vertices if their in-/out-degree is correct.
-	 * 
+	 *
 	 * @return <code>null</code> if the in-/out-degree of all vertices is correct or the first job vertex whose
 	 *         in-/out-degree is incorrect.
 	 */
@@ -665,7 +665,7 @@ public class JobGraph implements IOReadableWritable {
 
 	/**
 	 * Writes the JAR files of all vertices in array <code>jobVertices</code> to the specified output stream.
-	 * 
+	 *
 	 * @param out
 	 *        the output stream to write the JAR files to
 	 * @param jobVertices
@@ -712,7 +712,7 @@ public class JobGraph implements IOReadableWritable {
 	/**
 	 * Reads required JAR files from an input stream and adds them to the
 	 * library cache manager.
-	 * 
+	 *
 	 * @param in
 	 *        the data stream to read the JAR files from
 	 * @throws IOException
@@ -746,7 +746,7 @@ public class JobGraph implements IOReadableWritable {
 
 	/**
 	 * Adds the path of a JAR file required to run the job on a task manager.
-	 * 
+	 *
 	 * @param jar
 	 *        path of the JAR file required to run the job on a task manager
 	 */
@@ -763,7 +763,7 @@ public class JobGraph implements IOReadableWritable {
 
 	/**
 	 * Returns a (possibly empty) array of paths to JAR files which are required to run the job on a task manager.
-	 * 
+	 *
 	 * @return a (possibly empty) array of paths to JAR files which are required to run the job on a task manager
 	 */
 	public Path[] getJars() {
@@ -774,7 +774,7 @@ public class JobGraph implements IOReadableWritable {
 	/**
 	 * Checks if any vertex of this job graph has an outgoing edge which is set to <code>null</code>. If this is the
 	 * case the respective vertex is returned.
-	 * 
+	 *
 	 * @return the vertex which has an outgoing edge set to <code>null</code> or <code>null</code> if no such vertex
 	 *         exists
 	 */
@@ -803,7 +803,7 @@ public class JobGraph implements IOReadableWritable {
 	/**
 	 * Checks if the instance dependency chain created with the <code>setVertexToShareInstancesWith</code> method is
 	 * acyclic.
-	 * 
+	 *
 	 * @return <code>true</code> if the dependency chain is acyclic, <code>false</code> otherwise
 	 */
 	public boolean isInstanceDependencyChainAcyclic() {

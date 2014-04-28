@@ -18,17 +18,17 @@ package eu.stratosphere.api.java.aggregation;
  *
  */
 public enum Aggregations {
-	
+
 	SUM (new SumAggregationFunction.SumAggregationFunctionFactory()),
 	MIN (new MinAggregationFunction.MinAggregationFunctionFactory()),
 	MAX (new MaxAggregationFunction.MaxAggregationFunctionFactory()),
 	AVG (new AvgAggregationFunction.AvgAggregationFunctionFactory());
 //	STD_DEV;
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	private final AggregationFunctionFactory factory;
-		
+
 	private Aggregations(AggregationFunctionFactory factory) {
 		this.factory = factory;
 	}
@@ -36,5 +36,5 @@ public enum Aggregations {
 	public AggregationFunctionFactory getFactory() {
 		return this.factory;
 	}
-	
+
 }

@@ -23,13 +23,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.stratosphere.types.Value;
-
 public class RecordITCase {
-	
+
 	private static final long SEED = 354144423270432543L;
 	private final Random rand = new Random(RecordITCase.SEED);
-	
+
 	private DataInputStream in;
 	private DataOutputStream out;
 
@@ -40,7 +38,7 @@ public class RecordITCase {
 		this.in = new DataInputStream(pipedInput);
 		this.out = new DataOutputStream(new PipedOutputStream(pipedInput));
 	}
-	
+
 	@Test
 	public void massiveRandomBlackBoxTests()
 	{
@@ -50,13 +48,13 @@ public class RecordITCase {
 				final Value[] fields = RecordTest.createRandomValues(this.rand, 0, 32);
 				RecordTest.blackboxTestRecordWithValues(fields, this.rand, this.in, this.out);
 			}
-			
+
 			// random tests with records with a moderately large number of fields
 			for (int i = 0; i < 2000; i++) {
 				final Value[] fields = RecordTest.createRandomValues(this.rand, 20, 200);
 				RecordTest.blackboxTestRecordWithValues(fields, this.rand, this.in, this.out);
 			}
-			
+
 			// random tests with records with very many fields
 			for (int i = 0; i < 200; i++) {
 				final Value[] fields = RecordTest.createRandomValues(this.rand, 500, 2000);

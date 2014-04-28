@@ -24,7 +24,7 @@ import eu.stratosphere.nephele.util.CommonTestUtils;
 
 /**
  * This class contains tests for the {@link AbstractID} class.
- * 
+ *
  */
 public class AbstractIDTest {
 

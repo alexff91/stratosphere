@@ -22,10 +22,10 @@ import eu.stratosphere.api.common.Program;
 import eu.stratosphere.api.common.ProgramDescription;
 import eu.stratosphere.api.common.operators.FileDataSink;
 import eu.stratosphere.api.common.operators.FileDataSource;
-import eu.stratosphere.api.java.record.functions.JoinFunction;
-import eu.stratosphere.api.java.record.functions.ReduceFunction;
 import eu.stratosphere.api.java.record.functions.FunctionAnnotation.ConstantFields;
 import eu.stratosphere.api.java.record.functions.FunctionAnnotation.ConstantFieldsFirstExcept;
+import eu.stratosphere.api.java.record.functions.JoinFunction;
+import eu.stratosphere.api.java.record.functions.ReduceFunction;
 import eu.stratosphere.api.java.record.io.CsvOutputFormat;
 import eu.stratosphere.api.java.record.io.DelimitedInputFormat;
 import eu.stratosphere.api.java.record.operators.JoinOperator;
@@ -37,11 +37,11 @@ import eu.stratosphere.util.Collector;
 /**
  * Implementation of the triangle enumeration example Pact program.
  * The program expects a file with RDF triples (in XML serialization) as input. Triples must be separated by linebrakes.
- * 
+ *
  * The program filters for foaf:knows predicates to identify relationships between two entities (typically persons).
- * Relationships are interpreted as edges in a social graph. Then the program enumerates all triangles which are build 
- * by edges in that graph. 
- * 
+ * Relationships are interpreted as edges in a social graph. Then the program enumerates all triangles which are build
+ * by edges in that graph.
+ *
  * Usually, triangle enumeration is used as a pre-processing step to identify highly connected subgraphs.
  * The algorithm was published as MapReduce job by J. Cohen in "Graph Twiddling in a MapReduce World".
  * The Pact version was described in "MapReduce and PACT - Comparing Data Parallel Programming Models" (BTW 2011).
@@ -65,27 +65,30 @@ public class EnumTrianglesRdfFoaf implements Program, ProgramDescription {
 		private final StringValue rdfSubj = new StringValue();
 		private final StringValue rdfPred = new StringValue();
 		private final StringValue rdfObj = new StringValue();
-		
+
 		@Override
 		public Record readRecord(Record target, byte[] bytes, int offset, int numBytes) {
 			final int limit = offset + numBytes;
 			int startPos = offset;
-			
+
 			// read RDF subject
 			startPos = parseVarLengthEncapsulatedStringField(bytes, startPos, limit, ' ', rdfSubj, '"');
-			if (startPos < 0) 
-				// invalid record, exit
-				return null;
+			if (startPos < 0) {
+			// invalid record, exit
+			return null;
+			}
 			// read RDF predicate
 			startPos = parseVarLengthEncapsulatedStringField(bytes, startPos, limit, ' ', rdfPred, '"');
-			if (startPos < 0 || !rdfPred.getValue().equals("<http://xmlns.com/foaf/0.1/knows>"))
-				// invalid record or predicate is not a foaf-knows predicate, exit
-				return null;
+			if (startPos < 0 || !rdfPred.getValue().equals("<http://xmlns.com/foaf/0.1/knows>")) {
+			// invalid record or predicate is not a foaf-knows predicate, exit
+			return null;
+			}
 			// read RDF object
 			startPos = parseVarLengthEncapsulatedStringField(bytes, startPos, limit, ' ', rdfObj, '"');
-			if (startPos < 0)
-				// invalid record, exit
-				return null;
+			if (startPos < 0) {
+			// invalid record, exit
+			return null;
+			}
 
 			// compare RDF subject and object
 			if (rdfSubj.compareTo(rdfObj) <= 0) {
@@ -98,21 +101,21 @@ public class EnumTrianglesRdfFoaf implements Program, ProgramDescription {
 				target.setField(1, rdfSubj);
 			}
 
-			return target;	
+			return target;
 		}
-		
+
 		/*
-		 * Utility method to efficiently parse encapsulated, variable length strings 
+		 * Utility method to efficiently parse encapsulated, variable length strings
 		 */
 		private int parseVarLengthEncapsulatedStringField(byte[] bytes, int startPos, int limit, char delim, StringValue field, char encaps) {
-			
+
 			boolean isEncaps = false;
-			
+
 			// check whether string is encapsulated
 			if (bytes[startPos] == encaps) {
 				isEncaps = true;
 			}
-			
+
 			if (isEncaps) {
 				// string is encapsulated
 				for (int i = startPos; i < limit; i++) {
@@ -145,21 +148,21 @@ public class EnumTrianglesRdfFoaf implements Program, ProgramDescription {
 
 	/**
 	 * Builds triads (open triangle) from all two edges that share a vertex.
-	 * The common vertex is 
+	 * The common vertex is
 	 */
 	@ConstantFields(0)
 	public static class BuildTriads extends ReduceFunction implements Serializable {
 		private static final long serialVersionUID = 1L;
-		
+
 		// list of non-matching vertices
 		private final ArrayList<StringValue> otherVertices = new ArrayList<StringValue>(32);
-		
+
 		// matching vertex
 		private final StringValue matchVertex = new StringValue();
-		
+
 		// mutable output record
 		private final Record result = new Record();
-		
+
 		// initialize list of non-matching vertices for one vertex
 		public BuildTriads() {
 			this.otherVertices.add(new StringValue());
@@ -173,17 +176,17 @@ public class EnumTrianglesRdfFoaf implements Program, ProgramDescription {
 			rec.getFieldInto(0, this.matchVertex);
 			// read the non-matching vertex and add it to the list
 			rec.getFieldInto(1, this.otherVertices.get(0));
-			
+
 			// set the matching vertex in the output record
 			this.result.setField(0, this.matchVertex);
-			
+
 			int numEdges = 1;
 			// while there are more edges
 			while (records.hasNext()) {
 
 				// read the next edge
 				final Record next = records.next();
-				
+
 				final StringValue myVertex;
 				// obtain an object to store the non-matching vertex
 				if (numEdges >= this.otherVertices.size()) {
@@ -198,12 +201,12 @@ public class EnumTrianglesRdfFoaf implements Program, ProgramDescription {
 				}
 				// read the non-matching vertex into the obtained object
 				next.getFieldInto(1, myVertex);
-				
+
 				// combine the current edge with all vertices in the non-matching vertex list
 				for (int i = 0; i < numEdges; i++) {
 					// get the other non-matching vertex
 					final StringValue otherVertex = this.otherVertices.get(i);
-					// add my and other vertex to the output record depending on their ordering 
+					// add my and other vertex to the output record depending on their ordering
 					if (otherVertex.compareTo(myVertex) < 0) {
 						this.result.setField(1, otherVertex);
 						this.result.setField(2, myVertex);
@@ -213,10 +216,10 @@ public class EnumTrianglesRdfFoaf implements Program, ProgramDescription {
 						out.collect(next);
 					}
 				}
-				
+
 				numEdges++;
 			}
-		}		
+		}
 	}
 
 	/**
@@ -246,7 +249,7 @@ public class EnumTrianglesRdfFoaf implements Program, ProgramDescription {
 		String output    = (args.length > 2 ? args[2] : "");
 
 		FileDataSource edges = new FileDataSource(new EdgeInFormat(), edgeInput, "BTC Edges");
-		
+
 		ReduceOperator buildTriads = ReduceOperator.builder(new BuildTriads(), StringValue.class, 0)
 			.name("Build Triads")
 			.build();

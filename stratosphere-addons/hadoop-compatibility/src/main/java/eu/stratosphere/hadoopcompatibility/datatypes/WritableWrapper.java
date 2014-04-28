@@ -24,14 +24,14 @@ import eu.stratosphere.util.InstantiationUtil;
 
 public class WritableWrapper<T extends Writable> implements Value {
 	private static final long serialVersionUID = 2L;
-	
+
 	private T wrapped;
 	private String wrappedType;
 	private ClassLoader cl;
-	
+
 	public WritableWrapper() {
 	}
-	
+
 	public WritableWrapper(T toWrap) {
 		wrapped = toWrap;
 		wrappedType = toWrap.getClass().getCanonicalName();
@@ -40,7 +40,7 @@ public class WritableWrapper<T extends Writable> implements Value {
 	public <X extends Writable> X value() {
 		return (X) wrapped;
 	}
-	
+
 	@Override
 	public void write(DataOutput out) throws IOException {
 		out.writeUTF(wrappedType);

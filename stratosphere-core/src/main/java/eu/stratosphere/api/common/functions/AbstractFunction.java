@@ -13,21 +13,21 @@
 
 package eu.stratosphere.api.common.functions;
 
-import eu.stratosphere.configuration.Configuration;
-
 import java.io.Serializable;
+
+import eu.stratosphere.configuration.Configuration;
 
 /**
  * An abstract stub implementation that does nothing when opened or closed.
  */
 public abstract class AbstractFunction implements Function, Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	// --------------------------------------------------------------------------------------------
 	//  Runtime context access
 	// --------------------------------------------------------------------------------------------
-	
+
 	private transient RuntimeContext runtimeContext;
 
 	public void setRuntimeContext(RuntimeContext t) {
@@ -37,7 +37,7 @@ public abstract class AbstractFunction implements Function, Serializable {
 			throw new IllegalStateException("Error: The runtime context has already been set.");
 		}
 	}
-	
+
 	public RuntimeContext getRuntimeContext() {
 		if (this.runtimeContext != null) {
 			return this.runtimeContext;
@@ -45,7 +45,7 @@ public abstract class AbstractFunction implements Function, Serializable {
 			throw new IllegalStateException("The runtime context has not been initialized.");
 		}
 	}
-	
+
 	public IterationRuntimeContext getIterationRuntimeContext() {
 		if (this.runtimeContext == null) {
 			throw new IllegalStateException("The runtime context has not been initialized.");
@@ -55,11 +55,11 @@ public abstract class AbstractFunction implements Function, Serializable {
 			throw new IllegalStateException("This stub is not part of an iteration step function.");
 		}
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 	//  Default life cycle methods
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public void open(Configuration parameters) throws Exception {}
 

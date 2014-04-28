@@ -20,16 +20,16 @@ import java.io.IOException;
 import eu.stratosphere.util.ReflectionUtil;
 
 /**
- * Generic pair base type. 
- * 
+ * Generic pair base type.
+ *
  * @see eu.stratosphere.types.Key
- * 
+ *
  * @param <U> Type of the pair's first element.
  * @param <V> Type of the pair's second element.
  */
 public abstract class Pair<U extends Key, V extends Key> implements Key {
 	private static final long serialVersionUID = 1L;
-	
+
 	// class of the first pair element
 	private final Class<U> firstClass;
 	// class of the second pair element
@@ -59,7 +59,7 @@ public abstract class Pair<U extends Key, V extends Key> implements Key {
 
 	/**
 	 * Initializes the encapsulated pair elements with the provided values.
-	 * 
+	 *
 	 * @param first Initial value of the first encapsulated pair element.
 	 * @param second Initial value of the second encapsulated pair element.
 	 */
@@ -73,7 +73,7 @@ public abstract class Pair<U extends Key, V extends Key> implements Key {
 
 	/**
 	 * Returns the first encapsulated pair element.
-	 * 
+	 *
 	 * @return The first encapsulated pair element.
 	 */
 	public U getFirst() {
@@ -82,20 +82,21 @@ public abstract class Pair<U extends Key, V extends Key> implements Key {
 
 	/**
 	 * Sets the first encapsulated pair element to the specified value.
-	 * 
+	 *
 	 * @param first
 	 *        The new value of the first encapsulated pair element.
 	 */
 	public void setFirst(final U first) {
-		if (first == null)
-			throw new NullPointerException("first must not be null");
+		if (first == null) {
+		throw new NullPointerException("first must not be null");
+		}
 
 		this.first = first;
 	}
 
 	/**
 	 * Returns the second encapsulated pair element.
-	 * 
+	 *
 	 * @return The second encapsulated pair element.
 	 */
 	public V getSecond() {
@@ -104,13 +105,14 @@ public abstract class Pair<U extends Key, V extends Key> implements Key {
 
 	/**
 	 * Sets the second encapsulated pair element to the specified value.
-	 * 
+	 *
 	 * @param second
 	 *        The new value of the second encapsulated pair element.
 	 */
 	public void setSecond(final V second) {
-		if (second == null)
-			throw new NullPointerException("second must not be null");
+		if (second == null) {
+		throw new NullPointerException("second must not be null");
+		}
 
 		this.second = second;
 	}
@@ -134,12 +136,14 @@ public abstract class Pair<U extends Key, V extends Key> implements Key {
 
 	@Override
 	public int compareTo(final Key o) {
-		if (!(o instanceof Pair<?, ?>))
-			throw new ClassCastException("Cannot compare " + o.getClass().getName() + " to N_Pair.");
+		if (!(o instanceof Pair<?, ?>)) {
+		throw new ClassCastException("Cannot compare " + o.getClass().getName() + " to N_Pair.");
+		}
 
 		int result = this.first.compareTo(((Pair<?, ?>) o).first);
-		if (result == 0)
-			result = this.second.compareTo(((Pair<?, ?>) o).second);
+		if (result == 0) {
+		result = this.second.compareTo(((Pair<?, ?>) o).second);
+		}
 		return result;
 	}
 
@@ -154,12 +158,15 @@ public abstract class Pair<U extends Key, V extends Key> implements Key {
 
 	@Override
 	public boolean equals(final Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (this.getClass() != obj.getClass())
-			return false;
+		if (this == obj) {
+		return true;
+		}
+		if (obj == null) {
+		return false;
+		}
+		if (this.getClass() != obj.getClass()) {
+		return false;
+		}
 		final Pair<?, ?> other = (Pair<?, ?>) obj;
 		return this.first.equals(other.first) && this.second.equals(other.second);
 	}

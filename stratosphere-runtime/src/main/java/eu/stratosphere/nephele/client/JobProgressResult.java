@@ -24,7 +24,7 @@ import eu.stratosphere.nephele.util.SerializableArrayList;
 /**
  * A <code>JobProgressResult</code> is used to report the current progress
  * of a job.
- * 
+ *
  */
 public class JobProgressResult extends AbstractJobResult {
 
@@ -35,7 +35,7 @@ public class JobProgressResult extends AbstractJobResult {
 
 	/**
 	 * Constructs a new job progress result object.
-	 * 
+	 *
 	 * @param returnCode
 	 *        the return code that shall be carried by this result object
 	 * @param description
@@ -78,7 +78,7 @@ public class JobProgressResult extends AbstractJobResult {
 
 	/**
 	 * Returns an iterator to the list of events transported within this job progress result object.
-	 * 
+	 *
 	 * @return an iterator to the possibly empty list of events
 	 */
 	public Iterator<AbstractEvent> getEvents() {

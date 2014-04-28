@@ -22,7 +22,7 @@ import java.util.List;
  * which is used in Nephele's internal scheduling structure.
  * <p>
  * This class is not thread-safe.
- * 
+ *
  */
 public final class ManagementStage extends ManagementAttachment {
 
@@ -43,7 +43,7 @@ public final class ManagementStage extends ManagementAttachment {
 
 	/**
 	 * Constructs a new management stage.
-	 * 
+	 *
 	 * @param managementGraph
 	 *        the management graph this management stage belongs to
 	 * @param stageNumber
@@ -58,7 +58,7 @@ public final class ManagementStage extends ManagementAttachment {
 
 	/**
 	 * Returns the management graph this management stage is part of.
-	 * 
+	 *
 	 * @return the management graph this management stage is part of
 	 */
 	public ManagementGraph getGraph() {
@@ -67,7 +67,7 @@ public final class ManagementStage extends ManagementAttachment {
 
 	/**
 	 * Returns this management stage's number.
-	 * 
+	 *
 	 * @return this management stage's number
 	 */
 	public int getStageNumber() {
@@ -76,7 +76,7 @@ public final class ManagementStage extends ManagementAttachment {
 
 	/**
 	 * Returns the number of group vertices included in this management stage.
-	 * 
+	 *
 	 * @return the number of group vertices included in this management stage
 	 */
 	public int getNumberOfGroupVertices() {
@@ -86,7 +86,7 @@ public final class ManagementStage extends ManagementAttachment {
 
 	/**
 	 * Returns the management group vertex with the given index.
-	 * 
+	 *
 	 * @param index
 	 *        the index of the group vertex to be returned
 	 * @return the group vertex with the given index or <code>null</code> if no such vertex exists
@@ -102,7 +102,7 @@ public final class ManagementStage extends ManagementAttachment {
 
 	/**
 	 * Adds the given group vertex to this management stage.
-	 * 
+	 *
 	 * @param groupVertex
 	 *        the group vertex to be added to this management stage
 	 */
@@ -115,7 +115,7 @@ public final class ManagementStage extends ManagementAttachment {
 
 	/**
 	 * Adds all management group vertices contained in this stage to the given list.
-	 * 
+	 *
 	 * @param groupVertices
 	 *        the list to which the group vertices in this stage shall be added
 	 */
@@ -130,7 +130,7 @@ public final class ManagementStage extends ManagementAttachment {
 
 	/**
 	 * Adds all management vertices contained in this stage's group vertices to the given list.
-	 * 
+	 *
 	 * @param vertices
 	 *        the list to which the vertices in this stage shall be added
 	 */
@@ -147,7 +147,7 @@ public final class ManagementStage extends ManagementAttachment {
 	 * Returns the number of input management vertices in this stage, i.e. the number
 	 * of management vertices which are connected to vertices in a lower stage
 	 * or have no input channels.
-	 * 
+	 *
 	 * @return the number of input vertices in this stage
 	 */
 	public int getNumberOfInputManagementVertices() {
@@ -170,7 +170,7 @@ public final class ManagementStage extends ManagementAttachment {
 	 * Returns the number of output management vertices in this stage, i.e. the number
 	 * of management vertices which are connected to vertices in a higher stage
 	 * or have no output channels.
-	 * 
+	 *
 	 * @return the number of output vertices in this stage
 	 */
 	public int getNumberOfOutputManagementVertices() {
@@ -191,7 +191,7 @@ public final class ManagementStage extends ManagementAttachment {
 
 	/**
 	 * Returns the output management vertex with the given index or <code>null</code> if no such vertex exists.
-	 * 
+	 *
 	 * @param index
 	 *        the index of the vertex to be selected.
 	 * @return the output management vertex with the given index or <code>null</code> if no such vertex exists
@@ -217,7 +217,7 @@ public final class ManagementStage extends ManagementAttachment {
 
 	/**
 	 * Returns the input management vertex with the given index or <code>null</code> if no such vertex exists.
-	 * 
+	 *
 	 * @param index
 	 *        the index of the vertex to be selected.
 	 * @return the input management vertex with the given index or <code>null</code> if no such vertex exists
@@ -244,7 +244,7 @@ public final class ManagementStage extends ManagementAttachment {
 	/**
 	 * Returns the number of input group vertices in this stage. Input group vertices are those vertices which have
 	 * incoming edges from group vertices of a lower stage.
-	 * 
+	 *
 	 * @return the number of input group vertices in this stage
 	 */
 	public int getNumberOfInputGroupVertices() {
@@ -264,7 +264,7 @@ public final class ManagementStage extends ManagementAttachment {
 	/**
 	 * Returns the input group vertex in this stage with the given index. Input group vertices are those vertices which
 	 * have incoming edges from group vertices of a lower stage.
-	 * 
+	 *
 	 * @param index
 	 *        the index of the input group vertex to return
 	 * @return the input group vertex with the given index or <code>null</code> if no such vertex exists
@@ -290,7 +290,7 @@ public final class ManagementStage extends ManagementAttachment {
 	/**
 	 * Returns the number of output group vertices in this stage. Output group vertices are those vertices which have
 	 * outgoing edges to group vertices of a higher stage.
-	 * 
+	 *
 	 * @return the number of output group vertices in this stage
 	 */
 	public int getNumberOfOutputGroupVertices() {
@@ -310,7 +310,7 @@ public final class ManagementStage extends ManagementAttachment {
 	/**
 	 * Returns the output group vertex in this stage with the given index. Output group vertices are those vertices
 	 * which have outgoing edges to group vertices of a higher stage.
-	 * 
+	 *
 	 * @param index
 	 *        the index of the output group vertex to return
 	 * @return the output group vertex with the given index or <code>null</code> if no such vertex exists

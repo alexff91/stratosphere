@@ -25,7 +25,7 @@ import eu.stratosphere.types.Key;
  */
 public final class CoordVector implements Key {
 	private static final long serialVersionUID = 1L;
-	
+
 	// coordinate array
 	private double[] coordinates;
 
@@ -38,7 +38,7 @@ public final class CoordVector implements Key {
 
 	/**
 	 * Initializes a coordinate vector.
-	 * 
+	 *
 	 * @param coordinates The coordinate vector of a multi-dimensional point.
 	 */
 	public CoordVector(Double[] coordinates) {
@@ -50,7 +50,7 @@ public final class CoordVector implements Key {
 
 	/**
 	 * Initializes a coordinate vector.
-	 * 
+	 *
 	 * @param coordinates The coordinate vector of a multi-dimensional point.
 	 */
 	public CoordVector(double[] coordinates) {
@@ -59,16 +59,16 @@ public final class CoordVector implements Key {
 
 	/**
 	 * Returns the coordinate vector of a multi-dimensional point.
-	 * 
+	 *
 	 * @return The coordinate vector of a multi-dimensional point.
 	 */
 	public double[] getCoordinates() {
 		return this.coordinates;
 	}
-	
+
 	/**
 	 * Sets the coordinate vector of a multi-dimensional point.
-	 * 
+	 *
 	 * @param point The dimension values of the point.
 	 */
 	public void setCoordinates(double[] coordinates) {
@@ -78,7 +78,7 @@ public final class CoordVector implements Key {
 	/**
 	 * Computes the Euclidian distance between this coordinate vector and a
 	 * second coordinate vector.
-	 * 
+	 *
 	 * @param cv The coordinate vector to which the distance is computed.
 	 * @return The Euclidian distance to coordinate vector cv. If cv has a
 	 *         different length than this coordinate vector, -1 is returned.
@@ -118,7 +118,7 @@ public final class CoordVector implements Key {
 
 	/**
 	 * Compares this coordinate vector to another key.
-	 * 
+	 *
 	 * @return -1 if the other key is not of type CoordVector. If the other
 	 *         key is also a CoordVector but its length differs from this
 	 *         coordinates vector, -1 is return if this coordinate vector is

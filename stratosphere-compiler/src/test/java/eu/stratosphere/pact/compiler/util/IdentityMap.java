@@ -15,15 +15,15 @@ package eu.stratosphere.pact.compiler.util;
 
 import java.io.Serializable;
 
-import eu.stratosphere.api.java.record.functions.MapFunction;
 import eu.stratosphere.api.java.record.functions.FunctionAnnotation.ConstantFieldsExcept;
+import eu.stratosphere.api.java.record.functions.MapFunction;
 import eu.stratosphere.types.Record;
 import eu.stratosphere.util.Collector;
 
 @ConstantFieldsExcept({})
 public final class IdentityMap extends MapFunction implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	@Override
 	public void map(Record record, Collector<Record> out) throws Exception {
 		out.collect(record);

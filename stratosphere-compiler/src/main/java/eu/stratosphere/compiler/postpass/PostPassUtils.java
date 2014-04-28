@@ -21,7 +21,7 @@ public class PostPassUtils {
 	public static <X> Class<? extends Key>[] getKeys(AbstractSchema<Class< ? extends X>> schema, int[] fields) throws MissingFieldTypeInfoException {
 		@SuppressWarnings("unchecked")
 		Class<? extends Key>[] keyTypes = new Class[fields.length];
-		
+
 		for (int i = 0; i < fields.length; i++) {
 			Class<? extends X> type = schema.getType(fields[i]);
 			if (type == null) {
@@ -35,7 +35,7 @@ public class PostPassUtils {
 						" cannot be used as a key because it does not implement the interface 'Key'");
 			}
 		}
-		
+
 		return keyTypes;
 	}
 }

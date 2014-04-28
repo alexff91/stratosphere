@@ -14,7 +14,7 @@
 /**
  * This file is based on source code from the Hadoop Project (http://hadoop.apache.org/), licensed by the Apache
  * Software Foundation (ASF) under the Apache License, Version 2.0. See the NOTICE file distributed with this work for
- * additional information regarding copyright ownership. 
+ * additional information regarding copyright ownership.
  */
 
 package eu.stratosphere.core.fs;
@@ -37,7 +37,7 @@ import eu.stratosphere.util.StringUtils;
  * the directory separator. A path string is absolute if it begins with a slash.
  */
 public class Path implements IOReadableWritable, Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -67,7 +67,7 @@ public class Path implements IOReadableWritable, Serializable {
 
 	/**
 	 * Constructs a path object from a given URI.
-	 * 
+	 *
 	 * @param uri
 	 *        the URI to contruct the path object from
 	 */
@@ -77,7 +77,7 @@ public class Path implements IOReadableWritable, Serializable {
 
 	/**
 	 * Resolve a child path against a parent path.
-	 * 
+	 *
 	 * @param parent
 	 *        the parent path
 	 * @param child
@@ -89,7 +89,7 @@ public class Path implements IOReadableWritable, Serializable {
 
 	/**
 	 * Resolve a child path against a parent path.
-	 * 
+	 *
 	 * @param parent
 	 *        the parent path
 	 * @param child
@@ -101,7 +101,7 @@ public class Path implements IOReadableWritable, Serializable {
 
 	/**
 	 * Resolve a child path against a parent path.
-	 * 
+	 *
 	 * @param parent
 	 *        the parent path
 	 * @param child
@@ -113,7 +113,7 @@ public class Path implements IOReadableWritable, Serializable {
 
 	/**
 	 * Resolve a child path against a parent path.
-	 * 
+	 *
 	 * @param parent
 	 *        the parent path
 	 * @param child
@@ -143,7 +143,7 @@ public class Path implements IOReadableWritable, Serializable {
 	/**
 	 * Checks if the provided path string is either null or has zero length and throws
 	 * a {@link IllegalArgumentException} if any of the two conditions apply.
-	 * 
+	 *
 	 * @param path
 	 *        the path string to be checked
 	 */
@@ -160,7 +160,7 @@ public class Path implements IOReadableWritable, Serializable {
 	/**
 	 * Construct a path from a String. Path strings are URIs, but with unescaped
 	 * elements and some additional normalization.
-	 * 
+	 *
 	 * @param pathString
 	 *        the string to construct a path from
 	 */
@@ -206,7 +206,7 @@ public class Path implements IOReadableWritable, Serializable {
 
 	/**
 	 * Construct a Path from a scheme, an authority and a path string.
-	 * 
+	 *
 	 * @param scheme
 	 *        the scheme string
 	 * @param authority
@@ -221,7 +221,7 @@ public class Path implements IOReadableWritable, Serializable {
 
 	/**
 	 * Initializes a path object given the scheme, authority and path string.
-	 * 
+	 *
 	 * @param scheme
 	 *        the scheme string.
 	 * @param authority
@@ -239,7 +239,7 @@ public class Path implements IOReadableWritable, Serializable {
 
 	/**
 	 * Normalizes a path string.
-	 * 
+	 *
 	 * @param path
 	 *        the path string to normalize
 	 * @return the normalized path string
@@ -254,7 +254,7 @@ public class Path implements IOReadableWritable, Serializable {
 
 	/**
 	 * Checks if the provided path string contains a windows drive letter.
-	 * 
+	 *
 	 * @param path
 	 *        the path to check
 	 * @param slashed
@@ -275,7 +275,7 @@ public class Path implements IOReadableWritable, Serializable {
 
 	/**
 	 * Converts the path object to a {@link URI}.
-	 * 
+	 *
 	 * @return the {@link URI} object converted from the path object
 	 */
 	public URI toUri() {
@@ -284,7 +284,7 @@ public class Path implements IOReadableWritable, Serializable {
 
 	/**
 	 * Returns the FileSystem that owns this Path.
-	 * 
+	 *
 	 * @return the FileSystem that owns this Path
 	 * @throws IOException
 	 *         thrown if the file system could not be retrieved
@@ -295,7 +295,7 @@ public class Path implements IOReadableWritable, Serializable {
 
 	/**
 	 * Checks if the directory of this path is absolute.
-	 * 
+	 *
 	 * @return <code>true</code> if the directory of this path is absolute, <code>false</code> otherwise
 	 */
 	public boolean isAbsolute() {
@@ -305,7 +305,7 @@ public class Path implements IOReadableWritable, Serializable {
 
 	/**
 	 * Returns the final component of this path.
-	 * 
+	 *
 	 * @return the final component of the path
 	 */
 	public String getName() {
@@ -316,7 +316,7 @@ public class Path implements IOReadableWritable, Serializable {
 
 	/**
 	 * Returns the parent of a path or <code>null</code> if at root.
-	 * 
+	 *
 	 * @return the parent of a path or <code>null</code> if at root.
 	 */
 	public Path getParent() {
@@ -339,7 +339,7 @@ public class Path implements IOReadableWritable, Serializable {
 
 	/**
 	 * Adds a suffix to the final name in the path.
-	 * 
+	 *
 	 * @param the
 	 *        suffix to be added
 	 * @return the new path including the suffix
@@ -399,7 +399,7 @@ public class Path implements IOReadableWritable, Serializable {
 
 	/**
 	 * Returns the number of elements in this path.
-	 * 
+	 *
 	 * @return the number of elements in this path
 	 */
 	public int depth() {
@@ -415,7 +415,7 @@ public class Path implements IOReadableWritable, Serializable {
 
 	/**
 	 * Returns a qualified path object.
-	 * 
+	 *
 	 * @param fs
 	 *        the FileSystem that should be used to obtain the current working directory
 	 * @return the qualified path object
@@ -432,8 +432,9 @@ public class Path implements IOReadableWritable, Serializable {
 		String scheme = pathUri.getScheme();
 		String authority = pathUri.getAuthority();
 
-		if (scheme != null && (authority != null || fsUri.getAuthority() == null))
-			return path;
+		if (scheme != null && (authority != null || fsUri.getAuthority() == null)) {
+		return path;
+		}
 
 		if (scheme == null) {
 			scheme = fsUri.getScheme();
@@ -490,15 +491,16 @@ public class Path implements IOReadableWritable, Serializable {
 		}
 
 	}
-	
+
 	public static String constructTestPath(String folder) {
 		String path = System.getProperty("java.io.tmpdir");
-		if (!(path.endsWith("/") || path.endsWith("\\")) )
-			path += System.getProperty("file.separator");
+		if (!(path.endsWith("/") || path.endsWith("\\")) ) {
+		path += System.getProperty("file.separator");
+		}
 		path += folder;
 		return path;
 	}
-	
+
 	public static String constructTestURI(String folder) {
 		return new File(constructTestPath(folder)).toURI().toString();
 	}

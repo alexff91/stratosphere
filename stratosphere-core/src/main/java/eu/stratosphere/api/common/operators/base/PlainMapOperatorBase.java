@@ -21,15 +21,15 @@ import eu.stratosphere.api.common.operators.util.UserCodeWrapper;
 
 
 public class PlainMapOperatorBase<T extends GenericMap<?, ?>> extends SingleInputOperator<T> {
-	
+
 	public PlainMapOperatorBase(UserCodeWrapper<T> udf, String name) {
 		super(udf, name);
 	}
-	
+
 	public PlainMapOperatorBase(T udf, String name) {
 		super(new UserCodeObjectWrapper<T>(udf), name);
 	}
-	
+
 	public PlainMapOperatorBase(Class<? extends T> udf, String name) {
 		super(new UserCodeClassWrapper<T>(udf), name);
 	}

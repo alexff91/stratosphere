@@ -23,7 +23,7 @@ import java.util.Queue;
  * overhead in terms of memory consumption and management.
  * <p>
  * This class is not thread-safe.
- * 
+ *
  * @param <E>
  *        the type of the elements stored in this queue
  */
@@ -56,7 +56,7 @@ public final class CapacityConstrainedArrayQueue<E> implements Queue<E> {
 
 	/**
 	 * Constructs a new capacity-constrained array queue.
-	 * 
+	 *
 	 * @param capacity
 	 *        the capacity limit of the queue
 	 */
@@ -79,7 +79,7 @@ public final class CapacityConstrainedArrayQueue<E> implements Queue<E> {
 
 	/**
 	 * Checks if there is capacity left in the queue.
-	 * 
+	 *
 	 * @return <code>true</code> if there is capacity left in the queue, <code>false</code> otherwise
 	 */
 	private boolean capacityLeft() {
@@ -255,7 +255,7 @@ public final class CapacityConstrainedArrayQueue<E> implements Queue<E> {
 
 	/**
 	 * This class implements an iterator for the capacity-constrained array queue.
-	 * 
+	 *
 	 */
 	private final class CapacityConstrainedArrayQueueIterator implements Iterator<E> {
 
@@ -271,7 +271,7 @@ public final class CapacityConstrainedArrayQueue<E> implements Queue<E> {
 
 		/**
 		 * Constructs a new capacity-constrained array queue iterator.
-		 * 
+		 *
 		 * @param startPos
 		 *        the start position of the iterator
 		 */

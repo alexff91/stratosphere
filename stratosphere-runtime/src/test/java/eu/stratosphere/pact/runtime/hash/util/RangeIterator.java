@@ -17,8 +17,8 @@ import java.util.Iterator;
 
 /**
  * Iterates over a range of integer values
- * 
- * 
+ *
+ *
  */
 public class RangeIterator implements Iterator<Integer> {
 
@@ -27,7 +27,7 @@ public class RangeIterator implements Iterator<Integer> {
 
 	/**
 	 * Create an iterator over the range from minValue to maxValue
-	 * 
+	 *
 	 * @param minValue
 	 *            Smallest value returned by the iterator
 	 * @param maxValue

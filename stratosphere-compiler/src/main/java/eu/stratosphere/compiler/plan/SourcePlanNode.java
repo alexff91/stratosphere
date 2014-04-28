@@ -13,6 +13,9 @@
 
 package eu.stratosphere.compiler.plan;
 
+import static eu.stratosphere.compiler.plan.PlanNode.SourceAndDamReport.FOUND_SOURCE;
+import static eu.stratosphere.compiler.plan.PlanNode.SourceAndDamReport.NOT_FOUND;
+
 import java.util.Collections;
 import java.util.Iterator;
 
@@ -23,34 +26,32 @@ import eu.stratosphere.compiler.dataproperties.LocalProperties;
 import eu.stratosphere.pact.runtime.task.DriverStrategy;
 import eu.stratosphere.util.Visitor;
 
-import static eu.stratosphere.compiler.plan.PlanNode.SourceAndDamReport.*;
-
 /**
  * Plan candidate node for data flow sources that have no input and no special strategies.
  */
 public class SourcePlanNode extends PlanNode {
-	
+
 	private TypeSerializerFactory<?> serializer;
-	
+
 	/**
 	 * Constructs a new source candidate node that uses <i>NONE</i> as its local strategy.
-	 * 
+	 *
 	 * @param template The template optimizer node that this candidate is created for.
 	 */
 	public SourcePlanNode(DataSourceNode template, String nodeName) {
 		super(template, nodeName, DriverStrategy.NONE);
-		
+
 		this.globalProps = new GlobalProperties();
 		this.localProps = new LocalProperties();
 		updatePropertiesWithUniqueSets(template.getUniqueFields());
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public DataSourceNode getDataSourceNode() {
 		return (DataSourceNode) this.template;
 	}
-	
+
 	/**
 	 * Gets the serializer from this PlanNode.
 	 *
@@ -59,7 +60,7 @@ public class SourcePlanNode extends PlanNode {
 	public TypeSerializerFactory<?> getSerializer() {
 		return serializer;
 	}
-	
+
 	/**
 	 * Sets the serializer for this PlanNode.
 	 *
@@ -70,7 +71,7 @@ public class SourcePlanNode extends PlanNode {
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 
 	@Override
 	public void accept(Visitor<PlanNode> visitor) {

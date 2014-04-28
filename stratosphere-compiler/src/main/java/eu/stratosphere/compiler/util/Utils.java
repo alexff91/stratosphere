@@ -23,7 +23,7 @@ import eu.stratosphere.compiler.CompilerException;
 
 
 /**
- * 
+ *
  */
 public class Utils
 {
@@ -36,7 +36,7 @@ public class Utils
 			return new FieldList(cols);
 		}
 	}
-	
+
 	public static final Ordering createOrdering(FieldList fields, boolean[] directions) {
 		final Ordering o = new Ordering();
 		for (int i = 0; i < fields.size(); i++) {
@@ -44,7 +44,7 @@ public class Utils
 		}
 		return o;
 	}
-	
+
 	public static final Ordering createOrdering(FieldList fields) {
 		final Ordering o = new Ordering();
 		for (int i = 0; i < fields.size(); i++) {
@@ -52,7 +52,7 @@ public class Utils
 		}
 		return o;
 	}
-	
+
 	public static boolean[] getDirections(Ordering o, int numFields) {
 		final boolean[] dirs = o.getFieldSortDirections();
 		if (dirs.length == numFields) {
@@ -65,9 +65,9 @@ public class Utils
 			throw new CompilerException();
 		}
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * No instantiation.
 	 */

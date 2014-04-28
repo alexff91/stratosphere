@@ -15,7 +15,6 @@ package eu.stratosphere.compiler.plan;
 
 import static eu.stratosphere.compiler.plan.PlanNode.SourceAndDamReport.FOUND_SOURCE;
 import static eu.stratosphere.compiler.plan.PlanNode.SourceAndDamReport.FOUND_SOURCE_AND_DAM;
-
 import eu.stratosphere.api.common.typeutils.TypeSerializerFactory;
 import eu.stratosphere.compiler.CompilerException;
 import eu.stratosphere.compiler.costs.Costs;
@@ -26,15 +25,15 @@ import eu.stratosphere.pact.runtime.task.DriverStrategy;
 import eu.stratosphere.util.Visitor;
 
 public class BulkIterationPlanNode extends SingleInputPlanNode implements IterationPlanNode {
-	
+
 	private final BulkPartialSolutionPlanNode partialSolutionPlanNode;
-	
+
 	private final PlanNode rootOfStepFunction;
-	
+
 	private PlanNode rootOfTerminationCriterion;
-	
+
 	private TypeSerializerFactory<?> serializerForIterationChannel;
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	public BulkIterationPlanNode(BulkIterationNode template, String nodeName, Channel input,
@@ -46,7 +45,7 @@ public class BulkIterationPlanNode extends SingleInputPlanNode implements Iterat
 
 		mergeBranchPlanMaps();
 	}
-	
+
 	public BulkIterationPlanNode(BulkIterationNode template, String nodeName, Channel input,
 			BulkPartialSolutionPlanNode pspn, PlanNode rootOfStepFunction, PlanNode rootOfTerminationCriterion)
 	{
@@ -55,7 +54,7 @@ public class BulkIterationPlanNode extends SingleInputPlanNode implements Iterat
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	public BulkIterationNode getIterationNode() {
 		if (this.template instanceof BulkIterationNode) {
 			return (BulkIterationNode) this.template;
@@ -63,26 +62,26 @@ public class BulkIterationPlanNode extends SingleInputPlanNode implements Iterat
 			throw new RuntimeException();
 		}
 	}
-	
+
 	public BulkPartialSolutionPlanNode getPartialSolutionPlanNode() {
 		return this.partialSolutionPlanNode;
 	}
-	
+
 	public PlanNode getRootOfStepFunction() {
 		return this.rootOfStepFunction;
 	}
-	
+
 	public PlanNode getRootOfTerminationCriterion() {
 		return this.rootOfTerminationCriterion;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
-	
+
 	public TypeSerializerFactory<?> getSerializerForIterationChannel() {
 		return serializerForIterationChannel;
 	}
-	
+
 	public void setSerializerForIterationChannel(TypeSerializerFactory<?> serializerForIterationChannel) {
 		this.serializerForIterationChannel = serializerForIterationChannel;
 	}
@@ -90,11 +89,11 @@ public class BulkIterationPlanNode extends SingleInputPlanNode implements Iterat
 	public void setCosts(Costs nodeCosts) {
 		// add the costs from the step function
 		nodeCosts.addCosts(this.rootOfStepFunction.getCumulativeCosts());
-		
+
 		if (rootOfTerminationCriterion != null) {
 			// add the costs for the termination criterion
 			nodeCosts.addCosts(this.rootOfTerminationCriterion.getCumulativeCosts());
-		
+
 			// subtract the costs that were counted twice (there must be some, since both the
 			// next partial solution and the termination criterion depend on the partial solution,
 			// i.e. have a common subexpression)ranches
@@ -110,14 +109,14 @@ public class BulkIterationPlanNode extends SingleInputPlanNode implements Iterat
 				nodeCosts.subtractCosts(doubleCounted);
 			}
 		}
-		
+
 		super.setCosts(nodeCosts);
 	}
-	
+
 	public int getMemoryConsumerWeight() {
 		return 1;
 	}
-	
+
 
 	@Override
 	public SourceAndDamReport hasDamOnPathDownTo(PlanNode source) {
@@ -140,10 +139,11 @@ public class BulkIterationPlanNode extends SingleInputPlanNode implements Iterat
 	@Override
 	public void acceptForStepFunction(Visitor<PlanNode> visitor) {
 		this.rootOfStepFunction.accept(visitor);
-		
-		if(this.rootOfTerminationCriterion != null)
-			this.rootOfTerminationCriterion.accept(visitor);
-		
+
+		if(this.rootOfTerminationCriterion != null) {
+		this.rootOfTerminationCriterion.accept(visitor);
+		}
+
 	}
 
 	private void mergeBranchPlanMaps() {

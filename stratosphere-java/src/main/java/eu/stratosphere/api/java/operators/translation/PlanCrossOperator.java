@@ -19,27 +19,27 @@ import eu.stratosphere.api.common.operators.base.CrossOperatorBase;
 import eu.stratosphere.api.java.functions.CrossFunction;
 import eu.stratosphere.api.java.typeutils.TypeInformation;
 
-public class PlanCrossOperator<IN1, IN2, OUT> 
+public class PlanCrossOperator<IN1, IN2, OUT>
 	extends CrossOperatorBase<GenericCrosser<IN1, IN2, OUT>>
 	implements BinaryJavaPlanNode<IN1, IN2, OUT>{
-	
+
 	private final TypeInformation<IN1> inType1;
 	private final TypeInformation<IN2> inType2;
 	private final TypeInformation<OUT> outType;
-	
+
 
 	public PlanCrossOperator(
 			CrossFunction<IN1, IN2, OUT> udf,
 			String name,
-			 TypeInformation<IN1> inType1, TypeInformation<IN2> inType2, TypeInformation<OUT> outType) {
+			TypeInformation<IN1> inType1, TypeInformation<IN2> inType2, TypeInformation<OUT> outType) {
 		super(udf, name);
-		
+
 		this.inType1 = inType1;
 		this.inType2 = inType2;
 		this.outType = outType;
-		
+
 	}
-	
+
 	@Override
 	public TypeInformation<OUT> getReturnType() {
 		return this.outType;

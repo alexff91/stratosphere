@@ -20,10 +20,10 @@ import eu.stratosphere.nephele.io.channels.DefaultDeserializer;
  * As simple factory implementation that instantiates deserializers for mutable records.
  */
 public class MutableRecordDeserializerFactory<T extends IOReadableWritable> implements RecordDeserializerFactory<T> {
-	
+
 	/**
 	 * Creates a new factory that instantiates deserializers for immutable records.
-	 * 
+	 *
 	 * @param recordType The type of the record to be deserialized.
 	 */
 	public MutableRecordDeserializerFactory() {}
@@ -32,15 +32,15 @@ public class MutableRecordDeserializerFactory<T extends IOReadableWritable> impl
 	public RecordDeserializer<T> createDeserializer() {
 		return new DefaultDeserializer<T>(null);
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
-	private static final RecordDeserializerFactory<IOReadableWritable> INSTANCE = 
+
+	private static final RecordDeserializerFactory<IOReadableWritable> INSTANCE =
 									new MutableRecordDeserializerFactory<IOReadableWritable>();
-	
+
 	/**
 	 * Gets the singleton instance of the {@code MutableRecordDeserializerFactory}.
-	 * 
+	 *
 	 * @param <E> The generic type of the record to be deserialized.
 	 * @return An instance of the factory.
 	 */

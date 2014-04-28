@@ -33,34 +33,34 @@ import eu.stratosphere.util.Collector;
 import eu.stratosphere.util.Visitor;
 
 /**
- * 
+ *
  */
 public class BulkIteration extends SingleInputOperator<AbstractFunction> implements IterationOperator {
-	
+
 	private static String DEFAULT_NAME = "<Unnamed Bulk Iteration>";
-	
+
 	public static final String TERMINATION_CRITERION_AGGREGATOR_NAME = "terminationCriterion.aggregator";
-	
-	
+
+
 	private Operator iterationResult;
-	
+
 	private Operator inputPlaceHolder = new PartialSolutionPlaceHolder(this);
-	
+
 	private final AggregatorRegistry aggregators = new AggregatorRegistry();
-	
+
 	private int numberOfIterations = -1;
-	
+
 	protected Operator terminationCriterion;
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
-	 * 
+	 *
 	 */
 	public BulkIteration() {
 		this(DEFAULT_NAME);
 	}
-	
+
 	/**
 	 * @param name
 	 */
@@ -69,14 +69,14 @@ public class BulkIteration extends SingleInputOperator<AbstractFunction> impleme
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * @return The operator representing the partial solution.
 	 */
 	public Operator getPartialSolution() {
 		return this.inputPlaceHolder;
 	}
-	
+
 	/**
 	 * @param result
 	 */
@@ -86,32 +86,32 @@ public class BulkIteration extends SingleInputOperator<AbstractFunction> impleme
 		}
 		this.iterationResult = result;
 	}
-	
+
 	/**
 	 * @return The operator representing the next partial solution.
 	 */
 	public Operator getNextPartialSolution() {
 		return this.iterationResult;
 	}
-	
+
 	/**
 	 * @return The operator representing the termination criterion.
 	 */
 	public Operator getTerminationCriterion() {
 		return this.terminationCriterion;
 	}
-	
+
 	/**
 	 * @param criterion
 	 */
 	public void setTerminationCriterion(Operator criterion) {
 		MapOperatorBase<TerminationCriterionMapper> mapper = new MapOperatorBase<TerminationCriterionMapper>(TerminationCriterionMapper.class, "Termination Criterion Aggregation Wrapper");
 		mapper.setInput(criterion);
-		
+
 		this.terminationCriterion = mapper;
 		this.getAggregators().registerAggregationConvergenceCriterion(TERMINATION_CRITERION_AGGREGATOR_NAME, TerminationCriterionAggregator.class, TerminationCriterionAggregationConvergence.class);
 	}
-	
+
 	/**
 	 * @param num
 	 */
@@ -121,16 +121,16 @@ public class BulkIteration extends SingleInputOperator<AbstractFunction> impleme
 		}
 		this.numberOfIterations = num;
 	}
-	
+
 	public int getMaximumNumberOfIterations() {
 		return this.numberOfIterations;
 	}
-	
+
 	@Override
 	public AggregatorRegistry getAggregators() {
 		return this.aggregators;
 	}
-	
+
 	/**
 	 * @throws Exception
 	 */
@@ -147,26 +147,26 @@ public class BulkIteration extends SingleInputOperator<AbstractFunction> impleme
 					"(neither fix number of iteration nor termination criterion).");
 		}
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Specialized operator to use as a recognizable place-holder for the input to the
 	 * step function when composing the nested data flow.
 	 */
 	public static class PartialSolutionPlaceHolder extends Operator {
-		
+
 		private final BulkIteration containingIteration;
-		
+
 		public PartialSolutionPlaceHolder(BulkIteration container) {
 			super("Partial Solution");
 			this.containingIteration = container;
 		}
-		
+
 		public BulkIteration getContainingBulkIteration() {
 			return this.containingIteration;
 		}
-		
+
 		@Override
 		public void accept(Visitor<Operator> visitor) {
 			visitor.preVisit(this);
@@ -178,26 +178,26 @@ public class BulkIteration extends SingleInputOperator<AbstractFunction> impleme
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Special Mapper that is added before a termination criterion and is only a container for an special aggregator
 	 */
 	public static class TerminationCriterionMapper extends AbstractFunction implements Serializable, GenericCollectorMap<Object, Object> {
 		private static final long serialVersionUID = 1L;
-		
+
 		private TerminationCriterionAggregator aggregator;
-		
+
 		@Override
 		public void open(Configuration parameters) {
 			aggregator = (TerminationCriterionAggregator) getIterationRuntimeContext().<LongValue>getIterationAggregator(TERMINATION_CRITERION_AGGREGATOR_NAME);
 		}
-		
+
 		@Override
 		public void map(Object record, Collector<Object> out) {
 			aggregator.aggregate(1L);
 		}
 	}
-	
+
 	/**
 	 * Aggregator that basically only adds 1 for every output tuple of the termination criterion branch
 	 */

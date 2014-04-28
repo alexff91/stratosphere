@@ -23,7 +23,7 @@ import java.util.Set;
 
 /**
  * Utility class to deal with native libraries.
- * 
+ *
  */
 public final class NativeCodeLoader {
 
@@ -50,7 +50,7 @@ public final class NativeCodeLoader {
 
 	/**
 	 * Loads a native library from a file.
-	 * 
+	 *
 	 * @param directory
 	 *        the directory in which the library is supposed to be located
 	 * @param filename
@@ -85,7 +85,7 @@ public final class NativeCodeLoader {
 
 	/**
 	 * Copies all data from the given input stream to the given output stream.
-	 * 
+	 *
 	 * @param in
 	 *        the input stream to read data from
 	 * @param out
@@ -108,7 +108,7 @@ public final class NativeCodeLoader {
 
 	/**
 	 * Checks if a native library is already loaded.
-	 * 
+	 *
 	 * @param libraryName
 	 *        the filename of the library to check
 	 * @return <code>true</code> if the library is already loaded, <code>false</code> otherwise

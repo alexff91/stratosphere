@@ -16,13 +16,13 @@ package eu.stratosphere.nephele.event.task;
 /**
  * This interface must be implemented by all classes which shall
  * be notified about incoming task events.
- * 
+ *
  */
 public interface EventListener {
 
 	/**
 	 * Called when a task event has occurred.
-	 * 
+	 *
 	 * @param event
 	 *        the task event which has occurred
 	 */

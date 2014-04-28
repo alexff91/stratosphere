@@ -30,19 +30,19 @@ import eu.stratosphere.util.Collector;
 @ConstantFieldsFirst({0,1})
 public class ComputeDistanceParameterized extends MapFunction implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	private final DoubleValue distance = new DoubleValue();
-	
+
 	private Collection<Record> clusterCenters;
-	
+
 	@Override
 	public void open(Configuration parameters) throws Exception {
 		this.clusterCenters = this.getRuntimeContext().getBroadcastVariable("centers");
 	}
-	
+
 	/**
 	 * Computes the distance of one data point to one cluster center.
-	 * 
+	 *
 	 * Output Format:
 	 * 0: pointID
 	 * 1: pointVector
@@ -51,19 +51,19 @@ public class ComputeDistanceParameterized extends MapFunction implements Seriali
 	 */
 	@Override
 	public void map(Record dataPointRecord, Collector<Record> out) {
-		
+
 		CoordVector dataPoint = dataPointRecord.getField(1, CoordVector.class);
-		
+
 		for (Record clusterCenterRecord : this.clusterCenters) {
 			IntValue clusterCenterId = clusterCenterRecord.getField(0, IntValue.class);
 			CoordVector clusterPoint = clusterCenterRecord.getField(1, CoordVector.class);
-		
+
 			this.distance.setValue(dataPoint.computeEuclidianDistance(clusterPoint));
-			
-			// add cluster center id and distance to the data point record 
+
+			// add cluster center id and distance to the data point record
 			dataPointRecord.setField(2, clusterCenterId);
 			dataPointRecord.setField(3, this.distance);
-			
+
 			out.collect(dataPointRecord);
 		}
 	}

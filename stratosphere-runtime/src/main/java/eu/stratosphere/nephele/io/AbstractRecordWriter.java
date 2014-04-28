@@ -24,7 +24,7 @@ import eu.stratosphere.nephele.template.AbstractInvokable;
 
 /**
  * Abstract base class for a regular record writer and broadcast record writer.
- * 
+ *
  * @param <T> The type of the record that can be emitted with this record writer.
  */
 public abstract class AbstractRecordWriter<T extends IOReadableWritable> implements Writer<T> {
@@ -41,7 +41,7 @@ public abstract class AbstractRecordWriter<T extends IOReadableWritable> impleme
 
 	/**
 	 * Constructs a new record writer and registers a new output gate with the application's environment.
-	 * 
+	 *
 	 * @param invokable
 	 *        the application that instantiated the record writer
 	 * @param outputClass
@@ -59,7 +59,7 @@ public abstract class AbstractRecordWriter<T extends IOReadableWritable> impleme
 
 	/**
 	 * Connects a record writer to an output gate.
-	 * 
+	 *
 	 * @param outputClass
 	 *        the class of the record that can be emitted with this record writer
 	 * @param selector
@@ -82,7 +82,7 @@ public abstract class AbstractRecordWriter<T extends IOReadableWritable> impleme
 	/**
 	 * This method emits a record to the corresponding output gate. The method may block
 	 * until the record was transfered via any of the connected channels.
-	 * 
+	 *
 	 * @param record
 	 *        The record to be emitted.
 	 * @throws IOException
@@ -94,7 +94,7 @@ public abstract class AbstractRecordWriter<T extends IOReadableWritable> impleme
 
 	/**
 	 * Subscribes the listener object to receive events of the given type.
-	 * 
+	 *
 	 * @param eventListener
 	 *        the listener object to register
 	 * @param eventType
@@ -106,7 +106,7 @@ public abstract class AbstractRecordWriter<T extends IOReadableWritable> impleme
 
 	/**
 	 * Removes the subscription for events of the given type for the listener object.
-	 * 
+	 *
 	 * @param eventListener
 	 *        the listener object to cancel the subscription for
 	 * @param eventType
@@ -118,7 +118,7 @@ public abstract class AbstractRecordWriter<T extends IOReadableWritable> impleme
 
 	/**
 	 * Publishes an event.
-	 * 
+	 *
 	 * @param event
 	 *        the event to be published
 	 * @throws IOException
@@ -133,7 +133,7 @@ public abstract class AbstractRecordWriter<T extends IOReadableWritable> impleme
 	public void flush() throws IOException, InterruptedException {
 		this.outputGate.flush();
 	}
-	
+
 	public void sendEndOfSuperstep() throws IOException, InterruptedException {
 		this.outputGate.publishEvent(EndOfSuperstepEvent.INSTANCE);
 	}

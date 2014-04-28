@@ -111,7 +111,7 @@ public final class ByteBufferedChannelManager implements TransferEnvelopeDispatc
 
 	/**
 	 * Registers the given task with the byte buffered channel manager.
-	 * 
+	 *
 	 * @param task
 	 *        the task to be registered
 	 * @param the
@@ -159,9 +159,10 @@ public final class ByteBufferedChannelManager implements TransferEnvelopeDispatc
 						outputChannelContext.getChannelID());
 				}
 
-				if (LOG.isDebugEnabled())
-					LOG.debug("Registering byte buffered output channel " + outputChannelContext.getChannelID() + " ("
-							+ (isActive ? "active" : "inactive") + ")");
+				if (LOG.isDebugEnabled()) {
+				LOG.debug("Registering byte buffered output channel " + outputChannelContext.getChannelID() + " ("
+						+ (isActive ? "active" : "inactive") + ")");
+				}
 
 				this.registeredChannels.put(outputChannelContext.getChannelID(), outputChannelContext);
 			}
@@ -205,7 +206,7 @@ public final class ByteBufferedChannelManager implements TransferEnvelopeDispatc
 
 	/**
 	 * Unregisters the given task from the byte buffered channel manager.
-	 * 
+	 *
 	 * @param vertexID
 	 *        the ID of the task to be unregistered
 	 * @param task
@@ -516,7 +517,7 @@ public final class ByteBufferedChannelManager implements TransferEnvelopeDispatc
 
 	/**
 	 * Returns the list of receivers for transfer envelopes produced by the channel with the given source channel ID.
-	 * 
+	 *
 	 * @param jobID
 	 *        the ID of the job the given channel ID belongs to
 	 * @param sourceChannelID
@@ -714,7 +715,7 @@ public final class ByteBufferedChannelManager implements TransferEnvelopeDispatc
 
 	/**
 	 * Checks if the byte buffered channel manager has enough resources available to safely execute the given task.
-	 * 
+	 *
 	 * @param task
 	 *        the task to be executed
 	 * @throws InsufficientResourcesException
@@ -789,7 +790,7 @@ public final class ByteBufferedChannelManager implements TransferEnvelopeDispatc
 
 	/**
 	 * Invalidates the entries identified by the given channel IDs from the receiver lookup cache.
-	 * 
+	 *
 	 * @param channelIDs
 	 *        the channel IDs identifying the cache entries to invalidate
 	 */

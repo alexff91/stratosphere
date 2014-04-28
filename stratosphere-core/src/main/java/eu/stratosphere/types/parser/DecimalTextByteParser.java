@@ -20,27 +20,27 @@ import eu.stratosphere.types.ByteValue;
  * Only characters '1' to '0' and '-' are allowed.
  */
 public class DecimalTextByteParser extends FieldParser<ByteValue> {
-	
+
 	private ByteValue result;
-	
+
 	@Override
 	public int parseField(byte[] bytes, int startPos, int limit, char delimiter, ByteValue reusable) {
 		int val = 0;
 		boolean neg = false;
-		
+
 		this.result = reusable;
-		
+
 		if (bytes[startPos] == '-') {
 			neg = true;
 			startPos++;
-			
+
 			// check for empty field with only the sign
 			if (startPos == limit || bytes[startPos] == delimiter) {
 				setErrorState(ParseErrorState.NUMERIC_VALUE_ORPHAN_SIGN);
 				return -1;
 			}
 		}
-		
+
 		for (int i = startPos; i < limit; i++) {
 			if (bytes[i] == delimiter) {
 				reusable.setValue((byte) (neg ? -val : val));
@@ -52,17 +52,17 @@ public class DecimalTextByteParser extends FieldParser<ByteValue> {
 			}
 			val *= 10;
 			val += bytes[i] - 48;
-			
+
 			if (val > Byte.MAX_VALUE && (!neg || val > -Byte.MIN_VALUE)) {
 				setErrorState(ParseErrorState.NUMERIC_VALUE_OVERFLOW_UNDERFLOW);
 				return -1;
 			}
 		}
-		
+
 		reusable.setValue((byte) (neg ? -val : val));
 		return limit;
 	}
-	
+
 	@Override
 	public ByteValue createValue() {
 		return new ByteValue();

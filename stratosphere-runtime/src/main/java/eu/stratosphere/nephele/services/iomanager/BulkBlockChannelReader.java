@@ -26,33 +26,33 @@ import eu.stratosphere.core.memory.MemorySegment;
  */
 public class BulkBlockChannelReader extends BlockChannelAccess<ReadRequest, ArrayList<MemorySegment>>
 {
-	
-	
-	protected BulkBlockChannelReader(Channel.ID channelID, RequestQueue<ReadRequest> requestQueue, 
+
+
+	protected BulkBlockChannelReader(Channel.ID channelID, RequestQueue<ReadRequest> requestQueue,
 			List<MemorySegment> sourceSegments, int numBlocks)
 	throws IOException
 	{
 		super(channelID, requestQueue, new ArrayList<MemorySegment>(numBlocks), false);
-		
+
 		// sanity check
 		if (sourceSegments.size() < numBlocks) {
 			throw new IllegalArgumentException("The list of source memory segments must contain at least" +
 					" as many segments as the number of blocks to read.");
 		}
-		
+
 		// send read requests for all blocks
 		for (int i = 0; i < numBlocks; i++) {
 			readBlock(sourceSegments.remove(sourceSegments.size() - 1));
 		}
 	}
-	
 
-	
+
+
 	private void readBlock(MemorySegment segment) throws IOException
 	{
 		// check the error state of this channel
 		checkErroneous();
-		
+
 		// write the current buffer and get the next one
 		this.requestsNotReturned.incrementAndGet();
 		if (this.closed || this.requestQueue.isClosed()) {
@@ -63,7 +63,7 @@ public class BulkBlockChannelReader extends BlockChannelAccess<ReadRequest, Arra
 		}
 		this.requestQueue.add(new SegmentReadRequest(this, segment));
 	}
-	
+
 	public List<MemorySegment> getFullSegments()
 	{
 		synchronized (this.closeLock) {
@@ -71,7 +71,7 @@ public class BulkBlockChannelReader extends BlockChannelAccess<ReadRequest, Arra
 				throw new IllegalStateException("Full segments can only be obtained after the reader was properly closed.");
 			}
 		}
-		
+
 		return this.returnBuffers;
 	}
 

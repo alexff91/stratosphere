@@ -24,18 +24,18 @@ import eu.stratosphere.types.Value;
  * Class encapsulating a schema map (int column position -> column type) and a reference counter.
  */
 public class DenseValueSchema extends AbstractSchema<Class<? extends Value>> {
-	
+
 	private final List<Class<? extends Value>> schema;
-	
+
 	private int numFields = -1;
-	
-	
+
+
 	public DenseValueSchema() {
 		this.schema = new ArrayList<Class<? extends Value>>();
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public void addType(int pos, Class<? extends Value> type) throws ConflictingFieldTypeInfoException {
 		if (pos == schema.size()) {
@@ -57,19 +57,19 @@ public class DenseValueSchema extends AbstractSchema<Class<? extends Value>> {
 			schema.set(pos, type);
 		}
 	}
-	
+
 	@Override
 	public Class<? extends Value> getType(int field) {
 		return schema.get(field);
 	}
-	
+
 	@Override
 	public Iterator<Map.Entry<Integer, Class<? extends Value>>> iterator() {
 		final Iterator<Class<? extends Value>> iter = schema.iterator();
 		return new Iterator<Map.Entry<Integer,Class<? extends Value>>>() {
 
 			private int pos = 0;
-			
+
 			@Override
 			public boolean hasNext() {
 				return iter.hasNext();
@@ -86,16 +86,16 @@ public class DenseValueSchema extends AbstractSchema<Class<? extends Value>> {
 			}
 		};
 	}
-	
+
 	public int getNumFields() {
 		return numFields;
 	}
 
-	
+
 	public void setNumFields(int numFields) {
 		this.numFields = numFields;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	@Override
@@ -107,26 +107,26 @@ public class DenseValueSchema extends AbstractSchema<Class<? extends Value>> {
 	public boolean equals(Object obj) {
 		if (obj instanceof DenseValueSchema) {
 			DenseValueSchema other = (DenseValueSchema) obj;
-			return schema.equals(other.schema) && 
+			return schema.equals(other.schema) &&
 					getNumConnectionsThatContributed() == other.getNumConnectionsThatContributed();
 		} else {
 			return false;
 		}
 	}
-	
+
 	@Override
 	public String toString() {
 		return "<" + getNumConnectionsThatContributed() + "> : " + schema.toString();
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	private static final class Entry implements Map.Entry<Integer, Class<? extends Value>> {
-		
+
 		private Integer key;
 		private Class<? extends Value> value;
-		
-		
+
+
 		public Entry(Integer key, Class<? extends Value> value) {
 			this.key = key;
 			this.value = value;

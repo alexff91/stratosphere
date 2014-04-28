@@ -36,7 +36,7 @@ public class IntPairSerializer extends TypeSerializer<IntPair>
 		reuse.setValue(from.getValue());
 		return reuse;
 	}
-	
+
 
 	@Override
 	public int getLength()

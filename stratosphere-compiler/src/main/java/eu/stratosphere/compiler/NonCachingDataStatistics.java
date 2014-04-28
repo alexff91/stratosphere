@@ -19,11 +19,11 @@ import eu.stratosphere.api.common.io.statistics.BaseStatistics;
  * A variant of the data statistics that never caches.
  */
 public class NonCachingDataStatistics extends DataStatistics {
-	
+
 	public BaseStatistics getBaseStatistics(String inputIdentifier) {
 		return null;
 	}
-	
+
 	public void cacheBaseStatistics(BaseStatistics statistics, String identifyer) {
 	}
 }

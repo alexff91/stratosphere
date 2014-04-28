@@ -32,7 +32,7 @@ import eu.stratosphere.nephele.types.IntegerRecord;
 /**
  * This class checks the functionality of the {@link SerializationBuffer} class and the {@link DefaultDeserializer}
  * class
- * 
+ *
  */
 public class BufferTest
 {
@@ -48,7 +48,7 @@ public class BufferTest
 
 	/**
 	 * Set up files and stream for testing
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	@Before
@@ -63,7 +63,7 @@ public class BufferTest
 
 	/**
 	 * clean up. Remove file close streams and channels
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	@After
@@ -83,7 +83,7 @@ public class BufferTest
 	{
 		final SerializationBuffer<IntegerRecord> intSerializationBuffer = new SerializationBuffer<IntegerRecord>();
 		final int NUM = 0xab627ef;
-		
+
 		IntegerRecord intRecord = new IntegerRecord(NUM);
 		// Serialize a record.
 		try {
@@ -98,7 +98,7 @@ public class BufferTest
 			fail();
 		} catch (IOException e) {
 		}
-		
+
 		// Read from buffer (written in file)
 		try {
 			intSerializationBuffer.read(writeable);
@@ -142,9 +142,9 @@ public class BufferTest
 	{
 		final SerializationBuffer<StringRecord> stringSerializationBuffer = new SerializationBuffer<StringRecord>();
 		final String str = "abc";
-		
+
 		StringRecord stringrecord = new StringRecord(str);
-		
+
 		// Serialize a record.
 		try {
 			stringSerializationBuffer.serialize(stringrecord);

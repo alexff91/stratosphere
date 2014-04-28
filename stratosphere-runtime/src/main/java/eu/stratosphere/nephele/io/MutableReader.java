@@ -18,10 +18,10 @@ import java.io.IOException;
 import eu.stratosphere.core.io.IOReadableWritable;
 
 /**
- * 
+ *
  */
 public interface MutableReader<T extends IOReadableWritable> extends ReaderBase {
-	
+
 	/**
 	 * @param target
 	 * @return

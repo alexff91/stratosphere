@@ -24,45 +24,45 @@ public class AsciiStringParser extends FieldParser<String> {
 
 	// the default (ascii style) charset. should be available really everywhere.
 	private static final Charset CHARSET = Charset.forName("ISO-8859-1");
-	
+
 	private static final byte WHITESPACE_SPACE = (byte) ' ';
 	private static final byte WHITESPACE_TAB = (byte) '\t';
-	
+
 	private static final byte QUOTE_DOUBLE = (byte) '"';
-	
+
 	private String result;
-	
+
 	@Override
 	public int parseField(byte[] bytes, int startPos, int limit, char delim, String reusable) {
-		
+
 		int i = startPos;
-		
+
 		final byte delByte = (byte) delim;
 		byte current;
-		
+
 		// count initial whitespace lines
 		while (i < limit && ((current = bytes[i]) == WHITESPACE_SPACE || current == WHITESPACE_TAB)) {
 			i++;
 		}
-		
+
 		// first none whitespace character
 		if (i < limit && bytes[i] == QUOTE_DOUBLE) {
 			// quoted string
 			i++; // the quote
-			
+
 			// we count only from after the quote
 			int quoteStart = i;
 			while (i < limit && bytes[i] != QUOTE_DOUBLE) {
 				i++;
 			}
-			
+
 			if (i < limit) {
 				// end of the string
 				this.result = new String(bytes, quoteStart, i-quoteStart, CHARSET);
-				
+
 				i++; // the quote
-				
-				// skip trailing whitespace characters 
+
+				// skip trailing whitespace characters
 				while (i < limit && (current = bytes[i]) != delByte) {
 					if (current == WHITESPACE_SPACE || current == WHITESPACE_TAB) {
 						i++;
@@ -72,7 +72,7 @@ public class AsciiStringParser extends FieldParser<String> {
 						return -1;	// illegal case of non-whitespace characters trailing
 					}
 				}
-				
+
 				return (i == limit ? limit : i+1);
 			} else {
 				// exited due to line end without quote termination
@@ -85,13 +85,13 @@ public class AsciiStringParser extends FieldParser<String> {
 			while (i < limit && bytes[i] != delByte) {
 				i++;
 			}
-			
+
 			// set from the beginning. unquoted strings include the leading whitespaces
 			this.result = new String(bytes, startPos, i-startPos, CHARSET);
 			return (i == limit ? limit : i+1);
 		}
 	}
-	
+
 	@Override
 	public String createValue() {
 		return "";

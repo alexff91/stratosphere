@@ -39,7 +39,7 @@ public class FormatUtil {
 	/**
 	 * Creates an {@link InputFormat} from a given class for the specified file. The optional {@link Configuration}
 	 * initializes the format.
-	 * 
+	 *
 	 * @param <T>
 	 *        the class of the InputFormat
 	 * @param inputFormatClass
@@ -76,7 +76,7 @@ public class FormatUtil {
 	/**
 	 * Creates {@link InputFormat}s from a given class for the specified file(s). The optional {@link Configuration}
 	 * initializes the formats.
-	 * 
+	 *
 	 * @param <T>
 	 *        the class of the InputFormat
 	 * @param inputFormatClass
@@ -95,19 +95,21 @@ public class FormatUtil {
 		Path nephelePath = new Path(path);
 		FileSystem fs = nephelePath.getFileSystem();
 		FileStatus fileStatus = fs.getFileStatus(nephelePath);
-		if (!fileStatus.isDir())
-			return Arrays.asList(openInput(inputFormatClass, path, configuration));
+		if (!fileStatus.isDir()) {
+		return Arrays.asList(openInput(inputFormatClass, path, configuration));
+		}
 		FileStatus[] list = fs.listStatus(nephelePath);
 		List<F> formats = new ArrayList<F>();
-		for (int index = 0; index < list.length; index++)
-			formats.add(openInput(inputFormatClass, list[index].getPath().toString(), configuration));
+		for (int index = 0; index < list.length; index++) {
+		formats.add(openInput(inputFormatClass, list[index].getPath().toString(), configuration));
+		}
 		return formats;
 	}
 
 	/**
 	 * Creates an {@link InputFormat} from a given class. The optional {@link Configuration}
 	 * initializes the format.
-	 * 
+	 *
 	 * @param <T>
 	 *        the class of the InputFormat
 	 * @param inputFormatClass
@@ -128,11 +130,11 @@ public class FormatUtil {
 		inputFormat.open(splits[0]);
 		return inputFormat;
 	}
-	
+
 	/**
 	 * Creates an {@link OutputFormat} from a given class for the specified file. The optional {@link Configuration}
 	 * initializes the format.
-	 * 
+	 *
 	 * @param <T>
 	 *        the class of the OutputFormat
 	 * @param outputFormatClass
@@ -146,16 +148,16 @@ public class FormatUtil {
 	 *         if an I/O error occurred while accessing the file or initializing the OutputFormat.
 	 */
 	public static <T, F extends FileOutputFormat<? extends T>> F openOutput(
-			Class<F> outputFormatClass, String path, Configuration configuration) 
+			Class<F> outputFormatClass, String path, Configuration configuration)
 		throws IOException
 	{
 		final F outputFormat = ReflectionUtil.newInstance(outputFormatClass);
 		outputFormat.setOutputFilePath(new Path(path));
 		outputFormat.setOpenTimeout(0);
 		outputFormat.setWriteMode(WriteMode.OVERWRITE);
-	
+
 		configuration = configuration == null ? new Configuration() : configuration;
-		
+
 		outputFormat.configure(configuration);
 		outputFormat.open(0, 1);
 		return outputFormat;

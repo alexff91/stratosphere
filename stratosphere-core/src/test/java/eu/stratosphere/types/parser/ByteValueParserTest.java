@@ -24,7 +24,7 @@ public class ByteValueParserTest extends ParserTestBase<ByteValue> {
 			"0", "1", "76", "-66", String.valueOf(Byte.MAX_VALUE), String.valueOf(Byte.MIN_VALUE)
 		};
 	}
-	
+
 	@Override
 	public ByteValue[] getValidTestResults() {
 		return new ByteValue[] {

@@ -17,7 +17,7 @@ public interface ExecutionObserver {
 
 	/**
 	 * Called when the execution state of the associated task has changed.
-	 * 
+	 *
 	 * @param newExecutionState
 	 *        the execution state the task has just switched to
 	 * @param optionalMessage
@@ -27,7 +27,7 @@ public interface ExecutionObserver {
 
 	/**
 	 * Called when the user task has started a new thread.
-	 * 
+	 *
 	 * @param userThread
 	 *        the user thread which has been started
 	 */
@@ -35,7 +35,7 @@ public interface ExecutionObserver {
 
 	/**
 	 * Called when a thread spawn by a user task has finished.
-	 * 
+	 *
 	 * @param userThread
 	 *        the user thread which has finished
 	 */
@@ -43,7 +43,7 @@ public interface ExecutionObserver {
 
 	/**
 	 * Returns whether the task has been canceled.
-	 * 
+	 *
 	 * @return <code>true</code> if the task has been canceled, <code>false</code> otherwise
 	 */
 	boolean isCanceled();

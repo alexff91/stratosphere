@@ -33,12 +33,12 @@ public abstract class ChainedDriver<IT, OT> implements Collector<IT> {
 	protected String taskName;
 
 	protected Collector<OT> outputCollector;
-	
+
 	protected ClassLoader userCodeClassLoader;
-	
+
 	private RuntimeUDFContext udfContext;
 
-	
+
 	public void setup(TaskConfig config, String taskName, Collector<OT> outputCollector,
 			AbstractInvokable parent, ClassLoader userCodeClassLoader)
 	{
@@ -46,7 +46,7 @@ public abstract class ChainedDriver<IT, OT> implements Collector<IT> {
 		this.taskName = taskName;
 		this.outputCollector = outputCollector;
 		this.userCodeClassLoader = userCodeClassLoader;
-		
+
 		if (parent instanceof RegularPactTask) {
 			this.udfContext = ((RegularPactTask<?, ?>) parent).createRuntimeContext(taskName);
 		} else {
@@ -72,7 +72,7 @@ public abstract class ChainedDriver<IT, OT> implements Collector<IT> {
 	@Override
 	public abstract void collect(IT record);
 
-	
+
 	protected RuntimeContext getUdfRuntimeContext() {
 		return this.udfContext;
 	}
@@ -85,7 +85,7 @@ public abstract class ChainedDriver<IT, OT> implements Collector<IT> {
 	public Collector<OT> getOutputCollector() {
 		return outputCollector;
 	}
-	
+
 	public TaskConfig getTaskConfig() {
 		return this.config;
 	}

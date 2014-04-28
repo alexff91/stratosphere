@@ -26,7 +26,7 @@ import eu.stratosphere.nephele.util.EnumUtils;
  * Vertex events are transmitted from the job manager
  * to the job client in order to inform the user about
  * changes in terms of a tasks execution state.
- * 
+ *
  */
 public class VertexEvent extends AbstractEvent {
 
@@ -62,7 +62,7 @@ public class VertexEvent extends AbstractEvent {
 
 	/**
 	 * Constructs a new vertex event object.
-	 * 
+	 *
 	 * @param timestamp
 	 *        the timestamp of the event
 	 * @param jobVertexID
@@ -136,7 +136,7 @@ public class VertexEvent extends AbstractEvent {
 
 	/**
 	 * Returns the ID of the job vertex this event belongs to.
-	 * 
+	 *
 	 * @return the ID of the job vertex this event belongs to
 	 */
 	public JobVertexID getJobVertexID() {
@@ -145,7 +145,7 @@ public class VertexEvent extends AbstractEvent {
 
 	/**
 	 * Returns the name of the job vertex this event belongs to.
-	 * 
+	 *
 	 * @return the name of the job vertex, possibly <code>null</code>
 	 */
 	public String getJobVertexName() {
@@ -155,7 +155,7 @@ public class VertexEvent extends AbstractEvent {
 	/**
 	 * Returns the number of subtasks the corresponding vertex has been
 	 * split into at runtime.
-	 * 
+	 *
 	 * @return the number of subtasks
 	 */
 	public int getTotalNumberOfSubtasks() {
@@ -164,7 +164,7 @@ public class VertexEvent extends AbstractEvent {
 
 	/**
 	 * Returns the index of the subtask that this event belongs to.
-	 * 
+	 *
 	 * @return the index of the subtask
 	 */
 	public int getIndexOfSubtask() {
@@ -174,7 +174,7 @@ public class VertexEvent extends AbstractEvent {
 	/**
 	 * Returns the current execution state of the subtask this event
 	 * belongs to.
-	 * 
+	 *
 	 * @return the current execution state of the subtask this event belongs to
 	 */
 	public ExecutionState getCurrentExecutionState() {
@@ -183,7 +183,7 @@ public class VertexEvent extends AbstractEvent {
 
 	/**
 	 * Returns an optional description which may be attached to this event.
-	 * 
+	 *
 	 * @return the description attached to this event, possibly <code>null</code>.
 	 */
 	public String getDescription() {

@@ -66,7 +66,7 @@ public class UnionJob {
 		jarFileCreator.addClass(ProducerTask.class);
 		jarFileCreator.addClass(UnionTask.class);
 		jarFileCreator.addClass(ConsumerTask.class);
-		
+
 		try {
 			jarFileCreator.createJarFile();
 		} catch (IOException ioe) {
@@ -79,7 +79,7 @@ public class UnionJob {
 
 			return;
 		}
-		
+
 		//Define instance sharing
 		input1.setVertexToShareInstancesWith(output);
 		input2.setVertexToShareInstancesWith(output);
@@ -89,7 +89,7 @@ public class UnionJob {
 
 		final Configuration conf = new Configuration();
 		conf.setString("jobmanager.rpc.address", "localhost");
-		
+
 		try {
 			final JobClient jobClient = new JobClient(unionGraph, conf);
 			jobClient.submitJobAndWait();

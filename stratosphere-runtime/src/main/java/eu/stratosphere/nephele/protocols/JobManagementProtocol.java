@@ -26,13 +26,13 @@ import eu.stratosphere.nephele.types.IntegerRecord;
 /**
  * The JobManagementProtocol specifies methods required to manage
  * Nephele jobs from a job client.
- * 
+ *
  */
 public interface JobManagementProtocol extends VersionedProtocol {
 
 	/**
 	 * Submits the specified job to the job manager.
-	 * 
+	 *
 	 * @param job
 	 *        the job to be executed
 	 * @return a protocol of the job submission including the success status
@@ -45,7 +45,7 @@ public interface JobManagementProtocol extends VersionedProtocol {
 	 * Retrieves the current status of the job specified by the given ID. Consecutive
 	 * calls of this method may result in duplicate events. The caller must take care
 	 * of this.
-	 * 
+	 *
 	 * @param jobID
 	 *        the ID of the job
 	 * @return a {@link JobProgressResult} object including the current job progress
@@ -56,7 +56,7 @@ public interface JobManagementProtocol extends VersionedProtocol {
 
 	/**
 	 * Requests to cancel the job specified by the given ID.
-	 * 
+	 *
 	 * @param jobID
 	 *        the ID of the job
 	 * @return a {@link JobCancelResult} containing the result of the cancel request
@@ -68,7 +68,7 @@ public interface JobManagementProtocol extends VersionedProtocol {
 	/**
 	 * Returns the recommended interval in seconds in which a client
 	 * is supposed to poll for progress information.
-	 * 
+	 *
 	 * @return the interval in seconds
 	 * @throws IOException
 	 *         thrown if an error occurred while transmitting the request

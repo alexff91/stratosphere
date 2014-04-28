@@ -35,7 +35,7 @@ import eu.stratosphere.nephele.instance.AbstractInstance;
  * is preserved as well as possible.
  * <p>
  * This class is not thread-safe.
- * 
+ *
  */
 public final class LocatableInputSplitList {
 
@@ -57,7 +57,7 @@ public final class LocatableInputSplitList {
 	/**
 	 * This is an auxiliary class to store the minimum distance between a file input split's storage locations and an
 	 * {@link AbstractInstance}.
-	 * 
+	 *
 	 */
 	private final class QueueElem implements Comparable<QueueElem> {
 
@@ -74,7 +74,7 @@ public final class LocatableInputSplitList {
 
 		/**
 		 * Creates a new queue element.
-		 * 
+		 *
 		 * @param inputSplit
 		 *        the locatable input split to be stored
 		 * @param distance
@@ -88,7 +88,7 @@ public final class LocatableInputSplitList {
 
 		/**
 		 * Returns the locatable input split stored within this object.
-		 * 
+		 *
 		 * @return the locatable input split
 		 */
 		private LocatableInputSplit getInputSplit() {
@@ -108,7 +108,7 @@ public final class LocatableInputSplitList {
 
 	/**
 	 * Adds the given locate input split to the set of locatable input splits to be consumed.
-	 * 
+	 *
 	 * @param locatableInputSplit
 	 *        the locatable input split to be added
 	 */
@@ -122,7 +122,7 @@ public final class LocatableInputSplitList {
 	 * in a
 	 * way that the distance between the split's storage location and the requesting {@link AbstractInstance} is as
 	 * short as possible.
-	 * 
+	 *
 	 * @param instance
 	 *        the instance requesting the next file input split
 	 * @return the next input split to be consumed by the given instance or <code>null</code> if all input splits have
@@ -161,7 +161,7 @@ public final class LocatableInputSplitList {
 	 * list is initially created, it contains all the unconsumed located input splits at that point in time, ascendingly
 	 * ordered
 	 * by the minimum distance between the input splits' storage locations and the given {@link AbstractInstance}.
-	 * 
+	 *
 	 * @param instance
 	 *        the instance for which the locatable input split list has been computed
 	 * @return the list of file input splits ordered specifically for the given instance

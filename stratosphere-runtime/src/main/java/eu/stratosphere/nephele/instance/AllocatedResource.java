@@ -19,8 +19,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import eu.stratosphere.nephele.executiongraph.ExecutionVertex;
-import eu.stratosphere.nephele.instance.AbstractInstance;
-import eu.stratosphere.nephele.instance.AllocationID;
 
 /**
  * An allocated resource object unambiguously defines the
@@ -31,7 +29,7 @@ import eu.stratosphere.nephele.instance.AllocationID;
  * allocate within the node.
  * <p>
  * The class is thread-safe.
- * 
+ *
  */
 public final class AllocatedResource {
 
@@ -59,7 +57,7 @@ public final class AllocatedResource {
 
 	/**
 	 * Constructs a new allocated resource object.
-	 * 
+	 *
 	 * @param instance
 	 *        the instance a task is scheduled to run on.
 	 * @param instanceType
@@ -76,7 +74,7 @@ public final class AllocatedResource {
 
 	/**
 	 * Returns the instance a task is scheduled to run on.
-	 * 
+	 *
 	 * @return the instance a task is scheduled to run on
 	 */
 	public AbstractInstance getInstance() {
@@ -85,7 +83,7 @@ public final class AllocatedResource {
 
 	/**
 	 * Returns the allocation ID which identifies the resource allocated within the assigned instance.
-	 * 
+	 *
 	 * @return the allocation ID or <code>null</code> if the assigned instance is of type {@link DummyInstance}
 	 */
 	public AllocationID getAllocationID() {
@@ -94,7 +92,7 @@ public final class AllocatedResource {
 
 	/**
 	 * Returns the instance type this allocated resource represents.
-	 * 
+	 *
 	 * @return the instance type this allocated resource represents
 	 */
 	public InstanceType getInstanceType() {
@@ -151,7 +149,7 @@ public final class AllocatedResource {
 
 	/**
 	 * Assigns the given execution vertex to this allocated resource.
-	 * 
+	 *
 	 * @param vertex
 	 *        the vertex to assign to this resource
 	 */
@@ -164,7 +162,7 @@ public final class AllocatedResource {
 
 	/**
 	 * Returns an iterator over all execution vertices currently assigned to this allocated resource.
-	 * 
+	 *
 	 * @return an iterator over all execution vertices currently assigned to this allocated resource
 	 */
 	public Iterator<ExecutionVertex> assignedVertices() {
@@ -174,7 +172,7 @@ public final class AllocatedResource {
 
 	/**
 	 * Removes the given execution vertex from this allocated resource.
-	 * 
+	 *
 	 * @param vertex
 	 *        the execution to be removed
 	 */

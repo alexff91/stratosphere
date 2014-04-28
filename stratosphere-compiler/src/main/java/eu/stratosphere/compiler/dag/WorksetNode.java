@@ -26,17 +26,17 @@ import eu.stratosphere.compiler.plan.WorksetPlanNode;
  * The optimizer's internal representation of the partial solution that is input to a bulk iteration.
  */
 public class WorksetNode extends AbstractPartialSolutionNode {
-	
+
 	private final WorksetIterationNode iterationNode;
-	
-	
+
+
 	public WorksetNode(WorksetPlaceHolder psph, WorksetIterationNode iterationNode) {
 		super(psph);
 		this.iterationNode = iterationNode;
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	public void setCandidateProperties(GlobalProperties gProps, LocalProperties lProps) {
 		if (this.cachedPlans != null) {
 			throw new IllegalStateException();
@@ -44,7 +44,7 @@ public class WorksetNode extends AbstractPartialSolutionNode {
 			this.cachedPlans = Collections.<PlanNode>singletonList(new WorksetPlanNode(this, "Workset("+this.getPactContract().getName()+")", gProps, lProps));
 		}
 	}
-	
+
 	public WorksetPlanNode getCurrentWorksetPlanNode() {
 		if (this.cachedPlans != null) {
 			return (WorksetPlanNode) this.cachedPlans.get(0);
@@ -52,21 +52,21 @@ public class WorksetNode extends AbstractPartialSolutionNode {
 			throw new IllegalStateException();
 		}
 	}
-	
+
 	public WorksetIterationNode getIterationNode() {
 		return this.iterationNode;
 	}
-	
+
 	@Override
 	public void computeOutputEstimates(DataStatistics statistics) {
 		copyEstimates(this.iterationNode.getInitialWorksetPredecessorNode());
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	/**
 	 * Gets the contract object for this data source node.
-	 * 
+	 *
 	 * @return The contract.
 	 */
 	@Override

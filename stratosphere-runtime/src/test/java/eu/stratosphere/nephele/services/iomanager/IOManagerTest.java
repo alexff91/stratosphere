@@ -32,15 +32,15 @@ public class IOManagerTest
 	// ------------------------------------------------------------------------
 	//                        Cross Test Fields
 	// ------------------------------------------------------------------------
-	
+
 	private IOManager ioManager;
 
 	private DefaultMemoryManager memoryManager;
-	
+
 	// ------------------------------------------------------------------------
 	//                           Setup & Shutdown
 	// ------------------------------------------------------------------------
-	
+
 	@Before
 	public void beforeTest()
 	{
@@ -53,7 +53,7 @@ public class IOManagerTest
 	{
 		this.ioManager.shutdown();
 		Assert.assertTrue("IO Manager has not properly shut down.", ioManager.isProperlyShutDown());
-		
+
 		Assert.assertTrue("Not all memory was returned to the memory manager in the test.", this.memoryManager.verifyEmpty());
 		this.memoryManager.shutdown();
 		this.memoryManager = null;
@@ -62,7 +62,7 @@ public class IOManagerTest
 	// ------------------------------------------------------------------------
 	//                           Test Methods
 	// ------------------------------------------------------------------------
-	
+
 	// ------------------------------------------------------------------------
 
 	/**
@@ -70,13 +70,13 @@ public class IOManagerTest
 	 */
 	@Test
 	public void channelEnumerator() {
-		File tempPath = new File(System.getProperty("java.io.tmpdir")); 
-		
+		File tempPath = new File(System.getProperty("java.io.tmpdir"));
+
 		Channel.Enumerator enumerator = ioManager.createChannelEnumerator();
 
 		for (int i = 0; i < 10; i++) {
 			Channel.ID id = enumerator.next();
-			
+
 			File path = new File(id.getPath());
 			Assert.assertTrue("Channel IDs must name an absolute path.", path.isAbsolute());
 			Assert.assertFalse("Channel IDs must name a file, not a directory.", path.isDirectory());
@@ -85,86 +85,86 @@ public class IOManagerTest
 	}
 
 	// ------------------------------------------------------------------------
-	
+
 	@Test
 	public void channelReadWriteOneSegment()
 	{
 		final int NUM_IOS = 1111;
-		
+
 		try {
 			final Channel.ID channelID = this.ioManager.createChannel();
 			final BlockChannelWriter writer = this.ioManager.createBlockChannelWriter(channelID);
-			
+
 			MemorySegment memSeg = this.memoryManager.allocatePages(new DummyInvokable(), 1).get(0);
-			
+
 			for (int i = 0; i < NUM_IOS; i++) {
 				for (int pos = 0; pos < memSeg.size(); pos += 4) {
 					memSeg.putInt(pos, i);
 				}
-				
+
 				writer.writeBlock(memSeg);
 				memSeg = writer.getNextReturnedSegment();
 			}
-			
+
 			writer.close();
-			
+
 			final BlockChannelReader reader = this.ioManager.createBlockChannelReader(channelID);
 			for (int i = 0; i < NUM_IOS; i++) {
 				reader.readBlock(memSeg);
 				memSeg = reader.getNextReturnedSegment();
-				
+
 				for (int pos = 0; pos < memSeg.size(); pos += 4) {
 					if (memSeg.getInt(pos) != i) {
 						Assert.fail("Read memory segment contains invalid data.");
 					}
 				}
 			}
-			
+
 			reader.closeAndDelete();
-			
+
 			this.memoryManager.release(memSeg);
-			
+
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			Assert.fail("TEst encountered an exception: " + ex.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void channelReadWriteMultipleSegments()
 	{
 		final int NUM_IOS = 1111;
 		final int NUM_SEGS = 16;
-		
+
 		try {
 			final List<MemorySegment> memSegs = this.memoryManager.allocatePages(new DummyInvokable(), NUM_SEGS);
 			final Channel.ID channelID = this.ioManager.createChannel();
 			final BlockChannelWriter writer = this.ioManager.createBlockChannelWriter(channelID);
-			
+
 			for (int i = 0; i < NUM_IOS; i++) {
 				final MemorySegment memSeg = memSegs.isEmpty() ? writer.getNextReturnedSegment() : memSegs.remove(0);
-				
+
 				for (int pos = 0; pos < memSeg.size(); pos += 4) {
 					memSeg.putInt(pos, i);
 				}
-				
+
 				writer.writeBlock(memSeg);
 			}
 			writer.close();
-			
+
 			// get back the memory
 			while (memSegs.size() < NUM_SEGS) {
 				memSegs.add(writer.getNextReturnedSegment());
 			}
-			
+
 			final BlockChannelReader reader = this.ioManager.createBlockChannelReader(channelID);
 			while(!memSegs.isEmpty()) {
 				reader.readBlock(memSegs.remove(0));
 			}
-			
+
 			for (int i = 0; i < NUM_IOS; i++) {
 				final MemorySegment memSeg = reader.getNextReturnedSegment();
-				
+
 				for (int pos = 0; pos < memSeg.size(); pos += 4) {
 					if (memSeg.getInt(pos) != i) {
 						Assert.fail("Read memory segment contains invalid data.");
@@ -172,16 +172,16 @@ public class IOManagerTest
 				}
 				reader.readBlock(memSeg);
 			}
-			
+
 			reader.closeAndDelete();
-			
+
 			// get back the memory
 			while (memSegs.size() < NUM_SEGS) {
 				memSegs.add(reader.getNextReturnedSegment());
 			}
-			
+
 			this.memoryManager.release(memSegs);
-			
+
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			Assert.fail("TEst encountered an exception: " + ex.getMessage());
@@ -189,13 +189,13 @@ public class IOManagerTest
 	}
 
 	// ============================================================================================
-	
+
 	final class FailingSegmentReadRequest implements ReadRequest
 	{
 		private final BlockChannelAccess<ReadRequest, ?> channel;
-		
+
 		private final MemorySegment segment;
-		
+
 		protected FailingSegmentReadRequest(BlockChannelAccess<ReadRequest, ?> targetChannel, MemorySegment segment)
 		{
 			this.channel = targetChannel;
@@ -225,9 +225,9 @@ public class IOManagerTest
 	final class FailingSegmentWriteRequest implements WriteRequest
 	{
 		private final BlockChannelAccess<WriteRequest, ?> channel;
-		
+
 		private final MemorySegment segment;
-		
+
 		protected FailingSegmentWriteRequest(BlockChannelAccess<WriteRequest, ?> targetChannel, MemorySegment segment)
 		{
 			this.channel = targetChannel;
@@ -248,8 +248,8 @@ public class IOManagerTest
 			this.channel.handleProcessedBuffer(this.segment, ioex);
 		}
 	}
-	
-	
+
+
 	final class TestIOException extends IOException
 	{
 		private static final long serialVersionUID = -814705441998024472L;

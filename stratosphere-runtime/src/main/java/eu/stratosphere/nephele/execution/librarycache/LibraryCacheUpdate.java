@@ -21,7 +21,7 @@ import eu.stratosphere.core.io.IOReadableWritable;
 
 /**
  * This class is used to encapsulate the transmission of a library file in a Nephele RPC call.
- * 
+ *
  */
 public class LibraryCacheUpdate implements IOReadableWritable {
 
@@ -32,7 +32,7 @@ public class LibraryCacheUpdate implements IOReadableWritable {
 
 	/**
 	 * Constructs a new library cache update object.
-	 * 
+	 *
 	 * @param libraryFileName
 	 *        the name of the library that should be transported within this object.
 	 */

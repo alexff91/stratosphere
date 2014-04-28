@@ -60,7 +60,7 @@ public abstract class AbstractByteBufferedOutputChannel<T extends IOReadableWrit
 
 	/**
 	 * Creates a new byte buffered output channel.
-	 * 
+	 *
 	 * @param outputGate
 	 *        the output gate this channel is wired to
 	 * @param channelIndex
@@ -110,7 +110,7 @@ public abstract class AbstractByteBufferedOutputChannel<T extends IOReadableWrit
 
 	/**
 	 * Requests a new write buffer from the framework. This method blocks until the requested buffer is available.
-	 * 
+	 *
 	 * @throws InterruptedException
 	 *         thrown if the thread is interrupted while waiting for the buffer
 	 * @throws IOException
@@ -125,7 +125,7 @@ public abstract class AbstractByteBufferedOutputChannel<T extends IOReadableWrit
 
 	/**
 	 * Returns the filled buffer to the framework and triggers further processing.
-	 * 
+	 *
 	 * @throws IOException
 	 *         thrown if an I/O error occurs while releasing the buffers
 	 * @throws InterruptedException
@@ -177,7 +177,7 @@ public abstract class AbstractByteBufferedOutputChannel<T extends IOReadableWrit
 
 	/**
 	 * Sets the output channel broker this channel should contact to request and release write buffers.
-	 * 
+	 *
 	 * @param byteBufferedOutputChannelBroker
 	 *        the output channel broker the channel should contact to request and release write buffers
 	 */

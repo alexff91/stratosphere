@@ -24,7 +24,7 @@ import eu.stratosphere.nephele.jobgraph.JobID;
  * utilization of a particular instance during a job execution.
  * <p>
  * This class is not thread-safe.
- * 
+ *
  */
 public abstract class InstanceProfilingEvent extends ProfilingEvent {
 
@@ -100,7 +100,7 @@ public abstract class InstanceProfilingEvent extends ProfilingEvent {
 
 	/**
 	 * Constructs a new instance profiling event.
-	 * 
+	 *
 	 * @param profilingInterval
 	 *        the interval of time this profiling event covers in milliseconds
 	 * @param ioWaitCPU
@@ -172,7 +172,7 @@ public abstract class InstanceProfilingEvent extends ProfilingEvent {
 
 	/**
 	 * Returns the interval of time this profiling event covers in milliseconds.
-	 * 
+	 *
 	 * @return the interval of time this profiling event covers in milliseconds
 	 */
 	public final int getProfilingInterval() {
@@ -181,7 +181,7 @@ public abstract class InstanceProfilingEvent extends ProfilingEvent {
 
 	/**
 	 * Returns the total amount of memory of the corresponding instance.
-	 * 
+	 *
 	 * @return the total amount of memory in bytes
 	 */
 	public final long getTotalMemory() {
@@ -190,7 +190,7 @@ public abstract class InstanceProfilingEvent extends ProfilingEvent {
 
 	/**
 	 * Returns the amount of free memory of the corresponding instance.
-	 * 
+	 *
 	 * @return the amount of free memory in bytes.
 	 */
 	public final long getFreeMemory() {
@@ -199,7 +199,7 @@ public abstract class InstanceProfilingEvent extends ProfilingEvent {
 
 	/**
 	 * Returns the amount of memory, in bytes, used for file buffers.
-	 * 
+	 *
 	 * @return the amount of memory used for file buffers in bytes
 	 */
 	public final long getBufferedMemory() {
@@ -208,7 +208,7 @@ public abstract class InstanceProfilingEvent extends ProfilingEvent {
 
 	/**
 	 * Returns the amount of memory, in bytes, used as cache memory.
-	 * 
+	 *
 	 * @return the amount of memory used as cache memory in bytes
 	 */
 	public final long getCachedMemory() {
@@ -217,7 +217,7 @@ public abstract class InstanceProfilingEvent extends ProfilingEvent {
 
 	/**
 	 * Returns the amount of swap, in bytes, used as cache memory.
-	 * 
+	 *
 	 * @return the amount of, in bytes, used as cache memory
 	 */
 	public final long getCachedSwapMemory() {
@@ -226,7 +226,7 @@ public abstract class InstanceProfilingEvent extends ProfilingEvent {
 
 	/**
 	 * Returns the percentage of time the CPU(s) spent in state USER during the profiling interval.
-	 * 
+	 *
 	 * @return the percentage of time the CPU(s) spent in state USER during the profiling interval
 	 */
 	public final int getUserCPU() {
@@ -235,7 +235,7 @@ public abstract class InstanceProfilingEvent extends ProfilingEvent {
 
 	/**
 	 * Returns the percentage of time the CPU(s) spent in state SYSTEM during the profiling interval.
-	 * 
+	 *
 	 * @return the percentage of time the CPU(s) spent in state SYSTEM during the profiling interval
 	 */
 	public final int getSystemCPU() {
@@ -245,7 +245,7 @@ public abstract class InstanceProfilingEvent extends ProfilingEvent {
 	/**
 	 * Returns the percentage of time the CPU(s) spent in state IDLE during the profiling interval. Prior to Linux
 	 * 2.5.41, this includes IO-wait time.
-	 * 
+	 *
 	 * @return the percentage of time the CPU(s) spent in state IDLE during the profiling interval
 	 */
 	public final int getIdleCPU() {
@@ -255,7 +255,7 @@ public abstract class InstanceProfilingEvent extends ProfilingEvent {
 	/**
 	 * Returns the percentage of time the CPU(s) spent in state IOWAIT during the profiling interval. Prior to Linux
 	 * 2.5.41, included in idle.
-	 * 
+	 *
 	 * @return the percentage of time the CPU(s) spent in state IOWAIT during the profiling interval.
 	 */
 	public final int getIOWaitCPU() {
@@ -264,7 +264,7 @@ public abstract class InstanceProfilingEvent extends ProfilingEvent {
 
 	/**
 	 * Returns the percentage of time the CPU(s) spent in state HARD_IRQ during the profiling interval.
-	 * 
+	 *
 	 * @return the percentage of time the CPU(s) spent in state HARD_IRQ during the profiling interval
 	 */
 	public final int getHardIrqCPU() {
@@ -273,7 +273,7 @@ public abstract class InstanceProfilingEvent extends ProfilingEvent {
 
 	/**
 	 * Returns the percentage of time the CPU(s) spent in state SOFT_IRQ during the profiling interval.
-	 * 
+	 *
 	 * @return the percentage of time the CPU(s) spent in state SOFT_IRQ during the profiling interval
 	 */
 	public final int getSoftIrqCPU() {
@@ -282,7 +282,7 @@ public abstract class InstanceProfilingEvent extends ProfilingEvent {
 
 	/**
 	 * Returns the number of bytes received via network during the profiling interval.
-	 * 
+	 *
 	 * @return the number of bytes received via network during the profiling interval
 	 */
 	public final long getReceivedBytes() {
@@ -291,7 +291,7 @@ public abstract class InstanceProfilingEvent extends ProfilingEvent {
 
 	/**
 	 * Returns the number of bytes transmitted via network during the profiling interval.
-	 * 
+	 *
 	 * @return the number of bytes transmitted via network during the profiling interval
 	 */
 	public final long getTransmittedBytes() {

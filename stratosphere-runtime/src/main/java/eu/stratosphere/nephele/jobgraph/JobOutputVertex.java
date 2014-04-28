@@ -19,13 +19,13 @@ import eu.stratosphere.nephele.template.AbstractOutputTask;
  * A JobOutputVertex is a specific subtype of a {@link AbstractJobOutputVertex} and is designed
  * for Nephele tasks which sink data in a not further specified way. As every job output vertex,
  * a JobOutputVertex must not have any further output.
- * 
+ *
  */
 public class JobOutputVertex extends AbstractJobOutputVertex {
 
 	/**
 	 * Creates a new job file output vertex with the specified name.
-	 * 
+	 *
 	 * @param name
 	 *        the name of the new job file output vertex
 	 * @param id
@@ -39,7 +39,7 @@ public class JobOutputVertex extends AbstractJobOutputVertex {
 
 	/**
 	 * Creates a new job file output vertex with the specified name.
-	 * 
+	 *
 	 * @param name
 	 *        the name of the new job file output vertex
 	 * @param jobGraph
@@ -51,7 +51,7 @@ public class JobOutputVertex extends AbstractJobOutputVertex {
 
 	/**
 	 * Creates a new job file input vertex.
-	 * 
+	 *
 	 * @param jobGraph
 	 *        the job graph this vertex belongs to
 	 */
@@ -61,7 +61,7 @@ public class JobOutputVertex extends AbstractJobOutputVertex {
 
 	/**
 	 * Sets the class of the vertex's output task.
-	 * 
+	 *
 	 * @param outputClass
 	 *        The class of the vertex's output task.
 	 */
@@ -71,7 +71,7 @@ public class JobOutputVertex extends AbstractJobOutputVertex {
 
 	/**
 	 * Returns the class of the vertex's output task.
-	 * 
+	 *
 	 * @return The class of the vertex's output task or <code>null</code> if no task has yet been set.
 	 */
 	@SuppressWarnings("unchecked")

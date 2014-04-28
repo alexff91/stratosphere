@@ -228,7 +228,7 @@ public abstract class AbstractDeserializer {
 
 	/**
 	 * Read the buffer's actual data from the stream.
-	 * 
+	 *
 	 * @param readableByteChannel
 	 *        the stream to read the buffer data from
 	 * @return <code>true</code> if more buffer data need to be read from the stream, <code>false</code> otherwise

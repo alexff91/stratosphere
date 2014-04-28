@@ -21,7 +21,7 @@ public class AccumulatorHelper {
 	/**
 	 * Merge two collections of accumulators. The second will be merged into the
 	 * first.
-	 * 
+	 *
 	 * @param target
 	 *            The collection of accumulators that will be updated
 	 * @param toMerge

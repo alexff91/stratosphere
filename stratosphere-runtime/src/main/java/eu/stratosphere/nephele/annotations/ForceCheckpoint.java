@@ -20,7 +20,7 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation to force a checkpoint decision.
- * 
+ *
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

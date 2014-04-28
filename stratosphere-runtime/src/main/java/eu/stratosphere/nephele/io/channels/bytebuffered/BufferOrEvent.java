@@ -19,33 +19,33 @@ import eu.stratosphere.nephele.io.channels.Buffer;
  * Either type for {@link Buffer} and {@link AbstractEvent}.
  */
 public class BufferOrEvent {
-	
+
 	private final Buffer buffer;
-	
+
 	private final AbstractEvent event;
-	
+
 	public BufferOrEvent(Buffer buffer) {
 		this.buffer = buffer;
 		this.event = null;
 	}
-	
+
 	public BufferOrEvent(AbstractEvent event) {
 		this.buffer = null;
 		this.event = event;
 	}
-	
+
 	public boolean isBuffer() {
 		return this.buffer != null;
 	}
-	
+
 	public boolean isEvent() {
 		return this.event != null;
 	}
-	
+
 	public Buffer getBuffer() {
 		return this.buffer;
 	}
-	
+
 	public AbstractEvent getEvent() {
 		return this.event;
 	}

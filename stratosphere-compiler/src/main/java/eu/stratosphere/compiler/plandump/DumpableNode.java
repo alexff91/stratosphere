@@ -21,17 +21,17 @@ import eu.stratosphere.compiler.plan.PlanNode;
  *
  */
 public interface DumpableNode<T extends DumpableNode<T>> {
-	
+
 	/**
 	 * Gets an iterator over the predecessors.
-	 * 
+	 *
 	 * @return An iterator over the predecessors.
 	 */
 	Iterator<T> getPredecessors();
-	
+
 	Iterator<DumpableConnection<T>> getDumpableInputs();
-	
+
 	OptimizerNode getOptimizerNode();
-	
+
 	PlanNode getPlanNode();
 }

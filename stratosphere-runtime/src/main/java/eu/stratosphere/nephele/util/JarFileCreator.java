@@ -28,7 +28,7 @@ import java.util.jar.Manifest;
  * This is an auxiliary program which creates a jar file from a set of classes.
  * <p>
  * This class is thread-safe.
- * 
+ *
  */
 public class JarFileCreator {
 
@@ -49,7 +49,7 @@ public class JarFileCreator {
 
 	/**
 	 * Constructs a new jar file creator.
-	 * 
+	 *
 	 * @param outputFile
 	 *        the file which shall contain the output data, i.e. the final jar file
 	 */
@@ -60,7 +60,7 @@ public class JarFileCreator {
 
 	/**
 	 * Adds a {@link Class} object to the set of classes which shall eventually be included in the jar file.
-	 * 
+	 *
 	 * @param clazz
 	 *        the class to be added to the jar file.
 	 */
@@ -73,7 +73,7 @@ public class JarFileCreator {
 	 * Creates a jar file which contains the previously added class. The content of the jar file is written to
 	 * <code>outputFile</code> which has been provided to the constructor. If <code>outputFile</code> already exists, it
 	 * is overwritten by this operation.
-	 * 
+	 *
 	 * @throws IOException
 	 *         thrown if an error occurs while writing to the output file
 	 */

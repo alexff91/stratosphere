@@ -26,7 +26,7 @@ import eu.stratosphere.core.memory.MemorySegment;
  * necessary to coordinate the recycling of the physical buffer.
  * <p>
  * This class is thread-safe.
- * 
+ *
  */
 public final class MemoryBufferRecycler {
 
@@ -52,7 +52,7 @@ public final class MemoryBufferRecycler {
 
 	/**
 	 * Constructs a new memory buffer recycler.
-	 * 
+	 *
 	 * @param originalBuffer
 	 *        the original byte buffer
 	 * @param bufferPoolConnector

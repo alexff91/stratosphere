@@ -19,13 +19,13 @@ import eu.stratosphere.nephele.jobgraph.JobID;
 /**
  * This interface must be implemented by profiling components
  * for the job manager.
- * 
+ *
  */
 public interface JobManagerProfiler {
 
 	/**
 	 * Registers the given {@link ExecutionGraph} for profiling.
-	 * 
+	 *
 	 * @param executionGraph
 	 *        the {@link ExecutionGraph} to register for profiling
 	 */
@@ -34,7 +34,7 @@ public interface JobManagerProfiler {
 	/**
 	 * Unregisters the given {@link ExecutionGraph} from profiling. Calling this
 	 * method will also unregister all of the job's registered listeners.
-	 * 
+	 *
 	 * @param executionGraph the {@link ExecutionGraph} to unregister.
 	 */
 	void unregisterProfilingJob(ExecutionGraph executionGraph);
@@ -42,7 +42,7 @@ public interface JobManagerProfiler {
 	/**
 	 * Registers the given {@link ProfilingListener} object to receive
 	 * profiling data for the job with the given job ID.
-	 * 
+	 *
 	 * @param jobID
 	 *        the ID of the job to receive profiling data for
 	 * @param profilingListener
@@ -53,7 +53,7 @@ public interface JobManagerProfiler {
 	/**
 	 * Unregisters the given {@link ProfilingListener} object from receiving
 	 * profiling data issued by the job manager's profiling component.
-	 * 
+	 *
 	 * @param jobID
 	 *        the ID of the job the {@link ProfilingListener} object has originally been registered for
 	 * @param profilingListener

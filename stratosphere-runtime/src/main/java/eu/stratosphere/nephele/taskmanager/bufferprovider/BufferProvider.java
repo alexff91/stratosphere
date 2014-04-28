@@ -23,7 +23,7 @@ public interface BufferProvider {
 	 * Requests an empty buffer with a minimum size of <code>minimumSizeOfBuffer</code>. The method returns
 	 * immediately, even if the request could not be fulfilled. Note that <code>minimumSizeOfBuffer</code> must not
 	 * exceed the value returned by the method <code>getMaximumBufferSize()</code>.
-	 * 
+	 *
 	 * @param minimumSizeOfBuffer
 	 *        the minimum size of the requested read buffer in bytes
 	 * @return the buffer with at least the requested size or <code>null</code> if no such buffer is currently available
@@ -36,7 +36,7 @@ public interface BufferProvider {
 	 * Requests an empty buffer with a minimum size of <code>minimumSizeOfBuffer</code>. The method blocks
 	 * until the request can be fulfilled. Note that <code>minimumSizeOfBuffer</code> must not
 	 * exceed the value returned by the method <code>getMaximumBufferSize()</code>.
-	 * 
+	 *
 	 * @param minimumSizeOfBuffer
 	 *        the minimum size of the requested read buffer in bytes
 	 * @return the buffer with at least the requested size
@@ -50,14 +50,14 @@ public interface BufferProvider {
 
 	/**
 	 * Returns the maximum buffer size in bytes available at this buffer provider.
-	 * 
+	 *
 	 * @return the maximum buffer size in bytes available at this buffer provider
 	 */
 	int getMaximumBufferSize();
 
 	/**
 	 * Returns if this buffer provider is shared between different entities (for examples tasks).
-	 * 
+	 *
 	 * @return <code>true</code> if this buffer provider is shared, <code>false</code> otherwise
 	 */
 	boolean isShared();
@@ -72,7 +72,7 @@ public interface BufferProvider {
 	 * Registers the given {@link BufferAvailabilityListener} with an empty buffer pool to receive a notification when
 	 * at least one buffer has become available again. After the notification, the listener is automatically
 	 * unregistered again.
-	 * 
+	 *
 	 * @param bufferAvailabilityListener
 	 *        the listener to be registered
 	 * @return <code>true</code> if the registration has been successful or <code>false</code> if the registration

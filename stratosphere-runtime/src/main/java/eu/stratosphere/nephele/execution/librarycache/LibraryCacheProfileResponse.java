@@ -24,7 +24,7 @@ import eu.stratosphere.core.io.StringRecord;
  * A library cache profile response is the response to a library cache profile request. It contains the set of
  * library names originally included in the request message and additionally a bit vector stating which of them
  * are available in the respective task manager's local cache.
- * 
+ *
  */
 public class LibraryCacheProfileResponse implements IOReadableWritable {
 
@@ -41,7 +41,7 @@ public class LibraryCacheProfileResponse implements IOReadableWritable {
 	/**
 	 * Construct a library cache profile response from a given library cache profile
 	 * request and initially sets the cache status for all included library names to <code>false</code>.
-	 * 
+	 *
 	 * @param request
 	 *        the library cache profile request the response belongs to
 	 */
@@ -60,7 +60,7 @@ public class LibraryCacheProfileResponse implements IOReadableWritable {
 
 	/**
 	 * Sets the cache status of the library at the given position.
-	 * 
+	 *
 	 * @param pos
 	 *        the position of the library name whose cache status is to be set
 	 * @param cached
@@ -75,7 +75,7 @@ public class LibraryCacheProfileResponse implements IOReadableWritable {
 
 	/**
 	 * Returns the cache status of the library at the given position.
-	 * 
+	 *
 	 * @param pos
 	 *        the position of the library name whose cache status is to be retrieved
 	 * @return <code>true</code> if the library at the given position is in the local cache, <code>false</code>

@@ -17,7 +17,7 @@ package eu.stratosphere.nephele.taskmanager.bufferprovider;
  * This interface must be implemented to receive a notification from a {@link BufferProvider} when an empty
  * {@link Buffer} has
  * become available again.
- * 
+ *
  */
 public interface BufferAvailabilityListener {
 

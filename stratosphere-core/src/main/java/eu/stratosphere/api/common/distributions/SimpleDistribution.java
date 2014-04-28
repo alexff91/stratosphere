@@ -20,55 +20,59 @@ import eu.stratosphere.types.Key;
 import eu.stratosphere.util.InstantiationUtil;
 
 public class SimpleDistribution implements DataDistribution {
-	
+
 	private static final long serialVersionUID = 1L;
 
-	protected Key[][] boundaries; 
-	
+	protected Key[][] boundaries;
+
 	protected int dim;
-	
-	
+
+
 	public SimpleDistribution() {
 		boundaries = new Key[0][];
 	}
-	
+
 	public SimpleDistribution(Key[] bucketBoundaries) {
-		if (bucketBoundaries == null)
-			throw new IllegalArgumentException("Bucket boundaries must not be null.");
-		if (bucketBoundaries.length == 0)
-			throw new IllegalArgumentException("Bucket boundaries must not be empty.");
+		if (bucketBoundaries == null) {
+		throw new IllegalArgumentException("Bucket boundaries must not be null.");
+		}
+		if (bucketBoundaries.length == 0) {
+		throw new IllegalArgumentException("Bucket boundaries must not be empty.");
+		}
 
 		// dimensionality is one in this case
 		dim = 1;
-		
+
 		Class<? extends Key> clazz = bucketBoundaries[0].getClass();
-		
+
 		// make the array 2-dimensional
 		boundaries = new Key[bucketBoundaries.length][];
 		for (int i = 0; i < bucketBoundaries.length; i++) {
 			if (bucketBoundaries[i].getClass() != clazz) {
 				throw new IllegalArgumentException("The bucket boundaries are of different class types.");
 			}
-			
+
 			boundaries[i] = new Key[] { bucketBoundaries[i] };
 		}
 	}
-	
+
 	public SimpleDistribution(Key[][] bucketBoundaries) {
-		if (bucketBoundaries == null)
-			throw new IllegalArgumentException("Bucket boundaries must not be null.");
-		if (bucketBoundaries.length == 0)
-			throw new IllegalArgumentException("Bucket boundaries must not be empty.");
+		if (bucketBoundaries == null) {
+		throw new IllegalArgumentException("Bucket boundaries must not be null.");
+		}
+		if (bucketBoundaries.length == 0) {
+		throw new IllegalArgumentException("Bucket boundaries must not be empty.");
+		}
 
 		// dimensionality is one in this case
 		dim = bucketBoundaries[0].length;
-		
+
 		@SuppressWarnings("unchecked")
 		Class<? extends Key>[] types = new Class[dim];
 		for (int i = 0; i < dim; i++) {
 			types[i] = bucketBoundaries[0][i].getClass();
 		}
-		
+
 		// check the array
 		for (int i = 1; i < bucketBoundaries.length; i++) {
 			if (bucketBoundaries[i].length != dim) {
@@ -80,10 +84,10 @@ public class SimpleDistribution implements DataDistribution {
 				}
 			}
 		}
-		
+
 		boundaries = bucketBoundaries;
 	}
-	
+
 	@Override
 	public int getNumberOfFields() {
 		return this.dim;
@@ -100,15 +104,15 @@ public class SimpleDistribution implements DataDistribution {
 		if(totalNumBuckets < 1) {
 			throw new IllegalArgumentException("Total number of bucket must be larger than 0.");
 		}
-		
+
 		final int maxNumBuckets = boundaries.length + 1;
-		
+
 		// check if max number of buckets is equal to or an even multiple of the requested number of buckets
 		if((maxNumBuckets % totalNumBuckets) == 0) {
 			// easy case, just use each n-th boundary
 			final int n = maxNumBuckets / totalNumBuckets;
-			final int bucketId = bucketNum * n + (n -  1); 
-			
+			final int bucketId = bucketNum * n + (n -  1);
+
 			return boundaries[bucketId];
 		} else {
 			throw new IllegalArgumentException("Interpolation of bucket boundaries currently not supported. " +
@@ -121,12 +125,12 @@ public class SimpleDistribution implements DataDistribution {
 	public void write(DataOutput out) throws IOException {
 		out.writeInt(this.dim);
 		out.writeInt(boundaries.length);
-		
+
 		// write types
 		for (int i = 0; i < dim; i++) {
 			out.writeUTF(boundaries[0][i].getClass().getName());
 		}
-		
+
 		for (int i = 0; i < boundaries.length; i++) {
 			for (int d = 0; d < dim; d++) {
 				boundaries[i][d].write(out);
@@ -138,9 +142,9 @@ public class SimpleDistribution implements DataDistribution {
 	public void read(DataInput in) throws IOException {
 		this.dim = in.readInt();
 		final int len = in.readInt();
-		
+
 		boundaries = new Key[len][];
-		
+
 		// read types
 		@SuppressWarnings("unchecked")
 		Class<? extends Key>[] types = new Class[dim];
@@ -154,15 +158,15 @@ public class SimpleDistribution implements DataDistribution {
 				throw new IOException("Error loading type class '" + className + "'.", t);
 			}
 		}
-		
+
 		for (int i = 0; i < len; i++) {
-			Key[] bucket = new Key[dim]; 
+			Key[] bucket = new Key[dim];
 			for (int d = 0; d < dim; d++) {
 				Key val = InstantiationUtil.instantiate(types[d], Key.class);
 				val.read(in);
 				bucket[d] = val;
 			}
-			
+
 			boundaries[i] = bucket;
 		}
 	}

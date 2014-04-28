@@ -85,7 +85,7 @@ public class JobsServlet extends HttpServlet {
 	/**
 	 * Creates a new <tt>JobServlet</tt>, configured with the given directories
 	 * and the given result page.
-	 * 
+	 *
 	 * @param jobsDir
 	 *        The directory to store uploaded jobs in.
 	 * @param tmpDir

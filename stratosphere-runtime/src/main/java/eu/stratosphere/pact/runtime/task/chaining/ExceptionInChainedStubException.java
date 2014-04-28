@@ -24,12 +24,12 @@ public class ExceptionInChainedStubException extends RuntimeException
 	private static final long serialVersionUID = -7966910518892776903L;
 
 	private String taskName;
-	
+
 	private Exception exception;
-	
+
 	/**
 	 * Creates a new ExceptionInChainedStubException with the given cause.
-	 * 
+	 *
 	 * @param cause The causing exception.
 	 */
 	public ExceptionInChainedStubException(String taskName, Exception wrappedException) {
@@ -38,12 +38,12 @@ public class ExceptionInChainedStubException extends RuntimeException
 		this.exception = wrappedException;
 	}
 
-	
+
 	public String getTaskName() {
 		return taskName;
 	}
 
-	
+
 	public Exception getWrappedException() {
 		return exception;
 	}

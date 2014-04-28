@@ -25,7 +25,7 @@ import eu.stratosphere.runtime.fs.LineReader;
 
 /**
  * A file line reader reads the associated file input splits line by line and outputs the lines as string records.
- * 
+ *
  */
 public class FileLineReader extends AbstractFileInputTask {
 

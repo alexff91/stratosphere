@@ -24,19 +24,19 @@ import eu.stratosphere.util.MutableObjectIterator;
  * <p>
  * The MapTask creates an iterator over all key-value pairs of its input and hands that to the <code>map()</code> method
  * of the MapFunction.
- * 
+ *
  * @see GenericCollectorMap
- * 
+ *
  * @param <IT> The mapper's input data type.
  * @param <OT> The mapper's output data type.
  */
 public class CollectorMapDriver<IT, OT> implements PactDriver<GenericCollectorMap<IT, OT>, OT> {
-	
+
 	private PactTaskContext<GenericCollectorMap<IT, OT>, OT> taskContext;
-	
+
 	private volatile boolean running;
-	
-	
+
+
 	@Override
 	public void setup(PactTaskContext<GenericCollectorMap<IT, OT>, OT> context) {
 		this.taskContext = context;

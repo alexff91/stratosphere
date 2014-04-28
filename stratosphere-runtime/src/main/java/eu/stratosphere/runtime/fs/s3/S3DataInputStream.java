@@ -26,7 +26,7 @@ import eu.stratosphere.util.StringUtils;
 /**
  * This class implements an {@link FSDataInputStream} that downloads its data from Amazon S3 in the background.
  * Essentially, this class is just a wrapper to the Amazon AWS SDK.
- * 
+ *
  */
 public class S3DataInputStream extends FSDataInputStream {
 
@@ -37,7 +37,7 @@ public class S3DataInputStream extends FSDataInputStream {
 
 	/**
 	 * Constructs a new input stream which reads its data from the specified S3 object.
-	 * 
+	 *
 	 * @param s3Client
 	 *        the S3 client to connect to Amazon S3.
 	 * @param bucket

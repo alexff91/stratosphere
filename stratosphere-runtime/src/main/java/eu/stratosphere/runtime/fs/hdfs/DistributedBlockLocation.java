@@ -22,7 +22,7 @@ import eu.stratosphere.core.fs.BlockLocation;
 /**
  * Implementation of the {@link BlockLocation} interface for the
  * Hadoop Distributed File System.
- * 
+ *
  */
 public final class DistributedBlockLocation implements BlockLocation {
 
@@ -48,7 +48,7 @@ public final class DistributedBlockLocation implements BlockLocation {
 
 	/**
 	 * Creates a new block location
-	 * 
+	 *
 	 * @param blockLocation
 	 *        the original HDFS block location
 	 */
@@ -82,7 +82,7 @@ public final class DistributedBlockLocation implements BlockLocation {
 
 	/**
 	 * Looks for a domain suffix in a FQDN and strips it if present.
-	 * 
+	 *
 	 * @param originalHostname
 	 *        the original hostname, possibly an FQDN
 	 * @return the stripped hostname without the domain suffix

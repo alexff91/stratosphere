@@ -22,16 +22,16 @@ import eu.stratosphere.util.MutableObjectIterator;
 /**
  * The KeyValueIterator returns a key and all values that belong to the key (share the same key).
  * A sub-iterator over all values with the same key is provided.
- * 
+ *
  */
 public final class KeyGroupedMutableObjectIterator<E>
 {
 	private final MutableObjectIterator<E> iterator;
-	
+
 	private final TypeSerializer<E> serializer;
-	
+
 	private final TypeComparator<E> comparator;
-	
+
 	private E next;
 
 	private ValuesIterator valuesIterator;
@@ -41,7 +41,7 @@ public final class KeyGroupedMutableObjectIterator<E>
 	/**
 	 * Initializes the KeyGroupedIterator. It requires an iterator which returns its result
 	 * sorted by the key fields.
-	 * 
+	 *
 	 * @param iterator An iterator over records, which are sorted by the key fields, in any order.
 	 * @param keyPositions The positions of the keys in the records.
 	 * @param keyClasses The types of the key fields.
@@ -52,7 +52,7 @@ public final class KeyGroupedMutableObjectIterator<E>
 		if (iterator == null || serializer == null || comparator == null) {
 			throw new NullPointerException();
 		}
-		
+
 		this.iterator = iterator;
 		this.serializer = serializer;
 		this.comparator = comparator;
@@ -61,7 +61,7 @@ public final class KeyGroupedMutableObjectIterator<E>
 	/**
 	 * Moves the iterator to the next key. This method may skip any values that have not yet been returned by the
 	 * iterator created by the {@link #getValues()} method. Hence, if called multiple times it "removes" pairs.
-	 * 
+	 *
 	 * @return true if the input iterator has an other group of key-value pairs that share the same key.
 	 */
 	public boolean nextKey() throws IOException
@@ -96,7 +96,7 @@ public final class KeyGroupedMutableObjectIterator<E>
 			if ((this.next = this.iterator.next(this.next)) != null) {
 				if (!this.comparator.equalToReference(this.next)) {
 					// the keys do not match, so we have a new group. store the current keys
-					this.comparator.setReference(this.next);						
+					this.comparator.setReference(this.next);
 					this.nextIsFresh = false;
 					this.valuesIterator.nextIsUnconsumed = true;
 					return true;
@@ -113,7 +113,7 @@ public final class KeyGroupedMutableObjectIterator<E>
 	 * Returns an iterator over all values that belong to the current key. The iterator is initially <code>null</code>
 	 * (before the first call to {@link #nextKey()} and after all keys are consumed. In general, this method returns
 	 * always a non-null value, if a previous call to {@link #nextKey()} return <code>true</code>.
-	 * 
+	 *
 	 * @return Iterator over all values that belong to the current key.
 	 */
 	public MutableObjectIterator<E> getValues() {
@@ -121,12 +121,12 @@ public final class KeyGroupedMutableObjectIterator<E>
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	private final class ValuesIterator implements MutableObjectIterator<E>
 	{
 		private final TypeSerializer<E> serializer = KeyGroupedMutableObjectIterator.this.serializer;
-		private final TypeComparator<E> comparator = KeyGroupedMutableObjectIterator.this.comparator; 
-		
+		private final TypeComparator<E> comparator = KeyGroupedMutableObjectIterator.this.comparator;
+
 		private boolean nextIsUnconsumed = false;
 
 		@Override
@@ -138,7 +138,7 @@ public final class KeyGroupedMutableObjectIterator<E>
 			if (this.nextIsUnconsumed) {
 				return this.serializer.copy(KeyGroupedMutableObjectIterator.this.next, target);
 			}
-			
+
 			try {
 				if ((target = KeyGroupedMutableObjectIterator.this.iterator.next(target)) != null) {
 					// check whether the keys are equal
@@ -159,7 +159,7 @@ public final class KeyGroupedMutableObjectIterator<E>
 				}
 			}
 			catch (IOException ioex) {
-				throw new RuntimeException("An error occurred while reading the next record: " + 
+				throw new RuntimeException("An error occurred while reading the next record: " +
 					ioex.getMessage(), ioex);
 			}
 		}

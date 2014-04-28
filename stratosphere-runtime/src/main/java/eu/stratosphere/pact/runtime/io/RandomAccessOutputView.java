@@ -28,13 +28,13 @@ import eu.stratosphere.pact.runtime.util.MathUtils;
 public class RandomAccessOutputView extends AbstractPagedOutputView implements SeekableDataOutputView
 {
 	private final MemorySegment[] segments;
-	
+
 	private int currentSegmentIndex;
-	
+
 	private final int segmentSizeBits;
-	
+
 	private final int segmentSizeMask;
-	
+
 	/**
 	 * @param segmentSize
 	 * @param headerLength
@@ -43,14 +43,15 @@ public class RandomAccessOutputView extends AbstractPagedOutputView implements S
 	{
 		this(segments, segmentSize, MathUtils.log2strict(segmentSize));
 	}
-	
+
 	public RandomAccessOutputView(MemorySegment[] segments, int segmentSize, int segmentSizeBits)
 	{
 		super(segments[0], segmentSize, 0);
-		
-		if ((segmentSize & (segmentSize - 1)) != 0)
-			throw new IllegalArgumentException("Segment size must be a power of 2!");
-		
+
+		if ((segmentSize & (segmentSize - 1)) != 0) {
+		throw new IllegalArgumentException("Segment size must be a power of 2!");
+		}
+
 		this.segments = segments;
 		this.segmentSizeBits = segmentSizeBits;
 		this.segmentSizeMask = segmentSize - 1;
@@ -75,7 +76,7 @@ public class RandomAccessOutputView extends AbstractPagedOutputView implements S
 	{
 		final int bufferNum = (int) (position >>> this.segmentSizeBits);
 		final int offset = (int) (position & this.segmentSizeMask);
-		
+
 		this.currentSegmentIndex = bufferNum;
 		seekOutput(this.segments[bufferNum], offset);
 	}

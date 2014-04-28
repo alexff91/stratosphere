@@ -16,7 +16,6 @@ package eu.stratosphere.hadoopcompatibility;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Map.Entry;
 
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.RecordReader;
@@ -26,7 +25,6 @@ import eu.stratosphere.api.common.io.InputFormat;
 import eu.stratosphere.api.common.io.statistics.BaseStatistics;
 import eu.stratosphere.configuration.Configuration;
 import eu.stratosphere.hadoopcompatibility.datatypes.HadoopTypeConverter;
-import eu.stratosphere.runtime.fs.hdfs.DistributedFileSystem;
 import eu.stratosphere.types.Record;
 
 public class HadoopInputFormatWrapper<K, V> implements InputFormat<Record, HadoopInputSplitWrapper> {
@@ -42,11 +40,11 @@ public class HadoopInputFormatWrapper<K, V> implements InputFormat<Record, Hadoo
 	public RecordReader<K, V> recordReader;
 	private boolean fetched = false;
 	private boolean hasNext;
-		
+
 	public HadoopInputFormatWrapper() {
 		super();
 	}
-	
+
 	public HadoopInputFormatWrapper(org.apache.hadoop.mapred.InputFormat<K,V> hadoopInputFormat, JobConf job, HadoopTypeConverter<K,V> conv) {
 		super();
 		this.hadoopInputFormat = hadoopInputFormat;
@@ -58,7 +56,7 @@ public class HadoopInputFormatWrapper<K, V> implements InputFormat<Record, Hadoo
 
 	@Override
 	public void configure(Configuration parameters) {
-		
+
 	}
 
 	@Override
@@ -94,7 +92,7 @@ public class HadoopInputFormatWrapper<K, V> implements InputFormat<Record, Hadoo
 		hasNext = this.recordReader.next(key, value);
 		fetched = true;
 	}
-	
+
 	@Override
 	public boolean reachedEnd() throws IOException {
 		if(!fetched) {
@@ -120,7 +118,7 @@ public class HadoopInputFormatWrapper<K, V> implements InputFormat<Record, Hadoo
 	public void close() throws IOException {
 		this.recordReader.close();
 	}
-	
+
 	/**
 	 * Custom serialization methods.
 	 *  @see http://docs.oracle.com/javase/7/docs/api/java/io/Serializable.html
@@ -129,36 +127,36 @@ public class HadoopInputFormatWrapper<K, V> implements InputFormat<Record, Hadoo
 		out.writeUTF(hadoopInputFormatName);
 		jobConf.write(out);
 		out.writeObject(converter);
-    }
+}
 
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-    	hadoopInputFormatName = in.readUTF();
-    	if(jobConf == null) {
-    		jobConf = new JobConf();
-    	}
-    	jobConf.readFields(in);
-        try {
+private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+	hadoopInputFormatName = in.readUTF();
+	if(jobConf == null) {
+		jobConf = new JobConf();
+	}
+	jobConf.readFields(in);
+	try {
 			this.hadoopInputFormat = (org.apache.hadoop.mapred.InputFormat<K,V>) Class.forName(this.hadoopInputFormatName).newInstance();
 		} catch (Exception e) {
 			throw new RuntimeException("Unable to instantiate the hadoop input format", e);
 		}
-        ReflectionUtils.setConf(hadoopInputFormat, jobConf);
-        converter = (HadoopTypeConverter<K,V>) in.readObject();
-    }
-	
+	ReflectionUtils.setConf(hadoopInputFormat, jobConf);
+	converter = (HadoopTypeConverter<K,V>) in.readObject();
+}
+
 	public void setJobConf(JobConf job) {
 		this.jobConf = job;
 	}
-		
+
 
 	public org.apache.hadoop.mapred.InputFormat<K,V> getHadoopInputFormat() {
 		return hadoopInputFormat;
 	}
-	
+
 	public void setHadoopInputFormat(org.apache.hadoop.mapred.InputFormat<K,V> hadoopInputFormat) {
 		this.hadoopInputFormat = hadoopInputFormat;
 	}
-	
+
 	public JobConf getJobConf() {
 		return jobConf;
 	}

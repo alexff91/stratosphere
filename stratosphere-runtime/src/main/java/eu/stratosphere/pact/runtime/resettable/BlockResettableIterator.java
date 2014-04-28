@@ -29,28 +29,28 @@ import eu.stratosphere.pact.runtime.util.ResettableIterator;
 /**
  * Implementation of an iterator that fetches a block of data into main memory and offers resettable
  * access to the data in that block.
- * 
+ *
  */
 public class BlockResettableIterator<T> extends AbstractBlockResettableIterator<T> implements ResettableIterator<T> {
-	
+
 	public static final Log LOG = LogFactory.getLog(BlockResettableIterator.class);
-	
+
 	// ------------------------------------------------------------------------
-	
+
 	protected Iterator<T> input;
-	
+
 	private T nextElement;
 
 	private final T reuseElement;
-	
+
 	private T leftOverElement;
-	
+
 	private boolean readPhase;
-	
+
 	private boolean noMoreBlocks;
-	
+
 	// ------------------------------------------------------------------------
-	
+
 	public BlockResettableIterator(MemoryManager memoryManager, Iterator<T> input,
 			TypeSerializer<T> serializer, int numPages, AbstractInvokable ownerTask)
 	throws MemoryAllocationException
@@ -58,28 +58,28 @@ public class BlockResettableIterator<T> extends AbstractBlockResettableIterator<
 		this(memoryManager, serializer, numPages, ownerTask);
 		this.input = input;
 	}
-	
+
 	public BlockResettableIterator(MemoryManager memoryManager,
 			TypeSerializer<T> serializer, int numPages, AbstractInvokable ownerTask)
 	throws MemoryAllocationException
 	{
 		super(serializer, memoryManager, numPages, ownerTask);
-		
+
 		this.reuseElement = serializer.createInstance();
 	}
-	
+
 	// ------------------------------------------------------------------------
-	
+
 	public void reopen(Iterator<T> input) throws IOException {
 		this.input = input;
-		
+
 		this.noMoreBlocks = false;
 		this.closed = false;
-		
+
 		nextBlock();
 	}
-	
-	
+
+
 
 	@Override
 	public boolean hasNext() {
@@ -116,7 +116,7 @@ public class BlockResettableIterator<T> extends AbstractBlockResettableIterator<
 			throw new RuntimeException("Error (de)serializing record in block resettable iterator.", ioex);
 		}
 	}
-	
+
 
 	@Override
 	public T next() {
@@ -125,25 +125,25 @@ public class BlockResettableIterator<T> extends AbstractBlockResettableIterator<
 				throw new NoSuchElementException();
 			}
 		}
-		
+
 		T out = this.nextElement;
 		this.nextElement = null;
 		return out;
 	}
-	
+
 
 	@Override
 	public void remove() {
 		throw new UnsupportedOperationException();
 	}
-	
+
 
 	public void reset() {
 		// a reset always goes to the read phase
 		this.readPhase = true;
 		super.reset();
 	}
-	
+
 
 	@Override
 	public boolean nextBlock() throws IOException {
@@ -151,15 +151,15 @@ public class BlockResettableIterator<T> extends AbstractBlockResettableIterator<
 		if (this.closed) {
 			throw new IllegalStateException("Iterator has been closed.");
 		}
-		
+
 		// check whether more blocks are available
 		if (this.noMoreBlocks) {
 			return false;
 		}
-		
+
 		// reset the views in the superclass
 		super.nextBlock();
-		
+
 		T next = this.leftOverElement;
 		this.leftOverElement = null;
 		if (next == null) {
@@ -171,30 +171,30 @@ public class BlockResettableIterator<T> extends AbstractBlockResettableIterator<
 				return false;
 			}
 		}
-		
+
 		// write the leftover record
 		if (!writeNextRecord(next)) {
 			throw new IOException("BlockResettableIterator could not serialize record into fresh memory block: " +
 					"Record is too large.");
 		}
-		
+
 		this.nextElement = next;
 		this.readPhase = false;
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Checks, whether the input that is blocked by this iterator, has further elements
 	 * available. This method may be used to forecast (for example at the point where a
 	 * block is full) whether there will be more data (possibly in another block).
-	 * 
+	 *
 	 * @return True, if there will be more data, false otherwise.
 	 */
 	public boolean hasFurtherInput() {
-		return !this.noMoreBlocks; 
+		return !this.noMoreBlocks;
 	}
-	
+
 
 	public void close() {
 		// suggest that we are in the read phase. because nothing is in the current block,

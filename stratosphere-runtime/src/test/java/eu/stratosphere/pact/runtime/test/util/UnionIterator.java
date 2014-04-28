@@ -25,9 +25,9 @@ import eu.stratosphere.util.MutableObjectIterator;
 public class UnionIterator<E> implements MutableObjectIterator<E>
 {
 	private MutableObjectIterator<E> currentSource;
-	
+
 	private List<MutableObjectIterator<E>> nextSources;
-	
+
 	public UnionIterator(List<MutableObjectIterator<E>> sources)
 	{
 		this.currentSource = sources.remove(0);

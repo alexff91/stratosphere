@@ -34,7 +34,7 @@ public class StringArraySerializerTest extends SerializerTestBase<String[]> {
 	protected Class<String[]> getTypeClass() {
 		return String[].class;
 	}
-	
+
 	@Override
 	protected int getLength() {
 		return -1;
@@ -43,7 +43,7 @@ public class StringArraySerializerTest extends SerializerTestBase<String[]> {
 	@Override
 	protected String[][] getTestData() {
 		Random rnd = new Random(874597969123412341L);
-		
+
 
 		return new String[][] {
 			new String[] {"a", "", "bcd", "jbmbmner8 jhk hj \n \t üäßß@µ", "", "non-empty"},

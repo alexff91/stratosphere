@@ -17,9 +17,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import org.junit.Test;
 import org.junit.Assert;
+import org.junit.Test;
 
 import eu.stratosphere.api.common.functions.GenericCollectorMap;
 import eu.stratosphere.api.java.record.functions.MapFunction;
@@ -33,44 +32,44 @@ import eu.stratosphere.types.Record;
 import eu.stratosphere.util.Collector;
 
 public class MapTaskTest extends DriverTestBase<GenericCollectorMap<Record, Record>> {
-	
+
 	private static final Log LOG = LogFactory.getLog(MapTaskTest.class);
-	
+
 	private final CountingOutputCollector output = new CountingOutputCollector();
-	
-	
+
+
 	public MapTaskTest() {
 		super(0, 0);
 	}
-	
+
 	@Test
 	public void testMapTask() {
 		final int keyCnt = 100;
 		final int valCnt = 20;
-		
+
 		addInput(new UniformRecordGenerator(keyCnt, valCnt, false));
 		setOutput(this.output);
-		
+
 		final CollectorMapDriver<Record, Record> testDriver = new CollectorMapDriver<Record, Record>();
-		
+
 		try {
 			testDriver(testDriver, MockMapStub.class);
 		} catch (Exception e) {
 			LOG.debug(e);
 			Assert.fail("Invoke method caused exception.");
 		}
-		
+
 		Assert.assertEquals("Wrong result set size.", keyCnt*valCnt, this.output.getNumberOfRecords());
 	}
-	
+
 	@Test
 	public void testFailingMapTask() {
 		final int keyCnt = 100;
 		final int valCnt = 20;
-		
+
 		addInput(new UniformRecordGenerator(keyCnt, valCnt, false));
 		setOutput(new DiscardingOutputCollector());
-		
+
 		final CollectorMapDriver<Record, Record> testTask = new CollectorMapDriver<Record, Record>();
 		try {
 			testDriver(testTask, MockFailingMapStub.class);
@@ -82,16 +81,16 @@ public class MapTaskTest extends DriverTestBase<GenericCollectorMap<Record, Reco
 			Assert.fail("Exception in test.");
 		}
 	}
-	
+
 	@Test
 	public void testCancelMapTask() {
 		addInput(new InfiniteInputIterator());
 		setOutput(new DiscardingOutputCollector());
-		
+
 		final CollectorMapDriver<Record, Record> testTask = new CollectorMapDriver<Record, Record>();
-		
+
 		final AtomicBoolean success = new AtomicBoolean(false);
-		
+
 		final Thread taskRunner = new Thread() {
 			@Override
 			public void run() {
@@ -104,35 +103,35 @@ public class MapTaskTest extends DriverTestBase<GenericCollectorMap<Record, Reco
 			}
 		};
 		taskRunner.start();
-		
+
 		TaskCancelThread tct = new TaskCancelThread(1, taskRunner, this);
 		tct.start();
-		
+
 		try {
 			tct.join();
-			taskRunner.join();		
+			taskRunner.join();
 		} catch(InterruptedException ie) {
 			Assert.fail("Joining threads failed");
 		}
-		
+
 		Assert.assertTrue("Test threw an exception even though it was properly canceled.", success.get());
 	}
-	
+
 	public static class MockMapStub extends MapFunction {
 		private static final long serialVersionUID = 1L;
-		
+
 		@Override
 		public void map(Record record, Collector<Record> out) throws Exception {
 			out.collect(record);
 		}
-		
+
 	}
-	
+
 	public static class MockFailingMapStub extends MapFunction {
 		private static final long serialVersionUID = 1L;
-		
+
 		private int cnt = 0;
-		
+
 		@Override
 		public void map(Record record, Collector<Record> out) throws Exception {
 			if (++this.cnt >= 10) {

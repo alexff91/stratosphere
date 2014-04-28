@@ -23,7 +23,7 @@ import eu.stratosphere.nephele.managementgraph.ManagementVertexID;
 /**
  * Through this interface it is possible to access profiling data about the CPU utilization
  * of the corresponding execution thread during its execution.
- * 
+ *
  */
 public class ThreadProfilingEvent extends VertexProfilingEvent {
 
@@ -52,7 +52,7 @@ public class ThreadProfilingEvent extends VertexProfilingEvent {
 	/**
 	 * Returns the percentage of time the execution thread spent in
 	 * user mode in the given profiling interval.
-	 * 
+	 *
 	 * @return the percentage of time spent in user mode
 	 */
 	public int getUserTime() {
@@ -62,7 +62,7 @@ public class ThreadProfilingEvent extends VertexProfilingEvent {
 	/**
 	 * Returns the percentage of time the execution thread spent in
 	 * system mode in the given profiling interval.
-	 * 
+	 *
 	 * @return the percentage of time spent in system mode
 	 */
 	public int getSystemTime() {
@@ -72,7 +72,7 @@ public class ThreadProfilingEvent extends VertexProfilingEvent {
 	/**
 	 * Returns the percentage of time the execution thread has been
 	 * blocked to enter or reenter a monitor in the given profiling interval.
-	 * 
+	 *
 	 * @return the percentage of time the thread has been blocked
 	 */
 	public int getBlockedTime() {
@@ -82,7 +82,7 @@ public class ThreadProfilingEvent extends VertexProfilingEvent {
 	/**
 	 * Returns the percentage of time the execution thread spent in
 	 * either <code>WAITING</code> or <code>TIMED_WAITING</code> state in the given profiling interval.
-	 * 
+	 *
 	 * @return the percentage of time the thread spent waiting
 	 */
 	public int getWaitedTime() {

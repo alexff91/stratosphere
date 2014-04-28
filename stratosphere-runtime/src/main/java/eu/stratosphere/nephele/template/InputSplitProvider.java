@@ -18,13 +18,13 @@ import eu.stratosphere.core.io.InputSplit;
 /**
  * An input split provider can be successively queried to provide a series of {@link InputSplit} objects an
  * {@link AbstractInputTask} is supposed to consume in the course of its execution.
- * 
+ *
  */
 public interface InputSplitProvider {
 
 	/**
 	 * Requests the next input split to be consumed by the calling {@link AbstractInputTask}.
-	 * 
+	 *
 	 * @return the next input split to be consumed by the calling {@link AbstractInputTask} or <code>null</code> if the
 	 *         {@link AbstractInputTask} shall not consume any further input splits.
 	 */

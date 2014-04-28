@@ -21,131 +21,134 @@ import eu.stratosphere.util.Visitor;
 
 /**
  * Abstract superclass for data sources in a Pact plan.
- * 
+ *
  * @param T The type of input format invoked by instances of this data source.
  */
 public class GenericDataSource<T extends InputFormat<?, ?>> extends Operator {
-	
+
 	private static final String DEFAULT_NAME = "<Unnamed Generic Data Source>";
-	
+
 	protected final UserCodeWrapper<? extends T> formatWrapper;
-	
+
 	protected String statisticsKey;
 
 	/**
 	 * Creates a new instance for the given file using the given input format.
-	 * 
+	 *
 	 * @param format The {@link InputFormat} implementation used to read the data.
 	 * @param name The given name for the Pact, used in plans, logs and progress messages.
 	 */
 	public GenericDataSource(T format, String name) {
 		super(name);
-		
+
 		if (format == null) {
 			throw new IllegalArgumentException("Input format may not be null.");
 		}
-		
+
 		this.formatWrapper = new UserCodeObjectWrapper<T>(format);
 	}
-	
+
 	/**
 	 * Creates a new instance for the given file using the given input format, using the default name.
-	 * 
+	 *
 	 * @param format The {@link InputFormat} implementation used to read the data.
 	 */
 	public GenericDataSource(T format) {
 		super(DEFAULT_NAME);
-		
-		if (format == null)
-			throw new IllegalArgumentException("Input format may not be null.");
-		
+
+		if (format == null) {
+		throw new IllegalArgumentException("Input format may not be null.");
+		}
+
 		this.formatWrapper = new UserCodeObjectWrapper<T>(format);
 	}
-	
+
 	/**
 	 * Creates a new instance for the given file using the given input format.
-	 * 
+	 *
 	 * @param format The {@link InputFormat} implementation used to read the data.
 	 * @param name The given name for the Pact, used in plans, logs and progress messages.
 	 */
 	public GenericDataSource(Class<? extends T> format, String name) {
 		super(name);
-		
-		if (format == null)
-			throw new IllegalArgumentException("Input format may not be null.");
-		
+
+		if (format == null) {
+		throw new IllegalArgumentException("Input format may not be null.");
+		}
+
 		this.formatWrapper = new UserCodeClassWrapper<T>(format);
 	}
-	
+
 	/**
 	 * Creates a new instance for the given file using the given input format, using the default name.
-	 * 
+	 *
 	 * @param format The {@link InputFormat} implementation used to read the data.
 	 */
 	public GenericDataSource(Class<? extends T> format) {
 		super(DEFAULT_NAME);
-		
-		if (format == null)
-			throw new IllegalArgumentException("Input format may not be null.");
-		
+
+		if (format == null) {
+		throw new IllegalArgumentException("Input format may not be null.");
+		}
+
 		this.formatWrapper = new UserCodeClassWrapper<T>(format);
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Gets the class describing the input format.
-	 * 
+	 *
 	 * @return The class describing the input format.
 	 */
 	public UserCodeWrapper<? extends T> getFormatWrapper() {
 		return this.formatWrapper;
 	}
-	
+
 	/**
 	 * Gets the class describing the input format.
 	 * <p>
 	 * This method is basically identical to {@link #getFormatWrapper()}.
-	 * 
+	 *
 	 * @return The class describing the input format.
-	 * 
+	 *
 	 * @see eu.stratosphere.api.common.operators.Operator#getUserCodeWrapper()
 	 */
 	@Override
 	public UserCodeWrapper<? extends T> getUserCodeWrapper() {
 		return this.formatWrapper;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Gets the key under which statistics about this data source may be obtained from the
 	 * statistics cache.
-	 * 
+	 *
 	 * @return The statistics cache key.
 	 */
 	public String getStatisticsKey() {
 		return this.statisticsKey;
 	}
-	
+
 	/**
 	 * Sets the key under which statistics about this data source may be obtained from the
 	 * statistics cache. Useful for testing purposes, when providing mock statistics.
-	 * 
+	 *
 	 * @param statisticsKey The key for the statistics object.
 	 */
 	public void setStatisticsKey(String statisticsKey) {
 		this.statisticsKey = statisticsKey;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Accepts the visitor and applies it this instance. Since the data sources have no inputs, no recursive descend
 	 * happens. The visitors pre-visit method is called and, if returning <tt>true</tt>, the post-visit method is called.
-	 * 
+	 *
 	 * @param visitor The visitor.
-	 *  
+	 *
 	 * @see eu.stratosphere.util.Visitable#accept(eu.stratosphere.util.Visitor)
 	 */
 	@Override
@@ -154,7 +157,7 @@ public class GenericDataSource<T extends InputFormat<?, ?>> extends Operator {
 			visitor.postVisit(this);
 		}
 	}
-	
+
 
 	public String toString() {
 		return this.name;

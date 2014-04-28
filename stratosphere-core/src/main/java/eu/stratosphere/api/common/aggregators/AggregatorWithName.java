@@ -20,18 +20,18 @@ import eu.stratosphere.types.Value;
 public class AggregatorWithName<T extends Value> {
 
 	private final String name;
-	
+
 	private final Class<? extends Aggregator<T>> aggregator;
 
 	public AggregatorWithName(String name, Class<Aggregator<T>> aggregator) {
 		this.name = name;
 		this.aggregator = aggregator;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
-	
+
 	public Class<? extends Aggregator<T>> getAggregator() {
 		return aggregator;
 	}

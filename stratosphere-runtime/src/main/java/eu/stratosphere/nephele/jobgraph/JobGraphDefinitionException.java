@@ -16,7 +16,7 @@ package eu.stratosphere.nephele.jobgraph;
 public class JobGraphDefinitionException extends Exception {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -5791426627063063469L;
 

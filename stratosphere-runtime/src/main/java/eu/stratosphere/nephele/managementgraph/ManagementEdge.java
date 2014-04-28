@@ -20,7 +20,7 @@ import eu.stratosphere.nephele.io.channels.ChannelType;
  * execution graph.
  * <p>
  * This class is not thread-safe.
- * 
+ *
  */
 public final class ManagementEdge extends ManagementAttachment {
 
@@ -61,7 +61,7 @@ public final class ManagementEdge extends ManagementAttachment {
 
 	/**
 	 * Constructs a new edge object.
-	 * 
+	 *
 	 * @param sourceEdgeID
 	 *        source ID of the management edge
 	 * @param targetEdgeID
@@ -97,7 +97,7 @@ public final class ManagementEdge extends ManagementAttachment {
 
 	/**
 	 * Returns the type of the channel this edge refers to.
-	 * 
+	 *
 	 * @return the type of the channel this edge refers to
 	 */
 	public ChannelType getChannelType() {
@@ -106,7 +106,7 @@ public final class ManagementEdge extends ManagementAttachment {
 
 	/**
 	 * Returns the source of the edge referring to the output gate of an execution vertex.
-	 * 
+	 *
 	 * @return the source of the edge referring to the output gate of an execution vertex
 	 */
 	public ManagementGate getSource() {
@@ -115,7 +115,7 @@ public final class ManagementEdge extends ManagementAttachment {
 
 	/**
 	 * Returns the target of the edge referring to the input gate of an execution vertex.
-	 * 
+	 *
 	 * @return the target of the edge referring to the input gate of an execution vertex
 	 */
 	public ManagementGate getTarget() {
@@ -124,7 +124,7 @@ public final class ManagementEdge extends ManagementAttachment {
 
 	/**
 	 * Returns the edge's index in the source gate.
-	 * 
+	 *
 	 * @return the edge's index in the source gate
 	 */
 	public int getSourceIndex() {
@@ -133,7 +133,7 @@ public final class ManagementEdge extends ManagementAttachment {
 
 	/**
 	 * Returns the edge's index in the target gate.
-	 * 
+	 *
 	 * @return the edge's index in the target gate
 	 */
 	public int getTargetIndex() {
@@ -142,7 +142,7 @@ public final class ManagementEdge extends ManagementAttachment {
 
 	/**
 	 * Returns the source ID of the edge.
-	 * 
+	 *
 	 * @return The source ID of the edge
 	 */
 	public ManagementEdgeID getSourceEdgeID() {
@@ -151,7 +151,7 @@ public final class ManagementEdge extends ManagementAttachment {
 
 	/**
 	 * Returns the target ID of the edge.
-	 * 
+	 *
 	 * @return The target ID of the edge
 	 */
 	public ManagementEdgeID getTargetEdgeID() {

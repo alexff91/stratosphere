@@ -27,7 +27,7 @@ public abstract class AbstractUnionRecordReader<T extends IOReadableWritable> ex
 	 * The set of all input gates.
 	 */
 	private final InputGate<T>[] allInputGates;
-	
+
 	/**
 	 * The set of unclosed input gates.
 	 */
@@ -37,21 +37,21 @@ public abstract class AbstractUnionRecordReader<T extends IOReadableWritable> ex
 	 * Queue with indices of channels that store at least one available record.
 	 */
 	private final ArrayDeque<InputGate<T>> availableInputGates = new ArrayDeque<InputGate<T>>();
-	
+
 	/**
 	 * The next input gate to read a record from.
 	 */
 	private InputGate<T> nextInputGateToReadFrom;
 
-	
+
 	@Override
 	public boolean isInputClosed() {
 		return this.remainingInputGates.isEmpty();
 	}
-	
+
 	/**
 	 * Constructs a new mutable union record reader.
-	 * 
+	 *
 	 * @param recordReaders
 	 *        the individual mutable record readers whose input is used to construct the union
 	 */
@@ -66,10 +66,10 @@ public abstract class AbstractUnionRecordReader<T extends IOReadableWritable> ex
 			throw new IllegalArgumentException(
 				"The mutable union record reader must at least be initialized with two individual mutable record readers");
 		}
-		
+
 		this.allInputGates = new InputGate[recordReaders.length];
 		this.remainingInputGates = new HashSet<InputGate<T>>((int) (recordReaders.length * 1.6f));
-		
+
 		for (int i = 0; i < recordReaders.length; i++) {
 			InputGate<T> inputGate = recordReaders[i].getInputGate();
 			inputGate.registerRecordAvailabilityListener(this);
@@ -77,15 +77,15 @@ public abstract class AbstractUnionRecordReader<T extends IOReadableWritable> ex
 			this.remainingInputGates.add(inputGate);
 		}
 	}
-	
-	
+
+
 	@Override
 	public void publishEvent(AbstractTaskEvent event) throws IOException, InterruptedException {
 		for (InputGate<T> gate : this.allInputGates) {
 			gate.publishEvent(event);
 		}
 	}
-	
+
 	@Override
 	public void reportRecordAvailability(InputGate<T> inputGate) {
 		synchronized (this.availableInputGates) {
@@ -93,7 +93,7 @@ public abstract class AbstractUnionRecordReader<T extends IOReadableWritable> ex
 			this.availableInputGates.notifyAll();
 		}
 	}
-	
+
 	protected boolean getNextRecord(T target) throws IOException, InterruptedException {
 
 		while (true) {
@@ -102,7 +102,7 @@ public abstract class AbstractUnionRecordReader<T extends IOReadableWritable> ex
 				if (this.remainingInputGates.isEmpty()) {
 					return false;
 				}
-				
+
 				this.nextInputGateToReadFrom = getNextAvailableInputGate();
 			}
 
@@ -110,35 +110,37 @@ public abstract class AbstractUnionRecordReader<T extends IOReadableWritable> ex
 			switch (result) {
 				case INTERMEDIATE_RECORD_FROM_BUFFER: // record is available and we can stay on the same channel
 					return true;
-					
+
 				case LAST_RECORD_FROM_BUFFER: // record is available, but we need to re-check the channels
 					this.nextInputGateToReadFrom = null;
 					return true;
-					
+
 				case END_OF_SUPERSTEP:
 					this.nextInputGateToReadFrom = null;
-					if (incrementEndOfSuperstepEventAndCheck())
-						return false; // end of the superstep
-					else 
-						break; // fall through and wait for next record/event
-					
+					if (incrementEndOfSuperstepEventAndCheck()) {
+					return false; // end of the superstep
+					}
+					else {
+					break; // fall through and wait for next record/event
+					}
+
 				case TASK_EVENT:	// event for the subscribers is available
 					handleEvent(this.nextInputGateToReadFrom.getCurrentEvent());
 					this.nextInputGateToReadFrom = null;
 					break;
-					
+
 				case END_OF_STREAM: // one gate is empty
 					this.remainingInputGates.remove(this.nextInputGateToReadFrom);
 					this.nextInputGateToReadFrom = null;
 					break;
-					
+
 				case NONE: // gate processed an internal event and could not return a record on this call
 					this.nextInputGateToReadFrom = null;
 					break;
 			}
 		}
 	}
-	
+
 	private InputGate<T> getNextAvailableInputGate() throws InterruptedException {
 		synchronized (this.availableInputGates) {
 			while (this.availableInputGates.isEmpty()) {

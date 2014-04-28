@@ -21,6 +21,6 @@ import eu.stratosphere.pact.runtime.shipping.ShipStrategyType;
 public interface DumpableConnection<T extends DumpableNode<T>> {
 
 	public DumpableNode<T> getSource();
-	
+
 	public ShipStrategyType getShipStrategy();
 }

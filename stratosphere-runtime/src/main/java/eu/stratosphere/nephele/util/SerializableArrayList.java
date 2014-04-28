@@ -29,7 +29,7 @@ import eu.stratosphere.util.StringUtils;
  * with Nephele's RPC system.
  * <p>
  * This class is not thread-safe.
- * 
+ *
  * @param <E>
  *        the type of object stored inside this array list
  */
@@ -49,7 +49,7 @@ public class SerializableArrayList<E extends IOReadableWritable> extends ArrayLi
 
 	/**
 	 * Constructs an empty list with the specified initial capacity.
-	 * 
+	 *
 	 * @param initialCapacity
 	 *        the initial capacity of the list
 	 */

@@ -31,8 +31,6 @@ import org.junit.Test;
 
 import eu.stratosphere.core.io.IOReadableWritable;
 import eu.stratosphere.core.memory.MemorySegment;
-import eu.stratosphere.nephele.services.iomanager.Channel;
-import eu.stratosphere.nephele.services.iomanager.IOManager;
 import eu.stratosphere.nephele.services.memorymanager.DefaultMemoryManagerTest;
 import eu.stratosphere.nephele.services.memorymanager.spi.DefaultMemoryManager;
 import eu.stratosphere.nephele.template.AbstractInvokable;
@@ -44,17 +42,17 @@ import eu.stratosphere.nephele.template.AbstractInvokable;
  *
  */
 public class IOManagerITCase {
-	
+
 	private static final Log LOG = LogFactory.getLog(IOManagerITCase.class);
-	
+
 	private static final long SEED = 649180756312423613L;
 
 	private static final int NUMBER_OF_SEGMENTS = 10; // 10
 
 	private static final int SEGMENT_SIZE = 1024 * 1024; // 1M
-	
+
 	private final int NUM_CHANNELS = 29;
-	
+
 	private final int NUMBERS_TO_BE_WRITTEN = NUM_CHANNELS * 1000000;
 
 	private IOManager ioManager;
@@ -72,87 +70,87 @@ public class IOManagerITCase {
 	public void afterTest() throws Exception {
 		ioManager.shutdown();
 		Assert.assertTrue("IO Manager has not properly shut down.", ioManager.isProperlyShutDown());
-		
+
 		Assert.assertTrue("Not all memory was returned to the memory manager in the test.", memoryManager.verifyEmpty());
 		memoryManager.shutdown();
 		memoryManager = null;
 	}
 
 	// ------------------------------------------------------------------------
-	
+
 	/**
-	 * This test instantiates multiple channels and writes to them in parallel and re-reads the data in 
+	 * This test instantiates multiple channels and writes to them in parallel and re-reads the data in
 	 * parallel. It is designed to check the ability of the IO manager to correctly handle multiple threads.
 	 */
 	@Test
 	public void parallelChannelsTest() throws Exception
 	{
 		LOG.info("Starting parallel channels test.");
-		
+
 		final Random rnd = new Random(SEED);
 		final AbstractInvokable memOwner = new DefaultMemoryManagerTest.DummyInvokable();
-		
+
 		Channel.ID[] ids = new Channel.ID[NUM_CHANNELS];
 		BlockChannelWriter[] writers = new BlockChannelWriter[NUM_CHANNELS];
 		BlockChannelReader[] readers = new BlockChannelReader[NUM_CHANNELS];
 		ChannelWriterOutputView[] outs = new ChannelWriterOutputView[NUM_CHANNELS];
 		ChannelReaderInputView[] ins = new ChannelReaderInputView[NUM_CHANNELS];
-		
+
 		int[] writingCounters = new int[NUM_CHANNELS];
 		int[] readingCounters = new int[NUM_CHANNELS];
-		
+
 		// instantiate the channels and writers
 		for (int i = 0; i < NUM_CHANNELS; i++)
 		{
 			ids[i] = this.ioManager.createChannel();
 			writers[i] = this.ioManager.createBlockChannelWriter(ids[i]);
-			
+
 			List<MemorySegment> memSegs = this.memoryManager.allocatePages(memOwner, rnd.nextInt(NUMBER_OF_SEGMENTS - 2) + 2);
 			outs[i] = new ChannelWriterOutputView(writers[i], memSegs, this.memoryManager.getPageSize());
 		}
-		
-		
+
+
 		Value val = new Value();
-		
+
 		// write a lot of values unevenly distributed over the channels
 		int nextLogCount = 0;
 		float nextLogFraction = 0.0f;
-		
+
 		LOG.info("Writing to channels...");
 		for (int i = 0; i < NUMBERS_TO_BE_WRITTEN; i++) {
-			
+
 			if (i == nextLogCount) {
 				LOG.info("... " + (int) (nextLogFraction * 100) + "% done.");
 				nextLogFraction += 0.05;
 				nextLogCount = (int) (nextLogFraction * NUMBERS_TO_BE_WRITTEN);
 			}
-			
+
 			int channel = skewedSample(rnd, NUM_CHANNELS - 1);
-			
+
 			val.value = String.valueOf(writingCounters[channel]++);
 			val.write(outs[channel]);
 		}
 		LOG.info("Writing done, flushing contents...");
-		
+
 		// close all writers
 		for (int i = 0; i < NUM_CHANNELS; i++) {
 			this.memoryManager.release(outs[i].close());
 		}
 		outs = null;
 		writers = null;
-		
+
 		// instantiate the readers for sequential read
 		LOG.info("Reading channels sequentially...");
 		for (int i = 0; i < NUM_CHANNELS; i++)
 		{
 			List<MemorySegment> memSegs = this.memoryManager.allocatePages(memOwner, rnd.nextInt(NUMBER_OF_SEGMENTS - 2) + 2);
-			
+
 			LOG.info("Reading channel " + (i+1) + "/" + NUM_CHANNELS + '.');
-				
+
 			final BlockChannelReader reader = this.ioManager.createBlockChannelReader(ids[i]);
 			final ChannelReaderInputView in = new ChannelReaderInputView(reader, memSegs, false);
 			int nextVal = 0;
-			
+
 			try {
 				while (true) {
 					val.read(in);
@@ -169,35 +167,35 @@ public class IOManagerITCase {
 			} catch (EOFException eofex) {
 				// expected
 			}
-			
+
 			Assert.assertEquals("NUmber of written numbers differs from number of read numbers.", writingCounters[i], nextVal);
-			
+
 			this.memoryManager.release(in.close());
 		}
 		LOG.info("Sequential reading done.");
-		
+
 		// instantiate the readers
 		LOG.info("Reading channels randomly...");
 		for (int i = 0; i < NUM_CHANNELS; i++) {
-			
+
 			List<MemorySegment> memSegs = this.memoryManager.allocatePages(memOwner, rnd.nextInt(NUMBER_OF_SEGMENTS - 2) + 2);
-				
+
 			readers[i] = this.ioManager.createBlockChannelReader(ids[i]);
 			ins[i] = new ChannelReaderInputView(readers[i], memSegs, false);
 		}
-		
+
 		nextLogCount = 0;
 		nextLogFraction = 0.0f;
-		
+
 		// read a lot of values in a mixed order from the channels
 		for (int i = 0; i < NUMBERS_TO_BE_WRITTEN; i++) {
-			
+
 			if (i == nextLogCount) {
 				LOG.info("... " + (int) (nextLogFraction * 100) + "% done.");
 				nextLogFraction += 0.05;
 				nextLogCount = (int) (nextLogFraction * NUMBERS_TO_BE_WRITTEN);
 			}
-			
+
 			while (true) {
 				final int channel = skewedSample(rnd, NUM_CHANNELS - 1);
 				if (ins[channel] != null) {
@@ -211,9 +209,9 @@ public class IOManagerITCase {
 							Assert.fail("Invalid value read from reader. Valid decimal number expected.");
 							return;
 						}
-						
+
 						Assert.assertEquals("Written and read values do not match.", readingCounters[channel]++, intValue);
-						
+
 						break;
 					} catch (EOFException eofex) {
 						this.memoryManager.release(ins[channel].close());
@@ -221,10 +219,10 @@ public class IOManagerITCase {
 					}
 				}
 			}
-			
+
 		}
 		LOG.info("Random reading done.");
-		
+
 		// close all readers
 		for (int i = 0; i < NUM_CHANNELS; i++) {
 			if (ins[i] != null) {
@@ -232,29 +230,29 @@ public class IOManagerITCase {
 			}
 			readers[i].closeAndDelete();
 		}
-		
+
 		ins = null;
 		readers = null;
-		
+
 		// check that files are deleted
 		for (int i = 0; i < NUM_CHANNELS; i++) {
 			File f = new File(ids[i].getPath());
 			Assert.assertFalse("Channel file has not been deleted.", f.exists());
 		}
 	}
-	
+
 	private static final int skewedSample(Random rnd, int max) {
 		double uniform = rnd.nextDouble();
 		double var = Math.pow(uniform, 8.0);
 		double pareto = 0.2 / var;
-		
+
 		int val = (int) pareto;
 		return val > max ? val % max : val;
 	}
-	
-	
+
+
 	// ------------------------------------------------------------------------
-	
+
 	protected static class Value implements IOReadableWritable {
 
 		String value;
@@ -286,19 +284,24 @@ public class IOManagerITCase {
 
 		@Override
 		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
+			if (this == obj) {
+			return true;
+			}
+			if (obj == null) {
+			return false;
+			}
+			if (getClass() != obj.getClass()) {
+			return false;
+			}
 			Value other = (Value) obj;
 
 			if (value == null) {
-				if (other.value != null)
-					return false;
-			} else if (!value.equals(other.value))
+				if (other.value != null) {
 				return false;
+				}
+			} else if (!value.equals(other.value)) {
+			return false;
+			}
 			return true;
 		}
 	}

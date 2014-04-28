@@ -17,15 +17,15 @@ import eu.stratosphere.api.java.record.io.DelimitedInputFormat;
 import eu.stratosphere.types.Record;
 
 /**
- * This class is responsible for converting a line from the input file to a two field record. 
+ * This class is responsible for converting a line from the input file to a two field record.
  * Lines which do not match the expected length are skipped.
  */
 public final class TeraInputFormat extends DelimitedInputFormat {
 	private static final long serialVersionUID = 1L;
-	
+
 	private final TeraKey key = new TeraKey();
 	private final TeraValue value = new TeraValue();
-	
+
 
 	@Override
 	public Record readRecord(Record target, byte[] record, int offset, int numBytes) throws RuntimeException {
@@ -35,7 +35,7 @@ public final class TeraInputFormat extends DelimitedInputFormat {
 
 		this.key.setValue(record, offset);
 		this.value.setValue(record, offset + TeraKey.KEY_SIZE);
-		
+
 		target.setField(0, this.key);
 		target.setField(1, this.value);
 		return target;

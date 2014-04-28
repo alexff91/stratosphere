@@ -29,7 +29,7 @@ import eu.stratosphere.util.StringUtils;
  * A JobFileInputVertex is a specific subtype of a {@link AbstractJobInputVertex} and is designed
  * for Nephele tasks which read data from a local or distributed file system. As every job input vertex
  * A JobFileInputVertex must not have any further input.
- * 
+ *
  */
 public final class JobFileInputVertex extends AbstractJobInputVertex {
 
@@ -40,7 +40,7 @@ public final class JobFileInputVertex extends AbstractJobInputVertex {
 
 	/**
 	 * Creates a new job file input vertex with the specified name.
-	 * 
+	 *
 	 * @param name
 	 *        the name of the new job file input vertex
 	 * @param id
@@ -54,7 +54,7 @@ public final class JobFileInputVertex extends AbstractJobInputVertex {
 
 	/**
 	 * Creates a new job file input vertex with the specified name.
-	 * 
+	 *
 	 * @param name
 	 *        the name of the new job file input vertex
 	 * @param jobGraph
@@ -66,7 +66,7 @@ public final class JobFileInputVertex extends AbstractJobInputVertex {
 
 	/**
 	 * Creates a new job file input vertex.
-	 * 
+	 *
 	 * @param jobGraph
 	 *        the job graph this vertex belongs to
 	 */
@@ -76,7 +76,7 @@ public final class JobFileInputVertex extends AbstractJobInputVertex {
 
 	/**
 	 * Sets the path of the file the job file input vertex's task should read from.
-	 * 
+	 *
 	 * @param path
 	 *        the path of the file the job file input vertex's task should read from
 	 */
@@ -86,7 +86,7 @@ public final class JobFileInputVertex extends AbstractJobInputVertex {
 
 	/**
 	 * Returns the path of the file the job file input vertex's task should read from.
-	 * 
+	 *
 	 * @return the path of the file the job file input vertex's task should read from or <code>null</code> if no path
 	 *         has yet been set
 	 */
@@ -96,7 +96,7 @@ public final class JobFileInputVertex extends AbstractJobInputVertex {
 
 	/**
 	 * Sets the class of the vertex's input task.
-	 * 
+	 *
 	 * @param inputClass
 	 *        the class of the vertex's input task.
 	 */
@@ -106,7 +106,7 @@ public final class JobFileInputVertex extends AbstractJobInputVertex {
 
 	/**
 	 * Returns the class of the vertex's input task.
-	 * 
+	 *
 	 * @return the class of the vertex's input task or <code>null</code> if no task has yet been set
 	 */
 	@SuppressWarnings("unchecked")

@@ -18,12 +18,6 @@ import junit.framework.Assert;
 import org.junit.Test;
 
 import eu.stratosphere.core.memory.MemorySegment;
-import eu.stratosphere.types.NormalizableKey;
-import eu.stratosphere.types.CharValue;
-import eu.stratosphere.types.IntValue;
-import eu.stratosphere.types.LongValue;
-import eu.stratosphere.types.NullValue;
-import eu.stratosphere.types.StringValue;
 
 public class NormalizableKeyTest {
 
@@ -37,7 +31,7 @@ public class NormalizableKeyTest {
 		IntValue int5 = new IntValue(Integer.MAX_VALUE & 0xff800000);
 		IntValue int6 = new IntValue(Integer.MIN_VALUE);
 		IntValue int7 = new IntValue(Integer.MIN_VALUE & 0xff800000);
-		
+
 		for (int length = 2; length <= 4; length++) {
 			assertNormalizableKey(int0, int1, length);
 			assertNormalizableKey(int0, int2, length);
@@ -50,7 +44,7 @@ public class NormalizableKeyTest {
 			assertNormalizableKey(int6, int7, length);
 		}
 	}
-	
+
 	@Test
 	public void testLongValue() {
 		LongValue long0 = new LongValue(10);
@@ -61,7 +55,7 @@ public class NormalizableKeyTest {
 		LongValue long5 = new LongValue(Long.MAX_VALUE & 0xff80000000000000L);
 		LongValue long6 = new LongValue(Long.MIN_VALUE);
 		LongValue long7 = new LongValue(Long.MIN_VALUE & 0xff80000000000000L);
-		
+
 		for (int length = 2; length <= 8; length++) {
 			assertNormalizableKey(long0, long1, length);
 			assertNormalizableKey(long0, long2, length);
@@ -75,7 +69,7 @@ public class NormalizableKeyTest {
 		}
 	}
 
-	
+
 
 	@Test
 	public void testStringValue() {
@@ -84,7 +78,7 @@ public class NormalizableKeyTest {
 		StringValue string2 = new StringValue("This is a tesa");
 		StringValue string3 = new StringValue("This");
 		StringValue string4 = new StringValue("Ünlaut ßtring µ avec é y ¢");
-		
+
 		for (int length = 5; length <= 15; length+=10) {
 			assertNormalizableKey(string0, string1, length);
 			assertNormalizableKey(string0, string2, length);
@@ -92,19 +86,19 @@ public class NormalizableKeyTest {
 			assertNormalizableKey(string0, string4, length);
 		}
 	}
-	
+
 	@Test
 	public void testPactNull() {
-		
+
 		final NullValue pn1 = new NullValue();
 		final NullValue pn2 = new NullValue();
-		
+
 		assertNormalizableKey(pn1, pn2, 0);
 	}
-	
+
 	@Test
 	public void testPactChar() {
-		
+
 		final CharValue c1 = new CharValue((char) 0);
 		final CharValue c2 = new CharValue((char) 1);
 		final CharValue c3 = new CharValue((char) 0xff);
@@ -113,10 +107,10 @@ public class NormalizableKeyTest {
 		final CharValue c6 = new CharValue(Character.MAX_HIGH_SURROGATE);
 		final CharValue c7 = new CharValue(Character.MAX_LOW_SURROGATE);
 		final CharValue c8 = new CharValue(Character.MAX_SURROGATE);
-		
+
 		CharValue[] allChars = new CharValue[] {
 			c1, c2, c3, c4, c5, c6, c7, c8 };
-		
+
 		for (int i = 0; i < 5; i++) {
 			// self checks
 			for (int x = 0; x < allChars.length; x++) {
@@ -126,20 +120,20 @@ public class NormalizableKeyTest {
 			}
 		}
 	}
-	
+
 	private void assertNormalizableKey(NormalizableKey key1, NormalizableKey key2, int len) {
-		
+
 		byte[] normalizedKeys = new byte[2*len];
 		MemorySegment wrapper = new MemorySegment(normalizedKeys);
-		
+
 		key1.copyNormalizedKey(wrapper, 0, len);
 		key2.copyNormalizedKey(wrapper, len, len);
-		
+
 		for (int i = 0; i < len; i++) {
 			int comp;
 			int normKey1 = normalizedKeys[i] & 0xFF;
 			int normKey2 = normalizedKeys[len + i] & 0xFF;
-			
+
 			if ((comp = (normKey1 - normKey2)) != 0) {
 				if (Math.signum(key1.compareTo(key2)) != Math.signum(comp)) {
 					Assert.fail("Normalized key comparison differs from actual key comparision");

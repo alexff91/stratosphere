@@ -26,7 +26,7 @@ import eu.stratosphere.nephele.taskmanager.transferenvelope.TransferEnvelope;
 /**
  * An unknown receiver event can be used by the framework to inform a sender task that the delivery of a
  * {@link TransferEnvelope} has failed since the receiver could not be found.
- * 
+ *
  */
 public final class ReceiverNotFoundEvent extends AbstractEvent {
 
@@ -47,7 +47,7 @@ public final class ReceiverNotFoundEvent extends AbstractEvent {
 
 	/**
 	 * Constructs a new unknown receiver event.
-	 * 
+	 *
 	 * @param receiverID
 	 *        the ID of the receiver which could not be found
 	 * @param sequenceNumber
@@ -77,7 +77,7 @@ public final class ReceiverNotFoundEvent extends AbstractEvent {
 
 	/**
 	 * Returns the ID of the receiver which could not be found.
-	 * 
+	 *
 	 * @return the ID of the receiver which could not be found
 	 */
 	public ChannelID getReceiverID() {
@@ -87,7 +87,7 @@ public final class ReceiverNotFoundEvent extends AbstractEvent {
 
 	/**
 	 * Returns the sequence number of the envelope this event refers to.
-	 * 
+	 *
 	 * @return the sequence number of the envelope this event refers to
 	 */
 	public int getSequenceNumber() {
@@ -113,7 +113,7 @@ public final class ReceiverNotFoundEvent extends AbstractEvent {
 
 	/**
 	 * Creates a transfer envelope which only contains a ReceiverNotFoundEvent.
-	 * 
+	 *
 	 * @param jobID
 	 *        the ID of the job the event relates to.
 	 * @param receiver
@@ -136,7 +136,7 @@ public final class ReceiverNotFoundEvent extends AbstractEvent {
 
 	/**
 	 * Checks if the given envelope only contains a ReceiverNotFoundEvent.
-	 * 
+	 *
 	 * @param transferEnvelope
 	 *        the envelope to be checked
 	 * @return <code>true</code> if the envelope only contains a ReceiverNotFoundEvent, <code>false</code> otherwise

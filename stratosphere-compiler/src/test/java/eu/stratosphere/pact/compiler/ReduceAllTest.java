@@ -43,8 +43,8 @@ public class ReduceAllTest extends CompilerTestBase {
 		sink.setInput(reduce1);
 		Plan plan = new Plan(sink, "AllReduce Test");
 		plan.setDefaultParallelism(DEFAULT_PARALLELISM);
-		
-		
+
+
 		try {
 			OptimizedPlan oPlan = compileNoStats(plan);
 			NepheleJobGraphGenerator jobGen = new NepheleJobGraphGenerator();

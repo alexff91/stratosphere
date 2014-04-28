@@ -26,7 +26,7 @@ import eu.stratosphere.nephele.io.channels.bytebuffered.NetworkOutputChannel;
  * In Nephele output gates are a specialization of general gates and connect
  * record writers and output channels. As channels, output gates are always
  * parameterized to a specific type of record which they can transport.
- * 
+ *
  * @param <T>
  *        the type of record that can be transported through this gate
  */
@@ -34,7 +34,7 @@ public interface OutputGate<T extends IOReadableWritable> extends Gate<T> {
 
 	/**
 	 * Returns the type of record that can be transported through this gate.
-	 * 
+	 *
 	 * @return the type of record that can be transported through this gate
 	 */
 	Class<T> getType();
@@ -43,7 +43,7 @@ public interface OutputGate<T extends IOReadableWritable> extends Gate<T> {
 	 * Writes a record to one of the associated output channels. Currently, the
 	 * channels are chosen in a simple round-robin fashion. This operation may
 	 * block until the respective channel has received the data.
-	 * 
+	 *
 	 * @param record
 	 *        the record to be written
 	 * @throws IOException
@@ -53,14 +53,14 @@ public interface OutputGate<T extends IOReadableWritable> extends Gate<T> {
 
 	/**
 	 * Returns all the OutputChannels connected to this gate
-	 * 
+	 *
 	 * @return the list of OutputChannels connected to this RecordWriter
 	 */
 	List<AbstractOutputChannel<T>> getOutputChannels();
 
 	/**
 	 * Flushes all connected output channels.
-	 * 
+	 *
 	 * @throws IOException
 	 *         thrown if an error occurs while flushing an output channel
 	 * @throws InterruptedException
@@ -71,14 +71,14 @@ public interface OutputGate<T extends IOReadableWritable> extends Gate<T> {
 	/**
 	 * Checks if this output gate operates in broadcast mode, i.e. all records passed to it are transferred through all
 	 * connected output channels.
-	 * 
+	 *
 	 * @return <code>true</code> if this output gate operates in broadcast mode, <code>false</code> otherwise
 	 */
 	boolean isBroadcast();
 
 	/**
 	 * Returns the number of output channels associated with this output gate.
-	 * 
+	 *
 	 * @return the number of output channels associated with this output gate
 	 */
 	int getNumberOfOutputChannels();
@@ -86,7 +86,7 @@ public interface OutputGate<T extends IOReadableWritable> extends Gate<T> {
 	/**
 	 * Returns the output channel from position <code>pos</code> of the gate's
 	 * internal channel list.
-	 * 
+	 *
 	 * @param pos
 	 *        the position to retrieve the channel from
 	 * @return the channel from the given position or <code>null</code> if such
@@ -96,7 +96,7 @@ public interface OutputGate<T extends IOReadableWritable> extends Gate<T> {
 
 	/**
 	 * Returns the output gate's channel selector.
-	 * 
+	 *
 	 * @return the output gate's channel selector or <code>null</code> if the gate operates in broadcast mode
 	 */
 	ChannelSelector<T> getChannelSelector();
@@ -104,7 +104,7 @@ public interface OutputGate<T extends IOReadableWritable> extends Gate<T> {
 	/**
 	 * Requests the output gate to closed. This means the application will send
 	 * no records through this gate anymore.
-	 * 
+	 *
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
@@ -117,7 +117,7 @@ public interface OutputGate<T extends IOReadableWritable> extends Gate<T> {
 
 	/**
 	 * Creates a new network output channel and assigns it to the given output gate.
-	 * 
+	 *
 	 * @param outputGate
 	 *        the output gate the channel shall be assigned to
 	 * @param channelID
@@ -133,7 +133,7 @@ public interface OutputGate<T extends IOReadableWritable> extends Gate<T> {
 
 	/**
 	 * Creates a new in-memory output channel and assigns it to the given output gate.
-	 * 
+	 *
 	 * @param outputGate
 	 *        the output gate the channel shall be assigned to
 	 * @param channelID

@@ -15,6 +15,7 @@
 package eu.stratosphere.example.java.relational;
 
 
+import static eu.stratosphere.api.java.aggregation.Aggregations.SUM;
 import eu.stratosphere.api.java.DataSet;
 import eu.stratosphere.api.java.ExecutionEnvironment;
 import eu.stratosphere.api.java.functions.FilterFunction;
@@ -23,36 +24,34 @@ import eu.stratosphere.api.java.tuple.Tuple2;
 import eu.stratosphere.api.java.tuple.Tuple3;
 import eu.stratosphere.api.java.tuple.Tuple5;
 
-import static eu.stratosphere.api.java.aggregation.Aggregations.*;
-
 
 public class RelQuery {
-	
+
 	@SuppressWarnings("serial")
 	public static void main(String[] args) {
 		if (args.length < 3) {
 			System.out.println("Usage: <input orders> <input lineitem> <output path>");
 			return;
 		}
-		
+
 		final String ordersPath = args[0];
 		final String lineitemsPath = args[1];
 		final String outputPath = args[2];
-		
+
 		final String prioFilter = "0";
 		final int yearFilter = 1990;
-		
+
 		// this will return the LocalExecutionContext, if invoked locally, and the ClusterExecutionContext, if invoked on the cluster
 		final ExecutionEnvironment context = ExecutionEnvironment.getExecutionEnvironment();
-		
+
 		// orderkey, orderstatus, orderdate, orderprio, shipprio
 		DataSet<Tuple5<Long, String, String, String, String>> orders = context.readCsvFile(ordersPath)
 				.includeFields("10101101").types(Long.class, String.class, String.class, String.class, String.class);
-		
+
 		// orderkey, extendedprice
 		DataSet<Tuple2<Long, Double>> lineitem = context.readCsvFile(lineitemsPath)
 				.includeFields("TFFFFT").types(Long.class, Double.class);
-		
+
 		// filter
 		DataSet<Tuple5<Long, String, String, String, String>> filtered = orders.filter(
 			new FilterFunction<Tuple5<Long, String, String, String, String>>() {
@@ -61,19 +60,19 @@ public class RelQuery {
 					String orderStatus = value.f1;
 					String orderPrio = value.f3;
 					String orderDate = value.f2;
-					return orderStatus.equals("F") && orderPrio.startsWith(prioFilter) && 
+					return orderStatus.equals("F") && orderPrio.startsWith(prioFilter) &&
 							Integer.parseInt(orderDate.substring(0, 4)) > yearFilter;
 				}
 		});
-		
+
 		DataSet<Tuple3<Long, String, Double>> joined = filtered.join(lineitem).where(0).equalTo(0).with(new OLiJoinFunction());
-		
+
 		DataSet<Tuple3<Long, String, Double>> result = joined.groupBy(0, 1).aggregate(SUM, 2);
-		
+
 		result.writeAsCsv(outputPath);
 	}
-	
-	
+
+
 	public static class OLiJoinFunction extends JoinFunction<Tuple5<Long, String, String, String, String>, Tuple2<Long, Double>, Tuple3<Long, String, Double>> {
 
 		private static final long serialVersionUID = 1L;
@@ -84,6 +83,6 @@ public class RelQuery {
 		{
 			return new Tuple3<Long, String, Double>(first.f0, first.f4, second.f1);
 		}
-		
+
 	}
 }

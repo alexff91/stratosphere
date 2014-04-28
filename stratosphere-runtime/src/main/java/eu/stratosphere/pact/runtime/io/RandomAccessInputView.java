@@ -27,24 +27,24 @@ import eu.stratosphere.pact.runtime.util.MathUtils;
  *
  */
 public class RandomAccessInputView extends AbstractPagedInputView implements SeekableDataInputView
-{	
+{
 	private final ArrayList<MemorySegment> segments;
-	
+
 	private int currentSegmentIndex;
-	
+
 	private final int segmentSizeBits;
-	
+
 	private final int segmentSizeMask;
-	
+
 	private final int segmentSize;
-	
+
 	private final int limitInLastSegment;
-	
+
 	public RandomAccessInputView(ArrayList<MemorySegment> segments, int segmentSize)
 	{
 		this(segments, segmentSize, segmentSize);
 	}
-	
+
 	public RandomAccessInputView(ArrayList<MemorySegment> segments, int segmentSize, int limitInLastSegment)
 	{
 		super(segments.get(0), segments.size() > 1 ? segmentSize : limitInLastSegment, 0);
@@ -62,7 +62,7 @@ public class RandomAccessInputView extends AbstractPagedInputView implements See
 	{
 		final int bufferNum = (int) (position >>> this.segmentSizeBits);
 		final int offset = (int) (position & this.segmentSizeMask);
-		
+
 		this.currentSegmentIndex = bufferNum;
 		seekInput(this.segments.get(bufferNum), offset, bufferNum < this.segments.size() - 1 ? this.segmentSize : this.limitInLastSegment);
 	}

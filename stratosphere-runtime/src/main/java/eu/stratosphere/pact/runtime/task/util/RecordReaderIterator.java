@@ -23,12 +23,12 @@ import eu.stratosphere.util.MutableObjectIterator;
 * A {@link MutableObjectIterator} that wraps a Nephele Reader producing {@link Record}s.
 */
 public final class RecordReaderIterator implements MutableObjectIterator<Record> {
-	
+
 	private final MutableReader<Record> reader;		// the source
 
 	/**
 	 * Creates a new iterator, wrapping the given reader.
-	 * 
+	 *
 	 * @param reader The reader to wrap.
 	 */
 	public RecordReaderIterator(MutableReader<Record> reader) {

@@ -13,17 +13,17 @@
 
 package eu.stratosphere.nephele.io.channels.bytebuffered;
 
-import eu.stratosphere.nephele.event.task.AbstractEvent;
-
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+
+import eu.stratosphere.nephele.event.task.AbstractEvent;
 
 /**
  * Marks the end of a superstep of one particular iteration head
  */
 public class EndOfSuperstepEvent extends AbstractEvent {
-	
+
 	public static final EndOfSuperstepEvent INSTANCE = new EndOfSuperstepEvent();
 
 	@Override

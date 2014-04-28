@@ -47,37 +47,37 @@ public class MergeMatchIterator<T1, T2, O> implements JoinTaskIterator<T1, T2, O
 	 * The log used by this iterator to log messages.
 	 */
 	private static final Log LOG = LogFactory.getLog(MergeMatchIterator.class);
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	private TypePairComparator<T1, T2> comp;
-	
+
 	private KeyGroupedIterator<T1> iterator1;
 
 	private KeyGroupedIterator<T2> iterator2;
-	
+
 	private final TypeSerializer<T1> serializer1;
-	
+
 	private final TypeSerializer<T2> serializer2;
-	
+
 	private T1 copy1;
-	
+
 	private T1 spillHeadCopy;
-	
+
 	private T2 copy2;
-	
+
 	private T2 blockHeadCopy;
-	
+
 	private final BlockResettableIterator<T2> blockIt;				// for N:M cross products with same key
-	
+
 	private final List<MemorySegment> memoryForSpillingIterator;
-	
+
 	private final MemoryManager memoryManager;
 
 	private final IOManager ioManager;
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public MergeMatchIterator(MutableObjectIterator<T1> input1, MutableObjectIterator<T2> input2,
 			TypeSerializer<T1> serializer1, TypeComparator<T1> comparator1,
 			TypeSerializer<T2> serializer2, TypeComparator<T2> comparator2, TypePairComparator<T1, T2> pairComparator,
@@ -87,22 +87,22 @@ public class MergeMatchIterator<T1, T2, O> implements JoinTaskIterator<T1, T2, O
 		if (numMemoryPages < 2) {
 			throw new IllegalArgumentException("Merger needs at least 2 memory pages.");
 		}
-		
+
 		this.comp = pairComparator;
 		this.serializer1 = serializer1;
 		this.serializer2 = serializer2;
-		
+
 		this.copy1 = serializer1.createInstance();
 		this.spillHeadCopy = serializer1.createInstance();
 		this.copy2 = serializer2.createInstance();
 		this.blockHeadCopy = serializer2.createInstance();
-		
+
 		this.memoryManager = memoryManager;
 		this.ioManager = ioManager;
-		
+
 		this.iterator1 = new KeyGroupedIterator<T1>(input1, this.serializer1, comparator1.duplicate());
 		this.iterator2 = new KeyGroupedIterator<T2>(input2, this.serializer2, comparator2.duplicate());
-		
+
 		final int numPagesForSpiller = numMemoryPages > 20 ? 2 : 1;
 		this.blockIt = new BlockResettableIterator<T2>(this.memoryManager, this.serializer2,
 			(numMemoryPages - numPagesForSpiller), parentTask);
@@ -124,10 +124,10 @@ public class MergeMatchIterator<T1, T2, O> implements JoinTaskIterator<T1, T2, O
 				LOG.error("Error closing block memory iterator: " + t.getMessage(), t);
 			}
 		}
-		
+
 		this.memoryManager.release(this.memoryForSpillingIterator);
 	}
-	
+
 
 	@Override
 	public void abort() {
@@ -135,14 +135,14 @@ public class MergeMatchIterator<T1, T2, O> implements JoinTaskIterator<T1, T2, O
 	}
 
 	/**
-	 * Calls the <code>JoinFunction#match()</code> method for all two key-value pairs that share the same key and come 
+	 * Calls the <code>JoinFunction#match()</code> method for all two key-value pairs that share the same key and come
 	 * from different inputs. The output of the <code>match()</code> method is forwarded.
 	 * <p>
 	 * This method first zig-zags between the two sorted inputs in order to find a common
 	 * key, and then calls the match stub with the cross product of the values.
-	 * 
+	 *
 	 * @throws Exception Forwards all exceptions from the user code and the I/O system.
-	 * 
+	 *
 	 * @see eu.stratosphere.pact.runtime.task.util.JoinTaskIterator#callWithNextKey()
 	 */
 	@Override
@@ -151,23 +151,28 @@ public class MergeMatchIterator<T1, T2, O> implements JoinTaskIterator<T1, T2, O
 	{
 		if (!this.iterator1.nextKey() || !this.iterator2.nextKey()) {
 			// consume all remanining keys (hack to prevent remaining inputs during iterations, lets get rid of this soon)
-			while (this.iterator1.nextKey());
-			while (this.iterator2.nextKey());
+			while (this.iterator1.nextKey()) {
+			;
+			}
+			while (this.iterator2.nextKey()) {
+			;
+			}
 			return false;
 		}
 
 		final TypePairComparator<T1, T2> comparator = this.comp;
 		comparator.setReference(this.iterator1.getCurrent());
 		T2 current2 = this.iterator2.getCurrent();
-				
+
 		// zig zag
 		while (true) {
 			// determine the relation between the (possibly composite) keys
 			final int comp = comparator.compareToReference(current2);
-			
-			if (comp == 0)
-				break;
-			
+
+			if (comp == 0) {
+			break;
+			}
+
 			if (comp < 0) {
 				if (!this.iterator2.nextKey()) {
 					return false;
@@ -181,22 +186,22 @@ public class MergeMatchIterator<T1, T2, O> implements JoinTaskIterator<T1, T2, O
 				comparator.setReference(this.iterator1.getCurrent());
 			}
 		}
-		
+
 		// here, we have a common key! call the match function with the cross product of the
 		// values
 		final KeyGroupedIterator<T1>.ValuesIterator values1 = this.iterator1.getValues();
 		final KeyGroupedIterator<T2>.ValuesIterator values2 = this.iterator2.getValues();
-		
+
 		final T1 firstV1 = values1.next();
-		final T2 firstV2 = values2.next();	
-			
+		final T2 firstV2 = values2.next();
+
 		final boolean v1HasNext = values1.hasNext();
 		final boolean v2HasNext = values2.hasNext();
 
 		// check if one side is already empty
 		// this check could be omitted if we put this in MatchTask.
 		// then we can derive the local strategy (with build side).
-		
+
 		if (v1HasNext) {
 			if (v2HasNext) {
 				// both sides contain more than one value
@@ -219,11 +224,11 @@ public class MergeMatchIterator<T1, T2, O> implements JoinTaskIterator<T1, T2, O
 	/**
 	 * Crosses a single value from the first input with N values, all sharing a common key.
 	 * Effectively realizes a <i>1:N</i> match (join).
-	 * 
+	 *
 	 * @param val1 The value form the <i>1</i> side.
 	 * @param firstValN The first of the values from the <i>N</i> side.
 	 * @param valsN Iterator over remaining <i>N</i> side values.
-	 *          
+	 *
 	 * @throws Exception Forwards all exceptions thrown by the stub.
 	 */
 	private void crossFirst1withNValues(final T1 val1, final T2 firstValN,
@@ -232,12 +237,12 @@ public class MergeMatchIterator<T1, T2, O> implements JoinTaskIterator<T1, T2, O
 	{
 		this.copy1 = this.serializer1.copy(val1, this.copy1);
 		matchFunction.join(this.copy1, firstValN, collector);
-		
+
 		// set copy and match first element
 		boolean more = true;
 		do {
 			final T2 nRec = valsN.next();
-			
+
 			if (valsN.hasNext()) {
 				this.copy1 = this.serializer1.copy(val1, this.copy1);
 				matchFunction.join(this.copy1, nRec, collector);
@@ -248,15 +253,15 @@ public class MergeMatchIterator<T1, T2, O> implements JoinTaskIterator<T1, T2, O
 		}
 		while (more);
 	}
-	
+
 	/**
 	 * Crosses a single value from the second side with N values, all sharing a common key.
 	 * Effectively realizes a <i>N:1</i> match (join).
-	 * 
+	 *
 	 * @param val1 The value form the <i>1</i> side.
 	 * @param firstValN The first of the values from the <i>N</i> side.
 	 * @param valsN Iterator over remaining <i>N</i> side values.
-	 *          
+	 *
 	 * @throws Exception Forwards all exceptions thrown by the stub.
 	 */
 	private void crossSecond1withNValues(T2 val1, T1 firstValN,
@@ -265,12 +270,12 @@ public class MergeMatchIterator<T1, T2, O> implements JoinTaskIterator<T1, T2, O
 	{
 		this.copy2 = this.serializer2.copy(val1, this.copy2);
 		matchFunction.join(firstValN, this.copy2, collector);
-		
+
 		// set copy and match first element
 		boolean more = true;
 		do {
 			final T1 nRec = valsN.next();
-			
+
 			if (valsN.hasNext()) {
 				this.copy2 = this.serializer2.copy(val1, this.copy2);
 				matchFunction.join(nRec, this.copy2, collector);
@@ -281,7 +286,7 @@ public class MergeMatchIterator<T1, T2, O> implements JoinTaskIterator<T1, T2, O
 		}
 		while (more);
 	}
-	
+
 	/**
 	 * @param firstV1
 	 * @param spillVals
@@ -308,21 +313,21 @@ public class MergeMatchIterator<T1, T2, O> implements JoinTaskIterator<T1, T2, O
 		// resettable. For each further block on the block side, we do:
 		// 5) cross the head of the spilling side with the next block
 		// 6) cross the spilling iterator with the next block.
-		
+
 		// match the first values first
 		this.copy1 = this.serializer1.copy(firstV1, this.copy1);
 		this.blockHeadCopy = this.serializer2.copy(firstV2, this.blockHeadCopy);
-		
+
 		// --------------- 1) Cross the heads -------------------
 		matchFunction.join(this.copy1, firstV2, collector);
-		
+
 		// for the remaining values, we do a block-nested-loops join
 		SpillingResettableIterator<T1> spillIt = null;
-		
+
 		try {
 			// create block iterator on the second input
 			this.blockIt.reopen(blockVals);
-			
+
 			// ------------- 2) cross the head of the spilling side with the first block ------------------
 			while (this.blockIt.hasNext()) {
 				final T2 nextBlockRec = this.blockIt.next();
@@ -330,7 +335,7 @@ public class MergeMatchIterator<T1, T2, O> implements JoinTaskIterator<T1, T2, O
 				matchFunction.join(this.copy1, nextBlockRec, collector);
 			}
 			this.blockIt.reset();
-			
+
 			// spilling is required if the blocked input has data beyond the current block.
 			// in that case, create the spilling iterator
 			final Iterator<T1> leftSideIter;
@@ -343,28 +348,28 @@ public class MergeMatchIterator<T1, T2, O> implements JoinTaskIterator<T1, T2, O
 						this.memoryManager, this.ioManager, this.memoryForSpillingIterator);
 				leftSideIter = spillIt;
 				spillIt.open();
-				
+
 				this.spillHeadCopy = this.serializer1.copy(firstV1, this.spillHeadCopy);
 			}
 			else {
 				leftSideIter = spillVals;
 			}
-			
+
 			// cross the values in the v1 iterator against the current block
-			
+
 			while (leftSideIter.hasNext()) {
 				final T1 nextSpillVal = leftSideIter.next();
 				this.copy1 = this.serializer1.copy(nextSpillVal, this.copy1);
-				
-				
+
+
 				// -------- 3) cross the iterator of the spilling side with the head of the block side --------
 				this.copy2 = this.serializer2.copy(this.blockHeadCopy, this.copy2);
 				matchFunction.join(this.copy1, this.copy2, collector);
-				
+
 				// -------- 4) cross the iterator of the spilling side with the first block --------
 				while (this.blockIt.hasNext()) {
 					T2 nextBlockRec = this.blockIt.next();
-					
+
 					// get instances of key and block value
 					this.copy1 = this.serializer1.copy(nextSpillVal, this.copy1);
 					matchFunction.join(this.copy1, nextBlockRec, collector);
@@ -372,20 +377,20 @@ public class MergeMatchIterator<T1, T2, O> implements JoinTaskIterator<T1, T2, O
 				// reset block iterator
 				this.blockIt.reset();
 			}
-			
+
 			// if everything from the block-side fit into a single block, we are done.
 			// note that in this special case, we did not create a spilling iterator at all
 			if (!spillingRequired) {
 				return;
 			}
-			
+
 			// here we are, because we have more blocks on the block side
 			// loop as long as there are blocks from the blocked input
 			while (this.blockIt.nextBlock())
 			{
 				// rewind the spilling iterator
 				spillIt.reset();
-				
+
 				// ------------- 5) cross the head of the spilling side with the next block ------------
 				while (this.blockIt.hasNext()) {
 					this.copy1 = this.serializer1.copy(this.spillHeadCopy, this.copy1);
@@ -393,7 +398,7 @@ public class MergeMatchIterator<T1, T2, O> implements JoinTaskIterator<T1, T2, O
 					matchFunction.join(this.copy1, nextBlockVal, collector);
 				}
 				this.blockIt.reset();
-				
+
 				// -------- 6) cross the spilling iterator with the next block. ------------------
 				while (spillIt.hasNext())
 				{
@@ -404,9 +409,9 @@ public class MergeMatchIterator<T1, T2, O> implements JoinTaskIterator<T1, T2, O
 						// get instances of key and block value
 						final T2 nextBlockVal = this.blockIt.next();
 						this.copy1 = this.serializer1.copy(nextSpillVal, this.copy1);
-						matchFunction.join(this.copy1, nextBlockVal, collector);	
+						matchFunction.join(this.copy1, nextBlockVal, collector);
 					}
-					
+
 					// reset block iterator
 					this.blockIt.reset();
 				}

@@ -26,7 +26,7 @@ import eu.stratosphere.nephele.jobgraph.JobID;
  * longer running and the results shall be still available for the client or the
  * web interface. Accumulators for older jobs are automatically removed when new
  * arrive, based on a maximum number of entries.
- * 
+ *
  * All functions are thread-safe and thus can be called directly from
  * JobManager.
  */
@@ -49,11 +49,11 @@ public class AccumulatorManager {
 	public void processIncomingAccumulators(JobID jobID,
 			Map<String, Accumulator<?, ?>> newAccumulators) {
 		synchronized (this.jobAccumulators) {
-			
+
 //			System.out.println("JobManager: Received accumulator result for job "
 //					+ jobID.toString());
 //			System.out.println(AccumulatorHelper.getAccumulatorsFormated(newAccumulators));
-			
+
 			JobAccumulators jobAccumulators = this.jobAccumulators.get(jobID);
 			if (jobAccumulators == null) {
 				jobAccumulators = new JobAccumulators();
@@ -81,8 +81,9 @@ public class AccumulatorManager {
 	 * reached.
 	 */
 	private void cleanup(JobID jobId) {
-		if (!lru.contains(jobId))
-			lru.addFirst(jobId);
+		if (!lru.contains(jobId)) {
+		lru.addFirst(jobId);
+		}
 		if (lru.size() > this.maxEntries) {
 			JobID toRemove = lru.removeLast();
 			this.jobAccumulators.remove(toRemove);

@@ -26,17 +26,17 @@ import eu.stratosphere.compiler.plan.PlanNode;
  * The optimizer's internal representation of the partial solution that is input to a bulk iteration.
  */
 public class BulkPartialSolutionNode extends AbstractPartialSolutionNode {
-	
+
 	private final BulkIterationNode iterationNode;
-	
-	
+
+
 	public BulkPartialSolutionNode(PartialSolutionPlaceHolder psph, BulkIterationNode iterationNode) {
 		super(psph);
 		this.iterationNode = iterationNode;
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	public void setCandidateProperties(GlobalProperties gProps, LocalProperties lProps) {
 		if (this.cachedPlans != null) {
 			throw new IllegalStateException();
@@ -44,7 +44,7 @@ public class BulkPartialSolutionNode extends AbstractPartialSolutionNode {
 			this.cachedPlans = Collections.<PlanNode>singletonList(new BulkPartialSolutionPlanNode(this, "BulkPartialSolution("+this.getPactContract().getName()+")", gProps, lProps));
 		}
 	}
-	
+
 	public BulkPartialSolutionPlanNode getCurrentPartialSolutionPlanNode() {
 		if (this.cachedPlans != null) {
 			return (BulkPartialSolutionPlanNode) this.cachedPlans.get(0);
@@ -52,21 +52,21 @@ public class BulkPartialSolutionNode extends AbstractPartialSolutionNode {
 			throw new IllegalStateException();
 		}
 	}
-	
+
 	public BulkIterationNode getIterationNode() {
 		return this.iterationNode;
 	}
-	
+
 	@Override
 	public void computeOutputEstimates(DataStatistics statistics) {
 		copyEstimates(this.iterationNode.getPredecessorNode());
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	/**
 	 * Gets the contract object for this data source node.
-	 * 
+	 *
 	 * @return The contract.
 	 */
 	@Override

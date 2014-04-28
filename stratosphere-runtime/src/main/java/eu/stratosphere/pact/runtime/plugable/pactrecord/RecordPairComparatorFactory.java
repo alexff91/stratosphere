@@ -27,11 +27,11 @@ import eu.stratosphere.types.Record;
 public class RecordPairComparatorFactory implements TypePairComparatorFactory<Record, Record>
 {
 	private static final RecordPairComparatorFactory INSTANCE = new RecordPairComparatorFactory();
-	
+
 	/**
 	 * Gets an instance of the comparator factory. The instance is shared, since the factory is a
-	 * stateless class. 
-	 * 
+	 * stateless class.
+	 *
 	 * @return An instance of the comparator factory.
 	 */
 	public static final RecordPairComparatorFactory get() {
@@ -50,15 +50,15 @@ public class RecordPairComparatorFactory implements TypePairComparatorFactory<Re
 		}
 		final RecordComparator prc1 = (RecordComparator) comparator1;
 		final RecordComparator prc2 = (RecordComparator) comparator2;
-		
+
 		final int[] pos1 = prc1.getKeyPositions();
 		final int[] pos2 = prc2.getKeyPositions();
-		
+
 		final Class<? extends Key>[] types1 = prc1.getKeyTypes();
 		final Class<? extends Key>[] types2 = prc2.getKeyTypes();
-		
+
 		checkComparators(pos1, pos2, types1, types2);
-		
+
 		return new RecordPairComparator(pos1, pos2, types1);
 	}
 
@@ -74,21 +74,21 @@ public class RecordPairComparatorFactory implements TypePairComparatorFactory<Re
 		}
 		final RecordComparator prc1 = (RecordComparator) comparator1;
 		final RecordComparator prc2 = (RecordComparator) comparator2;
-		
+
 		final int[] pos1 = prc1.getKeyPositions();
 		final int[] pos2 = prc2.getKeyPositions();
-		
+
 		final Class<? extends Key>[] types1 = prc1.getKeyTypes();
 		final Class<? extends Key>[] types2 = prc2.getKeyTypes();
-		
+
 		checkComparators(pos1, pos2, types1, types2);
-		
+
 		return new RecordPairComparator(pos2, pos1, types1);
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
-	private static final void checkComparators(int[] pos1, int[] pos2, 
+	private static final void checkComparators(int[] pos1, int[] pos2,
 							Class<? extends Key>[] types1, Class<? extends Key>[] types2)
 	{
 		if (pos1.length != pos2.length || types1.length != types2.length) {

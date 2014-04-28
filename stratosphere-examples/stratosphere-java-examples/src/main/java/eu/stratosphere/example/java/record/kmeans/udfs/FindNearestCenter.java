@@ -15,8 +15,8 @@ package eu.stratosphere.example.java.record.kmeans.udfs;
 import java.io.Serializable;
 import java.util.Iterator;
 
-import eu.stratosphere.api.java.record.functions.ReduceFunction;
 import eu.stratosphere.api.java.record.functions.FunctionAnnotation.ConstantFields;
+import eu.stratosphere.api.java.record.functions.ReduceFunction;
 import eu.stratosphere.api.java.record.operators.ReduceOperator.Combinable;
 import eu.stratosphere.types.DoubleValue;
 import eu.stratosphere.types.IntValue;
@@ -31,17 +31,17 @@ import eu.stratosphere.util.Collector;
 @ConstantFields(1)
 public class FindNearestCenter extends ReduceFunction implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	private final IntValue centerId = new IntValue();
 	private final CoordVector position = new CoordVector();
 	private final IntValue one = new IntValue(1);
-	
+
 	private final Record result = new Record(3);
-	
+
 	/**
 	 * Computes a minimum aggregation on the distance of a data point to
-	 * cluster centers. 
-	 * 
+	 * cluster centers.
+	 *
 	 * Output Format:
 	 * 0: centerID
 	 * 1: pointVector
@@ -55,7 +55,7 @@ public class FindNearestCenter extends ReduceFunction implements Serializable {
 		// check all cluster centers
 		while (pointsWithDistance.hasNext()) {
 			Record res = pointsWithDistance.next();
-			
+
 			double distance = res.getField(3, DoubleValue.class).getValue();
 
 			// compare distances
@@ -73,14 +73,14 @@ public class FindNearestCenter extends ReduceFunction implements Serializable {
 		this.result.setField(0, this.centerId);
 		this.result.setField(1, this.position);
 		this.result.setField(2, this.one);
-			
+
 		out.collect(this.result);
 	}
 
 	// ----------------------------------------------------------------------------------------
-	
+
 	private final Record nearest = new Record();
-	
+
 	/**
 	 * Computes a minimum aggregation on the distance of a data point to
 	 * cluster centers.

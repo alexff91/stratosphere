@@ -32,10 +32,10 @@ import eu.stratosphere.configuration.Configuration;
  * The Optimizer representation of a <i>Cross</i> (Cartesian product) operator.
  */
 public class CrossNode extends TwoInputNode {
-	
+
 	/**
 	 * Creates a new CrossNode for the given operator.
-	 * 
+	 *
 	 * @param pactContract The Cross contract object.
 	 */
 	public CrossNode(CrossOperatorBase<?> pactContract) {
@@ -53,26 +53,26 @@ public class CrossNode extends TwoInputNode {
 	public String getName() {
 		return "Cross";
 	}
-	
+
 	@Override
 	protected List<OperatorDescriptorDual> getPossibleProperties() {
-		
+
 		CrossOperatorBase<?> operation = getPactContract();
-		
+
 		// check small / large hints to decide upon which side is to be broadcasted
 		boolean allowBCfirst = true;
 		boolean allowBCsecond = true;
-		
+
 		if (operation instanceof CrossOperatorBase.CrossWithSmall) {
 			allowBCfirst = false;
 		}
 		else if (operation instanceof CrossOperatorBase.CrossWithLarge) {
 			allowBCsecond = false;
 		}
-		
+
 		Configuration conf = operation.getParameters();
 		String localStrategy = conf.getString(PactCompiler.HINT_LOCAL_STRATEGY, null);
-	
+
 		if (localStrategy != null) {
 			final OperatorDescriptorDual fixedDriverStrat;
 			if (PactCompiler.HINT_LOCAL_STRATEGY_NESTEDLOOP_BLOCKED_OUTER_FIRST.equals(localStrategy)) {
@@ -86,7 +86,7 @@ public class CrossNode extends TwoInputNode {
 			} else {
 				throw new CompilerException("Invalid local strategy hint for cross contract: " + localStrategy);
 			}
-			
+
 			return Collections.singletonList(fixedDriverStrat);
 		}
 		else if (operation instanceof CrossOperatorBase.CrossWithSmall) {
@@ -114,7 +114,7 @@ public class CrossNode extends TwoInputNode {
 	/**
 	 * We assume that the cardinality is the product of  the input cardinalities
 	 * and that the result width is the sum of the input widths.
-	 * 
+	 *
 	 * @param statistics The statistics object to optionally access.
 	 */
 	@Override
@@ -122,12 +122,12 @@ public class CrossNode extends TwoInputNode {
 		long card1 = getFirstPredecessorNode().getEstimatedNumRecords();
 		long card2 = getSecondPredecessorNode().getEstimatedNumRecords();
 		this.estimatedNumRecords = (card1 < 0 || card2 < 0) ? -1 : card1 * card2;
-		
+
 		if (this.estimatedNumRecords >= 0) {
 			float width1 = getFirstPredecessorNode().getEstimatedAvgWidthPerOutputRecord();
 			float width2 = getSecondPredecessorNode().getEstimatedAvgWidthPerOutputRecord();
 			float width = (width1 <= 0 || width2 <= 0) ? -1 : width1 + width2;
-			
+
 			if (width > 0) {
 				this.estimatedOutputSize = (long) (width * this.estimatedNumRecords);
 			}

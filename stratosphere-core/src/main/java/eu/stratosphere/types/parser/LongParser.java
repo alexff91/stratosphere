@@ -18,25 +18,25 @@ package eu.stratosphere.types.parser;
  * Only characters '1' to '0' and '-' are allowed.
  */
 public class LongParser extends FieldParser<Long> {
-	
+
 	private long result;
-	
+
 	@Override
 	public int parseField(byte[] bytes, int startPos, int limit, char delimiter, Long reusable) {
 		long val = 0;
 		boolean neg = false;
-		
+
 		if (bytes[startPos] == '-') {
 			neg = true;
 			startPos++;
-			
+
 			// check for empty field with only the sign
 			if (startPos == limit || bytes[startPos] == delimiter) {
 				setErrorState(ParseErrorState.NUMERIC_VALUE_ORPHAN_SIGN);
 				return -1;
 			}
 		}
-		
+
 		for (int i = startPos; i < limit; i++) {
 			if (bytes[i] == delimiter) {
 				this.result = neg ? -val : val;
@@ -48,15 +48,15 @@ public class LongParser extends FieldParser<Long> {
 			}
 			val *= 10;
 			val += bytes[i] - 48;
-			
+
 			// check for overflow / underflow
 			if (val < 0) {
 				// this is an overflow/underflow, unless we hit exactly the Long.MIN_VALUE
 				if (neg && val == Long.MIN_VALUE) {
 					this.result = Long.MIN_VALUE;
-					
+
 					if (i+1 >= limit) {
-						return limit; 
+						return limit;
 					} else if (bytes[i+1] == delimiter) {
 						return i+2;
 					} else {
@@ -70,29 +70,29 @@ public class LongParser extends FieldParser<Long> {
 				}
 			}
 		}
-		
+
 		this.result = neg ? -val : val;
 		return limit;
 	}
-	
+
 	@Override
 	public Long createValue() {
 		return Long.MIN_VALUE;
 	}
-	
+
 	@Override
 	public Long getLastResult() {
 		return Long.valueOf(this.result);
 	}
-	
-	
+
+
 	public static final long parseField(byte[] bytes, int startPos, int length, char delim) {
 		if (length <= 0) {
 			throw new NumberFormatException("Invalid input: Empty string");
 		}
 		long val = 0;
 		boolean neg = false;
-		
+
 		if (bytes[startPos] == '-') {
 			neg = true;
 			startPos++;
@@ -101,7 +101,7 @@ public class LongParser extends FieldParser<Long> {
 				throw new NumberFormatException("Orphaned minus sign.");
 			}
 		}
-		
+
 		for (; length > 0; startPos++, length--) {
 			if (bytes[startPos] == delim) {
 				return neg ? -val : val;

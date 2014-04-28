@@ -26,14 +26,14 @@ public interface Gate<T extends IOReadableWritable> {
 
 	/**
 	 * Returns the index that has been assigned to the gate upon initialization.
-	 * 
+	 *
 	 * @return the index that has been assigned to the gate upon initialization.
 	 */
 	int getIndex();
 
 	/**
 	 * Subscribes the listener object to receive events of the given type.
-	 * 
+	 *
 	 * @param eventListener
 	 *        the listener object to register
 	 * @param eventType
@@ -43,7 +43,7 @@ public interface Gate<T extends IOReadableWritable> {
 
 	/**
 	 * Removes the subscription for events of the given type for the listener object.
-	 * 
+	 *
 	 * @param eventListener
 	 *        the listener object to cancel the subscription for
 	 * @param eventType
@@ -53,7 +53,7 @@ public interface Gate<T extends IOReadableWritable> {
 
 	/**
 	 * Publishes an event.
-	 * 
+	 *
 	 * @param event
 	 *        the event to be published
 	 * @throws IOException
@@ -65,7 +65,7 @@ public interface Gate<T extends IOReadableWritable> {
 
 	/**
 	 * Passes a received event on to the event notification manager so it cam ne dispatched.
-	 * 
+	 *
 	 * @param event
 	 *        the event to pass on to the notification manager
 	 */
@@ -73,21 +73,21 @@ public interface Gate<T extends IOReadableWritable> {
 
 	/**
 	 * Returns the ID of the job this gate belongs to.
-	 * 
+	 *
 	 * @return the ID of the job this gate belongs to
 	 */
 	JobID getJobID();
 
 	/**
 	 * Returns the type of the input/output channels which are connected to this gate.
-	 * 
+	 *
 	 * @return the type of input/output channels which are connected to this gate
 	 */
 	ChannelType getChannelType();
 
 	/**
 	 * Returns the ID of the gate.
-	 * 
+	 *
 	 * @return the ID of the gate
 	 */
 	GateID getGateID();
@@ -100,7 +100,7 @@ public interface Gate<T extends IOReadableWritable> {
 
 	/**
 	 * Checks if the gate is closed. The gate is closed if all this associated channels are closed.
-	 * 
+	 *
 	 * @return <code>true</code> if the gate is closed, <code>false</code> otherwise
 	 * @throws IOException
 	 *         thrown if any error occurred while closing the gate
@@ -111,14 +111,14 @@ public interface Gate<T extends IOReadableWritable> {
 
 	/**
 	 * Checks if the considered gate is an input gate.
-	 * 
+	 *
 	 * @return <code>true</code> if the considered gate is an input gate, <code>false</code> if it is an output gate
 	 */
 	boolean isInputGate();
 
 	/**
 	 * Sets the type of the input/output channels which are connected to this gate.
-	 * 
+	 *
 	 * @param channelType
 	 *        the type of input/output channels which are connected to this gate
 	 */

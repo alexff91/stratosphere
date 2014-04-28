@@ -24,12 +24,12 @@ import eu.stratosphere.core.memory.MemorySegment;
 /**
  * Boxed serializable and comparable character type, representing the primitive
  * type {@code char}.
- * 
+ *
  * @see eu.stratosphere.types.Key
  */
 public class CharValue implements Key, NormalizableKey, ResettableValue<CharValue>, CopyableValue<CharValue> {
 	private static final long serialVersionUID = 1L;
-	
+
 	private char value;
 
 	/**
@@ -41,16 +41,16 @@ public class CharValue implements Key, NormalizableKey, ResettableValue<CharValu
 
 	/**
 	 * Initializes the encapsulated char with the provided value.
-	 * 
+	 *
 	 * @param value Initial value of the encapsulated char.
 	 */
 	public CharValue(char value) {
 		this.value = value;
 	}
-	
+
 	/**
 	 * Returns the value of the encapsulated char.
-	 * 
+	 *
 	 * @return the value of the encapsulated char.
 	 */
 	public char getValue() {
@@ -59,7 +59,7 @@ public class CharValue implements Key, NormalizableKey, ResettableValue<CharValu
 
 	/**
 	 * Sets the encapsulated char to the specified value.
-	 * 
+	 *
 	 * @param value
 	 *        the new value of the encapsulated char.
 	 */
@@ -67,10 +67,10 @@ public class CharValue implements Key, NormalizableKey, ResettableValue<CharValu
 		this.value = value;
 	}
 
-    @Override
-    public void setValue(CharValue value) {
-        this.value = value.value;
-    }
+@Override
+public void setValue(CharValue value) {
+	this.value = value.value;
+}
 
 	@Override
 	public String toString() {
@@ -78,7 +78,7 @@ public class CharValue implements Key, NormalizableKey, ResettableValue<CharValu
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public void read(DataInput in) throws IOException {
 		this.value = in.readChar();
@@ -90,11 +90,12 @@ public class CharValue implements Key, NormalizableKey, ResettableValue<CharValu
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public int compareTo(final Key o) {
-		if (!(o instanceof CharValue))
-			throw new ClassCastException("Cannot compare " + o.getClass().getName() + " to PactChar!");
+		if (!(o instanceof CharValue)) {
+		throw new ClassCastException("Cannot compare " + o.getClass().getName() + " to PactChar!");
+		}
 
 		final int other = ((CharValue) o).value;
 
@@ -113,7 +114,7 @@ public class CharValue implements Key, NormalizableKey, ResettableValue<CharValu
 		}
 		return false;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	@Override
@@ -146,12 +147,12 @@ public class CharValue implements Key, NormalizableKey, ResettableValue<CharValu
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public int getBinaryLength() {
 		return 2;
 	}
-	
+
 	@Override
 	public void copyTo(CharValue target) {
 		target.value = this.value;

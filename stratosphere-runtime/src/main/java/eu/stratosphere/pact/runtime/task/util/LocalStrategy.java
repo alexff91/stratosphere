@@ -14,7 +14,7 @@
 package eu.stratosphere.pact.runtime.task.util;
 
 /**
- * Enumeration of all available local processing strategies tasks. 
+ * Enumeration of all available local processing strategies tasks.
  */
 public enum LocalStrategy
 {
@@ -24,22 +24,22 @@ public enum LocalStrategy
 	SORT(true, true),
 	// the input is sorted, during sorting a combiner is applied
 	COMBININGSORT(true, true);
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	private final boolean dams;
-	
+
 	private boolean requiresComparator;
 
 	private LocalStrategy(boolean dams, boolean requiresComparator) {
 		this.dams = dams;
 		this.requiresComparator = requiresComparator;
 	}
-	
+
 	public boolean dams() {
 		return this.dams;
 	}
-	
+
 	public boolean requiresComparator() {
 		return this.requiresComparator;
 	}

@@ -14,17 +14,16 @@
  **********************************************************************************************************************/
 package eu.stratosphere.example.java.wordcount;
 
+import static eu.stratosphere.api.java.aggregation.Aggregations.SUM;
 import eu.stratosphere.api.java.DataSet;
 import eu.stratosphere.api.java.ExecutionEnvironment;
 import eu.stratosphere.api.java.functions.FlatMapFunction;
-import eu.stratosphere.api.java.tuple.*;
+import eu.stratosphere.api.java.tuple.Tuple2;
 import eu.stratosphere.util.Collector;
-
-import static eu.stratosphere.api.java.aggregation.Aggregations.*;
 
 @SuppressWarnings("serial")
 public class WordCountCollection {
-	
+
 	public static final class Tokenizer extends FlatMapFunction<String, Tuple2<String, Integer>> {
 
 		@Override
@@ -35,15 +34,15 @@ public class WordCountCollection {
 			}
 		}
 	}
-	
+
 	public static void main(String[] args) throws Exception {
-		
+
 		final ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
-		
+
 		DataSet<String> text = env.fromElements("To be", "or not to be", "or to be still", "and certainly not to be not at all", "is that the question?");
-		
+
 		DataSet<Tuple2<String, Integer>> result = text.flatMap(new Tokenizer()).groupBy(0).aggregate(SUM, 1);
-				
+
 		result.print();
 		env.execute();
 	}

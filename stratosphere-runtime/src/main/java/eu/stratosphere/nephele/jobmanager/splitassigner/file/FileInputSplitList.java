@@ -35,7 +35,7 @@ import eu.stratosphere.nephele.instance.AbstractInstance;
  * possible.
  * <p>
  * This class is not thread-safe.
- * 
+ *
  */
 public final class FileInputSplitList {
 
@@ -57,7 +57,7 @@ public final class FileInputSplitList {
 	/**
 	 * This is an auxiliary class to store the minimum distance between a file input split's storage locations and an
 	 * {@link AbstractInstance}.
-	 * 
+	 *
 	 */
 	private final class QueueElem implements Comparable<QueueElem> {
 
@@ -74,7 +74,7 @@ public final class FileInputSplitList {
 
 		/**
 		 * Creates a new queue element.
-		 * 
+		 *
 		 * @param inputSplit
 		 *        the file input split to be stored
 		 * @param distance
@@ -88,7 +88,7 @@ public final class FileInputSplitList {
 
 		/**
 		 * Returns the file input split stored within this object.
-		 * 
+		 *
 		 * @return the file input split
 		 */
 		private FileInputSplit getInputSplit() {
@@ -108,7 +108,7 @@ public final class FileInputSplitList {
 
 	/**
 	 * Adds the given file input split to the set of file input splits to be consumed.
-	 * 
+	 *
 	 * @param fileInputSplit
 	 *        the file input split to be added
 	 */
@@ -121,7 +121,7 @@ public final class FileInputSplitList {
 	 * Returns the next file input split to be consumed by the given instance. The returned input split is selected in a
 	 * way that the distance between the split's storage location and the requesting {@link AbstractInstance} is as
 	 * short as possible.
-	 * 
+	 *
 	 * @param instance
 	 *        the instance requesting the next file input split
 	 * @return the next input split to be consumed by the given instance or <code>null</code> if all input splits have
@@ -159,7 +159,7 @@ public final class FileInputSplitList {
 	 * Returns a list of file input splits specifically ordered for the given {@link AbstractInstance}. When the list is
 	 * initially created, it contains all the unconsumed file input splits at that point in time, ascendingly ordered by
 	 * the minimum distance between the input splits' storage locations and the given {@link AbstractInstance}.
-	 * 
+	 *
 	 * @param instance
 	 *        the instance for which the file input split list has been computed
 	 * @return the list of file input splits ordered specifically for the given instance

@@ -13,19 +13,19 @@
 
 package eu.stratosphere.pact.runtime.iterative.concurrent;
 
+import java.util.concurrent.CountDownLatch;
+
 import eu.stratosphere.nephele.event.task.AbstractTaskEvent;
 import eu.stratosphere.nephele.event.task.EventListener;
 import eu.stratosphere.pact.runtime.iterative.event.AllWorkersDoneEvent;
 import eu.stratosphere.pact.runtime.iterative.event.TerminationEvent;
 import eu.stratosphere.types.Value;
 
-import java.util.concurrent.CountDownLatch;
-
 /**
  * A resettable one-shot latch.
  */
 public class SuperstepBarrier implements EventListener {
-	
+
 	private final ClassLoader userCodeClassLoader;
 
 	private boolean terminationSignaled = false;
@@ -34,12 +34,12 @@ public class SuperstepBarrier implements EventListener {
 
 	private String[] aggregatorNames;
 	private Value[] aggregates;
-	
-	
+
+
 	public SuperstepBarrier(ClassLoader userCodeClassLoader) {
 		this.userCodeClassLoader = userCodeClassLoader;
 	}
-	
+
 
 	/** setup the barrier, has to be called at the beginning of each superstep */
 	public void setup() {
@@ -54,7 +54,7 @@ public class SuperstepBarrier implements EventListener {
 	public String[] getAggregatorNames() {
 		return aggregatorNames;
 	}
-	
+
 	public Value[] getAggregates() {
 		return aggregates;
 	}

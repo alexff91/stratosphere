@@ -18,7 +18,7 @@ import eu.stratosphere.nephele.jobgraph.JobID;
 /**
  * This interface must be implemented in order to receive a notification whenever the job has entered a new execution
  * stage.
- * 
+ *
  */
 public interface ExecutionStageListener {
 
@@ -26,7 +26,7 @@ public interface ExecutionStageListener {
 	 * This method is called to indicate that the job with the given {@link JobID} has finished its previous
 	 * {@link ExecutionStage} and has entered the next {@link ExecutionStage}. Note that a notification is not sent when
 	 * the job has entered its initial execution stage.
-	 * 
+	 *
 	 * @param jobID
 	 *        the ID of the job the notification belongs to
 	 * @param executionStage

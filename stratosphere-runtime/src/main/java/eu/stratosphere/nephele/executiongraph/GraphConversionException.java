@@ -16,7 +16,7 @@ package eu.stratosphere.nephele.executiongraph;
 /**
  * A graph conversion exception is thrown if the creation of transformation
  * of an {@link ExecutionGraph} fails.
- * 
+ *
  */
 public class GraphConversionException extends Exception {
 
@@ -27,7 +27,7 @@ public class GraphConversionException extends Exception {
 
 	/**
 	 * Creates a new exception with the given error message.
-	 * 
+	 *
 	 * @param msg
 	 *        the error message to be transported through this exception
 	 */

@@ -13,21 +13,19 @@
 
 package eu.stratosphere.configuration;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
-
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertEquals;
 
 import org.apache.log4j.Level;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import eu.stratosphere.configuration.Configuration;
-import eu.stratosphere.configuration.GlobalConfiguration;
 import eu.stratosphere.core.testutils.CommonTestUtils;
 import eu.stratosphere.util.LogUtils;
 
@@ -40,7 +38,7 @@ public class GlobalConfigurationTest {
 	public static void initLogging() {
 		LogUtils.initializeDefaultConsoleLogger(Level.OFF);
 	}
-	
+
 	@Before
 	public void resetSingleton() throws SecurityException, NoSuchFieldException, IllegalArgumentException,
 			IllegalAccessException {
@@ -49,7 +47,7 @@ public class GlobalConfigurationTest {
 		instance.setAccessible(true);
 		instance.set(null, null);
 	}
-	
+
 	@Test
 	public void testConfigurationMixed() {
 		File tmpDir = getTmpDir();
@@ -60,27 +58,27 @@ public class GlobalConfigurationTest {
 			try {
 				PrintWriter pw1 = new PrintWriter(confFile1);
 				PrintWriter pw2 = new PrintWriter(confFile2);
-				
+
 				pw1.println("mykey1: myvalue1_YAML");
 				pw1.println("mykey2: myvalue2");
-				
+
 				pw2.println("<configuration>");
 				pw2.println("<property><key>mykey1</key><value>myvalue1_XML</value></property>");
 				pw2.println("<property><key>mykey3</key><value>myvalue3</value></property>");
 				pw2.println("</configuration>");
-				
+
 				pw1.close();
 				pw2.close();
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}
-			
+
 			GlobalConfiguration.loadConfiguration(tmpDir.getAbsolutePath());
 			Configuration conf = GlobalConfiguration.getConfiguration();
-			
+
 			// all distinct keys from confFile1 + confFile2 + 'config.dir' key
 			assertEquals(3 + 1, conf.keySet().size());
-			
+
 			// keys 1, 2, 3 should be OK and match the expected values
 			// => configuration keys from YAML should overwrite keys from XML
 			assertEquals("myvalue1_YAML", conf.getString("mykey1", null));
@@ -92,7 +90,7 @@ public class GlobalConfigurationTest {
 			tmpDir.delete();
 		}
 	}
-	
+
 	@Test
 	public void testConfigurationYAML() {
 		File tmpDir = getTmpDir();

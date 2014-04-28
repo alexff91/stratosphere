@@ -37,92 +37,92 @@ import eu.stratosphere.pact.runtime.shipping.ShipStrategyType;
 public class GlobalProperties implements Cloneable
 {
 	private PartitioningProperty partitioning;	// the type partitioning
-	
+
 	private FieldList partitioningFields;		// the fields which are partitioned
-	
+
 	private Ordering ordering;					// order of the partitioned fields, if it is an ordered (range) range partitioning
-	
+
 	private Set<FieldSet> uniqueFieldCombinations;
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Initializes the global properties with no partitioning.
 	 */
 	public GlobalProperties() {
 		this.partitioning = PartitioningProperty.RANDOM;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Sets the partitioning property for the global properties.
-	 * 
+	 *
 	 * @param partitioning The new partitioning to set.
-	 * @param partitionedFields 
+	 * @param partitionedFields
 	 */
 	public void setHashPartitioned(FieldList partitionedFields) {
 		this.partitioning = PartitioningProperty.HASH_PARTITIONED;
 		this.partitioningFields = partitionedFields;
 		this.ordering = null;
 	}
-	
+
 
 	public void setRangePartitioned(Ordering ordering) {
 		this.partitioning = PartitioningProperty.RANGE_PARTITIONED;
 		this.ordering = ordering;
 		this.partitioningFields = ordering.getInvolvedIndexes();
 	}
-	
+
 	public void setAnyPartitioning(FieldList partitionedFields) {
 		this.partitioning = PartitioningProperty.ANY_PARTITIONING;
 		this.partitioningFields = partitionedFields;
 		this.ordering = null;
 	}
-	
+
 	public void setRandomDistribution() {
 		this.partitioning = PartitioningProperty.RANDOM;
 		this.partitioningFields = null;
 		this.ordering = null;
 	}
-	
+
 	public void setFullyReplicated() {
 		this.partitioning = PartitioningProperty.FULL_REPLICATION;
 		this.partitioningFields = null;
 		this.ordering = null;
 	}
-	
+
 	public void addUniqueFieldCombination(FieldSet fields) {
 		if (this.uniqueFieldCombinations == null) {
 			this.uniqueFieldCombinations = new HashSet<FieldSet>();
 		}
 		this.uniqueFieldCombinations.add(fields);
 	}
-	
+
 	public void clearUniqueFieldCombinations() {
 		if (this.uniqueFieldCombinations != null) {
 			this.uniqueFieldCombinations = null;
 		}
 	}
-	
+
 	public Set<FieldSet> getUniqueFieldCombination() {
 		return this.uniqueFieldCombinations;
 	}
-	
+
 	public FieldList getPartitioningFields() {
 		return this.partitioningFields;
 	}
-	
+
 	public Ordering getPartitioningOrdering() {
 		return this.ordering;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public PartitioningProperty getPartitioning() {
 		return this.partitioning;
 	}
-	
+
 	public boolean isPartitionedOnFields(FieldSet fields) {
 		if (this.partitioning.isPartitionedOnKey() && fields.isValidSubset(this.partitioningFields)) {
 			return true;
@@ -137,18 +137,18 @@ public class GlobalProperties implements Cloneable
 			return false;
 		}
 	}
-	
+
 	public boolean matchesOrderedPartitioning(Ordering o) {
 		if (this.partitioning == PartitioningProperty.RANGE_PARTITIONED) {
 			if (this.ordering.getNumberOfFields() > o.getNumberOfFields()) {
 				return false;
 			}
-			
+
 			for (int i = 0; i < this.ordering.getNumberOfFields(); i++) {
 				if (this.ordering.getFieldNumber(i) != o.getFieldNumber(i)) {
 					return false;
 				}
-				
+
 				// if this one request no order, everything is good
 				final Order oo = o.getOrder(i);
 				final Order to = this.ordering.getOrder(i);
@@ -169,7 +169,7 @@ public class GlobalProperties implements Cloneable
 			return false;
 		}
 	}
-	
+
 	public boolean isFullyReplicated() {
 		return this.partitioning == PartitioningProperty.FULL_REPLICATION;
 	}
@@ -192,7 +192,7 @@ public class GlobalProperties implements Cloneable
 
 	/**
 	 * Filters these properties by what can be preserved through the given output contract.
-	 * 
+	 *
 	 * @param contract
 	 *        The output contract.
 	 * @return True, if any non-default value is preserved, false otherwise.
@@ -216,7 +216,7 @@ public class GlobalProperties implements Cloneable
 		if (this.uniqueFieldCombinations != null) {
 			HashSet<FieldSet> newSet = new HashSet<FieldSet>();
 			newSet.addAll(this.uniqueFieldCombinations);
-			
+
 			for (Iterator<FieldSet> combos = newSet.iterator(); combos.hasNext(); ){
 				FieldSet current = combos.next();
 				for (Integer field : current) {
@@ -226,21 +226,21 @@ public class GlobalProperties implements Cloneable
 					}
 				}
 			}
-			
+
 			if (newSet.size() != this.uniqueFieldCombinations.size()) {
 				GlobalProperties gp = clone();
 				gp.uniqueFieldCombinations = newSet.isEmpty() ? null : newSet;
 				return gp;
 			}
 		}
-		
+
 		if (this.partitioning == PartitioningProperty.FULL_REPLICATION) {
 			return new GlobalProperties();
 		}
-		
+
 		return this;
 	}
-	
+
 	public void parameterizeChannel(Channel channel, boolean globalDopChange) {
 		switch (this.partitioning) {
 			case RANDOM:
@@ -279,9 +279,9 @@ public class GlobalProperties implements Cloneable
 			final GlobalProperties other = (GlobalProperties) obj;
 			return (this.partitioning == other.partitioning)
 				&& (this.ordering == other.ordering || (this.ordering != null && this.ordering.equals(other.ordering)))
-				&& (this.partitioningFields == other.partitioningFields || 
+				&& (this.partitioningFields == other.partitioningFields ||
 							(this.partitioningFields != null && this.partitioningFields.equals(other.partitioningFields)))
-				&& (this.uniqueFieldCombinations == other.uniqueFieldCombinations || 
+				&& (this.uniqueFieldCombinations == other.uniqueFieldCombinations ||
 							(this.uniqueFieldCombinations != null && this.uniqueFieldCombinations.equals(other.uniqueFieldCombinations)));
 		} else {
 			return false;
@@ -291,10 +291,10 @@ public class GlobalProperties implements Cloneable
 	@Override
 	public String toString() {
 		final StringBuilder bld = new StringBuilder(
-			"GlobalProperties [partitioning=" + partitioning + 
-			(this.partitioningFields == null ? "" : ", on fields " + this.partitioningFields) + 
+			"GlobalProperties [partitioning=" + partitioning +
+			(this.partitioningFields == null ? "" : ", on fields " + this.partitioningFields) +
 			(this.ordering == null ? "" : ", with ordering " + this.ordering));
-		
+
 		if (this.uniqueFieldCombinations == null) {
 			bld.append(']');
 		} else {
@@ -314,9 +314,9 @@ public class GlobalProperties implements Cloneable
 		newProps.uniqueFieldCombinations = this.uniqueFieldCombinations == null ? null : new HashSet<FieldSet>(this.uniqueFieldCombinations);
 		return newProps;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public static final GlobalProperties combine(GlobalProperties gp1, GlobalProperties gp2) {
 		if (gp1.isFullyReplicated()) {
 			if (gp2.isFullyReplicated()) {
@@ -327,7 +327,7 @@ public class GlobalProperties implements Cloneable
 		} else if (gp2.isFullyReplicated()) {
 			return gp1;
 		} else if (gp1.ordering != null) {
-			return gp1; 
+			return gp1;
 		} else if (gp2.ordering != null) {
 			return gp2;
 		} else if (gp1.partitioningFields != null) {

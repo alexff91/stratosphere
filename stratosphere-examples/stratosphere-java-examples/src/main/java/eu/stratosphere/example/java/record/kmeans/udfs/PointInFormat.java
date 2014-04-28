@@ -23,7 +23,7 @@ import eu.stratosphere.types.Record;
  * Generates records with an id and a and CoordVector.
  * The input format is line-based, i.e. one record is read from one line
  * which is terminated by '\n'. Within a line the first '|' character separates
- * the id from the the CoordVector. The vector consists of a vector of decimals. 
+ * the id from the the CoordVector. The vector consists of a vector of decimals.
  * The decimals are separated by '|' as well. The id is the id of a data point or
  * cluster center and the CoordVector the corresponding position (coordinate
  * vector) of the data point or cluster center. Example line:
@@ -31,24 +31,24 @@ import eu.stratosphere.types.Record;
  */
 public class PointInFormat extends DelimitedInputFormat {
 	private static final long serialVersionUID = 1L;
-	
+
 	private final IntValue idInteger = new IntValue();
 	private final CoordVector point = new CoordVector();
-	
+
 	private final List<Double> dimensionValues = new ArrayList<Double>();
 	private double[] pointValues = new double[0];
-	
+
 	@Override
 	public Record readRecord(Record record, byte[] line, int offset, int numBytes) {
-		
+
 		final int limit = offset + numBytes;
-		
+
 		int id = -1;
 		int value = 0;
 		int fractionValue = 0;
 		int fractionChars = 0;
 		boolean negative = false;
-		
+
 		this.dimensionValues.clear();
 
 		for (int pos = offset; pos < limit; pos++) {
@@ -85,7 +85,7 @@ public class PointInFormat extends DelimitedInputFormat {
 		// set the ID
 		this.idInteger.setValue(id);
 		record.setField(0, this.idInteger);
-		
+
 		// set the data points
 		if (this.pointValues.length != this.dimensionValues.size()) {
 			this.pointValues = new double[this.dimensionValues.size()];
@@ -93,7 +93,7 @@ public class PointInFormat extends DelimitedInputFormat {
 		for (int i = 0; i < this.pointValues.length; i++) {
 			this.pointValues[i] = this.dimensionValues.get(i);
 		}
-		
+
 		this.point.setCoordinates(this.pointValues);
 		record.setField(1, this.point);
 		return record;

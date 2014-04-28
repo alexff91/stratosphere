@@ -26,7 +26,7 @@ import eu.stratosphere.nephele.jobgraph.JobID;
  * components.
  * <p>
  * This class is not thread-safe.
- * 
+ *
  */
 public abstract class ProfilingEvent extends AbstractEvent implements ManagementEvent {
 
@@ -42,7 +42,7 @@ public abstract class ProfilingEvent extends AbstractEvent implements Management
 
 	/**
 	 * Constructs a new profiling event.
-	 * 
+	 *
 	 * @param jobID
 	 *        the ID of the job this profiling events belongs to
 	 * @param timestamp
@@ -66,7 +66,7 @@ public abstract class ProfilingEvent extends AbstractEvent implements Management
 
 	/**
 	 * Returns the ID of the job this profiling information belongs to.
-	 * 
+	 *
 	 * @return the ID of the job this profiling information belongs to
 	 */
 	public JobID getJobID() {
@@ -77,7 +77,7 @@ public abstract class ProfilingEvent extends AbstractEvent implements Management
 	 * Returns the timestamp of this profiling information. The timestamp denotes
 	 * the time period in milliseconds between the creation of this profiling information
 	 * and the start of the corresponding vertex's execution.
-	 * 
+	 *
 	 * @return the timestamp of this profiling information.
 	 */
 	public long getProfilingTimestamp() {

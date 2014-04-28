@@ -30,41 +30,41 @@ import eu.stratosphere.util.Visitor;
  * Plan candidate node for partial solution of a bulk iteration.
  */
 public class SolutionSetPlanNode extends PlanNode {
-	
+
 	private static final Costs NO_COSTS = new Costs();
-	
+
 	private WorksetIterationPlanNode containingIterationNode;
-	
+
 	public Object postPassHelper;
-	
-	
+
+
 	public SolutionSetPlanNode(SolutionSetNode template, String nodeName, GlobalProperties gProps, LocalProperties lProps) {
 		super(template, nodeName, DriverStrategy.NONE);
-		
+
 		this.globalProps = gProps;
 		this.localProps = lProps;
-		
+
 		// the node incurs no cost
 		this.nodeCosts = NO_COSTS;
 		this.cumulativeCosts = NO_COSTS;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public SolutionSetNode getSolutionSetNode() {
 		return (SolutionSetNode) this.template;
 	}
-	
+
 	public WorksetIterationPlanNode getContainingIterationNode() {
 		return this.containingIterationNode;
 	}
-	
+
 	public void setContainingIterationNode(WorksetIterationPlanNode containingIterationNode) {
 		this.containingIterationNode = containingIterationNode;
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 
 	@Override
 	public void accept(Visitor<PlanNode> visitor) {

@@ -23,16 +23,16 @@ import eu.stratosphere.util.Collector;
  * By definition, the mapper is called for each individual input record.
  */
 public abstract class MapFunction extends AbstractFunction implements GenericCollectorMap<Record, Record> {
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	/**
 	 * This method must be implemented to provide a user implementation of a mapper.
 	 * It is called for each individual record.
-	 * 
+	 *
 	 * @param record The record to be mapped.
 	 * @param out A collector that collects all output records.
-	 * 
+	 *
 	 * @throws Exception Implementations may forward exceptions, which are caught by the runtime. When the
 	 *                   runtime catches an exception, it aborts the map task and lets the fail-over logic
 	 *                   decide whether to retry the mapper execution.

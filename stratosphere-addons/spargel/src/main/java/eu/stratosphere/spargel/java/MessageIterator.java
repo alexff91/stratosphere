@@ -24,17 +24,17 @@ public final class MessageIterator<Message> implements Iterator<Message>, Iterab
 	private static final long serialVersionUID = 1L;
 
 	private transient Iterator<Tuple2<?, Message>> source;
-	
-	
+
+
 	final void setSource(Iterator<Tuple2<?, Message>> source) {
 		this.source = source;
 	}
-	
+
 	@Override
 	public final boolean hasNext() {
 		return this.source.hasNext();
 	}
-	
+
 	@Override
 	public final Message next() {
 		return this.source.next().f1;

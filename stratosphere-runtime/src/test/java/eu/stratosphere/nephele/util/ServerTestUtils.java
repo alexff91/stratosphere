@@ -65,7 +65,7 @@ public final class ServerTestUtils {
 	 * Creates a file with a random name in the given sub directory within the directory for temporary files. The
 	 * directory for temporary files is read from the configuration. The file contains a sequence of integer numbers
 	 * from 0 to <code>limit</code>. The individual numbers are separated by a newline.
-	 * 
+	 *
 	 * @param subDirectory
 	 *        name of the sub directory to create the input file in
 	 * @param limit
@@ -102,7 +102,7 @@ public final class ServerTestUtils {
 	 * Creates a file with a random name in the directory for temporary files. The directory for temporary files is read
 	 * from the configuration. The file contains a sequence of integer numbers from 0 to <code>limit</code>. The
 	 * individual numbers are separated by a newline.
-	 * 
+	 *
 	 * @param limit
 	 *        the upper bound for the sequence of integer numbers to generate
 	 * @return a {@link File} object referring to the created file
@@ -116,7 +116,7 @@ public final class ServerTestUtils {
 	/**
 	 * Constructs a random filename. The filename is a string of 16 hex characters followed by a <code>.dat</code>
 	 * prefix.
-	 * 
+	 *
 	 * @return the random filename
 	 */
 	public static String getRandomFilename() {
@@ -133,7 +133,7 @@ public final class ServerTestUtils {
 
 	/**
 	 * Returns the path to the directory for temporary files.
-	 * 
+	 *
 	 * @return the path to the directory for temporary files
 	 */
 	public static String getTempDir() {
@@ -143,7 +143,7 @@ public final class ServerTestUtils {
 
 	/**
 	 * Creates a jar file from the class with the given class name and stores it in the directory for temporary files.
-	 * 
+	 *
 	 * @param className
 	 *        the name of the class to create a jar file from
 	 * @return a {@link File} object referring to the jar file
@@ -184,7 +184,7 @@ public final class ServerTestUtils {
 
 	/**
 	 * Returns the directory containing the configuration files that shall be used for the test.
-	 * 
+	 *
 	 * @return the directory containing the configuration files or <code>null</code> if the configuration directory
 	 *         could not be located
 	 */
@@ -206,7 +206,7 @@ public final class ServerTestUtils {
 
 	/**
 	 * Waits until the job manager for the tests has become ready to accept jobs.
-	 * 
+	 *
 	 * @param jobManager
 	 *        the instance of the job manager to wait for
 	 * @throws IOException
@@ -229,7 +229,7 @@ public final class ServerTestUtils {
 	/**
 	 * Creates a copy of the given {@link IOReadableWritable} object by an in-memory serialization and subsequent
 	 * deserialization.
-	 * 
+	 *
 	 * @param original
 	 *        the original object to be copied
 	 * @return the copy of original object created by the original object's serialization/deserialization methods

@@ -17,24 +17,24 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 
-import eu.stratosphere.hadoopcompatibility.HadoopDataSink;
-
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapred.*;
+import org.apache.hadoop.mapred.JobConf;
+import org.apache.hadoop.mapred.TextInputFormat;
+import org.apache.hadoop.mapred.TextOutputFormat;
 
 import eu.stratosphere.api.common.Plan;
 import eu.stratosphere.api.common.Program;
 import eu.stratosphere.api.common.ProgramDescription;
-
+import eu.stratosphere.api.java.record.functions.FunctionAnnotation.ConstantFields;
 import eu.stratosphere.api.java.record.functions.MapFunction;
 import eu.stratosphere.api.java.record.functions.ReduceFunction;
-import eu.stratosphere.api.java.record.functions.FunctionAnnotation.ConstantFields;
 import eu.stratosphere.api.java.record.operators.MapOperator;
 import eu.stratosphere.api.java.record.operators.ReduceOperator;
 import eu.stratosphere.api.java.record.operators.ReduceOperator.Combinable;
 import eu.stratosphere.client.LocalExecutor;
+import eu.stratosphere.hadoopcompatibility.HadoopDataSink;
 import eu.stratosphere.hadoopcompatibility.HadoopDataSource;
 import eu.stratosphere.types.IntValue;
 import eu.stratosphere.types.Record;
@@ -67,7 +67,7 @@ public class WordCountWithHadoopOutputFormat implements Program, ProgramDescript
 			while (tokenizer.hasMoreTokens()) {
 				String word = tokenizer.nextToken();
 
-				// we emit a (word, 1) pair 
+				// we emit a (word, 1) pair
 				collector.collect(new Record(new StringValue(word), new IntValue(1)));
 			}
 		}

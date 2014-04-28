@@ -21,7 +21,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * This factory constructs {@link InstanceType} objects.
- * 
+ *
  */
 public class InstanceTypeFactory {
 
@@ -43,7 +43,7 @@ public class InstanceTypeFactory {
 
 	/**
 	 * Constructs an {@link InstanceType} object by parsing a hardware description string.
-	 * 
+	 *
 	 * @param description
 	 *        the hardware description reflected by this instance type
 	 * @return an instance type reflecting the given hardware description or <code>null</code> if the description cannot
@@ -69,7 +69,7 @@ public class InstanceTypeFactory {
 
 	/**
 	 * Constructs an {@link InstanceType} from the given parameters.
-	 * 
+	 *
 	 * @param identifier
 	 *        identifier for this instance type
 	 * @param numberOfComputeUnits

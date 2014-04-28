@@ -18,7 +18,7 @@ import eu.stratosphere.nephele.jobgraph.JobID;
 
 /**
  * This class contains utility methods used during the tests of the {@link ClusterManager} implementation.
- * 
+ *
  */
 public class ClusterManagerTestUtils {
 
@@ -36,7 +36,7 @@ public class ClusterManagerTestUtils {
 	/**
 	 * Waits until a specific number of instances have registered or deregistrations with the given
 	 * {@link InstanceListener} object for a given job or the maximum wait time has elapsed.
-	 * 
+	 *
 	 * @param jobID
 	 *        the ID of the job to check the instance registration for
 	 * @param instanceListener

@@ -20,13 +20,13 @@ import eu.stratosphere.nephele.jobgraph.JobID;
 /**
  * Classes implementing the {@link InstanceListener} interface can be notified about
  * the availability or the unexpected failure of an instance.
- * 
+ *
  */
 public interface InstanceListener {
 
 	/**
 	 * Called if one or more requested resources have become available.
-	 * 
+	 *
 	 * @param jobID
 	 *        the ID of the job the initial request has been triggered for
 	 * @param allocatedResources
@@ -36,7 +36,7 @@ public interface InstanceListener {
 
 	/**
 	 * Called if one or more allocated resources assigned to at least one job have died unexpectedly.
-	 * 
+	 *
 	 * @param jobID
 	 *        the ID of the job the instance is used for
 	 * @param allocatedResource

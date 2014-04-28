@@ -21,14 +21,14 @@ import eu.stratosphere.nephele.template.AbstractTask;
 
 /**
  * This class represents the cross task in the self cross unit test.
- * 
+ *
  */
 public class SelfCrossForwardTask extends AbstractTask {
 
 
 	@Override
 	public void registerInputOutput() {
-		
+
 		new RecordReader<StringRecord>(this, StringRecord.class);
 		new RecordReader<StringRecord>(this, StringRecord.class);
 		new RecordWriter<StringRecord>(this, StringRecord.class);
@@ -37,7 +37,7 @@ public class SelfCrossForwardTask extends AbstractTask {
 
 	@Override
 	public void invoke() throws Exception {
-		
+
 		//Nothing to do here
 	}
 }

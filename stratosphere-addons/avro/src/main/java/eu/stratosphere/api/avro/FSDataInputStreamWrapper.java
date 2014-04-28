@@ -23,7 +23,7 @@ import eu.stratosphere.core.fs.FSDataInputStream;
 
 /**
  * Code copy pasted from org.apache.avro.mapred.FSInput (which is Apache licensed as well)
- * 
+ *
  * The wrapper keeps track of the position in the data stream.
  */
 public class FSDataInputStreamWrapper implements Closeable, SeekableInput {

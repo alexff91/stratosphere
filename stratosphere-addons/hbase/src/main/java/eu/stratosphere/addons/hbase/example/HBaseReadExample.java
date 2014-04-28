@@ -15,53 +15,49 @@
 
 package eu.stratosphere.addons.hbase.example;
 
-import org.apache.hadoop.hbase.client.HTable;
-import org.apache.hadoop.hbase.client.Result;
-import org.apache.hadoop.hbase.client.Scan;
-
 import eu.stratosphere.addons.hbase.TableInputFormat;
 import eu.stratosphere.addons.hbase.common.HBaseKey;
 import eu.stratosphere.addons.hbase.common.HBaseResult;
-import eu.stratosphere.configuration.Configuration;
-import eu.stratosphere.types.Record;
-import eu.stratosphere.types.StringValue;
 import eu.stratosphere.api.common.Plan;
 import eu.stratosphere.api.common.Program;
 import eu.stratosphere.api.common.ProgramDescription;
 import eu.stratosphere.api.common.operators.FileDataSink;
 import eu.stratosphere.api.common.operators.GenericDataSource;
 import eu.stratosphere.api.java.record.io.CsvOutputFormat;
+import eu.stratosphere.configuration.Configuration;
+import eu.stratosphere.types.Record;
+import eu.stratosphere.types.StringValue;
 
 /**
  * Implements a word count which takes the input file and counts the number of
  * the occurrences of each word in the file.
  */
 public class HBaseReadExample implements Program, ProgramDescription {
-	
+
 	public static class MyTableInputFormat extends  TableInputFormat {
-		
+
 		private static final long serialVersionUID = 1L;
 
 		private final byte[] META_FAMILY = "meta".getBytes();
-		
+
 		private final byte[] USER_COLUMN = "user".getBytes();
-		
+
 		private final byte[] TIMESTAMP_COLUMN = "timestamp".getBytes();
-		
+
 		private final byte[] TEXT_FAMILY = "text".getBytes();
-		
+
 		private final byte[] TWEET_COLUMN = "tweet".getBytes();
-		
+
 		public MyTableInputFormat() {
 			super();
-			
+
 		}
-		
+
 		@Override
 		protected HTable createTable(Configuration parameters) {
 			return super.createTable(parameters);
 		}
-		
+
 		@Override
 		protected Scan createScanner(Configuration parameters) {
 			Scan scan = new Scan ();
@@ -70,12 +66,12 @@ public class HBaseReadExample implements Program, ProgramDescription {
 			scan.addColumn (TEXT_FAMILY, TWEET_COLUMN);
 			return scan;
 		}
-		
+
 		StringValue row_string = new StringValue();
 		StringValue user_string = new StringValue();
 		StringValue timestamp_string = new StringValue();
 		StringValue tweet_string = new StringValue();
-		
+
 		@Override
 		public void mapResultToRecord(Record record, HBaseKey key,
 				HBaseResult result) {
@@ -86,14 +82,14 @@ public class HBaseReadExample implements Program, ProgramDescription {
 			record.setField(2, toString (timestamp_string, res.getValue(META_FAMILY, TIMESTAMP_COLUMN)));
 			record.setField(3, toString (tweet_string, res.getValue(TEXT_FAMILY, TWEET_COLUMN)));
 		}
-		
+
 		private final StringValue toString (StringValue string, byte[] bytes) {
 			string.setValueAscii(bytes, 0, bytes.length);
 			return string;
 		}
-		
+
 	}
-	
+
 
 	@Override
 	public Plan getPlan(String... args) {
@@ -112,7 +108,7 @@ public class HBaseReadExample implements Program, ProgramDescription {
 			.field(StringValue.class, 1)
 			.field(StringValue.class, 2)
 			.field(StringValue.class, 3);
-		
+
 		Plan plan = new Plan(out, "HBase access Example");
 		plan.setDefaultParallelism(numSubTasks);
 		return plan;

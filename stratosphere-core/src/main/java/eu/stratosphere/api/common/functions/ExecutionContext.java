@@ -20,25 +20,25 @@ package eu.stratosphere.api.common.functions;
  * parallel stub instances, the stub's parallel task index, the pact name, or the iteration context.
  */
 public interface ExecutionContext {
-	
+
 	/**
 	 * Gets the name of the task. This is the name supplied to the contract upon instantiation. If
 	 * no name was given at contract instantiation time, a default name will be returned.
-	 * 
+	 *
 	 * @return The task's name.
 	 */
 	String getTaskName();
-	
+
 	/**
 	 * Gets the number of parallel subtasks in which the stub is executed.
-	 * 
+	 *
 	 * @return The number of parallel subtasks in which the stub is executed.
 	 */
 	int getNumberOfSubtasks();
-	
+
 	/**
 	 * Gets the subtask's parallel task number.
-	 * 
+	 *
 	 * @return The subtask's parallel task number.
 	 */
 	int getSubtaskIndex();

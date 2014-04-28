@@ -24,12 +24,12 @@ import eu.stratosphere.core.memory.MemorySegment;
 /**
  * Boxed serializable and comparable short integer type, representing the primitive
  * type {@code short}.
- * 
+ *
  * @see eu.stratosphere.types.Key
  */
 public class ShortValue implements Key, NormalizableKey, ResettableValue<ShortValue>, CopyableValue<ShortValue> {
 	private static final long serialVersionUID = 1L;
-	
+
 	private short value;
 
 	/**
@@ -41,16 +41,16 @@ public class ShortValue implements Key, NormalizableKey, ResettableValue<ShortVa
 
 	/**
 	 * Initializes the encapsulated short with the provided value.
-	 * 
+	 *
 	 * @param value Initial value of the encapsulated short.
 	 */
 	public ShortValue(short value) {
 		this.value = value;
 	}
-	
+
 	/**
 	 * Returns the value of the encapsulated short.
-	 * 
+	 *
 	 * @return the value of the encapsulated short.
 	 */
 	public short getValue() {
@@ -59,7 +59,7 @@ public class ShortValue implements Key, NormalizableKey, ResettableValue<ShortVa
 
 	/**
 	 * Sets the encapsulated short to the specified value.
-	 * 
+	 *
 	 * @param value
 	 *        the new value of the encapsulated short.
 	 */
@@ -67,10 +67,10 @@ public class ShortValue implements Key, NormalizableKey, ResettableValue<ShortVa
 		this.value = value;
 	}
 
-    @Override
-    public void setValue(ShortValue value) {
-        this.value = value.value;
-    }
+@Override
+public void setValue(ShortValue value) {
+	this.value = value.value;
+}
 
 	@Override
 	public String toString() {
@@ -78,7 +78,7 @@ public class ShortValue implements Key, NormalizableKey, ResettableValue<ShortVa
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public void read(DataInput in) throws IOException {
 		this.value = in.readShort();
@@ -90,11 +90,12 @@ public class ShortValue implements Key, NormalizableKey, ResettableValue<ShortVa
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public int compareTo(final Key o) {
-		if (!(o instanceof ShortValue))
-			throw new ClassCastException("Cannot compare " + o.getClass().getName() + " to ShortValue!");
+		if (!(o instanceof ShortValue)) {
+		throw new ClassCastException("Cannot compare " + o.getClass().getName() + " to ShortValue!");
+		}
 
 		final int other = ((ShortValue) o).value;
 
@@ -113,7 +114,7 @@ public class ShortValue implements Key, NormalizableKey, ResettableValue<ShortVa
 		}
 		return false;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	@Override
@@ -149,12 +150,12 @@ public class ShortValue implements Key, NormalizableKey, ResettableValue<ShortVa
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public int getBinaryLength() {
 		return 2;
 	}
-	
+
 	@Override
 	public void copyTo(ShortValue target) {
 		target.value = this.value;

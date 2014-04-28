@@ -19,7 +19,7 @@ import eu.stratosphere.nephele.template.AbstractFileInputTask;
 
 /**
  * This class represents the data source in the self cross unit test.
- * 
+ *
  */
 public class SelfCrossInputTask extends AbstractFileInputTask {
 

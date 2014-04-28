@@ -20,10 +20,10 @@ package eu.stratosphere.types;
 public class NullKeyFieldException extends RuntimeException
 {
 	/**
-	 * UID for serialization interoperability. 
+	 * UID for serialization interoperability.
 	 */
 	private static final long serialVersionUID = -3254501285363420762L;
-	
+
 	private final int fieldNumber;
 
 	/**
@@ -44,7 +44,7 @@ public class NullKeyFieldException extends RuntimeException
 		super(message);
 		this.fieldNumber = -1;
 	}
-	
+
 	/**
      * Constructs an {@code NullKeyFieldException} with a default message, referring to
      * given field number as the null key field.
@@ -55,11 +55,11 @@ public class NullKeyFieldException extends RuntimeException
 		super("Field " + fieldNumber + " is null, but expected to hold a key.");
 		this.fieldNumber = fieldNumber;
 	}
-	
+
 	/**
 	 * Gets the field number that was attempted to access. If the number is not set, this method returns
 	 * {@code -1}.
-	 * 
+	 *
 	 * @return The field number that was attempted to access, or {@code -1}, if not set.
 	 */
 	public int getFieldNumber() {

@@ -25,7 +25,7 @@ import eu.stratosphere.nephele.util.UnmodifiableIterator;
  * be deployed together. An {@link ExecutionVertex} always belongs to exactly one execution pipeline.
  * <p>
  * This class is thread-safe.
- * 
+ *
  */
 public final class ExecutionPipeline {
 
@@ -36,7 +36,7 @@ public final class ExecutionPipeline {
 
 	/**
 	 * Adds the given {@link ExecutionVertex} to this pipeline.
-	 * 
+	 *
 	 * @param vertex
 	 *        the vertex to be added to this pipeline
 	 */
@@ -49,7 +49,7 @@ public final class ExecutionPipeline {
 
 	/**
 	 * Removes the given {@link ExecutionVertex} from this pipeline.
-	 * 
+	 *
 	 * @param vertex
 	 *        the vertex to be removed from this pipeline.
 	 */
@@ -62,7 +62,7 @@ public final class ExecutionPipeline {
 
 	/**
 	 * Returns an {@link Iterator} to the vertices which are part of this pipeline.
-	 * 
+	 *
 	 * @return an iterator to the vertices of this pipeline
 	 */
 	public Iterator<ExecutionVertex> iterator() {
@@ -73,7 +73,7 @@ public final class ExecutionPipeline {
 	/**
 	 * Checks if the pipeline is currently finishing its execution, i.e. all vertices contained in the pipeline have
 	 * switched to the <code>FINISHING</code> or <code>FINISHED</code> state.
-	 * 
+	 *
 	 * @return <code>true</code> if the pipeline is currently finishing, <code>false</code> otherwise
 	 */
 	public boolean isFinishing() {
@@ -92,7 +92,7 @@ public final class ExecutionPipeline {
 
 	/**
 	 * Sets the given allocated resource for all vertices included in this pipeline.
-	 * 
+	 *
 	 * @param resource
 	 *        the allocated resource to set for all vertices included in this pipeline
 	 */
@@ -107,7 +107,7 @@ public final class ExecutionPipeline {
 
 	/**
 	 * Updates the execution state for all vertices included in this pipeline.
-	 * 
+	 *
 	 * @param executionState
 	 *        the execution state to set for all vertices included in this pipeline
 	 */

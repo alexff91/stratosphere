@@ -14,7 +14,7 @@
 /**
  * This file is based on source code from the Hadoop Project (http://hadoop.apache.org/), licensed by the Apache
  * Software Foundation (ASF) under the Apache License, Version 2.0. See the NOTICE file distributed with this work for
- * additional information regarding copyright ownership. 
+ * additional information regarding copyright ownership.
  */
 
 package eu.stratosphere.core.fs;
@@ -38,28 +38,28 @@ import eu.stratosphere.util.StringUtils;
 public abstract class FileSystem {
 
 	private static final String LOCAL_FILESYSTEM_CLASS = "eu.stratosphere.core.fs.local.LocalFileSystem";
-	
+
 	private static final String DISTRIBUTED_FILESYSTEM_CLASS = "eu.stratosphere.runtime.fs.hdfs.DistributedFileSystem";
 
 	private static final String S3_FILESYSTEM_CLASS = "eu.stratosphere.runtime.fs.s3.S3FileSystem";
 
-	
+
 	/** Object used to protect calls to specific methods.*/
 	private static final Object SYNCHRONIZATION_OBJECT = new Object();
 
 	/**
-	 * Enumeration for write modes. 
+	 * Enumeration for write modes.
 	 *
 	 */
 	public static enum WriteMode {
-		
+
 		/** Creates write path if it does not exist. Does not overwrite existing files and directories. */
 		NO_OVERWRITE,
-		
+
 		/** creates write path if it does not exist. Overwrites existing files and directories. */
-		OVERWRITE 
+		OVERWRITE
 	}
-	
+
 	/**
 	 * An auxiliary class to identify a file system by its scheme and its authority.
 	 */
@@ -78,7 +78,7 @@ public abstract class FileSystem {
 		/**
 		 * Creates a file system key from a given scheme and an
 		 * authority.
-		 * 
+		 *
 		 * @param scheme
 		 *        the scheme of the file system
 		 * @param authority
@@ -158,7 +158,7 @@ public abstract class FileSystem {
 	/**
 	 * Returns a reference to the {@link FileSystem} instance for accessing the
 	 * local file system.
-	 * 
+	 *
 	 * @return a reference to the {@link FileSystem} instance for accessing the
 	 *         local file system.
 	 * @throws IOException
@@ -180,7 +180,7 @@ public abstract class FileSystem {
 	/**
 	 * Returns a reference to the {@link FileSystem} instance for accessing the
 	 * file system identified by the given {@link URI}.
-	 * 
+	 *
 	 * @param uri
 	 *        the {@link URI} identifying the file system
 	 * @return a reference to the {@link FileSystem} instance for accessing the file system identified by the given
@@ -245,21 +245,21 @@ public abstract class FileSystem {
 
 	/**
 	 * Returns the path of the file system's current working directory.
-	 * 
+	 *
 	 * @return the path of the file system's current working directory
 	 */
 	public abstract Path getWorkingDirectory();
 
 	/**
 	 * Returns a URI whose scheme and authority identify this file system.
-	 * 
+	 *
 	 * @return a URI whose scheme and authority identify this file system
 	 */
 	public abstract URI getUri();
 
 	/**
 	 * Called after a new FileSystem instance is constructed.
-	 * 
+	 *
 	 * @param name
 	 *        a {@link URI} whose authority section names the host, port, etc. for this file system
 	 */
@@ -267,7 +267,7 @@ public abstract class FileSystem {
 
 	/**
 	 * Return a file status object that represents the path.
-	 * 
+	 *
 	 * @param f
 	 *        The path we want information from
 	 * @return a FileStatus object
@@ -289,7 +289,7 @@ public abstract class FileSystem {
 
 	/**
 	 * Opens an FSDataInputStream at the indicated Path.
-	 * 
+	 *
 	 * @param f
 	 *        the file name to open
 	 * @param bufferSize
@@ -299,7 +299,7 @@ public abstract class FileSystem {
 
 	/**
 	 * Opens an FSDataInputStream at the indicated Path.
-	 * 
+	 *
 	 * @param f
 	 *        the file to open
 	 */
@@ -307,7 +307,7 @@ public abstract class FileSystem {
 
 	/**
 	 * Return the number of bytes that large input files should be optimally be split into to minimize I/O time.
-	 * 
+	 *
 	 * @return the number of bytes that large input files should be optimally be split into to minimize I/O time
 	 */
 	public long getDefaultBlockSize() {
@@ -317,7 +317,7 @@ public abstract class FileSystem {
 	/**
 	 * List the statuses of the files/directories in the given path if the path is
 	 * a directory.
-	 * 
+	 *
 	 * @param f
 	 *        given path
 	 * @return the statuses of the files/directories in the given patch
@@ -327,7 +327,7 @@ public abstract class FileSystem {
 
 	/**
 	 * Check if exists.
-	 * 
+	 *
 	 * @param f
 	 *        source file
 	 */
@@ -342,7 +342,7 @@ public abstract class FileSystem {
 
 	/**
 	 * Delete a file.
-	 * 
+	 *
 	 * @param f
 	 *        the path to delete
 	 * @param recursive
@@ -356,7 +356,7 @@ public abstract class FileSystem {
 	/**
 	 * Make the given file and all non-existent parents into directories. Has the semantics of Unix 'mkdir -p'.
 	 * Existence of the directory hierarchy is not an error.
-	 * 
+	 *
 	 * @param f
 	 *        the directory/directories to be created
 	 * @return <code>true</code> if at least one new directory has been created, <code>false</code> otherwise
@@ -367,7 +367,7 @@ public abstract class FileSystem {
 
 	/**
 	 * Opens an FSDataOutputStream at the indicated Path.
-	 * 
+	 *
 	 * @param f
 	 *        the file name to open
 	 * @param overwrite
@@ -385,7 +385,7 @@ public abstract class FileSystem {
 
 	/**
 	 * Opens an FSDataOutputStream at the indicated Path.
-	 * 
+	 *
 	 * @param f
 	 *        the file name to open
 	 * @param overwrite
@@ -397,7 +397,7 @@ public abstract class FileSystem {
 
 	/**
 	 * Renames the file/directory src to dst.
-	 * 
+	 *
 	 * @param src
 	 *        the file/directory to rename
 	 * @param dst
@@ -407,34 +407,34 @@ public abstract class FileSystem {
 	 */
 	public abstract boolean rename(Path src, Path dst) throws IOException;
 
-	
+
 	/**
 	 * Initializes output directories on local file systems according to the given write mode.
-	 * 
+	 *
 	 * WriteMode.CREATE & parallel output:
 	 *  - A directory is created if the output path does not exist.
 	 *  - An existing directory is reused, files contained in the directory are NOT deleted.
 	 *  - An existing file raises an exception.
-	 *    
+	 *
 	 * WriteMode.CREATE & NONE parallel output:
 	 *  - An existing file or directory raises an exception.
-	 *  
+	 *
 	 * WriteMode.OVERWRITE & parallel output:
 	 *  - A directory is created if the output path does not exist.
 	 *  - An existing directory is reused, files contained in the directory are NOT deleted.
 	 *  - An existing file is deleted and replaced by a new directory.
-	 *  
+	 *
 	 * WriteMode.OVERWRITE & NONE parallel output:
 	 *  - An existing file or directory (and all its content) is deleted
-	 * 
-	 * Files contained in an existing directory are not deleted, because multiple instances of a 
-	 * DataSinkTask might call this function at the same time and hence might perform concurrent 
-	 * delete operations on the file system (possibly deleting output files of concurrently running tasks). 
+	 *
+	 * Files contained in an existing directory are not deleted, because multiple instances of a
+	 * DataSinkTask might call this function at the same time and hence might perform concurrent
+	 * delete operations on the file system (possibly deleting output files of concurrently running tasks).
 	 * Since concurrent DataSinkTasks are not aware of each other, coordination of delete and create
 	 * operations would be difficult.
-	 * 
+	 *
 	 * @param outPath Output path that should be prepared.
-	 * @param writeMode Write mode to consider. 
+	 * @param writeMode Write mode to consider.
 	 * @param createDirectory True, to initialize a directory at the given path, false otherwise.
 	 * @return True, if the path was successfully prepared, false otherwise.
 	 * @throws IOException
@@ -443,7 +443,7 @@ public abstract class FileSystem {
 		if(this.isDistributedFS()) {
 			return false;
 		}
-		
+
 		// check if path exists
 		if(this.exists(outPath)) {
 			// path exists, check write mode
@@ -453,8 +453,8 @@ public abstract class FileSystem {
 					return true;
 				} else {
 					// file may not be overwritten
-					throw new IOException("File or directory already exists. Existing files and directories are not overwritten in " + 
-							WriteMode.NO_OVERWRITE.name() + " mode. Use " + WriteMode.OVERWRITE.name() + 
+					throw new IOException("File or directory already exists. Existing files and directories are not overwritten in " +
+							WriteMode.NO_OVERWRITE.name() + " mode. Use " + WriteMode.OVERWRITE.name() +
 							" mode to overwrite existing files and directories.");
 				}
 			case OVERWRITE:
@@ -476,7 +476,7 @@ public abstract class FileSystem {
 						this.delete(outPath, false);
 					} catch(IOException ioe) {
 						// Some other thread might already have deleted the file.
-						// If - for some other reason - the file could not be deleted,  
+						// If - for some other reason - the file could not be deleted,
 						// the error will be handled later.
 					}
 				}
@@ -485,7 +485,7 @@ public abstract class FileSystem {
 				throw new IllegalArgumentException("Invalid write mode: "+writeMode);
 			}
 		}
-		
+
 		if(createDirectory) {
 			// Output directory needs to be created
 			try {
@@ -494,39 +494,39 @@ public abstract class FileSystem {
 				}
 			} catch(IOException ioe) {
 				// Some other thread might already have created the directory.
-				// If - for some other reason - the directory could not be created  
+				// If - for some other reason - the directory could not be created
 				// and the path does not exist, this will be handled later.
 			}
-	
+
 			// double check that the output directory exists
 			return this.exists(outPath) && this.getFileStatus(outPath).isDir();
 		} else {
-			
+
 			// check that the output path does not exist and an output file can be created by the output format.
 			return !this.exists(outPath);
 		}
 	}
-	
+
 	/**
 	 * Initializes output directories on distributed file systems according to the given write mode.
-	 * 
+	 *
 	 * WriteMode.CREATE & parallel output:
 	 *  - A directory is created if the output path does not exist.
 	 *  - An existing file or directory raises an exception.
-	 * 
+	 *
 	 * WriteMode.CREATE & NONE parallel output:
-	 *  - An existing file or directory raises an exception. 
-	 *    
+	 *  - An existing file or directory raises an exception.
+	 *
 	 * WriteMode.OVERWRITE & parallel output:
 	 *  - A directory is created if the output path does not exist.
 	 *  - An existing directory and its content is deleted and a new directory is created.
 	 *  - An existing file is deleted and replaced by a new directory.
-	 *  
+	 *
 	 *  WriteMode.OVERWRITE & NONE parallel output:
 	 *  - An existing file or directory is deleted and replaced by a new directory.
-	 * 
+	 *
 	 * @param outPath Output path that should be prepared.
-	 * @param writeMode Write mode to consider. 
+	 * @param writeMode Write mode to consider.
 	 * @param createDirectory True, to initialize a directory at the given path, false otherwise.
 	 * @return True, if the path was successfully prepared, false otherwise.
 	 * @throws IOException
@@ -535,15 +535,15 @@ public abstract class FileSystem {
 		if(!this.isDistributedFS()) {
 			return false;
 		}
-		
+
 		// check if path exists
 		if(this.exists(outPath)) {
 			// path exists, check write mode
 			switch(writeMode) {
 			case NO_OVERWRITE:
 				// file or directory may not be overwritten
-				throw new IOException("File or directory already exists. Existing files and directories are not overwritten in " + 
-						WriteMode.NO_OVERWRITE.name() + " mode. Use " + WriteMode.OVERWRITE.name() + 
+				throw new IOException("File or directory already exists. Existing files and directories are not overwritten in " +
+						WriteMode.NO_OVERWRITE.name() + " mode. Use " + WriteMode.OVERWRITE.name() +
 							" mode to overwrite existing files and directories.");
 			case OVERWRITE:
 				// output path exists. We delete it and all contained files in case of a directory.
@@ -551,7 +551,7 @@ public abstract class FileSystem {
 					this.delete(outPath, true);
 				} catch(IOException ioe) {
 					// Some other thread might already have deleted the path.
-					// If - for some other reason - the path could not be deleted,  
+					// If - for some other reason - the path could not be deleted,
 					// this will be handled later.
 				}
 				break;
@@ -559,7 +559,7 @@ public abstract class FileSystem {
 				throw new IllegalArgumentException("Invalid write mode: "+writeMode);
 			}
 		}
-		
+
 		if(createDirectory) {
 			// Output directory needs to be created
 			try {
@@ -568,31 +568,31 @@ public abstract class FileSystem {
 				}
 			} catch(IOException ioe) {
 				// Some other thread might already have created the directory.
-				// If - for some other reason - the directory could not be created  
+				// If - for some other reason - the directory could not be created
 				// and the path does not exist, this will be handled later.
 			}
-			
+
 			// double check that the output directory exists
 			return this.exists(outPath) && this.getFileStatus(outPath).isDir();
 		} else {
-			
+
 			// check that the output path does not exist and an output file can be created by the output format.
 			return !this.exists(outPath);
 		}
-			
+
 	}
-	
+
 	/**
 	 * Returns true if this is a distributed file system, false otherwise.
-	 * 
+	 *
 	 * @return True if this is a distributed file system, false otherwise.
 	 */
 	public abstract boolean isDistributedFS();
-	
+
 	/**
 	 * Returns the number of blocks this file/directory consists of
 	 * assuming the file system's standard block size.
-	 * 
+	 *
 	 * @param file
 	 *        the file
 	 * @return the number of block's the file/directory consists of

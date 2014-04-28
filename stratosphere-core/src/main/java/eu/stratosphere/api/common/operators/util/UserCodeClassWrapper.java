@@ -21,18 +21,18 @@ import eu.stratosphere.util.InstantiationUtil;
  */
 public class UserCodeClassWrapper<T> implements UserCodeWrapper<T> {
 	private static final long serialVersionUID = 1L;
-	
+
 	private Class<? extends T> userCodeClass;
-	
+
 	public UserCodeClassWrapper(Class<? extends T> userCodeClass) {
 		this.userCodeClass = userCodeClass;
 	}
-	
+
 	@Override
 	public T getUserCodeObject(Class<? super T> superClass, ClassLoader cl) {
 		return InstantiationUtil.instantiate(userCodeClass, superClass);
 	}
-	
+
 	@Override
 	public T getUserCodeObject() {
 		return InstantiationUtil.instantiate(userCodeClass, Object.class);
@@ -42,7 +42,7 @@ public class UserCodeClassWrapper<T> implements UserCodeWrapper<T> {
 	public <A extends Annotation> A getUserCodeAnnotation(Class<A> annotationClass) {
 		return userCodeClass.getAnnotation(annotationClass);
 	}
-	
+
 	@Override
 	public Class<? extends T> getUserCodeClass() {
 		return userCodeClass;

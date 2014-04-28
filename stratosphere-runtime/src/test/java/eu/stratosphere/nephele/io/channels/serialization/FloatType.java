@@ -23,25 +23,25 @@ import java.util.Random;
 public class FloatType implements SerializationTestType
 {
 	private float value;
-	
+
 
 	public FloatType()
 	{
 		this.value = 0;
 	}
-	
+
 	private FloatType(float value)
 	{
 		this.value = value;
 	}
-	
+
 
 	@Override
 	public FloatType getRandom(Random rnd)
 	{
 		return new FloatType(rnd.nextFloat());
 	}
-	
+
 
 	@Override
 	public void write(DataOutput out) throws IOException

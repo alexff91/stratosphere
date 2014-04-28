@@ -26,7 +26,7 @@ import eu.stratosphere.core.io.IOReadableWritable;
 
 /**
  * This class contains auxiliary methods for unit tests in the Nephele management module.
- * 
+ *
  */
 public final class ManagementTestUtils {
 
@@ -49,7 +49,7 @@ public final class ManagementTestUtils {
 	/**
 	 * Creates a copy of the given {@link IOReadableWritable} object by an in-memory serialization and subsequent
 	 * deserialization.
-	 * 
+	 *
 	 * @param original
 	 *        the original object to be copied
 	 * @return the copy of original object created by the original object's serialization/deserialization methods
@@ -111,7 +111,7 @@ public final class ManagementTestUtils {
 	/**
 	 * Locates a file-based resource that is used during testing. The method makes sure that the resource is always
 	 * located correctly, no matter if the test is executed in maven or Eclipse.
-	 * 
+	 *
 	 * @param resourceName
 	 *        the name of the resource to be located
 	 * @return a file object pointing to the resource or <code>null</code> if the resource could not be located

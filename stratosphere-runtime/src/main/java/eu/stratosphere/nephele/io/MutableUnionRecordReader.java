@@ -19,10 +19,10 @@ import eu.stratosphere.core.io.IOReadableWritable;
 
 public class MutableUnionRecordReader<T extends IOReadableWritable> extends AbstractUnionRecordReader<T> implements MutableReader<T> {
 
-	
+
 	/**
 	 * Constructs a new mutable union record reader.
-	 * 
+	 *
 	 * @param recordReaders
 	 *        the individual mutable record readers whose input is used to construct the union
 	 */

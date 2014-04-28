@@ -19,7 +19,7 @@ import eu.stratosphere.core.fs.Path;
 /**
  * Concrete implementation of the {@link FileStatus} interface for the
  * Hadoop Distribution File System.
- * 
+ *
  */
 public final class DistributedFileStatus implements FileStatus {
 
@@ -27,7 +27,7 @@ public final class DistributedFileStatus implements FileStatus {
 
 	/**
 	 * Creates a new file status from a HDFS file status.
-	 * 
+	 *
 	 * @param fileStatus
 	 *        the HDFS file status
 	 */

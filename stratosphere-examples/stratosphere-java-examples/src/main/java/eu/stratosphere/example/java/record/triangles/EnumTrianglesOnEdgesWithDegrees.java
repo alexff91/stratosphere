@@ -42,21 +42,21 @@ import eu.stratosphere.util.Collector;
 public class EnumTrianglesOnEdgesWithDegrees implements Program, ProgramDescription {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	// --------------------------------------------------------------------------------------------
 	//                                  Triangle Enumeration
 	// --------------------------------------------------------------------------------------------
 
 	public static final class ProjectOutCounts extends MapFunction implements Serializable {
 		private static final long serialVersionUID = 1L;
-		
+
 		@Override
 		public void map(Record record, Collector<Record> out) throws Exception {
 			record.setNumFields(2);
 			out.collect(record);
 		}
 	}
-	
+
 	public static final class ProjectToLowerDegreeVertex extends MapFunction implements Serializable {
 		private static final long serialVersionUID = 1L;
 
@@ -77,24 +77,24 @@ public class EnumTrianglesOnEdgesWithDegrees implements Program, ProgramDescript
 
 	public static final class BuildTriads extends ReduceFunction implements Serializable {
 		private static final long serialVersionUID = 1L;
-		
+
 		private final IntValue firstVertex = new IntValue();
 		private final IntValue secondVertex = new IntValue();
-		
+
 		private int[] edgeCache = new int[1024];
 
 		@Override
 		public void reduce(Iterator<Record> records, Collector<Record> out) throws Exception {
 			int len = 0;
-			
+
 			Record rec = null;
 			while (records.hasNext()) {
 				rec = records.next();
 				final int e1 = rec.getField(1, IntValue.class).getValue();
-				
+
 				for (int i = 0; i < len; i++) {
 					final int e2 = this.edgeCache[i];
-					
+
 					if (e1 <= e2) {
 						firstVertex.setValue(e1);
 						secondVertex.setValue(e2);
@@ -102,12 +102,12 @@ public class EnumTrianglesOnEdgesWithDegrees implements Program, ProgramDescript
 						firstVertex.setValue(e2);
 						secondVertex.setValue(e1);
 					}
-					
+
 					rec.setField(1, firstVertex);
 					rec.setField(2, secondVertex);
 					out.collect(rec);
 				}
-				
+
 				if (len >= this.edgeCache.length) {
 					int[] na = new int[this.edgeCache.length * 2];
 					System.arraycopy(this.edgeCache, 0, na, 0, this.edgeCache.length);
@@ -142,12 +142,12 @@ public class EnumTrianglesOnEdgesWithDegrees implements Program, ProgramDescript
 		edges.setParameter(EdgeWithDegreesInputFormat.DEGREE_DELIMITER_CHAR, ',');
 
 		// =========================== Triangle Enumeration ============================
-		
+
 		MapOperator toLowerDegreeEdge = MapOperator.builder(new ProjectToLowerDegreeVertex())
 				.input(edges)
 				.name("Select lower-degree Edge")
 				.build();
-		
+
 		MapOperator projectOutCounts = MapOperator.builder(new ProjectOutCounts())
 				.input(edges)
 				.name("Project to vertex Ids only")

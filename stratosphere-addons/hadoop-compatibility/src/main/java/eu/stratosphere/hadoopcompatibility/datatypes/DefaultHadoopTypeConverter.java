@@ -42,10 +42,10 @@ public class DefaultHadoopTypeConverter<K, V> implements HadoopTypeConverter<K, 
 
 	@Override
 	public void convert(Record stratosphereRecord, K hadoopKey, V hadoopValue) {
-		stratosphereRecord.setField(0, convert(hadoopKey)); 
-		stratosphereRecord.setField(1, convert(hadoopValue)); 
+		stratosphereRecord.setField(0, convert(hadoopKey));
+		stratosphereRecord.setField(1, convert(hadoopValue));
 	}
-	
+
 	private Value convert(Object hadoopType) {
 		if(hadoopType instanceof org.apache.hadoop.io.LongWritable ) {
 			return new LongValue(((LongWritable)hadoopType).get());
@@ -68,7 +68,7 @@ public class DefaultHadoopTypeConverter<K, V> implements HadoopTypeConverter<K, 
 		if(hadoopType instanceof org.apache.hadoop.io.ByteWritable) {
 			return new ByteValue(((ByteWritable)hadoopType).get());
 		}
-		
+
 		throw new RuntimeException("Unable to convert Hadoop type ("+hadoopType.getClass().getCanonicalName()+") to Stratosphere.");
 	}
 }

@@ -28,7 +28,7 @@ import eu.stratosphere.compiler.util.Utils;
 import eu.stratosphere.pact.runtime.task.DriverStrategy;
 
 /**
- * 
+ *
  */
 public class SortMergeJoinDescriptor extends AbstractJoinDescriptor
 {
@@ -53,16 +53,16 @@ public class SortMergeJoinDescriptor extends AbstractJoinDescriptor
 			LocalProperties produced1, LocalProperties produced2)
 	{
 		int numRelevantFields = this.keys1.size();
-		
+
 		Ordering prod1 = produced1.getOrdering();
 		Ordering prod2 = produced2.getOrdering();
-		
+
 		if (prod1 == null || prod2 == null || prod1.getNumberOfFields() < numRelevantFields ||
 				prod2.getNumberOfFields() < prod2.getNumberOfFields())
 		{
 			throw new CompilerException("The given properties do not meet this operators requirements.");
 		}
-			
+
 		for (int i = 0; i < numRelevantFields; i++) {
 			if (prod1.getOrder(i) != prod2.getOrder(i)) {
 				return false;
@@ -70,11 +70,11 @@ public class SortMergeJoinDescriptor extends AbstractJoinDescriptor
 		}
 		return true;
 	}
-	
+
 	@Override
 	public DualInputPlanNode instantiate(Channel in1, Channel in2, TwoInputNode node) {
 		boolean[] inputOrders = in1.getLocalProperties().getOrdering().getFieldSortDirections();
-		
+
 		if (inputOrders == null || inputOrders.length < this.keys1.size()) {
 			throw new CompilerException("BUG: The input strategy does not sufficiently describe the sort orders for a merge operator.");
 		} else if (inputOrders.length > this.keys1.size()) {
@@ -82,7 +82,7 @@ public class SortMergeJoinDescriptor extends AbstractJoinDescriptor
 			System.arraycopy(inputOrders, 0, tmp, 0, tmp.length);
 			inputOrders = tmp;
 		}
-		
+
 		return new DualInputPlanNode(node, "Join("+node.getPactContract().getName()+")", in1, in2, DriverStrategy.MERGE, this.keys1, this.keys2, inputOrders);
 	}
 

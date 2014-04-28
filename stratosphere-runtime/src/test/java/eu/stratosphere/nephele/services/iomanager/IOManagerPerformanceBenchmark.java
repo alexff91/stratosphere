@@ -35,12 +35,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import eu.stratosphere.core.memory.MemorySegment;
-import eu.stratosphere.nephele.services.iomanager.BlockChannelReader;
-import eu.stratosphere.nephele.services.iomanager.BlockChannelWriter;
-import eu.stratosphere.nephele.services.iomanager.Channel;
-import eu.stratosphere.nephele.services.iomanager.ChannelReaderInputView;
-import eu.stratosphere.nephele.services.iomanager.ChannelWriterOutputView;
-import eu.stratosphere.nephele.services.iomanager.IOManager;
 import eu.stratosphere.nephele.services.memorymanager.DefaultMemoryManagerTest;
 import eu.stratosphere.nephele.services.memorymanager.spi.DefaultMemoryManager;
 import eu.stratosphere.nephele.template.AbstractInvokable;
@@ -53,49 +47,49 @@ import eu.stratosphere.nephele.types.IntegerRecord;
 public class IOManagerPerformanceBenchmark
 {
 	private static final Log LOG = LogFactory.getLog(IOManagerPerformanceBenchmark.class);
-	
+
 	private static final int[] SEGMENT_SIZES_ALIGNED = { 4096, 16384, 524288 };
-	
+
 	private static final int[] SEGMENT_SIZES_UNALIGNED = { 3862, 16895, 500481 };
-	
+
 	private static final int[] NUM_SEGMENTS = { 1, 2, 4, 6 };
-	
+
 	private static final long MEMORY_SIZE = 32 * 1024 * 1024;
-	
+
 	private static final int NUM_INTS_WRITTEN = 100000000;
-	
-	
+
+
 	private static final AbstractInvokable memoryOwner = new DefaultMemoryManagerTest.DummyInvokable();
-	
+
 	private DefaultMemoryManager memManager;
-	
+
 	private IOManager ioManager;
-	
-	
+
+
 	@Before
 	public void startup()
 	{
 		memManager = new DefaultMemoryManager(MEMORY_SIZE);
 		ioManager = new IOManager();
 	}
-	
+
 	@After
 	public void afterTest() throws Exception {
 		ioManager.shutdown();
 		Assert.assertTrue("IO Manager has not properly shut down.", ioManager.isProperlyShutDown());
-		
+
 		Assert.assertTrue("Not all memory was returned to the memory manager in the test.", memManager.verifyEmpty());
 		memManager.shutdown();
 		memManager = null;
 	}
-	
+
 // ------------------------------------------------------------------------
-	
+
 	@Test
 	public void speedTestIOManager() throws Exception
 	{
 		LOG.info("Starting speed test with IO Manager...");
-		
+
 		for (int num : NUM_SEGMENTS) {
 			testChannelWithSegments(num);
 		}
@@ -105,51 +99,51 @@ public class IOManagerPerformanceBenchmark
 	{
 		final List<MemorySegment> memory = this.memManager.allocatePages(memoryOwner, numSegments);
 		final Channel.ID channel = this.ioManager.createChannel();
-		
+
 		BlockChannelWriter writer = null;
 		BlockChannelReader reader = null;
-		
-		try {	
+
+		try {
 			writer = this.ioManager.createBlockChannelWriter(channel);
 			final ChannelWriterOutputView out = new ChannelWriterOutputView(writer, memory, this.memManager.getPageSize());
-			
+
 			long writeStart = System.currentTimeMillis();
-			
+
 			int valsLeft = NUM_INTS_WRITTEN;
 			while (valsLeft-- > 0) {
 				out.writeInt(valsLeft);
 			}
-			
+
 			out.close();
 			final int numBlocks = out.getBlockCount();
 			writer.close();
 			writer = null;
-			
+
 			long writeElapsed = System.currentTimeMillis() - writeStart;
-			
+
 			// ----------------------------------------------------------------
-			
+
 			reader = ioManager.createBlockChannelReader(channel);
 			final ChannelReaderInputView in = new ChannelReaderInputView(reader, memory, numBlocks, false);
-			
+
 			long readStart = System.currentTimeMillis();
-			
+
 			valsLeft = NUM_INTS_WRITTEN;
 			while (valsLeft-- > 0) {
 				in.readInt();
 //				Assert.assertTrue(rec.getValue() == valsLeft);
 			}
-			
+
 			in.close();
 			reader.close();
-			
+
 			long readElapsed = System.currentTimeMillis() - readStart;
-			
+
 			reader.deleteChannel();
 			reader = null;
-			
+
 			LOG.info("IOManager with " + numSegments + " mem segments: write " + writeElapsed + " msecs, read " + readElapsed + " msecs.");
-			
+
 			memManager.release(memory);
 		}
 		finally {
@@ -165,19 +159,19 @@ public class IOManagerPerformanceBenchmark
 //	@Test
 //	public void speedTestRandomAccessFile() throws IOException {
 //		LOG.info("Starting speed test with java random access file ...");
-//		
+//
 //		Channel.ID tmpChannel = ioManager.createChannel();
 //		File tempFile = null;
 //		RandomAccessFile raf = null;
-//		
+//
 //		try {
-//			tempFile = new File(tmpChannel.getPath()); 
+//			tempFile = new File(tmpChannel.getPath());
 //			raf = new RandomAccessFile(tempFile, "rw");
-//			
+//
 //			IntegerRecord rec = new IntegerRecord(0);
-//			
+//
 //			long writeStart = System.currentTimeMillis();
-//			
+//
 //			int valsLeft = NUM_INTS_WRITTEN;
 //			while (valsLeft-- > 0) {
 //				rec.setValue(valsLeft);
@@ -185,25 +179,25 @@ public class IOManagerPerformanceBenchmark
 //			}
 //			raf.close();
 //			raf = null;
-//			
+//
 //			long writeElapsed = System.currentTimeMillis() - writeStart;
-//			
+//
 //			// ----------------------------------------------------------------
-//			
+//
 //			raf = new RandomAccessFile(tempFile, "r");
-//			
+//
 //			long readStart = System.currentTimeMillis();
-//			
+//
 //			valsLeft = NUM_INTS_WRITTEN;
 //			while (valsLeft-- > 0) {
 //				rec.read(raf);
 //			}
 //			raf.close();
 //			raf = null;
-//			
+//
 //			long readElapsed = System.currentTimeMillis() - readStart;
-//			
-//			
+//
+//
 //			LOG.info("Random Access File: write " + (writeElapsed / 1000) + " secs, read " + (readElapsed / 1000) + " secs.");
 //		}
 //		finally {
@@ -211,7 +205,7 @@ public class IOManagerPerformanceBenchmark
 //			if (raf != null) {
 //				raf.close();
 //			}
-//			
+//
 //			// try to delete the file
 //			if (tempFile != null) {
 //				tempFile.delete();
@@ -223,37 +217,37 @@ public class IOManagerPerformanceBenchmark
 	public void speedTestFileStream() throws Exception
 	{
 		LOG.info("Starting speed test with java io file stream and ALIGNED buffer sizes ...");
-		
+
 		for (int bufferSize : SEGMENT_SIZES_ALIGNED)
 		{
 			speedTestStream(bufferSize);
 		}
-		
+
 		LOG.info("Starting speed test with java io file stream and UNALIGNED buffer sizes ...");
-		
+
 		for (int bufferSize : SEGMENT_SIZES_UNALIGNED)
 		{
 			speedTestStream(bufferSize);
 		}
-		
+
 	}
-		
+
 	private final void speedTestStream(int bufferSize) throws IOException {
 		final Channel.ID tmpChannel = ioManager.createChannel();
 		final IntegerRecord rec = new IntegerRecord(0);
-		
+
 		File tempFile = null;
 		DataOutputStream daos = null;
 		DataInputStream dais = null;
-		
+
 		try {
 			tempFile = new File(tmpChannel.getPath());
-			
+
 			FileOutputStream fos = new FileOutputStream(tempFile);
 			daos = new DataOutputStream(new BufferedOutputStream(fos, bufferSize));
-			
+
 			long writeStart = System.currentTimeMillis();
-			
+
 			int valsLeft = NUM_INTS_WRITTEN;
 			while (valsLeft-- > 0) {
 				rec.setValue(valsLeft);
@@ -261,25 +255,25 @@ public class IOManagerPerformanceBenchmark
 			}
 			daos.close();
 			daos = null;
-			
+
 			long writeElapsed = System.currentTimeMillis() - writeStart;
-			
+
 			// ----------------------------------------------------------------
-			
+
 			FileInputStream fis = new FileInputStream(tempFile);
 			dais = new DataInputStream(new BufferedInputStream(fis, bufferSize));
-			
+
 			long readStart = System.currentTimeMillis();
-			
+
 			valsLeft = NUM_INTS_WRITTEN;
 			while (valsLeft-- > 0) {
 				rec.read(dais);
 			}
 			dais.close();
 			dais = null;
-			
+
 			long readElapsed = System.currentTimeMillis() - readStart;
-			
+
 			LOG.info("File-Stream with buffer " + bufferSize + ": write " + writeElapsed + " msecs, read " + readElapsed + " msecs.");
 		}
 		finally {
@@ -296,60 +290,60 @@ public class IOManagerPerformanceBenchmark
 			}
 		}
 	}
-	
+
 	// ------------------------------------------------------------------------
-	
+
 	@Test
 	public void speedTestNIO() throws Exception
 	{
 		LOG.info("Starting speed test with java NIO heap buffers and ALIGNED buffer sizes ...");
-		
+
 		for (int bufferSize : SEGMENT_SIZES_ALIGNED)
 		{
 			speedTestNIO(bufferSize, false);
 		}
-		
+
 		LOG.info("Starting speed test with java NIO heap buffers and UNALIGNED buffer sizes ...");
-		
+
 		for (int bufferSize : SEGMENT_SIZES_UNALIGNED)
 		{
 			speedTestNIO(bufferSize, false);
 		}
-		
+
 		LOG.info("Starting speed test with java NIO direct buffers and ALIGNED buffer sizes ...");
-		
+
 		for (int bufferSize : SEGMENT_SIZES_ALIGNED)
 		{
 			speedTestNIO(bufferSize, true);
 		}
-		
+
 		LOG.info("Starting speed test with java NIO direct buffers and UNALIGNED buffer sizes ...");
-		
+
 		for (int bufferSize : SEGMENT_SIZES_UNALIGNED)
 		{
 			speedTestNIO(bufferSize, true);
 		}
-		
+
 	}
-		
+
 	@SuppressWarnings("resource")
 	private final void speedTestNIO(int bufferSize, boolean direct) throws IOException
 	{
 		final Channel.ID tmpChannel = ioManager.createChannel();
-		
+
 		File tempFile = null;
 		FileChannel fs = null;
-		
+
 		try {
 			tempFile = new File(tmpChannel.getPath());
-			
+
 			RandomAccessFile raf = new RandomAccessFile(tempFile, "rw");
 			fs = raf.getChannel();
-			
+
 			ByteBuffer buf = direct ? ByteBuffer.allocateDirect(bufferSize) : ByteBuffer.allocate(bufferSize);
-			
+
 			long writeStart = System.currentTimeMillis();
-			
+
 			int valsLeft = NUM_INTS_WRITTEN;
 			while (valsLeft-- > 0) {
 				if (buf.remaining() < 4) {
@@ -359,29 +353,29 @@ public class IOManagerPerformanceBenchmark
 				}
 				buf.putInt(valsLeft);
 			}
-			
+
 			if (buf.position() > 0) {
 				buf.flip();
 				fs.write(buf);
 			}
-			
+
 			fs.close();
 			raf.close();
 			fs = null;
-			
+
 			long writeElapsed = System.currentTimeMillis() - writeStart;
-			
+
 			// ----------------------------------------------------------------
-			
+
 			raf = new RandomAccessFile(tempFile, "r");
 			fs = raf.getChannel();
 			buf.clear();
-			
+
 			long readStart = System.currentTimeMillis();
-			
+
 			fs.read(buf);
 			buf.flip();
-			
+
 			valsLeft = NUM_INTS_WRITTEN;
 			while (valsLeft-- > 0) {
 				if (buf.remaining() < 4) {
@@ -393,12 +387,12 @@ public class IOManagerPerformanceBenchmark
 					throw new IOException();
 				}
 			}
-			
+
 			fs.close();
 			raf.close();
-			
+
 			long readElapsed = System.currentTimeMillis() - readStart;
-			
+
 			LOG.info("NIO Channel with buffer " + bufferSize + ": write " + writeElapsed + " msecs, read " + readElapsed + " msecs.");
 		}
 		finally {

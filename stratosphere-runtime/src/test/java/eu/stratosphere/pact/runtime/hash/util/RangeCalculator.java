@@ -15,15 +15,15 @@ package eu.stratosphere.pact.runtime.hash.util;
 
 /**
  * Interface for defining which hash code will be placed in which bucket
- * 
- * 
+ *
+ *
  */
 public interface RangeCalculator {
 
 	/**
 	 * Calculates the number of the bucket in which the value should be placed
 	 * in
-	 * 
+	 *
 	 * @param hash
 	 *            The hash of the value
 	 * @return The number of the bucket
@@ -32,7 +32,7 @@ public interface RangeCalculator {
 
 	/**
 	 * Get the total bucket count
-	 * 
+	 *
 	 * @return The total bucket count
 	 */
 	public int getBucketCount();

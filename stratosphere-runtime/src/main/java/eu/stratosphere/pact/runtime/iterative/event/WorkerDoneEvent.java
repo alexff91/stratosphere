@@ -13,18 +13,18 @@
 
 package eu.stratosphere.pact.runtime.iterative.event;
 
-import eu.stratosphere.api.common.aggregators.Aggregator;
-import eu.stratosphere.types.Value;
-
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.util.Map;
 
+import eu.stratosphere.api.common.aggregators.Aggregator;
+import eu.stratosphere.types.Value;
+
 public class WorkerDoneEvent extends IterationEventWithAggregators {
-	
+
 	private int workerIndex;
-	
+
 	public WorkerDoneEvent() {
 		super();
 	}
@@ -33,22 +33,22 @@ public class WorkerDoneEvent extends IterationEventWithAggregators {
 		super(aggregatorName, aggregate);
 		this.workerIndex = workerIndex;
 	}
-	
+
 	public WorkerDoneEvent(int workerIndex, Map<String, Aggregator<?>> aggregators) {
 		super(aggregators);
 		this.workerIndex = workerIndex;
 	}
-	
+
 	public int getWorkerIndex() {
 		return workerIndex;
 	}
-	
+
 	@Override
 	public void write(DataOutput out) throws IOException {
 		out.writeInt(this.workerIndex);
 		super.write(out);
 	}
-	
+
 	@Override
 	public void read(DataInput in) throws IOException {
 		this.workerIndex = in.readInt();

@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * reading from the buffer, it must be explicitly switched to read mode.
  * <p>
  * This class is in general not thread-safe.
- * 
+ *
  */
 public abstract class Buffer implements ReadableByteChannel, WritableByteChannel
 {
@@ -40,7 +40,7 @@ public abstract class Buffer implements ReadableByteChannel, WritableByteChannel
 
 	/**
 	 * Constructs a new buffer object.
-	 * 
+	 *
 	 * @param internalBuffer
 	 *        the concrete implementation which backs the buffer
 	 */
@@ -50,7 +50,7 @@ public abstract class Buffer implements ReadableByteChannel, WritableByteChannel
 	/**
 	 * Reads data from the buffer and writes it to the
 	 * given {@link WritableByteChannel} object.
-	 * 
+	 *
 	 * @param destination The {@link WritableByteChannel} object to write the data to
 	 * @return The number of bytes read from the buffer, potentially <code>0</code> or <code>-1</code to indicate the
 	 *         end of the stream.
@@ -58,22 +58,22 @@ public abstract class Buffer implements ReadableByteChannel, WritableByteChannel
 	 */
 
 	public abstract boolean isOpen();
-	
-	
+
+
 
 	@Override
 	public abstract void close() throws IOException;
-	
+
 	/**
 	 * Reads data from the given {@link ReadableByteChannel} object and
 	 * writes it to the buffer.
-	 * 
+	 *
 	 * @param source The {@link ReadableByteChannel} object to read data from.
 	 * @return The number of bytes written to the buffer, possibly <code>0</code>.
 	 * @throws IOException Thrown if an error occurs while writing data to the buffer.
 	 */
 	public abstract int write(ReadableByteChannel source) throws IOException;
-	
+
 
 	/**
 	 * Returns the number of bytes which can be either still written to or read from
@@ -82,14 +82,14 @@ public abstract class Buffer implements ReadableByteChannel, WritableByteChannel
 	 * If in write mode, the method returns the number of bytes which can be written to be buffer, before its capacity
 	 * limit is reached. In read mode, the method returns the number of bytes which can be read from the number until
 	 * all data previously written to the buffer is consumed.
-	 * 
+	 *
 	 * @return the number of bytes which can be either written to or read from the buffer
 	 */
 	public abstract int remaining();
 
 	/**
 	 * Checks whether data can still be written to or read from the buffer.
-	 * 
+	 *
 	 * @return <code>true</code> if data can be still written to or read from
 	 *         the buffer, <code>false</code> otherwise
 	 */
@@ -101,7 +101,7 @@ public abstract class Buffer implements ReadableByteChannel, WritableByteChannel
 	 * Returns the size of the buffer. In write mode, the size of the buffer is the initial capacity
 	 * of the buffer. In read mode, the size of the buffer is number of bytes which have been
 	 * previously written to the buffer.
-	 * 
+	 *
 	 * @return the size of the buffer in bytes
 	 */
 	public abstract int size();
@@ -118,13 +118,13 @@ public abstract class Buffer implements ReadableByteChannel, WritableByteChannel
 			recycle();
 		}
 	}
-	
+
 	protected abstract void recycle();
 
 
 	/**
 	 * Returns whether the buffer is backed by main memory or a file.
-	 * 
+	 *
 	 * @return <code>true</code> if the buffer is backed by main memory
 	 *         or <code>false</code> if it is backed by a file
 	 */
@@ -133,7 +133,7 @@ public abstract class Buffer implements ReadableByteChannel, WritableByteChannel
 	/**
 	 * Copies the content of the buffer to the given destination buffer. The state of the source buffer is not modified
 	 * by this operation.
-	 * 
+	 *
 	 * @param destinationBuffer
 	 *        the destination buffer to copy this buffer's content to
 	 * @throws IOException
@@ -145,7 +145,7 @@ public abstract class Buffer implements ReadableByteChannel, WritableByteChannel
 	 * Duplicates the buffer. This operation does not duplicate the actual
 	 * content of the buffer, only the reading/writing state. As a result,
 	 * modifications to the original buffer will affect the duplicate and vice-versa.
-	 * 
+	 *
 	 * @return the duplicated buffer
 	 */
 	public abstract Buffer duplicate() throws IOException, InterruptedException;
@@ -153,7 +153,7 @@ public abstract class Buffer implements ReadableByteChannel, WritableByteChannel
 	/**
 	 * Reads data from the buffer and writes it to the
 	 * given {@link WritableByteChannel} object.
-	 * 
+	 *
 	 * @param destination The {@link WritableByteChannel} object to write the data to
 	 * @return The number of bytes read from the buffer, potentially <code>0</code> or <code>-1</code to indicate the
 	 *         end of the stream.
@@ -165,7 +165,7 @@ public abstract class Buffer implements ReadableByteChannel, WritableByteChannel
 	 * Flip buffer (exchange limit and position).
 	 */
 	public abstract void flip();
-	
+
 	/**
 	 * Returns the current read/write position for relative operations.
 	 * @return

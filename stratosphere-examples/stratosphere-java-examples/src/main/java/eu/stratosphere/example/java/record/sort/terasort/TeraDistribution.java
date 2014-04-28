@@ -42,7 +42,7 @@ public class TeraDistribution implements DataDistribution  {
 
 		return new TeraKey[] { new TeraKey(buf, 0) };
 	}
-	
+
 	@Override
 	public int getNumberOfFields() {
 		return 1;

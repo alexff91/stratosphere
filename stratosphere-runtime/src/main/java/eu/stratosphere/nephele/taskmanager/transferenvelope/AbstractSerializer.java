@@ -245,7 +245,7 @@ public abstract class AbstractSerializer {
 
 	/**
 	 * Writes the buffer's actual data.
-	 * 
+	 *
 	 * @param writableByteChannel
 	 *        the channel to write the buffer data to
 	 * @param buffer

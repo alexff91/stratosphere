@@ -25,7 +25,7 @@ import eu.stratosphere.nephele.managementgraph.ManagementVertexID;
  * which refer to particular output gates of a task.
  * <p>
  * This class is not thread-safe.
- * 
+ *
  */
 public final class OutputGateProfilingEvent extends VertexProfilingEvent {
 
@@ -41,7 +41,7 @@ public final class OutputGateProfilingEvent extends VertexProfilingEvent {
 
 	/**
 	 * Constructs a new output gate profiling event.
-	 * 
+	 *
 	 * @param gateIndex
 	 *        the index of the output gate at the corresponding management vertex
 	 * @param channelCapacityExhausted
@@ -75,7 +75,7 @@ public final class OutputGateProfilingEvent extends VertexProfilingEvent {
 
 	/**
 	 * Returns the index of input gate.
-	 * 
+	 *
 	 * @return the index of the input gate
 	 */
 	public int getGateIndex() {
@@ -85,7 +85,7 @@ public final class OutputGateProfilingEvent extends VertexProfilingEvent {
 	/**
 	 * Returns the number of times the capacity of an attached output channel was exhausted during the given profiling
 	 * interval.
-	 * 
+	 *
 	 * @return the number of times a channel reached its capacity limit
 	 */
 	public int getChannelCapacityExhausted() {

@@ -18,5 +18,5 @@ package eu.stratosphere.api.java.aggregation;
 public interface AggregationFunctionFactory extends java.io.Serializable {
 
 	<T> AggregationFunction<T> createAggregationFunction(Class<T> type);
-	
+
 }

@@ -24,7 +24,7 @@ import eu.stratosphere.util.Visitor;
  * Abstract contract superclass for for all contracts that have two inputs, like "match" or "cross".
  */
 public abstract class DualInputOperator<T extends Function> extends AbstractUdfOperator<T> {
-	
+
 	/**
 	 * The contract producing the first input.
 	 */
@@ -38,26 +38,26 @@ public abstract class DualInputOperator<T extends Function> extends AbstractUdfO
 	 * The positions of the keys in the tuples of the first input.
 	 */
 	private final int[] keyFields1;
-	
+
 	/**
 	 * The positions of the keys in the tuples of the second input.
 	 */
 	private final int[] keyFields2;
-	
+
 	/**
 	 * Semantic properties of the associated function.
 	 */
 	private DualInputSemanticProperties semanticProperties;
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	public DualInputOperator() {
 		this(null, null);
 	}
-	
+
 	/**
 	 * Creates a new abstract dual-input Pact with the given name wrapping the given user function.
-	 * 
+	 *
 	 * @param stub The class containing the user function.
 	 * @param name The given name for the Pact, used in plans, logs and progress messages.
 	 */
@@ -66,11 +66,11 @@ public abstract class DualInputOperator<T extends Function> extends AbstractUdfO
 		this.keyFields1 = this.keyFields2 = new int[0];
 		this.semanticProperties = new DualInputSemanticProperties();
 	}
-	
+
 	/**
 	 * Creates a new abstract dual-input Pact with the given name wrapping the given user function.
 	 * This constructor is specialized only for Pacts that require no keys for their processing.
-	 * 
+	 *
 	 * @param stub The object containing the user function.
 	 * @param keyPositions1 The positions of the fields in the first input that act as keys.
 	 * @param keyPositions2 The positions of the fields in the second input that act as keys.
@@ -87,29 +87,29 @@ public abstract class DualInputOperator<T extends Function> extends AbstractUdfO
 
 	/**
 	 * Returns the first input, or null, if none is set.
-	 * 
+	 *
 	 * @return The contract's first input.
 	 */
 	public List<Operator> getFirstInputs() {
 		return this.input1;
 	}
-	
+
 	/**
 	 * Returns the second input, or null, if none is set.
-	 * 
+	 *
 	 * @return The contract's second input.
 	 */
 	public List<Operator> getSecondInputs() {
 		return this.input2;
 	}
-	
+
 	/**
 	 * Removes all inputs from this contract's first input.
 	 */
 	public void clearFirstInputs() {
 		this.input1.clear();
 	}
-	
+
 	/**
 	 * Removes all inputs from this contract's second input.
 	 */
@@ -119,7 +119,7 @@ public abstract class DualInputOperator<T extends Function> extends AbstractUdfO
 
 	/**
 	 * Connects the first input to the task wrapped in this contract.
-	 * 
+	 *
 	 * @param input The contract will be set as the first input.
 	 */
 	public void addFirstInput(Operator ... input) {
@@ -131,10 +131,10 @@ public abstract class DualInputOperator<T extends Function> extends AbstractUdfO
 			}
 		}
 	}
-	
+
 	/**
 	 * Connects the second input to the task wrapped in this contract.
-	 * 
+	 *
 	 * @param input The contract will be set as the second input.
 	 */
 	public void addSecondInput(Operator ... input) {
@@ -149,7 +149,7 @@ public abstract class DualInputOperator<T extends Function> extends AbstractUdfO
 
 	/**
 	 * Connects the first inputs to the task wrapped in this contract
-	 * 
+	 *
 	 * @param inputs The contracts that is connected as the first inputs.
 	 */
 	public void addFirstInputs(List<Operator> inputs) {
@@ -164,7 +164,7 @@ public abstract class DualInputOperator<T extends Function> extends AbstractUdfO
 
 	/**
 	 * Connects the second inputs to the task wrapped in this contract
-	 * 
+	 *
 	 * @param inputs The contracts that is connected as the second inputs.
 	 */
 	public void addSecondInputs(List<Operator> inputs) {
@@ -176,10 +176,10 @@ public abstract class DualInputOperator<T extends Function> extends AbstractUdfO
 			}
 		}
 	}
-	
+
 	/**
 	 * Clears all previous connections and connects the first input to the task wrapped in this contract
-	 * 
+	 *
 	 * @param input The contract that is connected as the first input.
 	 */
 	public void setFirstInput(Operator input) {
@@ -189,17 +189,17 @@ public abstract class DualInputOperator<T extends Function> extends AbstractUdfO
 
 	/**
 	 * Clears all previous connections and connects the second input to the task wrapped in this contract
-	 * 
+	 *
 	 * @param input The contract that is connected as the second input.
 	 */
 	public void setSecondInput(Operator input) {
 		this.input2.clear();
 		addSecondInput(input);
 	}
-	
+
 	/**
 	 * Clears all previous connections and connects the first input to the task wrapped in this contract
-	 * 
+	 *
 	 * @param inputs The contracts that are connected as the first input.
 	 */
 	public void setFirstInput(Operator ... inputs) {
@@ -209,17 +209,17 @@ public abstract class DualInputOperator<T extends Function> extends AbstractUdfO
 
 	/**
 	 * Clears all previous connections and connects the second input to the task wrapped in this contract
-	 * 
+	 *
 	 * @param inputs The contracts that are connected as the second input.
 	 */
 	public void setSecondInput(Operator ... inputs) {
 		this.input2.clear();
 		addSecondInput(inputs);
 	}
-	
+
 	/**
 	 * Clears all previous connections and connects the first inputs to the task wrapped in this contract
-	 * 
+	 *
 	 * @param inputs The contracts that are connected as the first inputs.
 	 */
 	public void setFirstInputs(List<Operator> inputs) {
@@ -229,26 +229,26 @@ public abstract class DualInputOperator<T extends Function> extends AbstractUdfO
 
 	/**
 	 * Clears all previous connections and connects the second inputs to the task wrapped in this contract
-	 * 
+	 *
 	 * @param inputs The contracts that are connected as the second inputs.
 	 */
 	public void setSecondInputs(List<Operator> inputs) {
 		this.input2.clear();
 		addSecondInputs(inputs);
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	public DualInputSemanticProperties getSemanticProperties() {
 		return this.semanticProperties;
 	}
-	
+
 	public void setSemanticProperties(DualInputSemanticProperties semanticProperties) {
 		this.semanticProperties = semanticProperties;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public final int getNumberOfInputs() {
 		return 2;
@@ -261,12 +261,13 @@ public abstract class DualInputOperator<T extends Function> extends AbstractUdfO
 		}
 		else if (inputNum == 1) {
 			return this.keyFields2;
+		} else {
+		throw new IndexOutOfBoundsException();
 		}
-		else throw new IndexOutOfBoundsException();
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 
 	@Override
 	public void accept(Visitor<Operator> visitor) {

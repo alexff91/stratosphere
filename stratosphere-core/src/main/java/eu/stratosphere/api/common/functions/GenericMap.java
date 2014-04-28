@@ -15,6 +15,6 @@ package eu.stratosphere.api.common.functions;
 
 
 public interface GenericMap<T, O> extends Function {
-	
+
 	O map(T record) throws Exception;
 }

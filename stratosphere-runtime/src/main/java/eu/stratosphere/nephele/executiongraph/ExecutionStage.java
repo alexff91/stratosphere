@@ -35,7 +35,7 @@ import eu.stratosphere.nephele.io.channels.ChannelType;
  * job can only start to execute if the execution of its preceding stage is complete.
  * <p>
  * This class is thread-safe.
- * 
+ *
  */
 public final class ExecutionStage {
 
@@ -61,7 +61,7 @@ public final class ExecutionStage {
 
 	/**
 	 * Constructs a new execution stage and assigns the given stage number to it.
-	 * 
+	 *
 	 * @param executionGraph
 	 *        the executionGraph that this stage belongs to
 	 * @param stageNum
@@ -74,7 +74,7 @@ public final class ExecutionStage {
 
 	/**
 	 * Sets the number of this execution stage.
-	 * 
+	 *
 	 * @param stageNum
 	 *        the new number of this execution stage
 	 */
@@ -84,7 +84,7 @@ public final class ExecutionStage {
 
 	/**
 	 * Returns the number of this execution stage.
-	 * 
+	 *
 	 * @return the number of this execution stage
 	 */
 	public int getStageNumber() {
@@ -94,7 +94,7 @@ public final class ExecutionStage {
 
 	/**
 	 * Adds a new execution group vertex to this stage if it is not already included.
-	 * 
+	 *
 	 * @param groupVertex
 	 *        the new execution group vertex to include
 	 */
@@ -107,7 +107,7 @@ public final class ExecutionStage {
 
 	/**
 	 * Removes the specified group vertex from the execution stage.
-	 * 
+	 *
 	 * @param groupVertex
 	 *        the group vertex to remove from the stage
 	 */
@@ -118,7 +118,7 @@ public final class ExecutionStage {
 
 	/**
 	 * Returns the number of group vertices this execution stage includes.
-	 * 
+	 *
 	 * @return the number of group vertices this execution stage includes
 	 */
 	public int getNumberOfStageMembers() {
@@ -128,7 +128,7 @@ public final class ExecutionStage {
 
 	/**
 	 * Returns the stage member internally stored at index <code>index</code>.
-	 * 
+	 *
 	 * @param index
 	 *        the index of the group vertex to return
 	 * @return the stage member internally stored at the specified index or <code>null</code> if no group vertex exists
@@ -147,7 +147,7 @@ public final class ExecutionStage {
 	 * Returns the number of input execution vertices in this stage, i.e. the number
 	 * of execution vertices which are connected to vertices in a lower stage
 	 * or have no input channels.
-	 * 
+	 *
 	 * @return the number of input vertices in this stage
 	 */
 	public int getNumberOfInputExecutionVertices() {
@@ -170,7 +170,7 @@ public final class ExecutionStage {
 	 * Returns the number of output execution vertices in this stage, i.e. the number
 	 * of execution vertices which are connected to vertices in a higher stage
 	 * or have no output channels.
-	 * 
+	 *
 	 * @return the number of output vertices in this stage
 	 */
 	public int getNumberOfOutputExecutionVertices() {
@@ -191,7 +191,7 @@ public final class ExecutionStage {
 
 	/**
 	 * Returns the output execution vertex with the given index or <code>null</code> if no such vertex exists.
-	 * 
+	 *
 	 * @param index
 	 *        the index of the vertex to be selected.
 	 * @return the output execution vertex with the given index or <code>null</code> if no such vertex exists
@@ -217,7 +217,7 @@ public final class ExecutionStage {
 
 	/**
 	 * Returns the input execution vertex with the given index or <code>null</code> if no such vertex exists.
-	 * 
+	 *
 	 * @param index
 	 *        the index of the vertex to be selected.
 	 * @return the input execution vertex with the given index or <code>null</code> if no such vertex exists
@@ -245,7 +245,7 @@ public final class ExecutionStage {
 	 * Checks which instance types and how many instances of these types are required to execute this stage
 	 * of the job graph. The required instance types and the number of instances are collected in the given map. Note
 	 * that this method does not clear the map before collecting the instances.
-	 * 
+	 *
 	 * @param instanceRequestMap
 	 *        the map containing the instances types and the required number of instances of the respective type
 	 * @param executionState
@@ -306,7 +306,7 @@ public final class ExecutionStage {
 
 	/**
 	 * Returns the execution graph that this stage belongs to.
-	 * 
+	 *
 	 * @return the execution graph that this stage belongs to
 	 */
 	public ExecutionGraph getExecutionGraph() {
@@ -362,7 +362,7 @@ public final class ExecutionStage {
 
 	/**
 	 * Reconstructs the execution pipeline starting at the given vertex by conducting a depth-first search.
-	 * 
+	 *
 	 * @param vertex
 	 *        the vertex to start the depth-first search from
 	 * @param forward

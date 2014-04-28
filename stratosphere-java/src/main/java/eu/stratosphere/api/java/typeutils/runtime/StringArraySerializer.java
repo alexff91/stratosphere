@@ -28,7 +28,7 @@ import eu.stratosphere.types.StringValue;
 public class StringArraySerializer extends TypeSerializer<String[]>{
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private static final String[] EMPTY = new String[0];
 
 	@Override
@@ -56,7 +56,7 @@ public class StringArraySerializer extends TypeSerializer<String[]>{
 		if (record == null) {
 			throw new IllegalArgumentException("The record must nor be null.");
 		}
-		
+
 		final int len = record.length;
 		target.writeInt(len);
 		for (int i = 0; i < len; i++) {
@@ -68,15 +68,15 @@ public class StringArraySerializer extends TypeSerializer<String[]>{
 	@Override
 	public String[] deserialize(String[] reuse, DataInputView source) throws IOException {
 		final int len = source.readInt();
-		
+
 		if (reuse.length != len) {
 			reuse = new String[len];
 		}
-		
+
 		for (int i = 0; i < len; i++) {
 			reuse[i] = StringValue.readString(source);
 		}
-		
+
 		return reuse;
 	}
 
@@ -84,7 +84,7 @@ public class StringArraySerializer extends TypeSerializer<String[]>{
 	public void copy(DataInputView source, DataOutputView target) throws IOException {
 		final int len = source.readInt();
 		target.writeInt(len);
-		
+
 		for (int i = 0; i < len; i++) {
 			StringValue.copyString(source, target);
 		}

@@ -17,19 +17,19 @@ package eu.stratosphere.types.parser;
  * Parses a text field into a Double.
  */
 public class DoubleParser extends FieldParser<Double> {
-	
+
 	private double result;
-	
+
 	@Override
 	public int parseField(byte[] bytes, int startPos, int limit, char delim, Double reusable) {
-		
+
 		int i = startPos;
 		final byte delByte = (byte) delim;
-		
+
 		while (i < limit && bytes[i] != delByte) {
 			i++;
 		}
-		
+
 		String str = new String(bytes, startPos, i-startPos);
 		try {
 			this.result = Double.parseDouble(str);
@@ -39,7 +39,7 @@ public class DoubleParser extends FieldParser<Double> {
 			return -1;
 		}
 	}
-	
+
 	@Override
 	public Double createValue() {
 		return Double.valueOf(0.0);

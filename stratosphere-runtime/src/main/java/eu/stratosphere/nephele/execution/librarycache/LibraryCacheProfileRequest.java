@@ -24,7 +24,7 @@ import eu.stratosphere.core.io.StringRecord;
  * A library cache profile request includes a set of library names and issues a task manager to report which of these
  * libraries
  * are currently available in its local cache.
- * 
+ *
  */
 public class LibraryCacheProfileRequest implements IOReadableWritable {
 
@@ -35,7 +35,7 @@ public class LibraryCacheProfileRequest implements IOReadableWritable {
 
 	/**
 	 * Returns the names of libraries whose cache status is to be retrieved.
-	 * 
+	 *
 	 * @return the names of libraries whose cache status is to be retrieved
 	 */
 	public String[] getRequiredLibraries() {
@@ -44,7 +44,7 @@ public class LibraryCacheProfileRequest implements IOReadableWritable {
 
 	/**
 	 * Sets the names of libraries whose cache status is to be retrieved.
-	 * 
+	 *
 	 * @param requiredLibraries
 	 *        the names of libraries whose cache status is to be retrieved
 	 */

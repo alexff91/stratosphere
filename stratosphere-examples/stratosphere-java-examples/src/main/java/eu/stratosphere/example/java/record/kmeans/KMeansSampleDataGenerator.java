@@ -22,28 +22,28 @@ import java.util.Locale;
 import java.util.Random;
 
 public class KMeansSampleDataGenerator {
-	
+
 	static {
 		Locale.setDefault(Locale.US);
 	}
-	
+
 	private static final String CENTERS_FILE = "centers";
-	
+
 	private static final String POINTS_FILE = "points";
-	
+
 	private static final long DEFAULT_SEED = 4650285087650871364L;
-	
+
 	private static final double DEFAULT_VALUE_RANGE = 100.0;
-	
+
 	private static final double RELATIVE_STDDEV = 0.08;
-	
+
 	private static final int DIMENSIONALITY = 2;
-	
-	
+
+
 	private static final DecimalFormat FORMAT = new DecimalFormat("#0.00");
-	
+
 	private static final char DELIMITER = '|';
-	
+
 
 
 	public static void main(String[] args) throws IOException {
@@ -57,28 +57,28 @@ public class KMeansSampleDataGenerator {
 		// parse parameters
 		final int numDataPoints = Integer.parseInt(args[0]);
 		final int k = Integer.parseInt(args[1]);
-		
+
 		final double stddev = args.length > 2 ? Double.parseDouble(args[2]) : RELATIVE_STDDEV;
 		final double range = args.length > 3 ? Double.parseDouble(args[4]) : DEFAULT_VALUE_RANGE;
 		final long firstSeed = args.length > 4 ? Long.parseLong(args[4]) : DEFAULT_SEED;
-		
+
 		// generate the centers first
 		final double absoluteStdDev = stddev * range;
 		final Random random = new Random(firstSeed);
-		
-		
+
+
 		// the means for our gaussian distributions
 		final double[][] means = uniformRandomCenters(random, k, DIMENSIONALITY, range);
-		
+
 		// write the points out
 		BufferedWriter pointsOut = null;
 		try {
 			pointsOut = new BufferedWriter(new FileWriter(new File(POINTS_FILE)));
 			StringBuilder buffer = new StringBuilder();
-			
+
 			double[] point = new double[DIMENSIONALITY];
 			int nextCentroid = 0;
-			
+
 			for (int i = 1; i <= numDataPoints; i++) {
 				// generate a point for the current centroid
 				double[] centroid = means[nextCentroid];
@@ -95,15 +95,15 @@ public class KMeansSampleDataGenerator {
 			}
 		}
 
-		
+
 		// write the uniformly distributed centers to a file
 		BufferedWriter centersOut = null;
 		try {
 			centersOut = new BufferedWriter(new FileWriter(new File(CENTERS_FILE)));
 			StringBuilder buffer = new StringBuilder();
-			
+
 			double[][] centers = uniformRandomCenters(random, k, DIMENSIONALITY, range);
-			
+
 			for (int i = 0; i < k; i++) {
 				write(i + 1, centers[i], buffer, centersOut);
 			}
@@ -114,11 +114,11 @@ public class KMeansSampleDataGenerator {
 			}
 		}
 	}
-	
+
 	private static final double[][] uniformRandomCenters(Random rnd, int num, int dimensionality, double range) {
 		final double halfRange = range / 2;
 		final double[][] points = new double[num][dimensionality];
-		
+
 		for (int i = 0; i < num; i++) {
 			for (int dim = 0; dim < dimensionality; dim ++) {
 				points[i][dim] = (rnd.nextDouble() * range) - halfRange;
@@ -126,10 +126,10 @@ public class KMeansSampleDataGenerator {
 		}
 		return points;
 	}
-	
+
 	private static void write(long id, double[] coordinates, StringBuilder buffer, BufferedWriter out) throws IOException {
 		buffer.setLength(0);
-		
+
 		buffer.append(id);
 		buffer.append(DELIMITER);
 
@@ -138,7 +138,7 @@ public class KMeansSampleDataGenerator {
 			buffer.append(FORMAT.format(coordinates[j]));
 			buffer.append('|');
 		}
-		
+
 		out.write(buffer.toString());
 		out.newLine();
 	}

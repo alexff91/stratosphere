@@ -24,7 +24,7 @@ import eu.stratosphere.nephele.util.CommonTestUtils;
 
 /**
  * This class contains test which check the correct serialization/deserialization of Nephele's built-in data types.
- * 
+ *
  */
 public class TypeTest {
 
@@ -77,5 +77,5 @@ public class TypeTest {
 
 	}
 
-	
+
 }

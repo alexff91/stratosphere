@@ -29,7 +29,7 @@ public final class ClassUtils {
 
 	/**
 	 * Searches for a protocol class by its name and attempts to load it.
-	 * 
+	 *
 	 * @param className
 	 *        the name of the protocol class
 	 * @return an instance of the protocol class
@@ -48,7 +48,7 @@ public final class ClassUtils {
 
 	/**
 	 * Searches for a record class by its name and attempts to load it.
-	 * 
+	 *
 	 * @param className
 	 *        the name of the record class
 	 * @return an instance of the record class
@@ -58,20 +58,20 @@ public final class ClassUtils {
 	@SuppressWarnings("unchecked")
 	public static Class<? extends IOReadableWritable> getRecordByName(final String className)
 			throws ClassNotFoundException {
-//		
+//
 //		Class<?> clazz = Class.forName(className, true, getClassLoader());
 //		if (IOReadableWritable.class.isAssignableFrom(clazz)) {
 //			return clazz.asSubclass(IOReadableWritable.class);
 //		} else {
 //			return (Class<? extends IOReadableWritable>) clazz;
 //		}
-//		
+//
 		return (Class<? extends IOReadableWritable>) Class.forName(className, true, getClassLoader());
 	}
 
 	/**
 	 * Searches for a file system class by its name and attempts to load it.
-	 * 
+	 *
 	 * @param className
 	 *        the name of the file system class
 	 * @return an instance of the file system class

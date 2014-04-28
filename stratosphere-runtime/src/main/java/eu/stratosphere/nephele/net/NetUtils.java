@@ -14,7 +14,7 @@
 /**
  * This file is based on source code from the Hadoop Project (http://hadoop.apache.org/), licensed by the Apache
  * Software Foundation (ASF) under the Apache License, Version 2.0. See the NOTICE file distributed with this work for
- * additional information regarding copyright ownership. 
+ * additional information regarding copyright ownership.
  */
 
 package eu.stratosphere.nephele.net;
@@ -35,8 +35,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.net.SocketFactory;
 
@@ -119,7 +119,7 @@ public class NetUtils {
 	 * daemons, one can set up mappings from those hostnames to "localhost".
 	 * {@link NetUtils#getStaticResolution(String)} can be used to query for
 	 * the actual hostname.
-	 * 
+	 *
 	 * @param host
 	 * @param resolvedName
 	 */
@@ -132,7 +132,7 @@ public class NetUtils {
 	/**
 	 * Retrieves the resolved name for the passed host. The resolved name must
 	 * have been set earlier using {@link NetUtils#addStaticResolution(String, String)}
-	 * 
+	 *
 	 * @param host
 	 * @return the resolution
 	 */
@@ -147,7 +147,7 @@ public class NetUtils {
 	 * {@link NetUtils#addStaticResolution(String, String)}. The return
 	 * value is a List each element of which contains an array of String
 	 * of the form String[0]=hostname, String[1]=resolved-hostname
-	 * 
+	 *
 	 * @return the list of resolutions
 	 */
 	public static List<String[]> getAllStaticResolutions() {
@@ -169,7 +169,7 @@ public class NetUtils {
 	 * connect to the server. Server.getListenerAddress() is not correct when
 	 * the server binds to "0.0.0.0". This returns "127.0.0.1:port" when
 	 * the getListenerAddress() returns "0.0.0.0:port".
-	 * 
+	 *
 	 * @param server
 	 * @return socket address that a client can use to connect to the server.
 	 */
@@ -193,7 +193,7 @@ public class NetUtils {
 	 * <br>
 	 * Any socket created using socket factories returned by {@link #NetUtils},
 	 * must use this interface instead of {@link Socket#getInputStream()}.
-	 * 
+	 *
 	 * @see #getInputStream(Socket, long)
 	 * @param socket
 	 * @return InputStream for reading from the socket.
@@ -212,7 +212,7 @@ public class NetUtils {
 	 * <br>
 	 * Any socket created using socket factories returned by {@link #NetUtils},
 	 * must use this interface instead of {@link Socket#getInputStream()}.
-	 * 
+	 *
 	 * @see Socket#getChannel()
 	 * @param socket
 	 * @param timeout
@@ -238,7 +238,7 @@ public class NetUtils {
 	 * <br>
 	 * Any socket created using socket factories returned by {@link #NetUtils},
 	 * must use this interface instead of {@link Socket#getOutputStream()}.
-	 * 
+	 *
 	 * @see #getOutputStream(Socket, long)
 	 * @param socket
 	 * @return OutputStream for writing to the socket.
@@ -257,7 +257,7 @@ public class NetUtils {
 	 * <br>
 	 * Any socket created using socket factories returned by {@link #NetUtils},
 	 * must use this interface instead of {@link Socket#getOutputStream()}.
-	 * 
+	 *
 	 * @see Socket#getChannel()
 	 * @param socket
 	 * @param timeout
@@ -288,7 +288,7 @@ public class NetUtils {
 	/**
 	 * Given a string representation of a host, return its ip address
 	 * in textual presentation.
-	 * 
+	 *
 	 * @param name
 	 *        a string representation of a host:
 	 *        either a textual representation its IP address or its host name
@@ -310,7 +310,7 @@ public class NetUtils {
 	/**
 	 * Given a collection of string representation of hosts, return a list of
 	 * corresponding IP addresses in the textual representation.
-	 * 
+	 *
 	 * @param names
 	 *        a collection of string representations of hosts
 	 * @return a list of corresponding IP addresses in the string format

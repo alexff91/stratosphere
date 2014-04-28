@@ -22,11 +22,11 @@ import eu.stratosphere.core.io.IOReadableWritable;
  * merged by the system at the end of the job. The result can be read at the end
  * of the job from the calling client. Inspired by Hadoop/MapReduce counters.<br>
  * <br>
- * 
+ *
  * The type added to the accumulator might differ from the type returned. This
  * is the case e.g. for a set-accumulator: We add single objects, but the result
  * is a set of objects.
- * 
+ *
  * @param <V>
  *            Type of values that are added to the accumulator
  * @param <R>
@@ -54,7 +54,7 @@ public interface Accumulator<V, R> extends IOReadableWritable, Serializable {
 	/**
 	 * Used by system internally to merge the collected parts of an accumulator
 	 * at the end of the job.
-	 * 
+	 *
 	 * @param other
 	 *            reference to accumulator to merge in
 	 * @return Reference to this (for efficiency), after data from other were

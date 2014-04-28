@@ -32,52 +32,52 @@ import eu.stratosphere.types.Value;
 
 
 public class EventWithAggregatorsTest {
-	
+
 	private ClassLoader cl = ClassLoader.getSystemClassLoader();
-	
+
 	@Test
 	public void testSerializationOfEmptyEvent() {
 		AllWorkersDoneEvent e = new AllWorkersDoneEvent();
 		IterationEventWithAggregators deserialized = pipeThroughSerialization(e);
-		
+
 		Assert.assertEquals(0, deserialized.getAggregatorNames().length);
 		Assert.assertEquals(0, deserialized.getAggregates(cl).length);
 	}
-	
+
 	@Test
 	public void testSerializationOfEventWithAggregateValues() {
 		StringValue stringValue = new StringValue("test string");
 		LongValue longValue = new LongValue(68743254);
-		
+
 		String stringValueName = "stringValue";
 		String longValueName = "longValue";
-		
+
 		Aggregator<StringValue> stringAgg = new TestAggregator<StringValue>(stringValue);
 		Aggregator<LongValue> longAgg = new TestAggregator<LongValue>(longValue);
-		
+
 		Map<String, Aggregator<?>> aggMap = new HashMap<String,  Aggregator<?>>();
 		aggMap.put(stringValueName, stringAgg);
 		aggMap.put(longValueName, longAgg);
-		
+
 		Set<String> allNames = new HashSet<String>();
 		allNames.add(stringValueName);
 		allNames.add(longValueName);
-		
+
 		Set<Value> allVals = new HashSet<Value>();
 		allVals.add(stringValue);
 		allVals.add(longValue);
-		
+
 		// run the serialization
 		AllWorkersDoneEvent e = new AllWorkersDoneEvent(aggMap);
 		IterationEventWithAggregators deserialized = pipeThroughSerialization(e);
-		
+
 		// verify the result
 		String[] names = deserialized.getAggregatorNames();
 		Value[] aggregates = deserialized.getAggregates(cl);
-		
+
 		Assert.assertEquals(allNames.size(), names.length);
 		Assert.assertEquals(allVals.size(), aggregates.length);
-		
+
 		// check that all the correct names and values are returned
 		for (String s : names) {
 			allNames.remove(s);
@@ -85,27 +85,27 @@ public class EventWithAggregatorsTest {
 		for (Value v : aggregates) {
 			allVals.remove(v);
 		}
-		
+
 		Assert.assertTrue(allNames.isEmpty());
 		Assert.assertTrue(allVals.isEmpty());
 	}
-	
+
 	private IterationEventWithAggregators pipeThroughSerialization(IterationEventWithAggregators event) {
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			DataOutputStream out = new DataOutputStream(baos);
 			event.write(out);
 			out.flush();
-			
+
 			byte[] data = baos.toByteArray();
 			out.close();
 			baos.close();
-			
+
 			DataInputStream in = new DataInputStream(new ByteArrayInputStream(data));
 			IterationEventWithAggregators newEvent = event.getClass().newInstance();
 			newEvent.read(in);
 			in.close();
-			
+
 			return newEvent;
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
@@ -114,12 +114,12 @@ public class EventWithAggregatorsTest {
 			return null;
 		}
 	}
-	
+
 	private static class TestAggregator<T extends Value> implements Aggregator<T> {
 
 		private final T val;
-		
-		
+
+
 		public TestAggregator(T val) {
 			this.val = val;
 		}

@@ -28,41 +28,41 @@ import eu.stratosphere.util.MutableObjectIterator;
 /**
  * Implementation of an iterator that fetches a block of data into main memory and offers resettable
  * access to the data in that block.
- * 
+ *
  */
 public class BlockResettableMutableObjectIterator<T> extends AbstractBlockResettableIterator<T>
 	implements ResettableMutableObjectIterator<T>
 {
 	public static final Log LOG = LogFactory.getLog(BlockResettableMutableObjectIterator.class);
-	
+
 	// ------------------------------------------------------------------------
-	
+
 	private final MutableObjectIterator<T> input;
-	
+
 	private boolean readPhase;
-	
+
 	private boolean leftOverReturned;
-	
+
 	private boolean fullWriteBuffer;
-	
+
 	private boolean noMoreBlocks;
-	
+
 	private T leftOverRecord;
-	
+
 	// ------------------------------------------------------------------------
-	
+
 	public BlockResettableMutableObjectIterator(MemoryManager memoryManager,
 			MutableObjectIterator<T> input,	TypeSerializer<T> serializer,
 			int numMemoryPages, AbstractInvokable ownerTask)
 	throws MemoryAllocationException
 	{
 		super(serializer, memoryManager, numMemoryPages, ownerTask);
-		
+
 		this.input = input;
 		this.leftOverRecord = serializer.createInstance();
 		this.leftOverReturned = true;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
 
@@ -98,14 +98,14 @@ public class BlockResettableMutableObjectIterator<T> extends AbstractBlockResett
 			}
 		}
 	}
-	
+
 
 	public void reset() {
 		// a reset always goes to the read phase
 		this.readPhase = true;
 		super.reset();
 	}
-	
+
 
 	@Override
 	public boolean nextBlock() throws IOException {
@@ -113,7 +113,7 @@ public class BlockResettableMutableObjectIterator<T> extends AbstractBlockResett
 		if (this.closed) {
 			throw new IllegalStateException("Iterator has been closed.");
 		}
-		
+
 		// check whether more blocks are available
 		if (this.noMoreBlocks) {
 			return false;
@@ -121,7 +121,7 @@ public class BlockResettableMutableObjectIterator<T> extends AbstractBlockResett
 
 		// reset the views in the superclass
 		super.nextBlock();
-		
+
 		// if there is no leftover record, get a record such that we guarantee to advance
 		if (this.leftOverReturned || !this.fullWriteBuffer) {
 			if ((this.leftOverRecord = this.input.next(this.leftOverRecord)) != null) {
@@ -141,21 +141,21 @@ public class BlockResettableMutableObjectIterator<T> extends AbstractBlockResett
 		}
 		this.readPhase = false;
 		this.fullWriteBuffer = false;
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Checks, whether the input that is blocked by this iterator, has further elements
 	 * available. This method may be used to forecast (for example at the point where a
 	 * block is full) whether there will be more data (possibly in another block).
-	 * 
+	 *
 	 * @return True, if there will be more data, false otherwise.
 	 */
 	public boolean hasFurtherInput() {
-		return !this.noMoreBlocks; 
+		return !this.noMoreBlocks;
 	}
-	
+
 
 	public void close() {
 		// suggest that we are in the read phase. because nothing is in the current block,

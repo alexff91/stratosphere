@@ -24,13 +24,13 @@ import eu.stratosphere.nephele.taskmanager.TaskExecutionState;
  * The job manager protocol is implemented by the job manager and offers functionality
  * to task managers which allows them to register themselves, send heart beat messages
  * or to report the results of a task execution.
- * 
+ *
  */
 public interface JobManagerProtocol extends VersionedProtocol {
 
 	/**
 	 * Sends a heart beat to the job manager.
-	 * 
+	 *
 	 * @param instanceConnectionInfo
 	 *        the information the job manager requires to connect to the instance's task manager
 	 * @param hardwareDescription
@@ -43,7 +43,7 @@ public interface JobManagerProtocol extends VersionedProtocol {
 
 	/**
 	 * Reports an update of a task's execution state to the job manager.
-	 * 
+	 *
 	 * @param taskExecutionState
 	 *        the new task execution state
 	 * @throws IOException

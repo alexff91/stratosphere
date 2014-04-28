@@ -19,19 +19,19 @@ import java.nio.ByteOrder;
  * Utility class for native (unsafe) memory accesses.
  */
 public class MemoryUtils {
-	
+
 	/**
 	 * The "unsafe", which can be used to perform native memory accesses.
 	 */
 	@SuppressWarnings("restriction")
 	public static final sun.misc.Unsafe UNSAFE = getUnsafe();
-	
+
 	/**
 	 * The native byte order of the platform on which the system currently runs.
 	 */
 	public static final ByteOrder NATIVE_BYTE_ORDER = getByteOrder();
-	
-	
+
+
 	@SuppressWarnings("restriction")
 	private static sun.misc.Unsafe getUnsafe() {
 		try {
@@ -48,16 +48,16 @@ public class MemoryUtils {
 			throw new RuntimeException("Access to the unsafe handle is forbidden by the runtime.", e);
 		}
 	}
-	
+
 	@SuppressWarnings("restriction")
 	private static ByteOrder getByteOrder() {
 		final byte[] bytes = new byte[8];
 		final long value = 0x12345678900abdefL;
 		UNSAFE.putLong(bytes, (long) UNSAFE.arrayBaseOffset(byte[].class), value);
-		
+
 		final int lower = bytes[0] & 0xff;
 		final int higher = bytes[7] & 0xff;
-		
+
 		if (lower == 0x12 && higher == 0xef) {
 			return ByteOrder.BIG_ENDIAN;
 		} else if (lower == 0xef && higher == 0x12) {
@@ -66,7 +66,7 @@ public class MemoryUtils {
 			throw new RuntimeException("Unrecognized byte order.");
 		}
 	}
-	
-	
+
+
 	private MemoryUtils() {}
 }

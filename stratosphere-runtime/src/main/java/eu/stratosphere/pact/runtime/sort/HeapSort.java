@@ -14,7 +14,7 @@
 /**
  * This file is based on source code from the Hadoop Project (http://hadoop.apache.org/), licensed by the Apache
  * Software Foundation (ASF) under the Apache License, Version 2.0. See the NOTICE file distributed with this work for
- * additional information regarding copyright ownership. 
+ * additional information regarding copyright ownership.
  */
 
 package eu.stratosphere.pact.runtime.sort;
@@ -28,14 +28,16 @@ public final class HeapSort implements IndexedSorter {
 			if (idx + 1 < N && s.compare(b + idx, b + idx + 1) < 0) {
 				if (s.compare(b + i, b + idx + 1) < 0) {
 					s.swap(b + i, b + idx + 1);
-				} else
-					return;
+				} else {
+				return;
+				}
 				i = idx + 1;
 			} else if (s.compare(b + i, b + idx) < 0) {
 				s.swap(b + i, b + idx);
 				i = idx;
-			} else
-				return;
+			} else {
+			return;
+			}
 		}
 	}
 

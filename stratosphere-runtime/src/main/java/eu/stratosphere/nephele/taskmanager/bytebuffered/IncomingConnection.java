@@ -29,7 +29,7 @@ import eu.stratosphere.util.StringUtils;
 /**
  * This class represents an incoming data connection through which data streams are read and transformed into
  * {@link TransferEnvelope} objects. The source of the data stream is a TCP connection.
- * 
+ *
  */
 public class IncomingConnection {
 

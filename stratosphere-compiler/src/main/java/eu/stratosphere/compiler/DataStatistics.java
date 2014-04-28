@@ -24,23 +24,23 @@ import eu.stratosphere.api.common.io.statistics.BaseStatistics;
  * statistics.
  */
 public class DataStatistics {
-	
+
 	private final Map<String, BaseStatistics> baseStatisticsCache;
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
-	 * Creates a new statistics object, with an empty cache. 
+	 * Creates a new statistics object, with an empty cache.
 	 */
 	public DataStatistics() {
 		this.baseStatisticsCache = new HashMap<String, BaseStatistics>();
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Gets the base statistics for the input identified by the given identifier.
-	 *  
+	 *
 	 * @param inputIdentifier The identifier for the input.
 	 * @return The statistics that were cached for this input.
 	 */
@@ -49,10 +49,10 @@ public class DataStatistics {
 			return this.baseStatisticsCache.get(inputIdentifier);
 		}
 	}
-	
+
 	/**
 	 * Caches the given statistics. They are later retrievable under the given identifier.
-	 * 
+	 *
 	 * @param statistics The statistics to cache.
 	 * @param identifyer The identifier which may be later used to retrieve the statistics.
 	 */

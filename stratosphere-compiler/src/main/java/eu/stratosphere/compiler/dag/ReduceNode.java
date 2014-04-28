@@ -26,20 +26,20 @@ import eu.stratosphere.compiler.operators.OperatorDescriptorSingle;
  * The Optimizer representation of a <i>Reduce</i> operator.
  */
 public class ReduceNode extends SingleInputNode {
-	
+
 	private ReduceNode preReduceUtilityNode;
-	
+
 
 	public ReduceNode(ReduceOperatorBase<?> operator) {
 		super(operator);
-		
+
 		if (this.keys == null) {
 			// case of a key-less reducer. force a parallelism of 1
 			setDegreeOfParallelism(1);
 			setSubtasksPerInstance(1);
 		}
 	}
-	
+
 	public ReduceNode(ReduceNode reducerToCopyForCombiner) {
 		super(reducerToCopyForCombiner);
 	}
@@ -55,30 +55,30 @@ public class ReduceNode extends SingleInputNode {
 	public String getName() {
 		return "Reduce";
 	}
-	
+
 	@Override
 	protected List<OperatorDescriptorSingle> getPossibleProperties() {
 		OperatorDescriptorSingle props = this.keys == null ?
 			new AllGroupWithPartialPreGroupProperties() :
 			new GroupWithPartialPreGroupProperties(this.keys);
-		
+
 			return Collections.singletonList(props);
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 	//  Estimates
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	protected void computeOperatorSpecificDefaultEstimates(DataStatistics statistics) {
 		// no real estimates possible for a reducer.
 	}
-	
+
 	public ReduceNode getCombinerUtilityNode() {
 		if (this.preReduceUtilityNode == null) {
 			this.preReduceUtilityNode = new ReduceNode(this);
-			
-			// we conservatively assume the combiner returns the same data size as it consumes 
+
+			// we conservatively assume the combiner returns the same data size as it consumes
 			this.preReduceUtilityNode.estimatedOutputSize = getPredecessorNode().getEstimatedOutputSize();
 			this.preReduceUtilityNode.estimatedNumRecords = getPredecessorNode().getEstimatedNumRecords();
 		}

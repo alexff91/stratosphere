@@ -26,7 +26,7 @@ import eu.stratosphere.nephele.jobgraph.JobID;
  * This class implements an instance listener that can be used for unit tests.
  * <p>
  * This class is thread-safe.
- * 
+ *
  */
 public final class TestInstanceListener implements InstanceListener {
 
@@ -79,7 +79,7 @@ public final class TestInstanceListener implements InstanceListener {
 
 	/**
 	 * Returns the number of allocated resources for the job with the given job ID.
-	 * 
+	 *
 	 * @param jobID
 	 *        the job ID specifying the job
 	 * @return the number of allocated resources for the job
@@ -96,7 +96,7 @@ public final class TestInstanceListener implements InstanceListener {
 
 	/**
 	 * Returns a list of resources allocated for the given job.
-	 * 
+	 *
 	 * @param jobID
 	 *        the job ID specifying the job
 	 * @return the (possibly empty) list of resource allocated for the job

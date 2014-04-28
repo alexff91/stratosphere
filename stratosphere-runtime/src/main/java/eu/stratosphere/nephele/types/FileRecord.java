@@ -53,7 +53,7 @@ public class FileRecord implements IOReadableWritable {
 
 	/**
 	 * Append a range of bytes to the end of the given data.
-	 * 
+	 *
 	 * @param data
 	 *        the data to copy from
 	 * @param start

@@ -67,7 +67,7 @@ public class JobManagerProfilerImpl implements JobManagerProfiler, ProfilerImplP
 		final int handlerCount = GlobalConfiguration.getInteger(RPC_NUM_HANDLER_KEY, DEFAULT_NUM_HANLDER);
 		final int rpcPort = GlobalConfiguration.getInteger(ProfilingUtils.JOBMANAGER_RPC_PORT_KEY,
 			ProfilingUtils.JOBMANAGER_DEFAULT_RPC_PORT);
-		
+
 		final InetSocketAddress rpcServerAddress = new InetSocketAddress(jobManagerbindAddress, rpcPort);
 		Server profilingServerTmp = null;
 		try {

@@ -51,41 +51,41 @@ import eu.stratosphere.types.LongValue;
 /**
  */
 public class BranchingPlansCompilerTest extends CompilerTestBase {
-	
-	
+
+
 	@Test
 	public void testCostComputationWithMultipleDataSinks() {
 		final int SINKS = 5;
-	
+
 		try {
 			List<GenericDataSink> sinks = new ArrayList<GenericDataSink>();
-	
+
 			// construct the plan
 			final String out1Path = "file:///test/1";
 			final String out2Path = "file:///test/2";
-	
+
 			FileDataSource sourceA = new FileDataSource(DummyInputFormat.class, IN_FILE);
-	
+
 			MapOperator mapA = MapOperator.builder(IdentityMap.class).input(sourceA).name("Map A").build();
 			MapOperator mapC = MapOperator.builder(IdentityMap.class).input(mapA).name("Map C").build();
-	
+
 			FileDataSink[] sinkA = new FileDataSink[SINKS];
 			FileDataSink[] sinkB = new FileDataSink[SINKS];
 			for (int sink = 0; sink < SINKS; sink++) {
 				sinkA[sink] = new FileDataSink(DummyOutputFormat.class, out1Path, mapA, "Sink A:" + sink);
 				sinks.add(sinkA[sink]);
-	
+
 				sinkB[sink] = new FileDataSink(DummyOutputFormat.class, out2Path, mapC, "Sink B:" + sink);
 				sinks.add(sinkB[sink]);
 			}
-	
+
 			// return the PACT plan
 			Plan plan = new Plan(sinks, "Plans With Multiple Data Sinks");
-	
+
 			OptimizedPlan oPlan = compileNoStats(plan);
-	
+
 			// ---------- compile plan to nephele job graph to verify that no error is thrown ----------
-	
+
 			NepheleJobGraphGenerator jobGen = new NepheleJobGraphGenerator();
 			jobGen.compileJobGraph(oPlan);
 		} catch (Exception e) {
@@ -96,12 +96,12 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 
 
 	/**
-	 * 
+	 *
 	 * <pre>
-	 *                (SRC A)  
+	 *                (SRC A)
 	 *                   |
 	 *                (MAP A)
-	 *             /         \   
+	 *             /         \
 	 *          (MAP B)      (MAP C)
 	 *           /           /     \
 	 *        (SINK A)    (SINK B)  (SINK C)
@@ -114,45 +114,45 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 			final String out1Path = "file:///test/1";
 			final String out2Path = "file:///test/2";
 			final String out3Path = "file:///test/3";
-	
+
 			FileDataSource sourceA = new FileDataSource(DummyInputFormat.class, IN_FILE);
 
 			MapOperator mapA = MapOperator.builder(IdentityMap.class).input(sourceA).name("Map A").build();
 			MapOperator mapB = MapOperator.builder(IdentityMap.class).input(mapA).name("Map B").build();
 			MapOperator mapC = MapOperator.builder(IdentityMap.class).input(mapA).name("Map C").build();
-			
+
 			FileDataSink sinkA = new FileDataSink(DummyOutputFormat.class, out1Path, mapB, "Sink A");
 			FileDataSink sinkB = new FileDataSink(DummyOutputFormat.class, out2Path, mapC, "Sink B");
 			FileDataSink sinkC = new FileDataSink(DummyOutputFormat.class, out3Path, mapC, "Sink C");
-			
+
 			List<GenericDataSink> sinks = new ArrayList<GenericDataSink>();
 			sinks.add(sinkA);
 			sinks.add(sinkB);
 			sinks.add(sinkC);
-			
+
 			// return the PACT plan
 			Plan plan = new Plan(sinks, "Plans With Multiple Data Sinks");
-			
+
 			OptimizedPlan oPlan = compileNoStats(plan);
-			
+
 			// ---------- check the optimizer plan ----------
-			
+
 			// number of sinks
 			Assert.assertEquals("Wrong number of data sinks.", 3, oPlan.getDataSinks().size());
-			
+
 			// sinks contain all sink paths
 			Set<String> allSinks = new HashSet<String>();
 			allSinks.add(out1Path);
 			allSinks.add(out2Path);
 			allSinks.add(out3Path);
-			
+
 			for (SinkPlanNode n : oPlan.getDataSinks()) {
 				String path = ((FileDataSink) n.getSinkNode().getPactContract()).getFilePath();
 				Assert.assertTrue("Invalid data sink.", allSinks.remove(path));
 			}
-			
+
 			// ---------- compile plan to nephele job graph to verify that no error is thrown ----------
-			
+
 			NepheleJobGraphGenerator jobGen = new NepheleJobGraphGenerator();
 			jobGen.compileJobGraph(oPlan);
 		} catch (Exception e) {
@@ -160,7 +160,7 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 			Assert.fail(e.getMessage());
 		}
 	}
-	
+
 
 	/**
 	 * <pre>
@@ -180,7 +180,7 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 	 *                |  |  |   \          |  |  |  | MATCH6
 	 *                |  |  | MATCH2       |  |  |  |  |  |
 	 *                |  |  |  |   \       +--+--+--+--+--+
-	 *                |  |  |  | MATCH1            MAP 
+	 *                |  |  |  | MATCH1            MAP
 	 *                \  |  |  |  |  | /-----------/
 	 *                (DATA SOURCE ONE)
 	 * </pre>
@@ -190,7 +190,7 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 		try {
 			// construct the plan
 			FileDataSource sourceA = new FileDataSource(new DummyInputFormat(), IN_FILE);
-			
+
 			JoinOperator mat1 = JoinOperator.builder(new DummyMatchStub(), IntValue.class, 0, 0)
 				.input1(sourceA)
 				.input2(sourceA)
@@ -211,9 +211,9 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 				.input1(sourceA)
 				.input2(mat4)
 				.build();
-			
+
 			MapOperator ma = MapOperator.builder(new IdentityMap()).input(sourceA).build();
-			
+
 			JoinOperator mat6 = JoinOperator.builder(new DummyMatchStub(), IntValue.class, 0, 0)
 				.input1(ma)
 				.input2(ma)
@@ -234,21 +234,21 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 				.input1(ma)
 				.input2(mat9)
 				.build();
-			
+
 			CoGroupOperator co = CoGroupOperator.builder(new DummyCoGroupStub(), IntValue.class, 0, 0)
 				.input1(mat5)
 				.input2(mat10)
 				.build();
-	
+
 			FileDataSink sink = new FileDataSink(new DummyOutputFormat(), OUT_FILE, co);
-			
+
 			// return the PACT plan
 			Plan plan = new Plan(sink, "Branching Source Multiple Times");
-			
+
 			OptimizedPlan oPlan = compileNoStats(plan);
-			
+
 			NepheleJobGraphGenerator jobGen = new NepheleJobGraphGenerator();
-			
+
 			//Compile plan to verify that no error is thrown
 			jobGen.compileJobGraph(oPlan);
 		} catch (Exception e) {
@@ -256,9 +256,9 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 			Assert.fail(e.getMessage());
 		}
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * <pre>
 
 	 *              (SINK A)
@@ -283,11 +283,11 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 			final String out1Path = "file:///test/1";
 			final String out2Path = "file:///test/2";
 			final String out3Path = "file:///test/3";
-	
+
 			FileDataSource sourceA = new FileDataSource(new DummyInputFormat(), IN_FILE);
 			FileDataSource sourceB = new FileDataSource(new DummyInputFormat(), IN_FILE);
 			FileDataSource sourceC = new FileDataSource(new DummyInputFormat(), IN_FILE);
-			
+
 			CoGroupOperator co = CoGroupOperator.builder(new DummyCoGroupStub(), IntValue.class, 0,0)
 				.input1(sourceA)
 				.input2(sourceB)
@@ -308,39 +308,39 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 				.input1(r)
 				.input2(mat2)
 				.build();
-			
+
 			FileDataSink sinkA = new FileDataSink(new DummyOutputFormat(), out1Path, c);
 			FileDataSink sinkB = new FileDataSink(new DummyOutputFormat(), out2Path, mat2);
 			FileDataSink sinkC = new FileDataSink(new DummyOutputFormat(), out3Path, mat2);
-			
+
 			List<GenericDataSink> sinks = new ArrayList<GenericDataSink>();
 			sinks.add(sinkA);
 			sinks.add(sinkB);
 			sinks.add(sinkC);
-			
+
 			// return the PACT plan
 			Plan plan = new Plan(sinks, "Branching Plans With Multiple Data Sinks");
-			
+
 			OptimizedPlan oPlan = compileNoStats(plan);
-			
+
 			// ---------- check the optimizer plan ----------
-			
+
 			// number of sinks
 			Assert.assertEquals("Wrong number of data sinks.", 3, oPlan.getDataSinks().size());
-			
+
 			// sinks contain all sink paths
 			Set<String> allSinks = new HashSet<String>();
 			allSinks.add(out1Path);
 			allSinks.add(out2Path);
 			allSinks.add(out3Path);
-			
+
 			for (SinkPlanNode n : oPlan.getDataSinks()) {
 				String path = ((FileDataSink) n.getSinkNode().getPactContract()).getFilePath();
 				Assert.assertTrue("Invalid data sink.", allSinks.remove(path));
 			}
-			
+
 			// ---------- compile plan to nephele job graph to verify that no error is thrown ----------
-			
+
 			NepheleJobGraphGenerator jobGen = new NepheleJobGraphGenerator();
 			jobGen.compileJobGraph(oPlan);
 		} catch (Exception e) {
@@ -348,7 +348,7 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 			Assert.fail(e.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void testBranchEachContractType() {
 		try {
@@ -356,14 +356,14 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 			FileDataSource sourceA = new FileDataSource(new DummyInputFormat(), "file:///test/file1", "Source A");
 			FileDataSource sourceB = new FileDataSource(new DummyInputFormat(), "file:///test/file2", "Source B");
 			FileDataSource sourceC = new FileDataSource(new DummyInputFormat(), "file:///test/file3", "Source C");
-			
+
 			MapOperator map1 = MapOperator.builder(new IdentityMap()).input(sourceA).name("Map 1").build();
-			
+
 			ReduceOperator reduce1 = ReduceOperator.builder(new IdentityReduce(), IntValue.class, 0)
 				.input(map1)
 				.name("Reduce 1")
 				.build();
-			
+
 			JoinOperator match1 = JoinOperator.builder(new DummyMatchStub(), IntValue.class, 0, 0)
 				.input1(sourceB, sourceB, sourceC)
 				.input2(sourceC)
@@ -375,66 +375,66 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 				.input2(sourceB)
 				.name("CoGroup 1")
 				.build();
-			
+
 			CrossOperator cross1 = CrossOperator.builder(new DummyCrossStub())
 				.input1(reduce1)
 				.input2(cogroup1)
 				.name("Cross 1")
 				.build();
-			
-			
+
+
 			CoGroupOperator cogroup2 = CoGroupOperator.builder(new DummyCoGroupStub(), IntValue.class, 0,0)
 				.input1(cross1)
 				.input2(cross1)
 				.name("CoGroup 2")
 				.build();
-			
+
 			CoGroupOperator cogroup3 = CoGroupOperator.builder(new DummyCoGroupStub(), IntValue.class, 0,0)
 				.input1(map1)
 				.input2(match1)
 				.name("CoGroup 3")
 				.build();
-			
-			
+
+
 			MapOperator map2 = MapOperator.builder(new IdentityMap()).input(cogroup3).name("Map 2").build();
-			
+
 			CoGroupOperator cogroup4 = CoGroupOperator.builder(new DummyCoGroupStub(), IntValue.class, 0,0)
 				.input1(map2)
 				.input2(match1)
 				.name("CoGroup 4")
 				.build();
-			
+
 			CoGroupOperator cogroup5 = CoGroupOperator.builder(new DummyCoGroupStub(), IntValue.class, 0,0)
 				.input1(cogroup2)
 				.input2(cogroup1)
 				.name("CoGroup 5")
 				.build();
-			
+
 			CoGroupOperator cogroup6 = CoGroupOperator.builder(new DummyCoGroupStub(), IntValue.class, 0,0)
 				.input1(reduce1)
 				.input2(cogroup4)
 				.name("CoGroup 6")
 				.build();
-			
+
 			CoGroupOperator cogroup7 = CoGroupOperator.builder(new DummyCoGroupStub(), IntValue.class, 0,0)
 				.input1(cogroup5)
 				.input2(cogroup6)
 				.name("CoGroup 7")
 				.build();
-			
+
 			FileDataSink sink = new FileDataSink(new DummyOutputFormat(), OUT_FILE, cogroup7);
 	//		sink.addInput(sourceA);
 	//		sink.addInput(co3);
 	//		sink.addInput(co4);
 	//		sink.addInput(co1);
-			
+
 			// return the PACT plan
 			Plan plan = new Plan(sink, "Branching of each contract type");
-			
+
 			OptimizedPlan oPlan = compileNoStats(plan);
-			
+
 			NepheleJobGraphGenerator jobGen = new NepheleJobGraphGenerator();
-			
+
 			//Compile plan to verify that no error is thrown
 			jobGen.compileJobGraph(oPlan);
 		} catch (Exception e) {
@@ -442,7 +442,7 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 			Assert.fail(e.getMessage());
 		}
 	}
-	
+
 
 	@Test
 	public void testBranchingUnion() {
@@ -450,46 +450,46 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 			// construct the plan
 			FileDataSource source1 = new FileDataSource(new DummyInputFormat(), IN_FILE);
 			FileDataSource source2 = new FileDataSource(new DummyInputFormat(), IN_FILE);
-			
+
 			JoinOperator mat1 = JoinOperator.builder(new DummyMatchStub(), IntValue.class, 0, 0)
 				.input1(source1)
 				.input2(source2)
 				.name("Match 1")
 				.build();
-			
+
 			MapOperator ma1 = MapOperator.builder(new IdentityMap()).input(mat1).name("Map1").build();
-			
+
 			ReduceOperator r1 = ReduceOperator.builder(new IdentityReduce(), IntValue.class, 0)
 				.input(ma1)
 				.name("Reduce 1")
 				.build();
-			
+
 			ReduceOperator r2 = ReduceOperator.builder(new IdentityReduce(), IntValue.class, 0)
 				.input(mat1)
 				.name("Reduce 2")
 				.build();
-			
+
 			MapOperator ma2 = MapOperator.builder(new IdentityMap()).input(mat1).name("Map 2").build();
-			
+
 			MapOperator ma3 = MapOperator.builder(new IdentityMap()).input(ma2).name("Map 3").build();
-			
+
 			JoinOperator mat2 = JoinOperator.builder(new DummyMatchStub(), IntValue.class, 0, 0)
 				.input1(r1, r2, ma2, ma3)
 				.input2(ma2)
 				.name("Match 2")
 				.build();
 			mat2.setParameter(PactCompiler.HINT_LOCAL_STRATEGY, PactCompiler.HINT_LOCAL_STRATEGY_MERGE);
-			
+
 			FileDataSink sink = new FileDataSink(new DummyOutputFormat(), OUT_FILE, mat2);
-			
-			
+
+
 			// return the PACT plan
 			Plan plan = new Plan(sink, "Branching Union");
-			
+
 			OptimizedPlan oPlan = compileNoStats(plan);
-			
+
 			NepheleJobGraphGenerator jobGen = new NepheleJobGraphGenerator();
-			
+
 			//Compile plan to verify that no error is thrown
 			jobGen.compileJobGraph(oPlan);
 		} catch (Exception e) {
@@ -497,12 +497,12 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 			Assert.fail(e.getMessage());
 		}
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * <pre>
-	 *             (SRC A)     
-	 *             /     \      
+	 *             (SRC A)
+	 *             /     \
 	 *        (SINK A)    (SINK B)
 	 * </pre>
 	 */
@@ -512,38 +512,38 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 			// construct the plan
 			final String out1Path = "file:///test/1";
 			final String out2Path = "file:///test/2";
-	
+
 			FileDataSource sourceA = new FileDataSource(DummyInputFormat.class, IN_FILE);
-			
+
 			FileDataSink sinkA = new FileDataSink(DummyOutputFormat.class, out1Path, sourceA);
 			FileDataSink sinkB = new FileDataSink(DummyOutputFormat.class, out2Path, sourceA);
-			
+
 			List<GenericDataSink> sinks = new ArrayList<GenericDataSink>();
 			sinks.add(sinkA);
 			sinks.add(sinkB);
-			
+
 			// return the PACT plan
 			Plan plan = new Plan(sinks, "Plans With Multiple Data Sinks");
-			
+
 			OptimizedPlan oPlan = compileNoStats(plan);
-			
+
 			// ---------- check the optimizer plan ----------
-			
+
 			// number of sinks
 			Assert.assertEquals("Wrong number of data sinks.", 2, oPlan.getDataSinks().size());
-			
+
 			// sinks contain all sink paths
 			Set<String> allSinks = new HashSet<String>();
 			allSinks.add(out1Path);
 			allSinks.add(out2Path);
-			
+
 			for (SinkPlanNode n : oPlan.getDataSinks()) {
 				String path = ((FileDataSink) n.getSinkNode().getPactContract()).getFilePath();
 				Assert.assertTrue("Invalid data sink.", allSinks.remove(path));
 			}
-			
+
 			// ---------- compile plan to nephele job graph to verify that no error is thrown ----------
-			
+
 			NepheleJobGraphGenerator jobGen = new NepheleJobGraphGenerator();
 			jobGen.compileJobGraph(oPlan);
 		} catch (Exception e) {
@@ -551,9 +551,9 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 			Assert.fail(e.getMessage());
 		}
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * <pre>
 	 *           (SINK A)    (SINK B)
 	 *             /           /
@@ -568,17 +568,17 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 
 		FileDataSource sourceA = new FileDataSource(DummyInputFormat.class, IN_FILE);
 		FileDataSource sourceB = new FileDataSource(DummyInputFormat.class, IN_FILE);
-		
+
 		FileDataSink sinkA = new FileDataSink(DummyOutputFormat.class, out1Path, sourceA);
 		FileDataSink sinkB = new FileDataSink(DummyOutputFormat.class, out2Path, sourceB);
-		
+
 		List<GenericDataSink> sinks = new ArrayList<GenericDataSink>();
 		sinks.add(sinkA);
 		sinks.add(sinkB);
-		
+
 		// return the PACT plan
 		Plan plan = new Plan(sinks, "Disjoint plan with multiple data sinks");
-		
+
 		try {
 			compileNoStats(plan);
 			Assert.fail("Plan must not be compilable, it contains disjoint sub-plans.");
@@ -587,15 +587,15 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 			// as expected
 		}
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * <pre>
 	 *     (SINK 3) (SINK 1)   (SINK 2) (SINK 4)
 	 *         \     /             \     /
 	 *         (SRC A)             (SRC B)
 	 * </pre>
-	 * 
+	 *
 	 * NOTE: this case is currently not caught by the compiler. we should enable the test once it is caught.
 	 */
 //	@Test (Deactivated for now because of unsupported feature)
@@ -608,22 +608,22 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 
 		FileDataSource sourceA = new FileDataSource(DummyInputFormat.class, IN_FILE);
 		FileDataSource sourceB = new FileDataSource(DummyInputFormat.class, IN_FILE);
-		
+
 		FileDataSink sink1 = new FileDataSink(DummyOutputFormat.class, out1Path, sourceA, "1");
 		FileDataSink sink2 = new FileDataSink(DummyOutputFormat.class, out2Path, sourceB, "2");
 		FileDataSink sink3 = new FileDataSink(DummyOutputFormat.class, out3Path, sourceA, "3");
 		FileDataSink sink4 = new FileDataSink(DummyOutputFormat.class, out4Path, sourceB, "4");
-		
-		
+
+
 		List<GenericDataSink> sinks = new ArrayList<GenericDataSink>();
 		sinks.add(sink1);
 		sinks.add(sink2);
 		sinks.add(sink3);
 		sinks.add(sink4);
-		
+
 		// return the PACT plan
 		Plan plan = new Plan(sinks, "Disjoint plan with multiple data sinks and branches");
-		
+
 		try {
 			compileNoStats(plan);
 			Assert.fail("Plan must not be compilable, it contains disjoint sub-plans.");
@@ -632,31 +632,31 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 			// as expected
 		}
 	}
-	
+
 	@Test
 	public void testBranchAfterIteration() {
 		FileDataSource sourceA = new FileDataSource(DummyInputFormat.class, IN_FILE, "Source 2");
-		
+
 		BulkIteration iteration = new BulkIteration("Loop");
 		iteration.setInput(sourceA);
 		iteration.setMaximumNumberOfIterations(10);
-		
+
 		MapOperator mapper = MapOperator.builder(IdentityMap.class).name("Mapper").input(iteration.getPartialSolution()).build();
 		iteration.setNextPartialSolution(mapper);
-		
+
 		FileDataSink sink1 = new FileDataSink(DummyOutputFormat.class, OUT_FILE, iteration, "Sink 1");
-		
+
 		MapOperator postMap = MapOperator.builder(IdentityMap.class).name("Post Iteration Mapper")
 				.input(iteration).build();
-		
+
 		FileDataSink sink2 = new FileDataSink(DummyOutputFormat.class, OUT_FILE, postMap, "Sink 2");
-		
+
 		List<GenericDataSink> sinks = new ArrayList<GenericDataSink>();
 		sinks.add(sink1);
 		sinks.add(sink2);
-		
+
 		Plan plan = new Plan(sinks);
-		
+
 		try {
 			compileNoStats(plan);
 		}

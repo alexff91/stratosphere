@@ -25,9 +25,9 @@ import eu.stratosphere.types.CharValue;
 public class CharValueSerializer extends TypeSerializer<CharValue> {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	public static final CharValueSerializer INSTANCE = new CharValueSerializer();
-	
+
 	@Override
 	public CharValue createInstance() {
 		return new CharValue();

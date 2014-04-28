@@ -28,21 +28,21 @@ public interface Task {
 
 	/**
 	 * Returns the ID of the job this task belongs to.
-	 * 
+	 *
 	 * @return the ID of the job this task belongs to
 	 */
 	JobID getJobID();
 
 	/**
 	 * Returns the ID of this task.
-	 * 
+	 *
 	 * @return the ID of this task
 	 */
 	ExecutionVertexID getVertexID();
 
 	/**
 	 * Returns the environment associated with this task.
-	 * 
+	 *
 	 * @return the environment associated with this task
 	 */
 	Environment getEnvironment();
@@ -54,7 +54,7 @@ public interface Task {
 
 	/**
 	 * Checks if the state of the thread which is associated with this task is <code>TERMINATED</code>.
-	 * 
+	 *
 	 * @return <code>true</code> if the state of this thread which is associated with this task is
 	 *         <code>TERMINATED</code>, <code>false</code> otherwise
 	 */
@@ -77,7 +77,7 @@ public interface Task {
 
 	/**
 	 * Registers the task manager profiler with the task.
-	 * 
+	 *
 	 * @param taskManagerProfiler
 	 *        the task manager profiler
 	 * @param jobConfiguration
@@ -87,7 +87,7 @@ public interface Task {
 
 	/**
 	 * Unregisters the task from the central memory manager.
-	 * 
+	 *
 	 * @param memoryManager
 	 *        the central memory manager
 	 */
@@ -95,7 +95,7 @@ public interface Task {
 
 	/**
 	 * Unregisters the task from the task manager profiler.
-	 * 
+	 *
 	 * @param taskManagerProfiler
 	 *        the task manager profiler
 	 */
@@ -103,7 +103,7 @@ public interface Task {
 
 	/**
 	 * Returns the current execution state of the task.
-	 * 
+	 *
 	 * @return the current execution state of the task
 	 */
 	ExecutionState getExecutionState();

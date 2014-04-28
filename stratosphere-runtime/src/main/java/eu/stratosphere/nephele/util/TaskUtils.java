@@ -18,7 +18,7 @@ import eu.stratosphere.nephele.template.AbstractInvokable;
 
 /**
  * This class implements several convenience methods to determine properties of Nephele task classes.
- * 
+ *
  */
 public class TaskUtils {
 
@@ -30,7 +30,7 @@ public class TaskUtils {
 
 	/**
 	 * Checks if a task is declared to be stateless.
-	 * 
+	 *
 	 * @param taskClass
 	 *        the class of the task to check
 	 * @return <code>true</code> if the given class is declared to be stateless, <code>false</code> otherwise

@@ -17,7 +17,7 @@ package eu.stratosphere.nephele.instance;
  * A DummyInstance is a stub implementation of the {@link AbstractInstance} interface.
  * Dummy instances are used to plan a job execution but must be replaced with
  * concrete instances before the job execution starts.
- * 
+ *
  */
 public class DummyInstance extends AbstractInstance {
 
@@ -32,7 +32,7 @@ public class DummyInstance extends AbstractInstance {
 
 	/**
 	 * Constructs a new dummy instance of the given instance type.
-	 * 
+	 *
 	 * @param type
 	 *        the type of the new dummy instance
 	 * @param id

@@ -18,13 +18,13 @@ import eu.stratosphere.api.java.DataSet;
 import eu.stratosphere.api.java.ExecutionEnvironment;
 import eu.stratosphere.api.java.aggregation.Aggregations;
 import eu.stratosphere.api.java.functions.FlatMapFunction;
-import eu.stratosphere.api.java.tuple.*;
+import eu.stratosphere.api.java.tuple.Tuple2;
 import eu.stratosphere.util.Collector;
 
 
 @SuppressWarnings("serial")
 public class WordCount {
-	
+
 	public static final class Tokenizer extends FlatMapFunction<String, Tuple2<String, Integer>> {
 
 		@Override
@@ -37,25 +37,25 @@ public class WordCount {
 			}
 		}
 	}
-	
-	
+
+
 	public static void main(String[] args) throws Exception {
 		if (args.length < 2) {
 			System.err.println("Usage: WordCount <input path> <result path>");
 			return;
 		}
-		
+
 		final String input = args[0];
 		final String output = args[1];
-		
+
 		final ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
-		
+
 		DataSet<String> text = env.readTextFile(input);
-		
+
 		DataSet<Tuple2<String, Integer>> words = text.flatMap(new Tokenizer());
-		
+
 		DataSet<Tuple2<String, Integer>> result = words.groupBy(0).aggregate(Aggregations.SUM, 1);
-		
+
 		result.writeAsText(output);
 		env.execute("Word Count");
 	}

@@ -31,21 +31,21 @@ import eu.stratosphere.util.MutableObjectIterator;
  * <p>
  * The ReduceTask creates a iterator over all records from its input. The iterator returns all records grouped by their
  * key. The iterator is handed to the <code>reduce()</code> method of the ReduceFunction.
- * 
+ *
  * @see GenericGroupReduce
  */
 public class ReduceDriver<IT, OT> implements PactDriver<GenericGroupReduce<IT, OT>, OT> {
-	
+
 	private static final Log LOG = LogFactory.getLog(ReduceDriver.class);
 
 	private PactTaskContext<GenericGroupReduce<IT, OT>, OT> taskContext;
-	
+
 	private MutableObjectIterator<IT> input;
 
 	private TypeSerializer<IT> serializer;
 
 	private TypeComparator<IT> comparator;
-	
+
 	private volatile boolean running;
 
 	// ------------------------------------------------------------------------
@@ -55,7 +55,7 @@ public class ReduceDriver<IT, OT> implements PactDriver<GenericGroupReduce<IT, O
 		this.taskContext = context;
 		this.running = true;
 	}
-	
+
 	@Override
 	public int getNumberOfInputs() {
 		return 1;

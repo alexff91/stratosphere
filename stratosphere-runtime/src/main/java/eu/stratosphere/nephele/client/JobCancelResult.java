@@ -17,14 +17,14 @@ package eu.stratosphere.nephele.client;
  * A <code>JobCancelResult</code> is used to report the result
  * of a job cancel request. It contains a return code and a description.
  * In case of a submission error the description includes an error message.
- * 
+ *
  */
 public class JobCancelResult extends AbstractJobResult {
 
 	/**
 	 * Constructs a new <code>JobCancelResult</code> object with
 	 * the given return code.
-	 * 
+	 *
 	 * @param returnCode
 	 *        the return code of the submission result.
 	 * @param description

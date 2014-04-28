@@ -54,7 +54,7 @@ public abstract class AbstractOutputChannelContext implements OutputChannelConte
 	/**
 	 * Processes an event received from the framework in a synchronous fashion, i.e. the event processing is done by the
 	 * thread the event is destined for (usually the task thread).
-	 * 
+	 *
 	 * @param event
 	 *        the event to be processed
 	 */
@@ -66,7 +66,7 @@ public abstract class AbstractOutputChannelContext implements OutputChannelConte
 	/**
 	 * Processes an event received from the framework in an asynchronous fashion, i.e. the event processing is done by
 	 * the thread which delivers the event.
-	 * 
+	 *
 	 * @param event
 	 *        the event to be processed
 	 */

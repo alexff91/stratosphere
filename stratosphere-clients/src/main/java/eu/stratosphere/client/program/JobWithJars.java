@@ -25,33 +25,33 @@ import java.util.List;
 import eu.stratosphere.api.common.Plan;
 
 public class JobWithJars {
-	
+
 	private Plan plan;
-	
+
 	private List<File> jarFiles;
-	
+
 	private ClassLoader userCodeClassLoader;
 
-	
+
 	public JobWithJars(Plan plan, List<String> jarFiles) throws IOException {
 		this.plan = plan;
 		this.jarFiles = new ArrayList<File>(jarFiles.size());
-		
+
 		for (String jar: jarFiles) {
 			File file = new File(jar);
 			checkJarFile(file);
 			this.jarFiles.add(file);
 		}
 	}
-	
+
 	public JobWithJars(Plan plan, String jarFile) throws IOException {
 		this.plan = plan;
-		
+
 		File file = new File(jarFile);
 		checkJarFile(file);
 		this.jarFiles = Collections.singletonList(file);
 	}
-	
+
 	JobWithJars(Plan plan, List<File> jarFiles, ClassLoader userCodeClassLoader) {
 		this.plan = plan;
 		this.jarFiles = jarFiles;
@@ -71,20 +71,20 @@ public class JobWithJars {
 	public List<File> getJarFiles() {
 		return this.jarFiles;
 	}
-	
+
 	/**
 	 * Gets the {@link java.lang.ClassLoader} that must be used to load user code classes.
-	 * 
+	 *
 	 * @return The user code ClassLoader.
 	 */
 	public ClassLoader getUserCodeClassLoader() {
 		if (this.userCodeClassLoader == null) {
 			this.userCodeClassLoader = buildUserCodeClassLoader(jarFiles, getClass().getClassLoader());
 		}
-		
+
 		return this.userCodeClassLoader;
 	}
-	
+
 
 	public static void checkJarFile(File jar) throws IOException {
 		if (!jar.exists()) {
@@ -95,9 +95,9 @@ public class JobWithJars {
 		}
 		// TODO: Check if proper JAR file
 	}
-	
+
 	static ClassLoader buildUserCodeClassLoader(List<File> jars, ClassLoader parent) {
-		
+
 		URL[] urls = new URL[jars.size()];
 		try {
 			// add the nested jars
@@ -109,7 +109,7 @@ public class JobWithJars {
 			// this should not happen, as all files should have been checked before for proper paths and existence.
 			throw new RuntimeException("Cannot create class loader for program jar files: " + e.getMessage(), e);
 		}
-		
+
 		return new URLClassLoader(urls, parent);
 	}
 }

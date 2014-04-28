@@ -20,10 +20,10 @@ package eu.stratosphere.types;
 public class KeyFieldOutOfBoundsException extends RuntimeException
 {
 	/**
-	 * UID for serialization interoperability. 
+	 * UID for serialization interoperability.
 	 */
 	private static final long serialVersionUID = 1538404143052384932L;
-	
+
 	private final int fieldNumber;
 
 	/**
@@ -44,7 +44,7 @@ public class KeyFieldOutOfBoundsException extends RuntimeException
 		super(message);
 		this.fieldNumber = -1;
 	}
-	
+
 	/**
      * Constructs an {@code KeyFieldOutOfBoundsException} with a default message, referring to
      * given field number as the null key field.
@@ -55,11 +55,11 @@ public class KeyFieldOutOfBoundsException extends RuntimeException
 		super("Field " + fieldNumber + " is accessed for a key, but out of bounds in the record.");
 		this.fieldNumber = fieldNumber;
 	}
-	
+
 	/**
 	 * Gets the field number that was attempted to access. If the number is not set, this method returns
 	 * {@code -1}.
-	 * 
+	 *
 	 * @return The field number that was attempted to access, or {@code -1}, if not set.
 	 */
 	public int getFieldNumber() {

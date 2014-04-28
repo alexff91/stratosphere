@@ -17,7 +17,7 @@ package eu.stratosphere.nephele.instance;
  * This factory produces {@link InstanceTypeDescription} objects.
  * <p>
  * This class is thread-safe.
- * 
+ *
  */
 public class InstanceTypeDescriptionFactory {
 
@@ -29,7 +29,7 @@ public class InstanceTypeDescriptionFactory {
 
 	/**
 	 * Constructs a new {@link InstaceTypeDescription} object.
-	 * 
+	 *
 	 * @param instanceType
 	 *        the instance type
 	 * @param hardwareDescription

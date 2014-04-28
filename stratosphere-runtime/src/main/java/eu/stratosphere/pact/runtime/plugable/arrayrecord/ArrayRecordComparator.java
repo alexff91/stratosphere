@@ -30,57 +30,57 @@ import eu.stratosphere.util.InstantiationUtil;
 
 /**
  * Implementation of the {@link TypeComparator} interface for the pact record. Instances of this class
- * are parameterized with which fields are relevant to the comparison. 
+ * are parameterized with which fields are relevant to the comparison.
  */
 public final class ArrayRecordComparator extends TypeComparator<Value[]> {
-	
+
 	/**
 	 * A sequence of prime numbers to be used for salting the computed hash values.
-	 * Based on some empirical evidence, we are using a 32-element subsequence of the  
+	 * Based on some empirical evidence, we are using a 32-element subsequence of the
 	 * OEIS sequence #A068652 (numbers such that every cyclic permutation is a prime).
-	 * 
+	 *
 	 * @see: http://en.wikipedia.org/wiki/List_of_prime_numbers
 	 * @see: http://oeis.org/A068652
 	 */
-	private static final int[] HASH_SALT = new int[] { 
-		73   , 79   , 97   , 113  , 131  , 197  , 199  , 311   , 
-		337  , 373  , 719  , 733  , 919  , 971  , 991  , 1193  , 
-		1931 , 3119 , 3779 , 7793 , 7937 , 9311 , 9377 , 11939 , 
+	private static final int[] HASH_SALT = new int[] {
+		73   , 79   , 97   , 113  , 131  , 197  , 199  , 311   ,
+		337  , 373  , 719  , 733  , 919  , 971  , 991  , 1193  ,
+		1931 , 3119 , 3779 , 7793 , 7937 , 9311 , 9377 , 11939 ,
 		19391, 19937, 37199, 39119, 71993, 91193, 93719, 93911 };
-	
-	
+
+
 	private final ArrayRecordSerializer serializer;
-	
+
 	private final int[] keyFields;
-	
+
 	private final Key[] keyHolders;
-	
+
 	private Value[] temp1, temp2;
-	
+
 	private final boolean[] ascending;
-	
+
 	private final int[] normalizedKeyLengths;
-	
+
 	private final int numLeadingNormalizableKeys;
-	
+
 	private final int normalizableKeyPrefixLen;
-	
+
 
 	/**
 	 * Creates a new comparator that compares array records by the subset of fields as described
 	 * by the given key positions and types. All order comparisons will assume ascending order on all fields.
-	 * 
+	 *
 	 * @param keyFields The positions of the key fields.
 	 * @param keyTypes The types (classes) of the key fields.
 	 */
 	public ArrayRecordComparator(int[] keyFields, Class<? extends Key>[] keyTypes) {
 		this(keyFields, keyTypes, null);
 	}
-	
+
 	/**
 	 * Creates a new comparator that compares records by the subset of fields as described
 	 * by the given key positions and types.
-	 * 
+	 *
 	 * @param keyFields The positions of the key fields.
 	 * @param keyTypes The types (classes) of the key fields.
 	 * @param sortOrder The direction for sorting. A value of <i>true</i> indicates ascending for an attribute,
@@ -90,7 +90,7 @@ public final class ArrayRecordComparator extends TypeComparator<Value[]> {
 	public ArrayRecordComparator(int[] keyFields, Class<? extends Key>[] keyTypes, boolean[] sortDirection) {
 		this.serializer = new ArrayRecordSerializer(keyTypes);
 		this.keyFields = keyFields;
-		
+
 		// instantiate fields to extract keys into
 		this.keyHolders = new Key[keyTypes.length];
 		for (int i = 0; i < keyTypes.length; i++) {
@@ -99,7 +99,7 @@ public final class ArrayRecordComparator extends TypeComparator<Value[]> {
 			}
 			this.keyHolders[i] = InstantiationUtil.instantiate(keyTypes[i], Key.class);
 		}
-		
+
 		// set up auxiliary fields for normalized key support
 		this.normalizedKeyLengths = new int[keyFields.length];
 		int nKeys = 0;
@@ -118,7 +118,7 @@ public final class ArrayRecordComparator extends TypeComparator<Value[]> {
 				nKeys++;
 				final int len = ((NormalizableKey) k).getMaxNormalizedKeyLen();
 				if (len < 0) {
-					throw new RuntimeException("Data type " + k.getClass().getName() + 
+					throw new RuntimeException("Data type " + k.getClass().getName() +
 						" specifies an invalid length for the normalized key: " + len);
 				}
 				this.normalizedKeyLengths[i] = len;
@@ -127,15 +127,16 @@ public final class ArrayRecordComparator extends TypeComparator<Value[]> {
 					nKeyLen = Integer.MAX_VALUE;
 					break;
 				}
+			} else {
+			break;
 			}
-			else break;
 		}
 		this.numLeadingNormalizableKeys = nKeys;
 		this.normalizableKeyPrefixLen = nKeyLen;
-		
+
 		this.temp1 = this.serializer.createInstance();
 		this.temp2 = this.serializer.createInstance();
-		
+
 		if (sortDirection != null) {
 			this.ascending = sortDirection;
 		} else {
@@ -145,10 +146,10 @@ public final class ArrayRecordComparator extends TypeComparator<Value[]> {
 			}
 		}
 	}
-	
+
 	/**
 	 * Copy constructor.
-	 * 
+	 *
 	 * @param keyFields
 	 * @param keys
 	 * @param normalKeyLengths
@@ -159,7 +160,7 @@ public final class ArrayRecordComparator extends TypeComparator<Value[]> {
 		this.serializer = toCopy.serializer;
 		this.keyFields = toCopy.keyFields;
 		this.keyHolders = new Key[toCopy.keyHolders.length];
-		
+
 		try {
 			for (int i = 0; i < this.keyHolders.length; i++) {
 				this.keyHolders[i] = toCopy.keyHolders[i].getClass().newInstance();
@@ -168,18 +169,18 @@ public final class ArrayRecordComparator extends TypeComparator<Value[]> {
 			// this should never happen, because the classes have been instantiated before. Report for debugging.
 			throw new RuntimeException("Could not instantiate key classes when duplicating RecordComparator.", ex);
 		}
-		
+
 		this.normalizedKeyLengths = toCopy.normalizedKeyLengths;
 		this.numLeadingNormalizableKeys = toCopy.numLeadingNormalizableKeys;
 		this.normalizableKeyPrefixLen = toCopy.normalizableKeyPrefixLen;
 		this.ascending = toCopy.ascending;
-		
+
 		this.temp1 = this.serializer.createInstance();
 		this.temp2 = this.serializer.createInstance();
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 
 	@Override
 	public int hash(Value[] object) {
@@ -214,27 +215,29 @@ public final class ArrayRecordComparator extends TypeComparator<Value[]> {
 	public boolean equalToReference(Value[] candidate) {
 		for (int i = 0; i < this.keyFields.length; i++) {
 			final Value k = candidate[this.keyFields[i]];
-			if (k == null)
-				throw new NullKeyFieldException(this.keyFields[i]);
-			else if (!k.equals(this.keyHolders[i]))
-				return false;
+			if (k == null) {
+			throw new NullKeyFieldException(this.keyFields[i]);
+			} else if (!k.equals(this.keyHolders[i])) {
+			return false;
+			}
 		}
 		return true;
 	}
-	
+
 
 	@Override
 	public int compareToReference(TypeComparator<Value[]> referencedAccessors) {
 		final ArrayRecordComparator pra = (ArrayRecordComparator) referencedAccessors;
-		
+
 		for (int i = 0; i < this.keyFields.length; i++) {
 			final int comp = pra.keyHolders[i].compareTo(this.keyHolders[i]);
-			if (comp != 0)
-				return this.ascending[i] ? comp : -comp;
+			if (comp != 0) {
+			return this.ascending[i] ? comp : -comp;
+			}
 		}
 		return 0;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.stratosphere.pact.runtime.plugable.TypeAccessors#compare(eu.stratosphere.nephele.services.memorymanager.DataInputView, eu.stratosphere.nephele.services.memorymanager.DataInputView)
 	 */
@@ -242,21 +245,23 @@ public final class ArrayRecordComparator extends TypeComparator<Value[]> {
 	public int compare(DataInputView source1, DataInputView source2) throws IOException {
 		this.temp1 = this.serializer.deserialize(this.temp1, source1);
 		this.temp2 = this.serializer.deserialize(this.temp2, source2);
-		
+
 		for (int i = 0; i < this.keyFields.length; i++) {
 			final Key k1 = (Key) this.temp1[this.keyFields[i]];
 			final Key k2 = (Key) this.temp2[this.keyFields[i]];
-			
-			if (k1 == null || k2 == null)
-				throw new NullKeyFieldException(this.keyFields[i]);
-			
+
+			if (k1 == null || k2 == null) {
+			throw new NullKeyFieldException(this.keyFields[i]);
+			}
+
 			final int comp = k1.compareTo(k2);
-			if (comp != 0)
-				return this.ascending[i] ? comp : -comp;
+			if (comp != 0) {
+			return this.ascending[i] ? comp : -comp;
+			}
 		}
 		return 0;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
 
@@ -270,7 +275,7 @@ public final class ArrayRecordComparator extends TypeComparator<Value[]> {
 	public int getNormalizeKeyLen() {
 		return this.normalizableKeyPrefixLen;
 	}
-	
+
 
 	@Override
 	public boolean isNormalizedKeyPrefixOnly(int keyBytes) {
@@ -288,7 +293,7 @@ public final class ArrayRecordComparator extends TypeComparator<Value[]> {
 		try {
 			for (; i < this.numLeadingNormalizableKeys & numBytes > 0; i++)
 			{
-				int len = this.normalizedKeyLengths[i]; 
+				int len = this.normalizedKeyLengths[i];
 				len = numBytes >= len ? len : numBytes;
 				((NormalizableKey) record[this.keyFields[i]]).copyNormalizedKey(target, offset, len);
 				numBytes -= len;
@@ -299,7 +304,7 @@ public final class ArrayRecordComparator extends TypeComparator<Value[]> {
 			throw new NullKeyFieldException(this.keyFields[i]);
 		}
 	}
-	
+
 //	/* (non-Javadoc)
 //	 * @see eu.stratosphere.pact.generic.types.TypeComparator#readFromNormalizedKey(java.lang.Object, byte[], int, int)
 //	 */
@@ -329,9 +334,9 @@ public final class ArrayRecordComparator extends TypeComparator<Value[]> {
 	public boolean invertNormalizedKey() {
 		return !this.ascending[0];
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 
 	@Override
 	public boolean supportsSerializationWithKeyNormalization() {
@@ -353,7 +358,7 @@ public final class ArrayRecordComparator extends TypeComparator<Value[]> {
 	public Value[] readWithKeyDenormalization(Value[] reuse, DataInputView source) {
 		throw new UnsupportedOperationException();
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
 
@@ -361,15 +366,15 @@ public final class ArrayRecordComparator extends TypeComparator<Value[]> {
 	public ArrayRecordComparator duplicate() {
 		return new ArrayRecordComparator(this);
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 	//                           Non Standard Comparator Methods
 	// --------------------------------------------------------------------------------------------
-	
+
 	public final int[] getKeyPositions() {
 		return this.keyFields;
 	}
-	
+
 	public final Class<? extends Key>[] getKeyTypes() {
 		@SuppressWarnings("unchecked")
 		final Class<? extends Key>[] keyTypes = new Class[this.keyHolders.length];

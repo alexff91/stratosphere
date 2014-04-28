@@ -136,7 +136,7 @@ public class EnvironmentThreadSet {
 			if(newMainThreadSnapshot == null) {
 				return null;
 			}
-			
+
 			final long mainInterval = newMainThreadSnapshot.getTimestamp() - this.mainThreadSnapshot.getTimestamp();
 
 			if (mainInterval == 0) {

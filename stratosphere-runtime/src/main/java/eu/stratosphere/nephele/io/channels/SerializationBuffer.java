@@ -22,7 +22,7 @@ import eu.stratosphere.nephele.io.DataOutputBuffer;
 
 /**
  * A class for serializing a record to its binary representation.
- * 
+ *
  * @param <T>
  *        the type of the record this serialization buffer can be used for
  */
@@ -38,7 +38,7 @@ public class SerializationBuffer<T extends IOReadableWritable> {
 
 	/**
 	 * Translates an integer into an array of bytes.
-	 * 
+	 *
 	 * @param val
 	 *        The integer to be translated
 	 * @param arr
@@ -59,7 +59,7 @@ public class SerializationBuffer<T extends IOReadableWritable> {
 	 * Return <code>true</code> if the internal serialization buffer still contains data.
 	 * In this case the method serialize must not be called. If the internal buffer is empty
 	 * the method return <code>false</code>
-	 * 
+	 *
 	 * @return <code>true</code> if the internal serialization buffer still contains data, <code>false</code> it it is
 	 *         empty
 	 */
@@ -70,7 +70,7 @@ public class SerializationBuffer<T extends IOReadableWritable> {
 	/**
 	 * Reads the internal serialization buffer and writes the data to the given {@link WritableByteChannel} byte
 	 * channel.
-	 * 
+	 *
 	 * @param writableByteChannel
 	 *        the byte channel to write the serialized data to
 	 * @return the number of bytes written the to given byte channel
@@ -101,7 +101,7 @@ public class SerializationBuffer<T extends IOReadableWritable> {
 	/**
 	 * Return the number of bytes that have not been read from the internal serialization
 	 * buffer so far.
-	 * 
+	 *
 	 * @return the number of bytes that have not been read from the internal serialization buffer so far
 	 */
 	private int leftInSerializationBuffer() {
@@ -112,7 +112,7 @@ public class SerializationBuffer<T extends IOReadableWritable> {
 	/**
 	 * Serializes the record and writes it to an internal buffer. The buffer grows dynamically
 	 * in case more memory is required to serialization.
-	 * 
+	 *
 	 * @param record
 	 *        The record to the serialized
 	 * @throws IOException

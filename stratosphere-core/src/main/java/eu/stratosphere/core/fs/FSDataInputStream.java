@@ -14,7 +14,7 @@
 /**
  * This file is based on source code from the Hadoop Project (http://hadoop.apache.org/), licensed by the Apache
  * Software Foundation (ASF) under the Apache License, Version 2.0. See the NOTICE file distributed with this work for
- * additional information regarding copyright ownership. 
+ * additional information regarding copyright ownership.
  */
 
 package eu.stratosphere.core.fs;
@@ -24,14 +24,14 @@ import java.io.InputStream;
 
 /**
  * Interface for a data input stream to a file on a {@link FileSystem}.
- * 
+ *
  */
 public abstract class FSDataInputStream extends InputStream {
 
 	/**
 	 * Seek to the given offset from the start of the file. The next read() will be from that location.
 	 * Can't seek past the end of the file.
-	 * 
+	 *
 	 * @param desired
 	 *        the desired offset
 	 * @throws IOException

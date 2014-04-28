@@ -27,7 +27,7 @@ import eu.stratosphere.nephele.instance.InstanceTypeFactory;
 
 /**
  * This class checks the {@link PendingRequestsMap} data structure.
- * 
+ *
  */
 public class PendingRequestsMapTest {
 

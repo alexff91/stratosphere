@@ -51,12 +51,12 @@ import eu.stratosphere.types.Value;
 
 /**
  * Input format to read Avro files.
- * 
+ *
  * The input format currently supports only flat avro schemas. So there is no
  * support for complex types except for nullable primitve fields, e.g.
  * ["string", null] (See
  * http://avro.apache.org/docs/current/spec.html#schema_complex)
- * 
+ *
  */
 public class AvroRecordInputFormat extends FileInputFormat {
 	private static final long serialVersionUID = 1L;
@@ -127,7 +127,7 @@ public class AvroRecordInputFormat extends FileInputFormat {
 				final Type valueType = field.schema().getValueType().getType();
 				final Map<CharSequence, ?> avroMap = (Map<CharSequence, ?>) avroRecord;
 				return convertAvroMapToMapValue(valueType, avroMap);
-	
+
 			// primitive type
 			default:
 				return convertAvroPrimitiveToValue(type, avroRecord);
@@ -228,7 +228,7 @@ public class AvroRecordInputFormat extends FileInputFormat {
 	private DoubleValue sDouble = new DoubleValue();
 	private FloatValue sFloat = new FloatValue();
 	private LongValue sLong = new LongValue();
-	
+
 	private final Value convertAvroPrimitiveToValue(Type type, Object avroRecord) {
 		switch (type) {
 		case STRING:

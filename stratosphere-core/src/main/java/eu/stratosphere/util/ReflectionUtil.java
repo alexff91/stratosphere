@@ -29,12 +29,12 @@ public class ReflectionUtil {
 	public static <T> Class<T> getTemplateType(Class<?> clazz, int num) {
 		return (Class<T>) getSuperTemplateTypes(clazz)[num];
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public static <T> Class<T> getTemplateType(Class<?> clazz, Class<?> classWithParameter, int num) {
 		return (Class<T>) getSuperTemplateTypes(clazz)[num];
 	}
-	
+
 	public static <T> Class<T> getTemplateType1(Class<?> clazz) {
 		return getTemplateType(clazz, 0);
 	}
@@ -82,12 +82,12 @@ public class ReflectionUtil {
 			clazz = clazz.getSuperclass();
 		}
 	}
-	
+
 	public static Class<?>[] getSuperTemplateTypes(Class<?> clazz, Class<?> searchedSuperClass) {
 		if (clazz == null || searchedSuperClass == null) {
 			throw new NullPointerException();
 		}
-		
+
 		Class<?> superClass = null;
 		do {
 			superClass = clazz.getSuperclass();
@@ -96,11 +96,11 @@ public class ReflectionUtil {
 			}
 		}
 		while ((clazz = superClass) != null);
-		
+
 		if (clazz == null) {
 			throw new IllegalArgumentException("The searched for superclass is not a superclass of the given class.");
 		}
-		
+
 		final Type type = clazz.getGenericSuperclass();
 		if (type instanceof ParameterizedType) {
 			return getTemplateTypes((ParameterizedType) type);

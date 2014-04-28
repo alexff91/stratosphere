@@ -21,7 +21,7 @@ import eu.stratosphere.nephele.template.AbstractInvokable;
 import eu.stratosphere.types.LongValue;
 
 public class ChainedTerminationCriterionDriver<IT, OT> extends ChainedDriver<IT, OT> {
-	
+
 	private TerminationCriterionAggregator agg;
 
 	// --------------------------------------------------------------------------------------------

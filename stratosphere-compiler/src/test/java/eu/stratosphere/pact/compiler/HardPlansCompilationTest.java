@@ -38,37 +38,37 @@ import eu.stratosphere.types.IntValue;
  */
 public class HardPlansCompilationTest extends CompilerTestBase
 {
-	
+
 	/**
 	 * Source -> Map -> Reduce -> Cross -> Reduce -> Cross -> Reduce ->
      * |--------------------------/                  /
      * |--------------------------------------------/
-     * 
+     *
      * First cross has SameKeyFirst output contract
 	 */
 	@Test
 	public void testTicket158() {
 		// construct the plan
 		FileDataSource source = new FileDataSource(new DummyInputFormat(), IN_FILE, "Source");
-		
+
 		MapOperator map = MapOperator.builder(new IdentityMap()).name("Map1").input(source).build();
-		
+
 		ReduceOperator reduce1 = ReduceOperator.builder(new IdentityReduce(), IntValue.class, 0).name("Reduce1").input(map).build();
-		
+
 		CrossOperator cross1 = CrossOperator.builder(new DummyCrossStub()).name("Cross1").input1(reduce1).input2(source).build();
-		
+
 		ReduceOperator reduce2 = ReduceOperator.builder(new IdentityReduce(), IntValue.class, 0).name("Reduce2").input(cross1).build();
-		
+
 		CrossOperator cross2 = CrossOperator.builder(new DummyCrossStub()).name("Cross2").input1(reduce2).input2(source).build();
-		
+
 		ReduceOperator reduce3 = ReduceOperator.builder(new IdentityReduce(), IntValue.class, 0).name("Reduce3").input(cross2).build();
-		
+
 		FileDataSink sink = new FileDataSink(new DummyOutputFormat(), OUT_FILE, "Sink");
 		sink.setInput(reduce3);
-		
+
 		Plan plan = new Plan(sink, "Test Temp Task");
 		plan.setDefaultParallelism(DEFAULT_PARALLELISM);
-		
+
 		OptimizedPlan oPlan = compileNoStats(plan);
 		NepheleJobGraphGenerator jobGen = new NepheleJobGraphGenerator();
 		jobGen.compileJobGraph(oPlan);

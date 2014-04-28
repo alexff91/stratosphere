@@ -33,7 +33,7 @@ import eu.stratosphere.util.StringUtils;
 
 /**
  * This class contains unit tests for the {@link TaskDeploymentDescriptor} class.
- * 
+ *
  */
 public class TaskDeploymentDescriptorTest {
 
@@ -161,10 +161,10 @@ public class TaskDeploymentDescriptorTest {
 		try {
 			new TaskDeploymentDescriptor(jobID, vertexID, taskName,
 				indexInSubtaskGroup, currentNumberOfSubtasks, jobConfiguration, taskConfiguration,
-				 null, outputGates, inputGates);
+				null, outputGates, inputGates);
 		} catch (IllegalArgumentException e) {
 			eighthExceptionCaught = true;
-			
+
 		}
 
 		try {
@@ -173,7 +173,7 @@ public class TaskDeploymentDescriptorTest {
 				invokableClass, null, inputGates);
 		} catch (IllegalArgumentException e) {
 			ninethExeceptionCaught = true;
-			
+
 		}
 
 		try {

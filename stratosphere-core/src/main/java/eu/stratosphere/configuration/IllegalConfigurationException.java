@@ -28,7 +28,7 @@ public class IllegalConfigurationException extends RuntimeException {
 
 	/**
 	 * Constructs an new illegal configuration exception with the given error message.
-	 * 
+	 *
 	 * @param errorMsg
 	 *        the error message to be included in the exception
 	 */
@@ -39,7 +39,7 @@ public class IllegalConfigurationException extends RuntimeException {
 	/**
 	 * Constructs an new illegal configuration exception with the given error message
 	 * and a given cause.
-	 * 
+	 *
 	 * @param errorMsg
 	 *        The error message to be included in the exception.
 	 * @param cause

@@ -26,15 +26,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import eu.stratosphere.nephele.io.channels.ChannelID;
-import eu.stratosphere.nephele.taskmanager.transferenvelope.TransferEnvelope;
 import eu.stratosphere.nephele.taskmanager.transferenvelope.DefaultSerializer;
+import eu.stratosphere.nephele.taskmanager.transferenvelope.TransferEnvelope;
 
 /**
  * This class represents an outgoing TCP connection through which {@link TransferEnvelope} objects can be sent.
  * {@link TransferEnvelope} objects are received from the {@link ByteBufferedChannelManager} and added to a queue. An
  * additional network thread then takes the envelopes from the queue and transmits them to the respective destination
  * host.
- * 
+ *
  */
 public class OutgoingConnection {
 
@@ -108,7 +108,7 @@ public class OutgoingConnection {
 
 	/**
 	 * Constructs a new outgoing connection object.
-	 * 
+	 *
 	 * @param remoteReceiver
 	 *        the address of the destination host this outgoing connection object is supposed to connect to
 	 * @param connectionThread
@@ -129,7 +129,7 @@ public class OutgoingConnection {
 	 * connection.
 	 * <p>
 	 * This method should only be called by the {@link ByteBufferedChannelManager} object.
-	 * 
+	 *
 	 * @param transferEnvelope
 	 *        the envelope to be added to the transfer queue
 	 */
@@ -169,7 +169,7 @@ public class OutgoingConnection {
 	 * connected to.
 	 * <p>
 	 * This method should be called by the {@link OutgoingConnectionThread} object only.
-	 * 
+	 *
 	 * @return the {@link InetSocketAddress} to the destination host this outgoing connection is supposed to be
 	 *         connected to
 	 */
@@ -185,7 +185,7 @@ public class OutgoingConnection {
 	 * case all queued envelopes will be dropped and all included buffers will be freed.
 	 * <p>
 	 * This method should only be called by the {@link OutgoingConnectionThread} object.
-	 * 
+	 *
 	 * @param ioe
 	 *        thrown if an error occurs while reseting the underlying TCP connection
 	 */
@@ -256,7 +256,7 @@ public class OutgoingConnection {
 	 * envelope contains a buffer, the buffer is freed.
 	 * <p>
 	 * This method should only be called by the {@link OutgoingConnectionThread} object.
-	 * 
+	 *
 	 * @param ioe
 	 *        thrown if an error occurs while reseting the connection
 	 */
@@ -311,7 +311,7 @@ public class OutgoingConnection {
 
 	/**
 	 * Checks whether further retries are left for establishing the underlying TCP connection.
-	 * 
+	 *
 	 * @param currentTime
 	 *        the current system time in milliseconds since January 1st, 1970
 	 * @return <code>true</code> if there are retries left, <code>false</code> otherwise
@@ -333,7 +333,7 @@ public class OutgoingConnection {
 	 * Writes the content of the current {@link TransferEnvelope} object to the underlying TCP connection.
 	 * <p>
 	 * This method should only be called by the {@link OutgoingConnectionThread} object.
-	 * 
+	 *
 	 * @return <code>true</code> if there is more data from this/other queued envelopes to be written to this channel
 	 * @throws IOException
 	 *         thrown if an error occurs while writing the data to the channel
@@ -374,7 +374,7 @@ public class OutgoingConnection {
 	 * is queued.
 	 * <p>
 	 * This method should only be called by the {@link OutgoingConnectionThread} object.
-	 * 
+	 *
 	 * @throws IOException
 	 *         thrown if an error occurs while closing the TCP connection
 	 */
@@ -397,7 +397,7 @@ public class OutgoingConnection {
 	 * Closes the underlying TCP connection if no more {@link TransferEnvelope} objects are in the transmission queue.
 	 * <p>
 	 * This method should only be called by the {@link OutgoingConnectionThread} object.
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	public void closeConnection() throws IOException {
@@ -423,7 +423,7 @@ public class OutgoingConnection {
 
 	/**
 	 * Returns the number of queued {@link TransferEnvelope} objects with the given source channel ID.
-	 * 
+	 *
 	 * @param sourceChannelID
 	 *        the source channel ID to count the queued envelopes for
 	 * @return the number of queued transfer envelopes with the given source channel ID
@@ -449,7 +449,7 @@ public class OutgoingConnection {
 	/**
 	 * Removes all queued {@link TransferEnvelope} objects from the transmission which match the given source channel
 	 * ID.
-	 * 
+	 *
 	 * @param sourceChannelID
 	 *        the source channel ID of the transfered transfer envelopes to be dropped
 	 */
@@ -475,7 +475,7 @@ public class OutgoingConnection {
 	 * {@link ByteBufferedChannelManager} object.
 	 * <p>
 	 * This method should only be called by the byte buffered channel manager.
-	 * 
+	 *
 	 * @return <code>true</code> if this object is no longer manages an active connection and can be removed,
 	 *         <code>false</code> otherwise.
 	 */
@@ -497,7 +497,7 @@ public class OutgoingConnection {
 
 	/**
 	 * Sets the selection key representing the interest set of the underlying TCP NIO connection.
-	 * 
+	 *
 	 * @param selectionKey
 	 *        the selection of the underlying TCP connection
 	 */
@@ -507,7 +507,7 @@ public class OutgoingConnection {
 
 	/**
 	 * Returns the number of currently queued envelopes which contain a write buffer.
-	 * 
+	 *
 	 * @return the number of currently queued envelopes which contain a write buffer
 	 */
 	public int getNumberOfQueuedWriteBuffers() {

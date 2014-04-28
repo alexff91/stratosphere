@@ -25,7 +25,7 @@ import eu.stratosphere.util.StringUtils;
  * Every component that requires these kinds of IDs provides its own concrete type.
  * <p>
  * This class is thread-safe.
- * 
+ *
  */
 public abstract class AbstractID implements IOReadableWritable {
 
@@ -64,7 +64,7 @@ public abstract class AbstractID implements IOReadableWritable {
 
 	/**
 	 * Constructs a new abstract ID.
-	 * 
+	 *
 	 * @param lowerPart
 	 *        the lower bytes of the ID
 	 * @param upperPart
@@ -79,7 +79,7 @@ public abstract class AbstractID implements IOReadableWritable {
 	/**
 	 * Creates a new abstract ID from the given one. The given and the newly created abtract ID will be identical, i.e.
 	 * a comparison by <code>equals</code> will return <code>true</code> and both objects will have the same hash code.
-	 * 
+	 *
 	 * @param id
 	 *        the abstract ID to copy
 	 */
@@ -89,7 +89,7 @@ public abstract class AbstractID implements IOReadableWritable {
 		this.upperPart = id.upperPart;
 	}
 
-	/**	
+	/**
 	 * Constructs a new random ID from a uniform distribution.
 	 */
 	public AbstractID() {
@@ -100,7 +100,7 @@ public abstract class AbstractID implements IOReadableWritable {
 
 	/**
 	 * Generates a uniformly distributed random positive long.
-	 * 
+	 *
 	 * @return a uniformly distributed random positive long
 	 */
 	protected static long generateRandomBytes() {
@@ -110,7 +110,7 @@ public abstract class AbstractID implements IOReadableWritable {
 
 	/**
 	 * Converts the given byte array to a long.
-	 * 
+	 *
 	 * @param ba
 	 *        the byte array to be converted
 	 * @param offset
@@ -130,7 +130,7 @@ public abstract class AbstractID implements IOReadableWritable {
 
 	/**
 	 * Converts a long to a byte array.
-	 * 
+	 *
 	 * @param l
 	 *        the long variable to be converted
 	 * @param ba
@@ -145,10 +145,10 @@ public abstract class AbstractID implements IOReadableWritable {
 			ba[offset + SIZE_OF_LONG - 1 - i] = (byte) ((l & (0xffL << shift)) >>> shift);
 		}
 	}
-	
+
 	/**
 	 * Sets an ID from another ID by copying its internal byte representation.
-	 * 
+	 *
 	 * @param src
 	 *        the source ID
 	 */

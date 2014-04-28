@@ -28,7 +28,7 @@ import eu.stratosphere.compiler.operators.OperatorDescriptorDual;
  * The Optimizer representation of a <i>CoGroup</i> operator.
  */
 public class CoGroupNode extends TwoInputNode {
-	
+
 	public CoGroupNode(CoGroupOperatorBase<?> pactContract) {
 		super(pactContract);
 	}
@@ -37,7 +37,7 @@ public class CoGroupNode extends TwoInputNode {
 
 	/**
 	 * Gets the operator for this CoGroup node.
-	 * 
+	 *
 	 * @return The CoGroup operator.
 	 */
 	@Override
@@ -54,23 +54,23 @@ public class CoGroupNode extends TwoInputNode {
 	protected List<OperatorDescriptorDual> getPossibleProperties() {
 		Ordering groupOrder1 = null;
 		Ordering groupOrder2 = null;
-		
+
 		CoGroupOperatorBase<?> cgc = getPactContract();
 		groupOrder1 = cgc.getGroupOrderForInputOne();
 		groupOrder2 = cgc.getGroupOrderForInputTwo();
-			
+
 		if (groupOrder1 != null && groupOrder1.getNumberOfFields() == 0) {
 			groupOrder1 = null;
 		}
 		if (groupOrder2 != null && groupOrder2.getNumberOfFields() == 0) {
 			groupOrder2 = null;
 		}
-		
+
 		List<OperatorDescriptorDual> l = new ArrayList<OperatorDescriptorDual>(1);
 		l.add(new CoGroupDescriptor(this.keys1, this.keys2, groupOrder1, groupOrder2));
 		return l;
 	}
-	
+
 	public void makeCoGroupWithSolutionSet(int solutionsetInputIndex) {
 		OperatorDescriptorDual op;
 		if (solutionsetInputIndex == 0) {

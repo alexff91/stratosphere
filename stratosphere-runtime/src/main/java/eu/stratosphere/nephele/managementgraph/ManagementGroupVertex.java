@@ -33,7 +33,7 @@ import eu.stratosphere.util.StringUtils;
  * from the type of group vertices Nephele uses in its internal scheduling structures.
  * <p>
  * This class is not thread-safe.
- * 
+ *
  */
 public final class ManagementGroupVertex extends ManagementAttachment implements IOReadableWritable {
 
@@ -69,7 +69,7 @@ public final class ManagementGroupVertex extends ManagementAttachment implements
 
 	/**
 	 * Constructs a new management group vertex.
-	 * 
+	 *
 	 * @param stage
 	 *        the stage this group vertex belongs to
 	 * @param name
@@ -81,7 +81,7 @@ public final class ManagementGroupVertex extends ManagementAttachment implements
 
 	/**
 	 * Constructs a new management group vertex.
-	 * 
+	 *
 	 * @param stage
 	 *        the stage this group vertex belongs to
 	 * @param id
@@ -100,7 +100,7 @@ public final class ManagementGroupVertex extends ManagementAttachment implements
 
 	/**
 	 * Returns the ID of this management group vertex.
-	 * 
+	 *
 	 * @return the ID of this management group vertex
 	 */
 	public ManagementGroupVertexID getID() {
@@ -109,7 +109,7 @@ public final class ManagementGroupVertex extends ManagementAttachment implements
 
 	/**
 	 * Returns the name of this management group vertex.
-	 * 
+	 *
 	 * @return the anme of this management group vertex, possibly <code>null</code>
 	 */
 	public String getName() {
@@ -118,7 +118,7 @@ public final class ManagementGroupVertex extends ManagementAttachment implements
 
 	/**
 	 * Inserts a new edge starting at this group vertex at the given index.
-	 * 
+	 *
 	 * @param edge
 	 *        the edge to be added
 	 * @param index
@@ -135,7 +135,7 @@ public final class ManagementGroupVertex extends ManagementAttachment implements
 
 	/**
 	 * Inserts a new edge arriving at this group vertex at the given index.
-	 * 
+	 *
 	 * @param edge
 	 *        the edge to be added
 	 * @param index
@@ -152,7 +152,7 @@ public final class ManagementGroupVertex extends ManagementAttachment implements
 
 	/**
 	 * Returns the number of edges originating at this group vertex.
-	 * 
+	 *
 	 * @return the number of edges originating at this group vertex
 	 */
 	public int getNumberOfForwardEdges() {
@@ -161,7 +161,7 @@ public final class ManagementGroupVertex extends ManagementAttachment implements
 
 	/**
 	 * Returns the number of edges arriving at this group vertex.
-	 * 
+	 *
 	 * @return the number of edges arriving at this group vertex
 	 */
 	public int getNumberOfBackwardEdges() {
@@ -170,7 +170,7 @@ public final class ManagementGroupVertex extends ManagementAttachment implements
 
 	/**
 	 * Returns the group edge which leaves this group vertex at the given index.
-	 * 
+	 *
 	 * @param index
 	 *        the index of the group edge
 	 * @return the group edge which leaves this group vertex at the given index or <code>null</code> if no such group
@@ -187,7 +187,7 @@ public final class ManagementGroupVertex extends ManagementAttachment implements
 
 	/**
 	 * Returns the group edge which arrives at this group vertex at the given index.
-	 * 
+	 *
 	 * @param index
 	 *        the index of the group edge
 	 * @return the group edge which arrives at this group vertex at the given index or <code>null</code> if no such
@@ -204,7 +204,7 @@ public final class ManagementGroupVertex extends ManagementAttachment implements
 
 	/**
 	 * Adds a {@link ManagementVertex} to this group vertex.
-	 * 
+	 *
 	 * @param vertex
 	 *        the vertex to be added
 	 */
@@ -221,7 +221,7 @@ public final class ManagementGroupVertex extends ManagementAttachment implements
 
 	/**
 	 * Adds all management vertices which are included in this group vertex to the given list.
-	 * 
+	 *
 	 * @param vertices
 	 *        the list to which the vertices shall be added
 	 */
@@ -235,7 +235,7 @@ public final class ManagementGroupVertex extends ManagementAttachment implements
 
 	/**
 	 * Returns the stage this management group vertex belongs to.
-	 * 
+	 *
 	 * @return the stage this management group vertex belongs to
 	 */
 	public ManagementStage getStage() {
@@ -244,7 +244,7 @@ public final class ManagementGroupVertex extends ManagementAttachment implements
 
 	/**
 	 * Returns the management graph this group vertex is part of.
-	 * 
+	 *
 	 * @return the management graph this group vertex is part of
 	 */
 	public ManagementGraph getGraph() {
@@ -253,7 +253,7 @@ public final class ManagementGroupVertex extends ManagementAttachment implements
 
 	/**
 	 * Returns the number of management vertices included in this group vertex.
-	 * 
+	 *
 	 * @return the number of management vertices included in this group vertex
 	 */
 	public int getNumberOfGroupMembers() {
@@ -262,7 +262,7 @@ public final class ManagementGroupVertex extends ManagementAttachment implements
 
 	/**
 	 * Returns the management vertex with the given index.
-	 * 
+	 *
 	 * @param index
 	 *        the index of the management vertex to be returned
 	 * @return the management vertex with the given index or <code>null</code> if no such vertex exists
@@ -275,10 +275,10 @@ public final class ManagementGroupVertex extends ManagementAttachment implements
 
 		return null;
 	}
-	
+
 	/**
 	 * Returns alle management vertices containted in this group
-	 * 
+	 *
 	 * @return the management vertex with the given index or <code>null</code> if no such vertex exists
 	 */
 	public List<ManagementVertex> getGroupMembers() {
@@ -289,7 +289,7 @@ public final class ManagementGroupVertex extends ManagementAttachment implements
 	/**
 	 * Checks if this vertex is an input vertex in its stage, i.e. has either no
 	 * incoming connections or only incoming connections to group vertices in a lower stage.
-	 * 
+	 *
 	 * @return <code>true</code> if this vertex is an input vertex, <code>false</code> otherwise
 	 */
 	public boolean isInputVertex() {
@@ -311,7 +311,7 @@ public final class ManagementGroupVertex extends ManagementAttachment implements
 	/**
 	 * Checks if this vertex is an output vertex in its stage, i.e. has either no
 	 * outgoing connections or only outgoing connections to group vertices in a higher stage.
-	 * 
+	 *
 	 * @return <code>true</code> if this vertex is an output vertex, <code>false</code> otherwise
 	 */
 	public boolean isOutputVertex() {
@@ -332,7 +332,7 @@ public final class ManagementGroupVertex extends ManagementAttachment implements
 
 	/**
 	 * Returns the number of the management stage this group vertex belongs to.
-	 * 
+	 *
 	 * @return the number of the management stage this group vertex belongs to
 	 */
 	public int getStageNumber() {
@@ -376,7 +376,7 @@ public final class ManagementGroupVertex extends ManagementAttachment implements
 	/**
 	 * Returns the list of successors of this group vertex. A successor is a group vertex which can be reached via a
 	 * group edge originating at this group vertex.
-	 * 
+	 *
 	 * @return the list of successors of this group vertex.
 	 */
 	public List<ManagementGroupVertex> getSuccessors() {
@@ -393,7 +393,7 @@ public final class ManagementGroupVertex extends ManagementAttachment implements
 	/**
 	 * Returns the list of predecessors of this group vertex. A predecessors is a group vertex which can be reached via
 	 * a group edge arriving at this group vertex.
-	 * 
+	 *
 	 * @return the list of predecessors of this group vertex.
 	 */
 	public List<ManagementGroupVertex> getPredecessors() {
@@ -406,74 +406,74 @@ public final class ManagementGroupVertex extends ManagementAttachment implements
 
 		return predecessors;
 	}
-	
+
 	@Override
 	public String toString() {
 		return String.format("ManagementGroupVertex(%s)", getName());
 	}
-	
+
 	/**
 	 * Returns Json representation of this ManagementGroupVertex
-	 * 
+	 *
 	 * @return
 	 */
 	public String toJson() {
 		StringBuilder json = new StringBuilder("");
-		
+
 		json.append("{");
 		json.append("\"groupvertexid\": \"" + this.getID() + "\",");
 		json.append("\"groupvertexname\": \"" + StringUtils.escapeHtml(this.getName()) + "\",");
 		json.append("\"numberofgroupmembers\": " + this.getNumberOfGroupMembers() + ",");
 		json.append("\"groupmembers\": [");
-		
+
 		// Count state status of group members
 		Map<ExecutionState, Integer> stateCounts = new HashMap<ExecutionState, Integer>();
-		
+
 		// initialize with 0
 		for (ExecutionState state : ExecutionState.values()) {
 			stateCounts.put(state, new Integer(0));
 		}
-		
+
 		for(int j = 0; j < this.getNumberOfGroupMembers(); j++) {
 			ManagementVertex vertex = this.getGroupMember(j);
-			
+
 			json.append(vertex.toJson());
-			
+
 			// print delimiter
 			if(j != this.getNumberOfGroupMembers() - 1) {
 				json.append(",");
 			}
-			
+
 			// Increment state status count
 			Integer count =  stateCounts.get(vertex.getExecutionState()) + new Integer(1);
 			stateCounts.put(vertex.getExecutionState(), count);
 		}
 		json.append("],");
 		json.append("\"backwardEdges\": [");
-		
+
 		for(int edgeIndex = 0; edgeIndex < this.getNumberOfBackwardEdges(); edgeIndex++) {
 			ManagementGroupEdge edge = this.getBackwardEdge(edgeIndex);
-			
+
 			json.append("{");
 			json.append("\"groupvertexid\": \"" + edge.getSource().getID() + "\",");
 			json.append("\"groupvertexname\": \"" +  StringUtils.escapeHtml(edge.getSource().getName()) + "\",");
 			json.append("\"channelType\": \"" +  edge.getChannelType() + "\"");
 			json.append("}");
-			
+
 			// print delimiter
 			if(edgeIndex != this.getNumberOfBackwardEdges() - 1) {
 				json.append(",");
 			}
 		}
 		json.append("]");
-		
+
 		// list number of members for each status
 		for (Map.Entry<ExecutionState, Integer> stateCount : stateCounts.entrySet()) {
 			json.append(",\""+stateCount.getKey()+"\": " + stateCount.getValue());
 		}
-		
+
 		json.append("}");
-		
+
 		return json.toString();
 	}
 }

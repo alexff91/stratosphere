@@ -20,7 +20,7 @@ public interface IndexedSorter {
 	 * range of logical indices. From the perspective of the sort algorithm,
 	 * each index between l (inclusive) and r (exclusive) is an addressable
 	 * entry.
-	 * 
+	 *
 	 * @see IndexedSortable#compare
 	 * @see IndexedSortable#swap
 	 */

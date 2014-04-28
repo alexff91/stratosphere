@@ -23,25 +23,25 @@ import java.util.Random;
 public class UnsignedShortType implements SerializationTestType
 {
 	private int value;
-	
+
 
 	public UnsignedShortType()
 	{
 		this.value = 0;
 	}
-	
+
 	private UnsignedShortType(int value)
 	{
 		this.value = value;
 	}
-	
+
 
 	@Override
 	public UnsignedShortType getRandom(Random rnd)
 	{
 		return new UnsignedShortType(rnd.nextInt(32768) + 32768);
 	}
-	
+
 
 	@Override
 	public void write(DataOutput out) throws IOException

@@ -13,11 +13,11 @@
 
 package eu.stratosphere.pact.runtime.iterative.event;
 
-import eu.stratosphere.nephele.event.task.AbstractTaskEvent;
-
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+
+import eu.stratosphere.nephele.event.task.AbstractTaskEvent;
 
 /**
  * Signals that the iteration is completely executed, participating tasks must terminate now
@@ -25,7 +25,7 @@ import java.io.IOException;
 public class TerminationEvent extends AbstractTaskEvent {
 
 	public static final TerminationEvent INSTANCE = new TerminationEvent();
-	
+
 	@Override
 	public void write(DataOutput out) throws IOException {}
 

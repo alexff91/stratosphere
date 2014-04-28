@@ -25,10 +25,10 @@ import eu.stratosphere.compiler.operators.OperatorDescriptorSingle;
  * The optimizer's internal representation of a <i>Map</i> operator node.
  */
 public class MapNode extends SingleInputNode {
-	
+
 	/**
 	 * Creates a new MapNode for the given contract.
-	 * 
+	 *
 	 * @param pactContract The map contract object.
 	 */
 	public MapNode(SingleInputOperator<?> operator) {
@@ -46,7 +46,7 @@ public class MapNode extends SingleInputNode {
 	}
 
 	/**
-	 * Computes the estimates for the Map operator. 
+	 * Computes the estimates for the Map operator.
 	 * We assume that by default, Map takes one value and transforms it into another value.
 	 * The cardinality consequently stays the same.
 	 */

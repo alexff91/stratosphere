@@ -27,11 +27,11 @@ public class JoinOperatorBase<T extends GenericJoiner<?, ?, ?>> extends DualInpu
 	public JoinOperatorBase(UserCodeWrapper<T> udf, int[] keyPositions1, int[] keyPositions2, String name) {
 		super(udf, keyPositions1, keyPositions2, name);
 	}
-	
+
 	public JoinOperatorBase(T udf, int[] keyPositions1, int[] keyPositions2, String name) {
 		super(new UserCodeObjectWrapper<T>(udf), keyPositions1, keyPositions2, name);
 	}
-	
+
 	public JoinOperatorBase(Class<? extends T> udf, int[] keyPositions1, int[] keyPositions2, String name) {
 		super(new UserCodeClassWrapper<T>(udf), keyPositions1, keyPositions2, name);
 	}

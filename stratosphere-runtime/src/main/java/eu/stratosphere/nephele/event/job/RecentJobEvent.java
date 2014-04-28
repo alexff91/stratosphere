@@ -24,7 +24,7 @@ import eu.stratosphere.nephele.util.EnumUtils;
 
 /**
  * A {@link RecentJobEvent} provides a summary of a job which is either currently running or has been running recently.
- * 
+ *
  */
 public final class RecentJobEvent extends AbstractEvent implements ManagementEvent {
 
@@ -55,7 +55,7 @@ public final class RecentJobEvent extends AbstractEvent implements ManagementEve
 
 	/**
 	 * Constructs a new event.
-	 * 
+	 *
 	 * @param jobID
 	 *        the ID of the new job
 	 * @param jobName
@@ -93,7 +93,7 @@ public final class RecentJobEvent extends AbstractEvent implements ManagementEve
 
 	/**
 	 * Returns the ID of the new job.
-	 * 
+	 *
 	 * @return the ID of the new job
 	 */
 	public JobID getJobID() {
@@ -102,7 +102,7 @@ public final class RecentJobEvent extends AbstractEvent implements ManagementEve
 
 	/**
 	 * Returns the name of the new job.
-	 * 
+	 *
 	 * @return the name of the new job or <code>null</code> if the job has no name
 	 */
 	public String getJobName() {
@@ -111,7 +111,7 @@ public final class RecentJobEvent extends AbstractEvent implements ManagementEve
 
 	/**
 	 * Checks if profiling is enabled for the new job.
-	 * 
+	 *
 	 * @return <code>true</code> if profiling is enabled for this job, <code>false</code> otherwise
 	 */
 	public boolean isProfilingAvailable() {
@@ -120,7 +120,7 @@ public final class RecentJobEvent extends AbstractEvent implements ManagementEve
 
 	/**
 	 * Returns the last known status of the job.
-	 * 
+	 *
 	 * @return the last known status of the job
 	 */
 	public JobStatus getJobStatus() {
@@ -129,7 +129,7 @@ public final class RecentJobEvent extends AbstractEvent implements ManagementEve
 
 	/**
 	 * Returns the time stamp of the job submission.
-	 * 
+	 *
 	 * @return the time stamp of the job submission
 	 */
 	public long getSubmissionTimestamp() {

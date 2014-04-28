@@ -28,23 +28,23 @@ import eu.stratosphere.api.java.record.io.CollectionInputFormat;
  * Stratosphere job to the cluster.
  * There are two main ways to use the CollectionDataSource:
  * * Using a @link {@link SerializableIterator}
- * 
+ *
  * <pre>
  * CollectionDataSource source = new CollectionDataSource(new SerializableIteratorTest(), &quot;IterSource&quot;);
  * </pre>
- * 
+ *
  * * Using a Collection of Java Objects.
- * 
+ *
  * <pre>
  * CollectionDataSource source2 = new CollectionDataSource(new List&lt;String&gt;(), &quot;Collection source&quot;);
  * </pre>
- * 
+ *
  * Note that you can as many elements as you want to the constructor:
- * 
+ *
  * <pre>
  * CollectionDataSource(&quot;Varargs String source&quot;, &quot;some&quot;, &quot;strings&quot;, &quot;that&quot;, &quot;get&quot;, &quot;distributed&quot;);
  * </pre>
- * 
+ *
  * The only limitation is that the elements need to have the same type.
  */
 public class CollectionDataSource extends GenericDataSource<GenericInputFormat<?>> {
@@ -53,7 +53,7 @@ public class CollectionDataSource extends GenericDataSource<GenericInputFormat<?
 
 	/**
 	 * Creates a new instance for the given input using the given input format.
-	 * 
+	 *
 	 * @param f
 	 *        The {@link CollectionInputFormat} implementation used to read the data.
 	 * @param data
@@ -95,7 +95,7 @@ public class CollectionDataSource extends GenericDataSource<GenericInputFormat<?
 	/**
 	 * Creates a new instance for the given input using the given input format. The contract has the default name.
 	 * The input types will be checked. If the input types don't agree, an exception will occur.
-	 * 
+	 *
 	 * @param args
 	 *        The input data. It should be a collection, an array or a serializable iterator.
 	 * @param name

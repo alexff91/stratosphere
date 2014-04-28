@@ -13,6 +13,13 @@
 
 package eu.stratosphere.nephele.instance.cluster;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashSet;
@@ -22,28 +29,24 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 import eu.stratosphere.configuration.ConfigConstants;
 import eu.stratosphere.nephele.instance.HardwareDescription;
 import eu.stratosphere.nephele.instance.HardwareDescriptionFactory;
 import eu.stratosphere.nephele.instance.InstanceConnectionInfo;
 import eu.stratosphere.nephele.instance.InstanceType;
 import eu.stratosphere.nephele.instance.InstanceTypeFactory;
-import eu.stratosphere.nephele.instance.cluster.AllocatedSlice;
-import eu.stratosphere.nephele.instance.cluster.ClusterInstance;
 import eu.stratosphere.nephele.jobgraph.JobID;
 import eu.stratosphere.nephele.topology.NetworkTopology;
 
 /**
  * Tests for {@link ClusterInstance}.
- * 
+ *
  */
 public class HostInClusterTest {
 
 	/**
 	 * Creates a cluster instance of a special test type.
-	 * 
+	 *
 	 * @return a cluster instance of a special test type
 	 */
 	private ClusterInstance createTestClusterInstance() {
@@ -144,7 +147,7 @@ public class HostInClusterTest {
 	 */
 	@Test
 	public void testTermination() {
-		
+
 		// check whether the accounting of capacity works correctly if terminateAllInstances is called
 		final ClusterInstance host = createTestClusterInstance();
 		final JobID jobID = new JobID();
@@ -176,16 +179,16 @@ public class HostInClusterTest {
 			for(int i = 0; i < slices.length; ++i) {
 				slicesSet.add(slices[i]);
 			}
-			
+
 			final Set<AllocatedSlice> removedSlicesSet = new HashSet<AllocatedSlice>(removedSlices);
-			
+
 			//Check if both sets are equal
 			assertEquals(slicesSet.size(), removedSlices.size());
 			final Iterator<AllocatedSlice> it = slicesSet.iterator();
 			while(it.hasNext()) {
 				assertTrue(removedSlicesSet.remove(it.next()));
 			}
-			
+
 			assertEquals(0, removedSlicesSet.size());
 		}
 	}

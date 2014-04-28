@@ -25,14 +25,14 @@ import eu.stratosphere.util.MutableObjectIterator;
  * A {@link MutableObjectIterator} that wraps a Nephele Reader producing records of a certain type.
  */
 public final class ReaderIterator<T> implements MutableObjectIterator<T> {
-	
+
 	private final MutableReader<DeserializationDelegate<T>> reader;		// the source
-	
+
 	private final DeserializationDelegate<T> delegate;
 
 	/**
 	 * Creates a new iterator, wrapping the given reader.
-	 * 
+	 *
 	 * @param reader The reader to wrap.
 	 */
 	public ReaderIterator(MutableReader<DeserializationDelegate<T>> reader, TypeSerializer<T> serializer) {

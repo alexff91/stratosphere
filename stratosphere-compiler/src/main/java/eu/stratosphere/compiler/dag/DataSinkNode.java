@@ -39,12 +39,12 @@ import eu.stratosphere.util.Visitor;
  * The Optimizer representation of a data sink.
  */
 public class DataSinkNode extends OptimizerNode {
-	
+
 	protected PactConnection input;			// The input edge
-	
+
 	/**
 	 * Creates a new DataSinkNode for the given contract.
-	 * 
+	 *
 	 * @param pactContract The data sink contract object.
 	 */
 	public DataSinkNode(GenericDataSink pactContract) {
@@ -52,10 +52,10 @@ public class DataSinkNode extends OptimizerNode {
 	}
 
 	// --------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Gets the <tt>PactConnection</tt> through which this node receives its input.
-	 * 
+	 *
 	 * @return The input connection.
 	 */
 	public PactConnection getInputConnection() {
@@ -64,15 +64,15 @@ public class DataSinkNode extends OptimizerNode {
 
 	/**
 	 * Sets the <tt>PactConnection</tt> through which this node receives its input.
-	 * 
+	 *
 	 * @param conn The input connection to set.
 	 */
 	public void setInputConnection(PactConnection conn) {
 		this.input = conn;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 */
 	public OptimizerNode getPredecessorNode() {
 		if(this.input != null) {
@@ -84,7 +84,7 @@ public class DataSinkNode extends OptimizerNode {
 
 	/**
 	 * Gets the contract object for this data source node.
-	 * 
+	 *
 	 * @return The contract.
 	 */
 	@Override
@@ -143,7 +143,7 @@ public class DataSinkNode extends OptimizerNode {
 	@Override
 	public void computeInterestingPropertiesForInputs(CostEstimator estimator) {
 		final InterestingProperties iProps = new InterestingProperties();
-		
+
 		{
 			final Ordering partitioning = getPactContract().getPartitionOrdering();
 			final DataDistribution dataDist = getPactContract().getDataDistribution();
@@ -158,7 +158,7 @@ public class DataSinkNode extends OptimizerNode {
 			}
 			iProps.addGlobalProperties(partitioningProps);
 		}
-		
+
 		{
 			final Ordering localOrder = getPactContract().getLocalOrder();
 			final RequestedLocalProperties orderProps = new RequestedLocalProperties();
@@ -167,10 +167,10 @@ public class DataSinkNode extends OptimizerNode {
 			}
 			iProps.addLocalProperties(orderProps);
 		}
-		
+
 		this.input.setInterestingProperties(iProps);
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 	//                                     Branch Handling
 	// --------------------------------------------------------------------------------------------
@@ -184,7 +184,7 @@ public class DataSinkNode extends OptimizerNode {
 		addClosedBranches(getPredecessorNode().closedBranchingNodes);
 		this.openBranches = getPredecessorNode().getBranchesForParent(this.input);
 	}
-	
+
 	@Override
 	protected List<UnclosedBranchDescriptor> getBranchesForParent(PactConnection parent) {
 		// return our own stack of open branches, because nothing is added
@@ -194,28 +194,28 @@ public class DataSinkNode extends OptimizerNode {
 	// --------------------------------------------------------------------------------------------
 	//                                   Recursive Optimization
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public List<PlanNode> getAlternativePlans(CostEstimator estimator) {
 		// check if we have a cached version
 		if (this.cachedPlans != null) {
 			return this.cachedPlans;
 		}
-		
+
 		// calculate alternative sub-plans for predecessor
 		List<? extends PlanNode> subPlans = getPredecessorNode().getAlternativePlans(estimator);
 		List<PlanNode> outputPlans = new ArrayList<PlanNode>();
-		
+
 		final int dop = getDegreeOfParallelism();
 		final int subPerInstance = getSubtasksPerInstance();
 		final int inDop = getPredecessorNode().getDegreeOfParallelism();
 		final int inSubPerInstance = getPredecessorNode().getSubtasksPerInstance();
 		final int numInstances = dop / subPerInstance + (dop % subPerInstance == 0 ? 0 : 1);
 		final int inNumInstances = inDop / inSubPerInstance + (inDop % inSubPerInstance == 0 ? 0 : 1);
-		
+
 		final boolean globalDopChange = numInstances != inNumInstances;
 		final boolean localDopChange = numInstances == inNumInstances & subPerInstance != inSubPerInstance;
-		
+
 		InterestingProperties ips = this.input.getInterestingProperties();
 		for (PlanNode p : subPlans) {
 			for (RequestedGlobalProperties gp : ips.getGlobalProperties()) {
@@ -228,7 +228,7 @@ public class DataSinkNode extends OptimizerNode {
 					} else {
 						lp.parameterizeChannel(c);
 					}
-					
+
 					// no need to check whether the created properties meet what we need in case
 					// of ordering or global ordering, because the only interesting properties we have
 					// are what we require
@@ -236,7 +236,7 @@ public class DataSinkNode extends OptimizerNode {
 				}
 			}
 		}
-		
+
 		// cost and prune the plans
 		for (PlanNode node : outputPlans) {
 			estimator.costOperator(node);
@@ -246,19 +246,19 @@ public class DataSinkNode extends OptimizerNode {
 		this.cachedPlans = outputPlans;
 		return outputPlans;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 	//                                   Function Annotation Handling
 	// --------------------------------------------------------------------------------------------
-	
+
 	public boolean isFieldConstant(int input, int fieldNumber) {
 		return false;
 	}
-		
+
 	// --------------------------------------------------------------------------------------------
 	//                                     Miscellaneous
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public void accept(Visitor<OptimizerNode> visitor) {
 		if (visitor.preVisit(this)) {

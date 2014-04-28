@@ -23,7 +23,7 @@ public interface ByteBufferedOutputChannelBroker {
 	/**
 	 * Requests an empty write buffer from the broker. This method will block
 	 * until the requested write buffer is available.
-	 * 
+	 *
 	 * @return the byte buffers to write in
 	 * @throws InterruptedException
 	 *         thrown if the connected task is interrupted while waiting for the buffer
@@ -35,7 +35,7 @@ public interface ByteBufferedOutputChannelBroker {
 	/**
 	 * Returns a filled write buffer to the broker. The broker will take care
 	 * of the buffers and transfer the user data to the connected input channel on a best effort basis.
-	 * 
+	 *
 	 * @param buffer
 	 *        the buffer to be returned to the broker
 	 * @throws InterruptedException
@@ -48,7 +48,7 @@ public interface ByteBufferedOutputChannelBroker {
 	/**
 	 * Checks if there is still data created by this output channel that must be transfered to the corresponding input
 	 * channel.
-	 * 
+	 *
 	 * @return <code>true</code> if the channel has data left to transmit, <code>false</code> otherwise
 	 * @throws InterruptedException
 	 *         thrown if the connected task is interrupted while waiting for the remaining data to be transmitted
@@ -59,7 +59,7 @@ public interface ByteBufferedOutputChannelBroker {
 
 	/**
 	 * Forwards the given event to the connected network input channel on a best effort basis.
-	 * 
+	 *
 	 * @param event
 	 *        the event to be transferred
 	 * @throws InterruptedException

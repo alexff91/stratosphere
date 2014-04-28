@@ -22,11 +22,11 @@ import eu.stratosphere.api.common.ProgramDescription;
 import eu.stratosphere.api.common.operators.FileDataSink;
 import eu.stratosphere.api.common.operators.FileDataSource;
 import eu.stratosphere.api.java.record.functions.CoGroupFunction;
-import eu.stratosphere.api.java.record.functions.JoinFunction;
-import eu.stratosphere.api.java.record.functions.MapFunction;
 import eu.stratosphere.api.java.record.functions.FunctionAnnotation.ConstantFieldsExcept;
 import eu.stratosphere.api.java.record.functions.FunctionAnnotation.ConstantFieldsFirstExcept;
 import eu.stratosphere.api.java.record.functions.FunctionAnnotation.ConstantFieldsSecondExcept;
+import eu.stratosphere.api.java.record.functions.JoinFunction;
+import eu.stratosphere.api.java.record.functions.MapFunction;
 import eu.stratosphere.api.java.record.io.CsvInputFormat;
 import eu.stratosphere.api.java.record.io.CsvOutputFormat;
 import eu.stratosphere.api.java.record.operators.CoGroupOperator;
@@ -39,7 +39,7 @@ import eu.stratosphere.util.Collector;
 
 /**
  * Implements the following relational OLAP query as PACT program:
- * 
+ *
  * <code><pre>
  * SELECT r.pageURL, r.pageRank, r.avgDuration
  * FROM Documents d JOIN Rankings r
@@ -49,19 +49,19 @@ import eu.stratosphere.util.Collector;
  * 	AND NOT EXISTS (
  * 		SELECT * FROM Visits v
  * 		WHERE v.destUrl = d.url
- * 			AND v.visitDate < [date]); 
- *  * </pre></code> 
- * 
+ * 			AND v.visitDate < [date]);
+ *  * </pre></code>
+ *
  * Table Schemas: <code><pre>
  * CREATE TABLE Documents (
  * 					url VARCHAR(100) PRIMARY KEY,
  * 					contents TEXT );
- * 
+ *
  * CREATE TABLE Rankings (
  * 					pageRank INT,
- * 					pageURL VARCHAR(100) PRIMARY KEY,     
- * 					avgDuration INT );       
- * 
+ * 					pageURL VARCHAR(100) PRIMARY KEY,
+ * 					avgDuration INT );
+ *
  * CREATE TABLE Visits (
  * 					sourceIP VARCHAR(16),
  * 					destURL VARCHAR(100),
@@ -73,26 +73,26 @@ import eu.stratosphere.util.Collector;
  * 					searchWord VARCHAR(32),
  * 					duration INT );
  * </pre></code>
- * 
+ *
  */
 public class WebLogAnalysis implements Program, ProgramDescription {
-	
+
 	private static final long serialVersionUID = 1L;
 
 
 	/**
 	 * MapFunction that filters for documents that contain a certain set of
-	 * keywords. 
+	 * keywords.
 	 */
 	@ConstantFieldsExcept(1)
 	public static class FilterDocs extends MapFunction implements Serializable {
 		private static final long serialVersionUID = 1L;
-		
+
 		private static final String[] KEYWORDS = { " editors ", " oscillations ", " convection " };
-		
+
 		/**
 		 * Filters for documents that contain all of the given keywords and projects the records on the URL field.
-		 * 
+		 *
 		 * Output Format:
 		 * 0: URL
 		 */
@@ -122,13 +122,13 @@ public class WebLogAnalysis implements Program, ProgramDescription {
 	@ConstantFieldsExcept({})
 	public static class FilterRanks extends MapFunction implements Serializable {
 		private static final long serialVersionUID = 1L;
-		
+
 		private static final int RANKFILTER = 50;
-		
+
 		/**
 		 * Filters for records of the rank relation where the rank is greater
 		 * than the given threshold.
-		 * 
+		 *
 		 * Output Format:
 		 * 0: URL
 		 * 1: RANK
@@ -136,7 +136,7 @@ public class WebLogAnalysis implements Program, ProgramDescription {
 		 */
 		@Override
 		public void map(Record record, Collector<Record> out) throws Exception {
-			
+
 			if (record.getField(1, IntValue.class).getValue() > RANKFILTER) {
 				out.collect(record);
 			}
@@ -152,11 +152,11 @@ public class WebLogAnalysis implements Program, ProgramDescription {
 		private static final long serialVersionUID = 1L;
 
 		private static final int YEARFILTER = 2010;
-		
+
 		/**
 		 * Filters for records of the visits relation where the year of visit is equal to a
 		 * specified value. The URL of all visit records passing the filter is emitted.
-		 * 
+		 *
 		 * Output Format:
 		 * 0: URL
 		 */
@@ -164,12 +164,12 @@ public class WebLogAnalysis implements Program, ProgramDescription {
 		public void map(Record record, Collector<Record> out) throws Exception {
 			// Parse date string with the format YYYY-MM-DD and extract the year
 			String dateString = record.getField(1, StringValue.class).getValue();
-			int year = Integer.parseInt(dateString.substring(0,4)); 
-			
+			int year = Integer.parseInt(dateString.substring(0,4));
+
 			if (year == YEARFILTER) {
 				record.setNull(1);
 				out.collect(record);
-				
+
 			}
 		}
 	}
@@ -184,7 +184,7 @@ public class WebLogAnalysis implements Program, ProgramDescription {
 
 		/**
 		 * Joins entries from the documents and ranks relation on their URL.
-		 * 
+		 *
 		 * Output Format:
 		 * 0: URL
 		 * 1: RANK
@@ -192,7 +192,7 @@ public class WebLogAnalysis implements Program, ProgramDescription {
 		 */
 		@Override
 		public void join(Record document, Record rank, Collector<Record> out) throws Exception {
-			out.collect(rank);	
+			out.collect(rank);
 		}
 	}
 
@@ -207,8 +207,8 @@ public class WebLogAnalysis implements Program, ProgramDescription {
 
 		/**
 		 * If the visit iterator is empty, all pairs of the rank iterator are emitted.
-		 * Otherwise, no pair is emitted. 
-		 * 
+		 * Otherwise, no pair is emitted.
+		 *
 		 * Output Format:
 		 * 0: URL
 		 * 1: RANK
@@ -246,7 +246,7 @@ public class WebLogAnalysis implements Program, ProgramDescription {
 		@SuppressWarnings("unchecked")
 		CsvInputFormat docsFormat = new CsvInputFormat('|', StringValue.class, StringValue.class);
 		FileDataSource docs = new FileDataSource(docsFormat, docsInput, "Docs Input");
-		
+
 		/*
 		 * Output Format:
 		 * 0: URL

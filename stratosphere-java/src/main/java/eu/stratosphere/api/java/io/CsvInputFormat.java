@@ -32,23 +32,23 @@ import eu.stratosphere.util.StringUtils;
 public class CsvInputFormat<OUT extends Tuple> extends GenericCsvInputFormat<OUT> {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	public static final String DEFAULT_LINE_DELIMITER = "\n";
-	
+
 	public static final char DEFAULT_FIELD_DELIMITER = ',';
 
 
 	private transient Object[] parsedValues;
-	
-	
+
+
 	public CsvInputFormat(Path filePath) {
 		super(filePath);
-	}	
-	
+	}
+
 	public CsvInputFormat(Path filePath, Class<?> ... types) {
 		this(filePath, DEFAULT_LINE_DELIMITER, DEFAULT_FIELD_DELIMITER, types);
-	}	
-	
+	}
+
 	public CsvInputFormat(Path filePath, String lineDelimiter, char fieldDelimiter, Class<?>... types) {
 		super(filePath);
 
@@ -57,38 +57,39 @@ public class CsvInputFormat<OUT extends Tuple> extends GenericCsvInputFormat<OUT
 
 		setFieldTypes(types);
 	}
-	
+
 	public void setFieldTypes(Class<?> ... fieldTypes) {
-		if (fieldTypes == null || fieldTypes.length == 0)
-			throw new IllegalArgumentException("Field types must not be null or empty.");
-		
+		if (fieldTypes == null || fieldTypes.length == 0) {
+		throw new IllegalArgumentException("Field types must not be null or empty.");
+		}
+
 		setFieldTypesGeneric(fieldTypes);
 	}
 
 	public void setFields(int[] sourceFieldIndices, Class<?>[] fieldTypes) {
 		Preconditions.checkNotNull(sourceFieldIndices);
 		Preconditions.checkNotNull(fieldTypes);
-		
+
 		checkForMonotonousOrder(sourceFieldIndices, fieldTypes);
-		
+
 		setFieldsGeneric(sourceFieldIndices, fieldTypes);
 	}
-	
+
 	public void setFields(boolean[] sourceFieldMask, Class<?>[] fieldTypes) {
 		Preconditions.checkNotNull(sourceFieldMask);
 		Preconditions.checkNotNull(fieldTypes);
-		
+
 		setFieldsGeneric(sourceFieldMask, fieldTypes);
 	}
-	
-	
+
+
 	@Override
 	public void open(FileInputSplit split) throws IOException {
 		super.open(split);
-		
+
 		@SuppressWarnings("unchecked")
 		FieldParser<Object>[] fieldParsers = (FieldParser<Object>[]) getFieldParsers();
-		
+
 		// create the value holders
 		this.parsedValues = new Object[fieldParsers.length];
 		for (int i = 0; i < fieldParsers.length; i++) {
@@ -108,22 +109,22 @@ public class CsvInputFormat<OUT extends Tuple> extends GenericCsvInputFormat<OUT
 			return null;
 		}
 	}
-	
+
 	@Override
 	public String toString() {
 		return "CSV Input (" + StringUtils.showControlCharacters(String.valueOf(getFieldDelimiter())) + ")";
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	@SuppressWarnings("unused")
 	private static void checkAndCoSort(int[] positions, Class<?>[] types) {
 		if (positions.length != types.length) {
 			throw new IllegalArgumentException("The positions and types must be of the same length");
 		}
-		
+
 		TreeMap<Integer, Class<?>> map = new TreeMap<Integer, Class<?>>();
-		
+
 		for (int i = 0; i < positions.length; i++) {
 			if (positions[i] < 0) {
 				throw new IllegalArgumentException("The field " + " (" + positions[i] + ") is invalid.");
@@ -131,14 +132,14 @@ public class CsvInputFormat<OUT extends Tuple> extends GenericCsvInputFormat<OUT
 			if (types[i] == null) {
 				throw new IllegalArgumentException("The type " + i + " is invalid (null)");
 			}
-			
+
 			if (map.containsKey(positions[i])) {
 				throw new IllegalArgumentException("The position " + positions[i] + " occurs multiple times.");
 			}
-			
+
 			map.put(positions[i], types[i]);
 		}
-		
+
 		int i = 0;
 		for (Map.Entry<Integer, Class<?>> entry : map.entrySet()) {
 			positions[i] = entry.getKey();
@@ -146,14 +147,14 @@ public class CsvInputFormat<OUT extends Tuple> extends GenericCsvInputFormat<OUT
 			i++;
 		}
 	}
-	
+
 	private static void checkForMonotonousOrder(int[] positions, Class<?>[] types) {
 		if (positions.length != types.length) {
 			throw new IllegalArgumentException("The positions and types must be of the same length");
 		}
-		
+
 		int lastPos = -1;
-		
+
 		for (int i = 0; i < positions.length; i++) {
 			if (positions[i] < 0) {
 				throw new IllegalArgumentException("The field " + " (" + positions[i] + ") is invalid.");
@@ -161,11 +162,11 @@ public class CsvInputFormat<OUT extends Tuple> extends GenericCsvInputFormat<OUT
 			if (types[i] == null) {
 				throw new IllegalArgumentException("The type " + i + " is invalid (null)");
 			}
-			
+
 			if (positions[i] <= lastPos) {
 				throw new IllegalArgumentException("The positions must be strictly increasing (no permutations are supported).");
 			}
-			
+
 			lastPos = positions[i];
 		}
 	}

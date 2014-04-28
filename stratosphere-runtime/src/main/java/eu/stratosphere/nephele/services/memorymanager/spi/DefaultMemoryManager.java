@@ -46,7 +46,7 @@ import eu.stratosphere.nephele.template.AbstractInvokable;
  * the manager works 2 dimensional byte array (i.e. with memory chunks). Please be aware that in order to keep the array
  * access methods in the {@link DefaultMemorySegment} fast and simple, the actual allocated memory segments must not
  * exceed 2GB and must be contained in a single memory chunk.
- * 
+ *
  */
 public class DefaultMemoryManager implements MemoryManager
 {
@@ -54,33 +54,33 @@ public class DefaultMemoryManager implements MemoryManager
 	 * The default memory page size. Currently set to 32 KiBytes.
 	 */
 	public static final int DEFAULT_PAGE_SIZE = 32 * 1024;
-	
+
 	/**
 	 * The minimal memory page size. Currently set to 4 KiBytes.
 	 */
 	public static final int MIN_PAGE_SIZE = 4 * 1024;
-	
+
 	/**
 	 * The Log.
 	 */
 	private static final Log LOG = LogFactory.getLog(DefaultMemoryManager.class);
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	private final Object lock = new Object();	 	// The lock used on the shared structures.
-	
+
 	private final ArrayDeque<byte[]> freeSegments;	// the free memory segments
-	
+
 	private final HashMap<AbstractInvokable, Set<DefaultMemorySegment>> allocatedSegments;
-	
+
 	private final long roundingMask;		// mask used to round down sizes to multiples of the page size
-	
+
 	private final int pageSize;				// the page size, in bytes
-	
+
 	private final int pageSizeBits;			// the number of bits that the power-of-two page size corresponds to
-	
+
 	private final int totalNumPages;		// The initial total size, for verification.
-	
+
 	private boolean isShutDown;				// flag whether the close() has already been invoked.
 
 	// ------------------------------------------------------------------------
@@ -89,7 +89,7 @@ public class DefaultMemoryManager implements MemoryManager
 
 	/**
 	 * Creates a memory manager with the given capacity, using the default page size.
-	 * 
+	 *
 	 * @param memorySize The total size of the memory to be managed by this memory manager.
 	 */
 	public DefaultMemoryManager(long memorySize) {
@@ -98,7 +98,7 @@ public class DefaultMemoryManager implements MemoryManager
 
 	/**
 	 * Creates a memory manager with the given capacity and given page size.
-	 * 
+	 *
 	 * @param memorySize The total size of the memory to be managed by this memory manager.
 	 * @param pageSize The size of the pages handed out by the memory manager.
 	 */
@@ -115,25 +115,26 @@ public class DefaultMemoryManager implements MemoryManager
 			// not a power of two
 			throw new IllegalArgumentException("The given page size is not a power of two.");
 		}
-		
+
 		// assign page size and bit utilities
 		this.pageSize = pageSize;
 		this.roundingMask = ~((long) (pageSize - 1));
 		int log = 0;
-		while ((pageSize = pageSize >>> 1) != 0)
-			log++;
+		while ((pageSize = pageSize >>> 1) != 0) {
+		log++;
+		}
 		this.pageSizeBits = log;
-		
+
 		this.totalNumPages = getNumPages(memorySize);
 		if (this.totalNumPages < 1) {
 			throw new IllegalArgumentException("The given amount of memory amounted to less than one page.");
 		}
-		
+
 		// initialize the free segments and allocated segments tracking structures
 		this.freeSegments = new ArrayDeque<byte[]>();
 		this.allocatedSegments = new HashMap<AbstractInvokable, Set<DefaultMemorySegment>>();
 
-		
+
 		// add the full chunks
 		for (int i = 0; i < this.totalNumPages; i++) {
 			// allocate memory of the specified size
@@ -149,13 +150,14 @@ public class DefaultMemoryManager implements MemoryManager
 		synchronized (this.lock)
 		{
 			if (!this.isShutDown) {
-				if (LOG.isDebugEnabled())
-					LOG.debug("Shutting down MemoryManager instance " + toString());
-	
+				if (LOG.isDebugEnabled()) {
+				LOG.debug("Shutting down MemoryManager instance " + toString());
+				}
+
 				// mark as shutdown and release memory
 				this.isShutDown = true;
 				this.freeSegments.clear();
-				
+
 				// go over all allocated segments and release them
 				for (Set<DefaultMemorySegment> segments : this.allocatedSegments.values()) {
 					for (DefaultMemorySegment seg : segments) {
@@ -166,7 +168,7 @@ public class DefaultMemoryManager implements MemoryManager
 		}
 		// -------------------- END CRITICAL SECTION -------------------
 	}
-	
+
 
 	public boolean verifyEmpty()
 	{
@@ -178,7 +180,7 @@ public class DefaultMemoryManager implements MemoryManager
 	// ------------------------------------------------------------------------
 	//                 MemoryManager interface implementation
 	// ------------------------------------------------------------------------
-	
+
 	/* (non-Javadoc)
 	 * @see eu.stratosphere.nephele.services.memorymanager.MemoryManager#allocatePages(eu.stratosphere.nephele.template.AbstractInvokable, int)
 	 */
@@ -200,30 +202,30 @@ public class DefaultMemoryManager implements MemoryManager
 		if (owner == null) {
 			throw new IllegalAccessError("The memory owner must not be null.");
 		}
-		
+
 		// reserve array space, if applicable
 		if (target instanceof ArrayList) {
 			((ArrayList<MemorySegment>) target).ensureCapacity(numPages);
 		}
-		
+
 		// -------------------- BEGIN CRITICAL SECTION -------------------
 		synchronized (this.lock)
 		{
 			if (this.isShutDown) {
 				throw new IllegalStateException("Memory manager has been shut down.");
 			}
-			
+
 			if (numPages > this.freeSegments.size()) {
-				throw new MemoryAllocationException("Could not allocate " + numPages + " pages. Only " + 
+				throw new MemoryAllocationException("Could not allocate " + numPages + " pages. Only " +
 					this.freeSegments.size() + " pages are remaining.");
 			}
-			
+
 			Set<DefaultMemorySegment> segmentsForOwner = this.allocatedSegments.get(owner);
 			if (segmentsForOwner == null) {
 				segmentsForOwner = new HashSet<DefaultMemorySegment>(4 * numPages / 3 + 1);
 				this.allocatedSegments.put(owner, segmentsForOwner);
 			}
-			
+
 			for (int i = numPages; i > 0; i--) {
 				byte[] buffer = this.freeSegments.poll();
 				final DefaultMemorySegment segment = new DefaultMemorySegment(owner, buffer);
@@ -233,9 +235,9 @@ public class DefaultMemoryManager implements MemoryManager
 		}
 		// -------------------- END CRITICAL SECTION -------------------
 	}
-	
+
 	// ------------------------------------------------------------------------
-	
+
 
 	@Override
 	public void release(MemorySegment segment)
@@ -244,10 +246,10 @@ public class DefaultMemoryManager implements MemoryManager
 		if (segment == null || segment.isFreed() || !(segment instanceof DefaultMemorySegment)) {
 			return;
 		}
-		
+
 		final DefaultMemorySegment defSeg = (DefaultMemorySegment) segment;
 		final AbstractInvokable owner = defSeg.owner;
-		
+
 		// -------------------- BEGIN CRITICAL SECTION -------------------
 		synchronized (this.lock)
 		{
@@ -258,7 +260,7 @@ public class DefaultMemoryManager implements MemoryManager
 			// remove the reference in the map for the owner
 			try {
 				Set<DefaultMemorySegment> segsForOwner = this.allocatedSegments.get(owner);
-				
+
 				if (segsForOwner != null) {
 					segsForOwner.remove(defSeg);
 					if (segsForOwner.isEmpty()) {
@@ -281,12 +283,12 @@ public class DefaultMemoryManager implements MemoryManager
 
 	@Override
 	public <T extends MemorySegment> void release(Collection<T> segments) {
-		
+
 		// sanity checks
 		if (segments == null) {
 			return;
 		}
-		
+
 		// -------------------- BEGIN CRITICAL SECTION -------------------
 		synchronized (this.lock)
 		{
@@ -295,21 +297,21 @@ public class DefaultMemoryManager implements MemoryManager
 			}
 
 			final Iterator<T> segmentsIterator = segments.iterator();
-			
+
 			AbstractInvokable lastOwner = null;
 			Set<DefaultMemorySegment> segsForOwner = null;
 
 			// go over all segments
 			while (segmentsIterator.hasNext()) {
-				
+
 				final MemorySegment seg = segmentsIterator.next();
 				if (seg.isFreed()) {
 					continue;
 				}
-				
+
 				final DefaultMemorySegment defSeg = (DefaultMemorySegment) seg;
 				final AbstractInvokable owner = defSeg.owner;
-				
+
 				try {
 					// get the list of segments by this owner only if it is a different owner than for
 					// the previous one (or it is the first segment)
@@ -317,7 +319,7 @@ public class DefaultMemoryManager implements MemoryManager
 						lastOwner = owner;
 						segsForOwner = this.allocatedSegments.get(owner);
 					}
-					
+
 					// remove the segment from the list
 					if (segsForOwner != null) {
 						segsForOwner.remove(defSeg);
@@ -335,7 +337,7 @@ public class DefaultMemoryManager implements MemoryManager
 					this.freeSegments.add(buffer);
 				}
 			}
-			
+
 			segments.clear();
 		}
 		// -------------------- END CRITICAL SECTION -------------------
@@ -351,28 +353,28 @@ public class DefaultMemoryManager implements MemoryManager
 			if (this.isShutDown) {
 				throw new IllegalStateException("Memory manager has been shut down.");
 			}
-			
+
 			// get all segments
 			final Set<DefaultMemorySegment> segments = this.allocatedSegments.remove(owner);
-			
+
 			// all segments may have been freed previously individually
 			if (segments == null || segments.isEmpty()) {
 				return;
 			}
-			
+
 			// free each segment
 			for (DefaultMemorySegment seg : segments) {
 				final byte[] buffer = seg.destroy();
 				this.freeSegments.add(buffer);
 			}
-			
+
 			segments.clear();
 		}
 		// -------------------- END CRITICAL SECTION -------------------
 	}
-	
+
 	// ------------------------------------------------------------------------
-	
+
 
 	@Override
 	public int getPageSize() {
@@ -390,32 +392,34 @@ public class DefaultMemoryManager implements MemoryManager
 	public long roundDownToPageSizeMultiple(long numBytes) {
 		return numBytes & this.roundingMask;
 	}
-	
+
 	// ------------------------------------------------------------------------
-	
+
 	private final int getNumPages(long numBytes)
 	{
-		if (numBytes < 0)
-			throw new IllegalArgumentException("The number of bytes to allocate must not be negative.");
-		
+		if (numBytes < 0) {
+		throw new IllegalArgumentException("The number of bytes to allocate must not be negative.");
+		}
+
 		final long numPages = numBytes >>> this.pageSizeBits;
-		if (numPages <= Integer.MAX_VALUE)
-			return (int) numPages;
-		else
-			throw new IllegalArgumentException("The given number of bytes correstponds to more than MAX_INT pages.");
+		if (numPages <= Integer.MAX_VALUE) {
+		return (int) numPages;
+		} else {
+		throw new IllegalArgumentException("The given number of bytes correstponds to more than MAX_INT pages.");
+		}
 	}
-	
+
 	// ------------------------------------------------------------------------
-	
+
 	private static final class DefaultMemorySegment extends MemorySegment {
-		
+
 		private AbstractInvokable owner;
-		
+
 		DefaultMemorySegment(AbstractInvokable owner, byte[] memory) {
 			super(memory);
 			this.owner = owner;
 		}
-		
+
 		byte[] destroy() {
 			final byte[] buffer = this.memory;
 			this.memory = null;

@@ -21,8 +21,8 @@ import java.util.Iterator;
 public interface SplittableIterator<T> extends Iterator<T>, Serializable {
 
 	Iterator<T>[] split(int numPartitions);
-	
+
 	Iterator<T> getSplit(int num, int numPartitions);
-	
+
 	int getMaximumNumberOfSplits();
 }

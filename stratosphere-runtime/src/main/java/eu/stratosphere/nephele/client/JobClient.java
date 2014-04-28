@@ -79,8 +79,8 @@ public class JobClient {
 	 * The sequence number of the last processed event received from the job manager.
 	 */
 	private long lastProcessedEventSequenceNumber = -1;
-	
-	
+
+
 	private PrintStream console;
 
 	/**
@@ -97,7 +97,7 @@ public class JobClient {
 		/**
 		 * Constructs a new clean up object which is used to perform clean up tasks
 		 * when the job client is terminated.
-		 * 
+		 *
 		 * @param jobClient
 		 *        the job client this clean up object belongs to
 		 */
@@ -115,7 +115,7 @@ public class JobClient {
 	/**
 	 * Constructs a new job client object and instantiates a local
 	 * RPC proxy for the {@link JobSubmissionProtocol}.
-	 * 
+	 *
 	 * @param jobGraph
 	 *        the job graph to run
 	 * @throws IOException
@@ -129,7 +129,7 @@ public class JobClient {
 	/**
 	 * Constructs a new job client object and instantiates a local
 	 * RPC proxy for the {@link JobSubmissionProtocol}.
-	 * 
+	 *
 	 * @param jobGraph
 	 *        the job graph to run
 	 * @param configuration
@@ -154,7 +154,7 @@ public class JobClient {
 	/**
 	 * Constructs a new job client object and instantiates a local
 	 * RPC proxy for the {@link JobSubmissionProtocol}.
-	 * 
+	 *
 	 * @param jobGraph
 	 *        the job graph to run
 	 * @param configuration
@@ -190,7 +190,7 @@ public class JobClient {
 
 	/**
 	 * Returns the {@link Configuration} object which can include special configuration settings for the job client.
-	 * 
+	 *
 	 * @return the {@link Configuration} object which can include special configuration settings for the job client
 	 */
 	public Configuration getConfiguration() {
@@ -200,7 +200,7 @@ public class JobClient {
 
 	/**
 	 * Submits the job assigned to this job client to the job manager.
-	 * 
+	 *
 	 * @return a <code>JobSubmissionResult</code> object encapsulating the results of the job submission
 	 * @throws IOException
 	 *         thrown in case of submission errors while transmitting the data to the job manager
@@ -215,7 +215,7 @@ public class JobClient {
 
 	/**
 	 * Cancels the job assigned to this job client.
-	 * 
+	 *
 	 * @return a <code>JobCancelResult</code> object encapsulating the result of the job cancel request
 	 * @throws IOException
 	 *         thrown if an error occurred while transmitting the request to the job manager
@@ -229,7 +229,7 @@ public class JobClient {
 
 	/**
 	 * Retrieves the current status of the job assigned to this job client.
-	 * 
+	 *
 	 * @return a <code>JobProgressResult</code> object including the current job progress
 	 * @throws IOException
 	 *         thrown if an error occurred while transmitting the request
@@ -244,7 +244,7 @@ public class JobClient {
 	/**
 	 * Submits the job assigned to this job client to the job manager and queries the job manager
 	 * about the progress of the job until it is either finished or aborted.
-	 * 
+	 *
 	 * @return the duration of the job execution in milliseconds
 	 * @throws IOException
 	 *         thrown if an error occurred while transmitting the request
@@ -334,7 +334,7 @@ public class JobClient {
 					if (jobStatus == JobStatus.FINISHED) {
 						Runtime.getRuntime().removeShutdownHook(this.jobCleanUp);
 						final long jobDuration = jobEvent.getTimestamp() - startTimestamp;
-						
+
 						// Request accumulators
 						Map<String, Object> accumulators = null;
 						try {
@@ -344,7 +344,7 @@ public class JobClient {
 							throw ioe;	// Rethrow error
 						}
 						return new JobExecutionResult(jobDuration, accumulators);
-						
+
 					} else if (jobStatus == JobStatus.CANCELED || jobStatus == JobStatus.FAILED) {
 						Runtime.getRuntime().removeShutdownHook(this.jobCleanUp);
 						LOG.info(jobEvent.getOptionalMessage());
@@ -368,7 +368,7 @@ public class JobClient {
 	/**
 	 * Returns the recommended interval in seconds in which a client
 	 * is supposed to poll for progress information.
-	 * 
+	 *
 	 * @return the interval in seconds
 	 * @throws IOException
 	 *         thrown if an error occurred while transmitting the request
@@ -382,7 +382,7 @@ public class JobClient {
 
 	/**
 	 * Writes the given error message to the log and throws it in an {@link IOException}.
-	 * 
+	 *
 	 * @param errorMessage
 	 *        the error message to write to the log
 	 * @throws IOException
@@ -392,7 +392,7 @@ public class JobClient {
 		LOG.error(errorMessage);
 		throw new IOException(errorMessage);
 	}
-	
+
 	public void setConsoleStreamForReporting(PrintStream stream) {
 		this.console = stream;
 	}

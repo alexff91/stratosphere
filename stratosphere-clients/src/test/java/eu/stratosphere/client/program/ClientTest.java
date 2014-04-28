@@ -30,10 +30,6 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import eu.stratosphere.api.common.Plan;
-import eu.stratosphere.client.program.Client;
-import eu.stratosphere.client.program.PackagedProgram;
-import eu.stratosphere.client.program.JobWithJars;
-import eu.stratosphere.client.program.ProgramInvocationException;
 import eu.stratosphere.compiler.DataStatistics;
 import eu.stratosphere.compiler.PactCompiler;
 import eu.stratosphere.compiler.costs.CostEstimator;
@@ -66,12 +62,12 @@ public class ClientTest {
 	JobWithJars planWithJarsMock;
 	@Mock
 	Plan planMock;
-	
+
 	@Mock
 	PactCompiler compilerMock;
 	@Mock
 	OptimizedPlan optimizedPlanMock;
-	
+
 	@Mock
 	NepheleJobGraphGenerator generatorMock;
 	@Mock
@@ -81,46 +77,46 @@ public class ClientTest {
 	JobClient jobClientMock;
 	@Mock
 	JobSubmissionResult jobSubmissionResultMock;
-	
+
 	@Before
 	public void setUp() throws Exception
 	{
 		initMocks(this);
-		
+
 		when(configMock.getString(ConfigConstants.JOB_MANAGER_IPC_ADDRESS_KEY, null)).thenReturn("localhost");
 		when(configMock.getInteger(ConfigConstants.JOB_MANAGER_IPC_PORT_KEY, ConfigConstants.DEFAULT_JOB_MANAGER_IPC_PORT)).thenReturn(6123);
-		
+
 		when(planMock.getJobName()).thenReturn("MockPlan");
 //		when(mockJarFile.getAbsolutePath()).thenReturn("mockFilePath");
-		
+
 		when(program.getPlanWithJars()).thenReturn(planWithJarsMock);
 		when(planWithJarsMock.getPlan()).thenReturn(planMock);
-		
+
 		whenNew(PactCompiler.class).withArguments(any(DataStatistics.class), any(CostEstimator.class), any(InetSocketAddress.class)).thenReturn(this.compilerMock);
 		when(compilerMock.compile(planMock)).thenReturn(optimizedPlanMock);
-		
+
 		whenNew(NepheleJobGraphGenerator.class).withNoArguments().thenReturn(generatorMock);
 		when(generatorMock.compileJobGraph(optimizedPlanMock)).thenReturn(jobGraphMock);
-		
+
 		whenNew(JobClient.class).withArguments(any(JobGraph.class), any(Configuration.class)).thenReturn(this.jobClientMock);
-		
+
 		when(this.jobClientMock.submitJob()).thenReturn(jobSubmissionResultMock);
 	}
-	
+
 	@Test
 	public void shouldSubmitToJobClient() throws ProgramInvocationException, IOException
 	{
 		when(jobSubmissionResultMock.getReturnCode()).thenReturn(ReturnCode.SUCCESS);
-		
+
 		Client out = new Client(configMock);
 		out.run(program.getPlanWithJars(), false);
 		program.deleteExtractedLibraries();
-		
+
 		verify(this.compilerMock, times(1)).compile(planMock);
 		verify(this.generatorMock, times(1)).compileJobGraph(optimizedPlanMock);
 		verify(this.jobClientMock, times(1)).submitJob();
 	}
-	
+
 	/**
 	 * @throws Exception
 	 */
@@ -128,11 +124,11 @@ public class ClientTest {
 	public void shouldThrowException() throws Exception
 	{
 		when(jobSubmissionResultMock.getReturnCode()).thenReturn(ReturnCode.ERROR);
-		
+
 		Client out = new Client(configMock);
 		out.run(program.getPlanWithJars(), false);
 		program.deleteExtractedLibraries();
-		
+
 		verify(this.jobClientMock).submitJob();
 	}
 }

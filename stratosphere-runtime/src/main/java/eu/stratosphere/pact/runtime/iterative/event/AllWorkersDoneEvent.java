@@ -13,16 +13,16 @@
 
 package eu.stratosphere.pact.runtime.iterative.event;
 
-import eu.stratosphere.api.common.aggregators.Aggregator;
-
 import java.util.Map;
+
+import eu.stratosphere.api.common.aggregators.Aggregator;
 
 public class AllWorkersDoneEvent extends IterationEventWithAggregators {
 
 	public AllWorkersDoneEvent() {
 		super();
 	}
-	
+
 	public AllWorkersDoneEvent(Map<String, Aggregator<?>> aggregators) {
 		super(aggregators);
 	}

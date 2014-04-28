@@ -26,7 +26,7 @@ import eu.stratosphere.nephele.util.EnumUtils;
  * An <code>AbstractTaskResult</code> is used to report the results
  * of a task related operation. It contains the ID of the corresponding task, a return code and
  * a description. In case of an error the description includes an error message.
- * 
+ *
  */
 public abstract class AbstractTaskResult implements IOReadableWritable {
 
@@ -42,7 +42,7 @@ public abstract class AbstractTaskResult implements IOReadableWritable {
 
 	/**
 	 * Constructs a new abstract task result.
-	 * 
+	 *
 	 * @param vertexID
 	 *        the task ID this result belongs to
 	 * @param returnCode
@@ -63,7 +63,7 @@ public abstract class AbstractTaskResult implements IOReadableWritable {
 
 	/**
 	 * Sets a description for this abstract task result.
-	 * 
+	 *
 	 * @param description
 	 *        the description to be set
 	 */
@@ -73,7 +73,7 @@ public abstract class AbstractTaskResult implements IOReadableWritable {
 
 	/**
 	 * Returns the description for this abstract task result.
-	 * 
+	 *
 	 * @return the description for this abstract task result or <code>null</code> if no description has yet been set
 	 */
 	public String getDescription() {
@@ -82,7 +82,7 @@ public abstract class AbstractTaskResult implements IOReadableWritable {
 
 	/**
 	 * Returns the ID of the task this result belongs to.
-	 * 
+	 *
 	 * @return the ID of the task this result belongs to
 	 */
 	public ExecutionVertexID getVertexID() {
@@ -91,7 +91,7 @@ public abstract class AbstractTaskResult implements IOReadableWritable {
 
 	/**
 	 * Returns the return code of the result.
-	 * 
+	 *
 	 * @return the return code of the result
 	 */
 	public ReturnCode getReturnCode() {

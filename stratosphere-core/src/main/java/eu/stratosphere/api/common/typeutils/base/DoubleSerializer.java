@@ -14,20 +14,20 @@
  **********************************************************************************************************************/
 package eu.stratosphere.api.common.typeutils.base;
 
+import java.io.IOException;
+
 import eu.stratosphere.api.common.typeutils.ImmutableTypeUtil;
 import eu.stratosphere.api.common.typeutils.TypeSerializer;
 import eu.stratosphere.core.memory.DataInputView;
 import eu.stratosphere.core.memory.DataOutputView;
 
-import java.io.IOException;
-
 
 public class DoubleSerializer extends TypeSerializer<Double> implements ImmutableTypeUtil {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	public static final DoubleSerializer INSTANCE = new DoubleSerializer();
-	
+
 	private static final Double ZERO = Double.valueOf(0);
 
 

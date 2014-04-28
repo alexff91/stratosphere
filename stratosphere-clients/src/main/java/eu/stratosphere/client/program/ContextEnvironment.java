@@ -27,15 +27,15 @@ import eu.stratosphere.compiler.plandump.PlanJSONDumpGenerator;
  *
  */
 public class ContextEnvironment extends ExecutionEnvironment {
-	
+
 	private final Client client;
-	
+
 	private final List<File> jarFilesToAttach;
-	
+
 	private final ClassLoader userCodeClassLoader;
-	
-	
-	
+
+
+
 	public ContextEnvironment(Client remoteConnection, List<File> jarFiles, ClassLoader userCodeClassLoader) {
 		this.client = remoteConnection;
 		this.jarFilesToAttach = jarFiles;
@@ -46,7 +46,7 @@ public class ContextEnvironment extends ExecutionEnvironment {
 	public JobExecutionResult execute(String jobName) throws Exception {
 		Plan p = createProgramPlan(jobName);
 		p.setDefaultParallelism(getDegreeOfParallelism());
-		
+
 		JobWithJars toRun = new JobWithJars(p, this.jarFilesToAttach, this.userCodeClassLoader);
 		return this.client.run(toRun, true);
 	}
@@ -55,13 +55,13 @@ public class ContextEnvironment extends ExecutionEnvironment {
 	public String getExecutionPlan() throws Exception {
 		Plan p = createProgramPlan("unnamed job");
 		p.setDefaultParallelism(getDegreeOfParallelism());
-		
+
 		OptimizedPlan op = this.client.getOptimizedPlan(p);
-		
+
 		PlanJSONDumpGenerator gen = new PlanJSONDumpGenerator();
 		return gen.getOptimizerPlanAsJSON(op);
 	}
-	
+
 	public void setAsContext() {
 		initializeContextEnvironment(this);
 	}

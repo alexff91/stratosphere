@@ -13,6 +13,10 @@
 
 package eu.stratosphere.nephele.instance.cluster;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -24,8 +28,6 @@ import java.util.Set;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 import eu.stratosphere.configuration.ConfigConstants;
 import eu.stratosphere.configuration.Configuration;
@@ -39,7 +41,6 @@ import eu.stratosphere.nephele.instance.InstanceException;
 import eu.stratosphere.nephele.instance.InstanceRequestMap;
 import eu.stratosphere.nephele.instance.InstanceType;
 import eu.stratosphere.nephele.instance.InstanceTypeDescription;
-import eu.stratosphere.nephele.instance.cluster.ClusterManager;
 import eu.stratosphere.nephele.jobgraph.JobID;
 import eu.stratosphere.util.LogUtils;
 
@@ -92,8 +93,8 @@ public class ClusterManagerTest {
 	public static void initLogging() {
 		LogUtils.initializeDefaultTestConsoleLogger();
 	}
-	
-	
+
+
 	/**
 	 * This test covers the parsing of instance types from the configuration and the default instance type.
 	 */
@@ -391,7 +392,7 @@ public class ClusterManagerTest {
 
 	/**
 	 * Returns the directory containing the configuration files that shall be used for the test.
-	 * 
+	 *
 	 * @return the directory containing the configuration files or <code>null</code> if the configuration directory
 	 *         could not be located
 	 */

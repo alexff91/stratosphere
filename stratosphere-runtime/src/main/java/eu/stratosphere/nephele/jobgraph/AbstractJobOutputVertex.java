@@ -15,13 +15,13 @@ package eu.stratosphere.nephele.jobgraph;
 
 /**
  * An abstract base class for output vertices in Nephele.
- * 
+ *
  */
 public abstract class AbstractJobOutputVertex extends AbstractJobVertex {
 
 	/**
 	 * Constructs a new job output vertex with the given name.
-	 * 
+	 *
 	 * @param name
 	 *        the name of the new job output vertex
 	 * @param id

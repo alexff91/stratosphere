@@ -19,7 +19,7 @@ import eu.stratosphere.nephele.io.AbstractID;
  * A management vertex ID uniquely identifies a {@link ManagementVertex}.
  * <p>
  * This class is not thread-safe.
- * 
+ *
  */
 public final class ManagementVertexID extends AbstractID {
 }

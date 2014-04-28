@@ -35,7 +35,7 @@ import eu.stratosphere.nephele.template.AbstractInvokable;
  * is preserved as well as possible.
  * <p>
  * This class is thread-safe.
- * 
+ *
  */
 public final class FileInputSplitAssigner implements InputSplitAssigner {
 
@@ -102,7 +102,7 @@ public final class FileInputSplitAssigner implements InputSplitAssigner {
 
 	@Override
 	public void unregisterGroupVertex(final ExecutionGroupVertex groupVertex) {
-		
+
 		this.vertexMap.remove(groupVertex);
 	}
 

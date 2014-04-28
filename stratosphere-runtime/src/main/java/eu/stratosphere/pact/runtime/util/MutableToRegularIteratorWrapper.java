@@ -23,15 +23,15 @@ import eu.stratosphere.util.MutableObjectIterator;
 /**
  * This class wraps a {@link MutableObjectIterator} into a regular {@link Iterator}.
  * Internally, it uses two record instances which it uses alternating. That way,
- * whenever hasNext() returns (possibly with false), the previous obtained record is 
+ * whenever hasNext() returns (possibly with false), the previous obtained record is
  * still valid and cannot have been overwritten internally.
  */
 public class MutableToRegularIteratorWrapper<T> implements Iterator<T> {
-	
+
 	private final MutableObjectIterator<T> source;
-	
+
 	private T current, next;
-	
+
 	private boolean currentIsAvailable;
 
 	public MutableToRegularIteratorWrapper(MutableObjectIterator<T> source, TypeSerializer<T> serializer) {
@@ -49,11 +49,11 @@ public class MutableToRegularIteratorWrapper<T> implements Iterator<T> {
 				// we always use two records such that whenever hasNext() returns (possibly with false),
 				// the previous record is always still valid.
 				if ((next = source.next(next)) != null) {
-					
+
 					T tmp = current;
 					current = next;
 					next = tmp;
-					
+
 					currentIsAvailable = true;
 					return true;
 				} else {

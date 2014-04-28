@@ -27,7 +27,7 @@ import eu.stratosphere.util.StringUtils;
 /**
  * An input split wrapper object wraps an input split for RPC calls. In particular, the input split wrapper ensures that
  * the right class loader is used to instantiate the wrapped input split object.
- * 
+ *
  */
 public final class InputSplitWrapper implements IOReadableWritable {
 
@@ -43,7 +43,7 @@ public final class InputSplitWrapper implements IOReadableWritable {
 
 	/**
 	 * Constructs a new input split wrapper.
-	 * 
+	 *
 	 * @param jobID
 	 *        the ID of the job the input split belongs to
 	 * @param inputSplit
@@ -132,7 +132,7 @@ public final class InputSplitWrapper implements IOReadableWritable {
 	/**
 	 * Returns the wrapped input split. The wrapped input split may also be <code>null</code> in case no more input
 	 * splits shall be consumed by the requesting task.
-	 * 
+	 *
 	 * @return the wrapped input split, possibly <code>null</code>
 	 */
 	public InputSplit getInputSplit() {

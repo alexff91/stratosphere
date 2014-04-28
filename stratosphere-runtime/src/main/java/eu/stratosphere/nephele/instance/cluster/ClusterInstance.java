@@ -33,7 +33,7 @@ import eu.stratosphere.nephele.topology.NetworkTopology;
  * Representation of a host of a compute cluster.
  * <p>
  * This class is thread-safe.
- * 
+ *
  */
 class ClusterInstance extends AbstractInstance {
 
@@ -54,7 +54,7 @@ class ClusterInstance extends AbstractInstance {
 
 	/**
 	 * Constructs a new cluster instance.
-	 * 
+	 *
 	 * @param instanceConnectionInfo
 	 *        the instance connection info identifying the host
 	 * @param capacity
@@ -84,7 +84,7 @@ class ClusterInstance extends AbstractInstance {
 
 	/**
 	 * Returns whether the host is still alive.
-	 * 
+	 *
 	 * @param cleanUpInterval
 	 *        duration (in milliseconds) after which a host is
 	 *        considered dead if it has no received heat-beats.
@@ -101,7 +101,7 @@ class ClusterInstance extends AbstractInstance {
 
 	/**
 	 * Tries to create a new slice on this instance.
-	 * 
+	 *
 	 * @param reqType
 	 *        the type describing the hardware characteristics of the slice
 	 * @param jobID
@@ -139,7 +139,7 @@ class ClusterInstance extends AbstractInstance {
 	/**
 	 * Removes the slice identified by the given allocation ID from
 	 * this instance and frees up the allocated resources.
-	 * 
+	 *
 	 * @param allocationID
 	 *        the allocation ID of the slice to be removed
 	 * @return the slice with has been removed from the instance or <code>null</code> if no slice
@@ -165,7 +165,7 @@ class ClusterInstance extends AbstractInstance {
 	/**
 	 * Removes all allocated slices on this instance and frees
 	 * up their allocated resources.
-	 * 
+	 *
 	 * @return a list of all removed slices
 	 */
 	synchronized List<AllocatedSlice> removeAllAllocatedSlices() {

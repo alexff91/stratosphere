@@ -35,25 +35,25 @@ import eu.stratosphere.util.MutableObjectIterator;
 public class MergeIteratorTest
 {
 	private TypeSerializer<Record> serializer;
-	
+
 	private TypeComparator<Record> comparator;
-	
-	
+
+
 	@SuppressWarnings("unchecked")
 	@Before
 	public void setup() {
 		this.serializer = RecordSerializer.get();
 		this.comparator = new RecordComparator(new int[] {0}, new Class[] { TestData.Key.class});
 	}
-	
-	
+
+
 	private MutableObjectIterator<Record> newIterator(final int[] keys, final String[] values)
 	{
 		return new MutableObjectIterator<Record>()
 		{
 			private Key key = new Key();
 			private Value value = new Value();
-			
+
 			private int current = 0;
 
 			@Override
@@ -81,7 +81,7 @@ public class MergeIteratorTest
 		List<MutableObjectIterator<Record>> iterators = new ArrayList<MutableObjectIterator<Record>>();
 		iterators.add(newIterator(new int[] { 1, 2, 4, 5, 10 }, new String[] { "1", "2", "4", "5", "10" }));
 		iterators.add(newIterator(new int[] { 3, 6, 7, 10, 12 }, new String[] { "3", "6", "7", "10", "12" }));
-		
+
 		final int[] expected = new int[] {1, 2, 3, 4, 5, 6, 7, 10, 10, 12};
 
 		// comparator
@@ -95,25 +95,25 @@ public class MergeIteratorTest
 		Record rec2 = new Record();
 		final Key k1 = new Key();
 		final Key k2 = new Key();
-		
+
 		int pos = 1;
-		
+
 		Assert.assertTrue((rec1 = iterator.next(rec1)) != null);
 		Assert.assertEquals(expected[0], rec1.getField(0, TestData.Key.class).getKey());
-		
+
 		while ((rec2 = iterator.next(rec2)) != null) {
 			k1.setKey(rec1.getField(0, TestData.Key.class).getKey());
 			k2.setKey(rec2.getField(0, TestData.Key.class).getKey());
-			
+
 			Assert.assertTrue(comparator.compare(k1, k2) <= 0);
-			Assert.assertEquals(expected[pos++], k2.getKey()); 
-			
+			Assert.assertEquals(expected[pos++], k2.getKey());
+
 			Record tmp = rec1;
 			rec1 = rec2;
 			rec2 = tmp;
 		}
 	}
-	
+
 	@Test
 	public void testMergeOfTenStreams() throws Exception
 	{
@@ -142,22 +142,22 @@ public class MergeIteratorTest
 		Record rec2 = new Record();
 		final Key k1 = new Key();
 		final Key k2 = new Key();
-		
+
 		Assert.assertTrue((rec1 = iterator.next(rec1)) != null);
 		while ((rec2 = iterator.next(rec2)) != null) {
 			elementsFound++;
 			k1.setKey(rec1.getField(0, TestData.Key.class).getKey());
 			k2.setKey(rec2.getField(0, TestData.Key.class).getKey());
 			Assert.assertTrue(comparator.compare(k1, k2) <= 0);
-			
+
 			Record tmp = rec1;
 			rec1 = rec2;
 			rec2 = tmp;
 		}
-		
+
 		Assert.assertEquals("Too few elements returned from stream.", 50, elementsFound);
 	}
-	
+
 	@Test
 	public void testInvalidMerge() throws Exception
 	{
@@ -181,11 +181,11 @@ public class MergeIteratorTest
 		MutableObjectIterator<Record> iterator = new MergeIterator<Record>(iterators, this.serializer, this.comparator);
 
 		boolean violationFound = false;
-		
+
 		// check expected order
 		Record rec1 = new Record();
 		Record rec2 = new Record();
-		
+
 		Assert.assertTrue((rec1 = iterator.next(rec1)) != null);
 		while ((rec2 = iterator.next(rec2)) != null)
 		{
@@ -193,17 +193,17 @@ public class MergeIteratorTest
 			final Key k2 = new Key();
 			k1.setKey(rec1.getField(0, TestData.Key.class).getKey());
 			k2.setKey(rec2.getField(0, TestData.Key.class).getKey());
-			
+
 			if (comparator.compare(k1, k2) > 0) {
 				violationFound = true;
 				break;
 			}
-			
+
 			Record tmp = rec1;
 			rec1 = rec2;
 			rec2 = tmp;
 		}
-		
+
 		Assert.assertTrue("Merge must have returned a wrong result", violationFound);
 	}
 }

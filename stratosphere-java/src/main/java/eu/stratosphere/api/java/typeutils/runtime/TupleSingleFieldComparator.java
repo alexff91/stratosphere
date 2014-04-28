@@ -31,11 +31,11 @@ public final class TupleSingleFieldComparator<T extends Tuple, K> extends TypeCo
 
 
 	private final int keyPosition;
-	
+
 	private final TypeComparator<K> comparator;
-	
-	
-		
+
+
+
 	public TupleSingleFieldComparator(int keyPosition, TypeComparator<K> comparator) {
 		this.keyPosition = keyPosition;
 		this.comparator = comparator;
@@ -44,15 +44,15 @@ public final class TupleSingleFieldComparator<T extends Tuple, K> extends TypeCo
 	public int getKeyPosition() {
 		return this.keyPosition;
 	}
-	
+
 	public TypeComparator<K> getComparator() {
 		return this.comparator;
 	}
-	
+
 	@Override
 	public int hash(T value) {
 		return comparator.hash(value.<K>getField(keyPosition));
-		
+
 	}
 
 	@Override

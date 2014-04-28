@@ -62,7 +62,7 @@ import eu.stratosphere.util.StringUtils;
  * when and where (on which instance) to run particular tasks.
  * <p>
  * This class is thread-safe.
- * 
+ *
  */
 public class ExecutionGraph implements ExecutionListener {
 
@@ -136,7 +136,7 @@ public class ExecutionGraph implements ExecutionListener {
 
 	/**
 	 * Private constructor used for duplicating execution vertices.
-	 * 
+	 *
 	 * @param jobID
 	 *        the ID of the duplicated execution graph
 	 * @param jobName
@@ -157,7 +157,7 @@ public class ExecutionGraph implements ExecutionListener {
 
 	/**
 	 * Creates a new execution graph from a job graph.
-	 * 
+	 *
 	 * @param job
 	 *        the user's job graph
 	 * @param instanceManager
@@ -179,7 +179,7 @@ public class ExecutionGraph implements ExecutionListener {
 
 	/**
 	 * Applies the user defined settings to the execution graph.
-	 * 
+	 *
 	 * @param temporaryGroupVertexMap
 	 *        mapping between job vertices and the corresponding group vertices.
 	 * @throws GraphConversionException
@@ -248,7 +248,7 @@ public class ExecutionGraph implements ExecutionListener {
 
 	/**
 	 * Sets up an execution graph from a job graph.
-	 * 
+	 *
 	 * @param jobGraph
 	 *        the job graph to create the execution graph from
 	 * @param instanceManager
@@ -379,7 +379,7 @@ public class ExecutionGraph implements ExecutionListener {
 
 	/**
 	 * Creates the initial edges between the group vertices
-	 * 
+	 *
 	 * @param vertexMap
 	 *        the temporary vertex map
 	 * @throws GraphConversionException
@@ -443,7 +443,7 @@ public class ExecutionGraph implements ExecutionListener {
 
 	/**
 	 * Creates an execution vertex from a job vertex.
-	 * 
+	 *
 	 * @param jobVertex
 	 *        the job vertex to create the execution vertex from
 	 * @param instanceManager
@@ -590,7 +590,7 @@ public class ExecutionGraph implements ExecutionListener {
 
 	/**
 	 * Returns the number of input vertices registered with this execution graph.
-	 * 
+	 *
 	 * @return the number of input vertices registered with this execution graph
 	 */
 	public int getNumberOfInputVertices() {
@@ -600,7 +600,7 @@ public class ExecutionGraph implements ExecutionListener {
 
 	/**
 	 * Returns the number of input vertices for the given stage.
-	 * 
+	 *
 	 * @param stage
 	 *        the index of the execution stage
 	 * @return the number of input vertices for the given stage
@@ -616,7 +616,7 @@ public class ExecutionGraph implements ExecutionListener {
 
 	/**
 	 * Returns the number of output vertices registered with this execution graph.
-	 * 
+	 *
 	 * @return the number of output vertices registered with this execution graph
 	 */
 	public int getNumberOfOutputVertices() {
@@ -626,7 +626,7 @@ public class ExecutionGraph implements ExecutionListener {
 
 	/**
 	 * Returns the number of output vertices for the given stage.
-	 * 
+	 *
 	 * @param stage
 	 *        the index of the execution stage
 	 * @return the number of input vertices for the given stage
@@ -642,7 +642,7 @@ public class ExecutionGraph implements ExecutionListener {
 
 	/**
 	 * Returns the input vertex with the specified index.
-	 * 
+	 *
 	 * @param index
 	 *        the index of the input vertex to return
 	 * @return the input vertex with the specified index or <code>null</code> if no input vertex with such an index
@@ -655,7 +655,7 @@ public class ExecutionGraph implements ExecutionListener {
 
 	/**
 	 * Returns the output vertex with the specified index.
-	 * 
+	 *
 	 * @param index
 	 *        the index of the output vertex to return
 	 * @return the output vertex with the specified index or <code>null</code> if no output vertex with such an index
@@ -668,7 +668,7 @@ public class ExecutionGraph implements ExecutionListener {
 
 	/**
 	 * Returns the input vertex with the specified index for the given stage
-	 * 
+	 *
 	 * @param stage
 	 *        the index of the stage
 	 * @param index
@@ -693,7 +693,7 @@ public class ExecutionGraph implements ExecutionListener {
 
 	/**
 	 * Returns the output vertex with the specified index for the given stage.
-	 * 
+	 *
 	 * @param stage
 	 *        the index of the stage
 	 * @param index
@@ -718,7 +718,7 @@ public class ExecutionGraph implements ExecutionListener {
 
 	/**
 	 * Returns the execution stage with number <code>num</code>.
-	 * 
+	 *
 	 * @param num
 	 *        the number of the execution stage to be returned
 	 * @return the execution stage with number <code>num</code> or <code>null</code> if no such execution stage exists
@@ -734,7 +734,7 @@ public class ExecutionGraph implements ExecutionListener {
 
 	/**
 	 * Returns the number of execution stages in the execution graph.
-	 * 
+	 *
 	 * @return the number of execution stages in the execution graph
 	 */
 	public int getNumberOfStages() {
@@ -744,7 +744,7 @@ public class ExecutionGraph implements ExecutionListener {
 
 	/**
 	 * Identifies an execution by the specified channel ID and returns it.
-	 * 
+	 *
 	 * @param id
 	 *        the channel ID to identify the vertex with
 	 * @return the execution vertex which has a channel with ID <code>id</code> or <code>null</code> if no such vertex
@@ -766,7 +766,7 @@ public class ExecutionGraph implements ExecutionListener {
 
 	/**
 	 * Finds an {@link ExecutionEdge} by its ID and returns it.
-	 * 
+	 *
 	 * @param id
 	 *        the channel ID to identify the edge
 	 * @return the edge whose ID matches <code>id</code> or <code>null</code> if no such edge is known
@@ -778,7 +778,7 @@ public class ExecutionGraph implements ExecutionListener {
 
 	/**
 	 * Registers an execution vertex with the execution graph.
-	 * 
+	 *
 	 * @param vertex
 	 *        the execution vertex to register
 	 */
@@ -792,7 +792,7 @@ public class ExecutionGraph implements ExecutionListener {
 
 	/**
 	 * Returns the execution vertex with the given vertex ID.
-	 * 
+	 *
 	 * @param id
 	 *        the vertex ID to retrieve the execution vertex
 	 * @return the execution vertex matching the provided vertex ID or <code>null</code> if no such vertex could be
@@ -806,7 +806,7 @@ public class ExecutionGraph implements ExecutionListener {
 	/**
 	 * Checks if the current execution stage has been successfully completed, i.e.
 	 * all vertices in this stage have successfully finished their execution.
-	 * 
+	 *
 	 * @return <code>true</code> if stage is completed, <code>false</code> otherwise
 	 */
 	private boolean isCurrentStageCompleted() {
@@ -829,7 +829,7 @@ public class ExecutionGraph implements ExecutionListener {
 
 	/**
 	 * Checks if the execution of execution graph is finished.
-	 * 
+	 *
 	 * @return <code>true</code> if the execution of the graph is finished, <code>false</code> otherwise
 	 */
 	public boolean isExecutionFinished() {
@@ -839,7 +839,7 @@ public class ExecutionGraph implements ExecutionListener {
 
 	/**
 	 * Returns the job ID of the job configuration this execution graph was originally constructed from.
-	 * 
+	 *
 	 * @return the job ID of the job configuration this execution graph was originally constructed from
 	 */
 	public JobID getJobID() {
@@ -848,7 +848,7 @@ public class ExecutionGraph implements ExecutionListener {
 
 	/**
 	 * Returns the index of the current execution stage.
-	 * 
+	 *
 	 * @return the index of the current execution stage
 	 */
 	public int getIndexOfCurrentExecutionStage() {
@@ -857,7 +857,7 @@ public class ExecutionGraph implements ExecutionListener {
 
 	/**
 	 * Returns the stage which is currently executed.
-	 * 
+	 *
 	 * @return the currently executed stage or <code>null</code> if the job execution is already completed
 	 */
 	public ExecutionStage getCurrentExecutionStage() {
@@ -1029,7 +1029,7 @@ public class ExecutionGraph implements ExecutionListener {
 
 	/**
 	 * Returns the job configuration that was originally attached to the job graph.
-	 * 
+	 *
 	 * @return the job configuration that was originally attached to the job graph
 	 */
 	public Configuration getJobConfiguration() {
@@ -1038,7 +1038,7 @@ public class ExecutionGraph implements ExecutionListener {
 
 	/**
 	 * Checks whether the job represented by the execution graph has the status <code>FINISHED</code>.
-	 * 
+	 *
 	 * @return <code>true</code> if the job has the status <code>CREATED</code>, <code>false</code> otherwise
 	 */
 	private boolean jobHasFinishedStatus() {
@@ -1057,7 +1057,7 @@ public class ExecutionGraph implements ExecutionListener {
 
 	/**
 	 * Checks whether the job represented by the execution graph has the status <code>SCHEDULED</code>.
-	 * 
+	 *
 	 * @return <code>true</code> if the job has the status <code>SCHEDULED</code>, <code>false</code> otherwise
 	 */
 	private boolean jobHasScheduledStatus() {
@@ -1078,7 +1078,7 @@ public class ExecutionGraph implements ExecutionListener {
 	/**
 	 * Checks whether the job represented by the execution graph has the status <code>CANCELED</code> or
 	 * <code>FAILED</code>.
-	 * 
+	 *
 	 * @return <code>true</code> if the job has the status <code>CANCELED</code> or <code>FAILED</code>,
 	 *         <code>false</code> otherwise
 	 */
@@ -1169,7 +1169,7 @@ public class ExecutionGraph implements ExecutionListener {
 	/**
 	 * Returns the current status of the job
 	 * represented by this execution graph.
-	 * 
+	 *
 	 * @return the current status of the job
 	 */
 	public InternalJobStatus getJobStatus() {
@@ -1215,7 +1215,7 @@ public class ExecutionGraph implements ExecutionListener {
 
 	/**
 	 * Updates the job status to given status and triggers the execution of the {@link JobStatusListener} objects.
-	 * 
+	 *
 	 * @param newJobStatus
 	 *        the new job status
 	 * @param optionalMessage
@@ -1249,7 +1249,7 @@ public class ExecutionGraph implements ExecutionListener {
 	 * After being registered the object will receive notifications about changes
 	 * of the job status. It is not possible to register the same listener object
 	 * twice.
-	 * 
+	 *
 	 * @param jobStatusListener
 	 *        the listener object to register
 	 */
@@ -1266,7 +1266,7 @@ public class ExecutionGraph implements ExecutionListener {
 	 * Unregisters the given {@link JobStatusListener} object. After having called this
 	 * method, the object will no longer receive notifications about changes of the job
 	 * status.
-	 * 
+	 *
 	 * @param jobStatusListener
 	 *        the listener object to unregister
 	 */
@@ -1283,7 +1283,7 @@ public class ExecutionGraph implements ExecutionListener {
 	 * Registers a new {@link ExecutionStageListener} object with this execution graph. After being registered the
 	 * object will receive a notification whenever the job has entered its next execution stage. Note that a
 	 * notification is not sent when the job has entered its initial execution stage.
-	 * 
+	 *
 	 * @param executionStageListener
 	 *        the listener object to register
 	 */
@@ -1299,7 +1299,7 @@ public class ExecutionGraph implements ExecutionListener {
 	/**
 	 * Unregisters the given {@link ExecutionStageListener} object. After having called this method, the object will no
 	 * longer receiver notifications about the execution stage progress.
-	 * 
+	 *
 	 * @param executionStageListener
 	 *        the listener object to unregister
 	 */
@@ -1314,7 +1314,7 @@ public class ExecutionGraph implements ExecutionListener {
 
 	/**
 	 * Returns the name of the original job graph.
-	 * 
+	 *
 	 * @return the name of the original job graph, possibly <code>null</code>
 	 */
 	public String getJobName() {
@@ -1358,18 +1358,18 @@ public class ExecutionGraph implements ExecutionListener {
 		for (int i = 0; i < lastStage.getNumberOfStageMembers(); ++i) {
 
 			final ExecutionGroupVertex groupVertex = lastStage.getStageMember(i);
-			
+
 			int currentConnectionID = 0;
-			
+
 			if (groupVertex.isOutputVertex()) {
-			  currentConnectionID = groupVertex.calculateConnectionID(currentConnectionID, alreadyVisited);
+			currentConnectionID = groupVertex.calculateConnectionID(currentConnectionID, alreadyVisited);
 			}
 		}
 	}
 
 	/**
 	 * Returns an iterator over all execution stages contained in this graph.
-	 * 
+	 *
 	 * @return an iterator over all execution stages contained in this graph
 	 */
 	public Iterator<ExecutionStage> iterator() {
@@ -1386,7 +1386,7 @@ public class ExecutionGraph implements ExecutionListener {
 
 	/**
 	 * Performs an asynchronous update operation to this execution graph.
-	 * 
+	 *
 	 * @param command
 	 *        the update command to be asynchronously executed on this graph
 	 */

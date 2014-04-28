@@ -25,7 +25,7 @@ public final class CharComparator extends BasicTypeComparator<Character> {
 
 	private static final long serialVersionUID = 1L;
 
-	
+
 	public CharComparator(boolean ascending) {
 		super(ascending);
 	}

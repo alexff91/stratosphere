@@ -19,12 +19,12 @@ import eu.stratosphere.util.MutableObjectIterator;
 
 
 public class UnionWithTempOperator<T> implements PactDriver<Function, T> {
-	
+
 	private PactTaskContext<Function, T> taskContext;
-	
+
 	private volatile boolean running;
-	
-	
+
+
 	@Override
 	public void setup(PactTaskContext<Function, T> context) {
 		this.taskContext = context;
@@ -51,13 +51,13 @@ public class UnionWithTempOperator<T> implements PactDriver<Function, T> {
 
 	@Override
 	public void run() throws Exception {
-		
+
 		final int tempedInput = 0;
 		final int streamedInput = 1;
-		
+
 		final MutableObjectIterator<T> cache = this.taskContext.getInput(tempedInput);
 		final MutableObjectIterator<T> input = this.taskContext.getInput(streamedInput);
-		
+
 		final Collector<T> output = this.taskContext.getOutputCollector();
 
 		T record = this.taskContext.<T>getInputSerializer(streamedInput).createInstance();

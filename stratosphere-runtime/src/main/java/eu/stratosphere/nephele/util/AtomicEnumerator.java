@@ -21,29 +21,29 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class AtomicEnumerator<E>
 {
 	private final E[] values;
-	
+
 	private final AtomicInteger next;
-	
-	
+
+
 	public AtomicEnumerator(E[] values)
 	{
 		this.values = values;
 		this.next = new AtomicInteger(0);
 	}
-	
-	
+
+
 	public E getNext()
 	{
 		int n, nv;
 		do {
 			n = this.next.get();
-			nv = n+1; 
+			nv = n+1;
 		} while (!this.next.compareAndSet(n,  nv == this.values.length ? 0 : nv));
-		
+
 		return this.values[n];
 	}
-	
-	
+
+
 	public static final <T> AtomicEnumerator<T> get(T[] values)
 	{
 		return new AtomicEnumerator<T>(values);

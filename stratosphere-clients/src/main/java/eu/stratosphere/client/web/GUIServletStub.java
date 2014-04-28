@@ -60,7 +60,7 @@ public abstract class GUIServletStub extends HttpServlet {
 
 	/**
 	 * The constructor to be invoked by subclasses.
-	 * 
+	 *
 	 * @param title
 	 *        The title of the page, to be entered into the headers title tag.
 	 */
@@ -72,7 +72,7 @@ public abstract class GUIServletStub extends HttpServlet {
 
 	/**
 	 * Adds a stylesheet file to be included in the header.
-	 * 
+	 *
 	 * @param file
 	 *        The file to be included.
 	 */
@@ -82,7 +82,7 @@ public abstract class GUIServletStub extends HttpServlet {
 
 	/**
 	 * Adds a javascript file to be included in the header.
-	 * 
+	 *
 	 * @param file
 	 *        The file to be included.
 	 */
@@ -150,7 +150,7 @@ public abstract class GUIServletStub extends HttpServlet {
 	/**
 	 * This method must be overridden by the subclass. It will be called to print the contents
 	 * of the page.
-	 * 
+	 *
 	 * @param writer
 	 *        The <tt>PrintWriter</tt> to print the content to.
 	 * @param parameters

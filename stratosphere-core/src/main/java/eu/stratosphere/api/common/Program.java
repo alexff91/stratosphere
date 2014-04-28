@@ -20,13 +20,13 @@ import java.io.Serializable;
  * instance of the program that will be executed.l
  */
 public interface Program extends Serializable {
-	
+
 	/**
 	 * The method which is invoked by the compiler to get the job that is then compiled into an
 	 * executable schedule.
-	 * 
+	 *
 	 * @param args The array of input parameters. The parameters may be taken from the command line.
-	 * 
+	 *
 	 * @return The job to be compiled and executed.
 	 */
 	Plan getPlan(String... args);

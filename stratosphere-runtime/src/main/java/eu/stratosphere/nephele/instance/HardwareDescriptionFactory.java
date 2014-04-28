@@ -59,23 +59,23 @@ public class HardwareDescriptionFactory {
 	private static float RUNTIME_MEMORY_THRESHOLD = GlobalConfiguration.getFloat(
 		ConfigConstants.TASK_MANAGER_MEMORY_FRACTION_KEY, ConfigConstants.DEFAULT_MEMORY_MANAGER_MEMORY_FRACTION);
 
-	
+
 	/**
 	 * Private constructor, so class cannot be instantiated.
 	 */
 	private HardwareDescriptionFactory() {}
 
-	
+
 	/**
 	 * Extracts a hardware description object from the system.
-	 * 
+	 *
 	 * @return the hardware description object or <code>null</code> if at least
 	 *         one value for the hardware description cannot be determined
 	 */
 	public static HardwareDescription extractFromSystem() {
 		return extractFromSystem(1);
 	}
-	
+
 	public static HardwareDescription extractFromSystem(final int taskManagersPerJVM) {
 
 		final int numberOfCPUCores = Runtime.getRuntime().availableProcessors();
@@ -96,7 +96,7 @@ public class HardwareDescriptionFactory {
 
 	/**
 	 * Constructs a new hardware description object.
-	 * 
+	 *
 	 * @param numberOfCPUCores
 	 *        the number of CPU cores available to the JVM on the compute
 	 *        node
@@ -114,7 +114,7 @@ public class HardwareDescriptionFactory {
 
 	/**
 	 * Returns the size of free memory in bytes available to the JVM.
-	 * 
+	 *
 	 * @return the size of the free memory in bytes available to the JVM or <code>-1</code> if the size cannot be
 	 *         determined
 	 */
@@ -125,7 +125,7 @@ public class HardwareDescriptionFactory {
 
 	/**
 	 * Returns the size of the physical memory in bytes.
-	 * 
+	 *
 	 * @return the size of the physical memory in bytes or <code>-1</code> if
 	 *         the size could not be determined
 	 */
@@ -133,20 +133,20 @@ public class HardwareDescriptionFactory {
 		switch (OperatingSystem.getCurrentOperatingSystem()) {
 			case LINUX:
 				return getSizeOfPhysicalMemoryForLinux();
-				
+
 			case WINDOWS:
 				return getSizeOfPhysicalMemoryForWindows();
-				
+
 			case MAC_OS:
 				return getSizeOfPhysicalMemoryForMac();
-				
+
 			case FREE_BSD:
 				return getSizeOfPhysicalMemoryForFreeBSD();
-				
+
 			case UNKNOWN:
 				LOG.error("Cannot determine size of physical memory for unknown operating system");
 				return -1;
-				
+
 			default:
 				LOG.error("Unrecognized OS");
 				return -1;
@@ -156,7 +156,7 @@ public class HardwareDescriptionFactory {
 	/**
 	 * Returns the size of the physical memory in bytes on a Linux-based
 	 * operating system.
-	 * 
+	 *
 	 * @return the size of the physical memory in bytes or <code>-1</code> if
 	 *         the size could not be determined
 	 */
@@ -174,7 +174,7 @@ public class HardwareDescriptionFactory {
 					return Long.parseLong(totalMemory) * 1024L; // Convert from kilobyte to byte
 				}
 			}
-			
+
 			// expected line did not come
 			LOG.error("Cannot determine the size of the physical memory using '/proc/meminfo'. Unexpected format.");
 			return -1;
@@ -200,7 +200,7 @@ public class HardwareDescriptionFactory {
 	/**
 	 * Returns the size of the physical memory in bytes on a Mac OS-based
 	 * operating system
-	 * 
+	 *
 	 * @return the size of the physical memory in bytes or <code>-1</code> if
 	 *         the size could not be determined
 	 */
@@ -241,7 +241,7 @@ public class HardwareDescriptionFactory {
 
 	/**
 	 * Returns the size of the physical memory in bytes on FreeBSD.
-	 * 
+	 *
 	 * @return the size of the physical memory in bytes or <code>-1</code> if
 	 *         the size could not be determined
 	 */
@@ -262,7 +262,7 @@ public class HardwareDescriptionFactory {
 					return memsize;
 				}
 			}
-			
+
 			LOG.error("Cannot determine the size of the physical memory using 'sysctl hw.physmem'.");
 			return -1;
 		}
@@ -282,7 +282,7 @@ public class HardwareDescriptionFactory {
 
 	/**
 	 * Returns the size of the physical memory in bytes on Windows.
-	 * 
+	 *
 	 * @return the size of the physical memory in bytes or <code>-1</code> if
 	 *         the size could not be determined
 	 */

@@ -30,7 +30,7 @@ import eu.stratosphere.util.StringUtils;
  * of vertices Nephele uses in its internal scheduling structures.
  * <p>
  * This class is not thread-safe.
- * 
+ *
  */
 public final class ManagementVertex extends ManagementAttachment implements IOReadableWritable {
 
@@ -76,7 +76,7 @@ public final class ManagementVertex extends ManagementAttachment implements IORe
 
 	/**
 	 * Constructs a new management vertex.
-	 * 
+	 *
 	 * @param groupVertex
 	 *        the management group vertex the new vertex belongs to
 	 * @param id
@@ -104,7 +104,7 @@ public final class ManagementVertex extends ManagementAttachment implements IORe
 
 	/**
 	 * Adds a management gate to this vertex.
-	 * 
+	 *
 	 * @param gate
 	 *        the management gate to be added
 	 */
@@ -119,7 +119,7 @@ public final class ManagementVertex extends ManagementAttachment implements IORe
 
 	/**
 	 * Returns the name of the instance the vertex represented by this management vertex currently runs on.
-	 * 
+	 *
 	 * @return the name of the instance the vertex represented by this management vertex currently runs on
 	 */
 	public String getInstanceName() {
@@ -128,7 +128,7 @@ public final class ManagementVertex extends ManagementAttachment implements IORe
 
 	/**
 	 * Returns the type of the instance the vertex represented by this management vertex currently runs on.
-	 * 
+	 *
 	 * @return the type of the instance the vertex represented by this management vertex currently runs on
 	 */
 	public String getInstanceType() {
@@ -137,7 +137,7 @@ public final class ManagementVertex extends ManagementAttachment implements IORe
 
 	/**
 	 * Returns the number of input gates this management vertex contains.
-	 * 
+	 *
 	 * @return the number of input gates this management vertex contains
 	 */
 	public int getNumberOfInputGates() {
@@ -146,7 +146,7 @@ public final class ManagementVertex extends ManagementAttachment implements IORe
 
 	/**
 	 * Returns the number of output gates this management vertex contains.
-	 * 
+	 *
 	 * @return the number of output gates this management vertex contains
 	 */
 	public int getNumberOfOutputGates() {
@@ -155,7 +155,7 @@ public final class ManagementVertex extends ManagementAttachment implements IORe
 
 	/**
 	 * Returns the input gate at the given index.
-	 * 
+	 *
 	 * @param index
 	 *        the index of the input gate to be returned
 	 * @return the input gate at the given index or <code>null</code> if no such input gate exists
@@ -171,7 +171,7 @@ public final class ManagementVertex extends ManagementAttachment implements IORe
 
 	/**
 	 * Returns the output gate at the given index.
-	 * 
+	 *
 	 * @param index
 	 *        the index of the output gate to be returned
 	 * @return the output gate at the given index or <code>null</code> if no such output gate exists
@@ -187,7 +187,7 @@ public final class ManagementVertex extends ManagementAttachment implements IORe
 
 	/**
 	 * Returns the group vertex this management vertex belongs to.
-	 * 
+	 *
 	 * @return the group vertex this management vertex belongs to
 	 */
 	public ManagementGroupVertex getGroupVertex() {
@@ -196,7 +196,7 @@ public final class ManagementVertex extends ManagementAttachment implements IORe
 
 	/**
 	 * The management graph this management vertex belongs to.
-	 * 
+	 *
 	 * @return the management graph this management vertex belongs to
 	 */
 	public ManagementGraph getGraph() {
@@ -205,7 +205,7 @@ public final class ManagementVertex extends ManagementAttachment implements IORe
 
 	/**
 	 * Returns the ID of this management vertex.
-	 * 
+	 *
 	 * @return the ID of this management vertex
 	 */
 	public ManagementVertexID getID() {
@@ -214,7 +214,7 @@ public final class ManagementVertex extends ManagementAttachment implements IORe
 
 	/**
 	 * Returns the name of this management vertex.
-	 * 
+	 *
 	 * @return the name of this management vertex, possibly <code>null</code>
 	 */
 	public String getName() {
@@ -224,7 +224,7 @@ public final class ManagementVertex extends ManagementAttachment implements IORe
 
 	/**
 	 * Returns the number of vertices which belong to the same group vertex as this management vertex.
-	 * 
+	 *
 	 * @return the number of vertices which belong to the same group vertex as this management vertex
 	 */
 	public int getNumberOfVerticesInGroup() {
@@ -234,7 +234,7 @@ public final class ManagementVertex extends ManagementAttachment implements IORe
 
 	/**
 	 * Returns the index at which this vertex is stored inside its corresponding group vertex.
-	 * 
+	 *
 	 * @return the index at which this vertex is stored inside its corresponding group vertex
 	 */
 	public int getIndexInGroup() {
@@ -244,7 +244,7 @@ public final class ManagementVertex extends ManagementAttachment implements IORe
 
 	/**
 	 * Sets the current execution state of this management vertex.
-	 * 
+	 *
 	 * @param executionState
 	 *        the current execution state of this vertex
 	 */
@@ -254,7 +254,7 @@ public final class ManagementVertex extends ManagementAttachment implements IORe
 
 	/**
 	 * Returns the current execution state of this management vertex.
-	 * 
+	 *
 	 * @return the current execution state of this management vertex
 	 */
 	public ExecutionState getExecutionState() {
@@ -263,7 +263,7 @@ public final class ManagementVertex extends ManagementAttachment implements IORe
 
 	/**
 	 * Sets the name of the instance this vertex currently runs on.
-	 * 
+	 *
 	 * @param instanceName
 	 *        the name of the instance this vertex currently runs on
 	 */
@@ -273,7 +273,7 @@ public final class ManagementVertex extends ManagementAttachment implements IORe
 
 	/**
 	 * Sets the type of instance this vertex currently runs on.
-	 * 
+	 *
 	 * @param instanceType
 	 *        the type of instance this vertex currently runs on
 	 */
@@ -320,15 +320,15 @@ public final class ManagementVertex extends ManagementAttachment implements IORe
 		StringRecord.writeString(out, this.instanceName);
 		StringRecord.writeString(out, this.instanceType);
 	}
-	
+
 	@Override
 	public String toString() {
 		return String.format("%s_%d", getGroupVertex().getName(), indexInGroup);
 	}
-	
+
 	/**
 	 * Returns Json representation of this ManagementVertex
-	 * 
+	 *
 	 * @return
 	 */
 	public String toJson() {
@@ -342,4 +342,4 @@ public final class ManagementVertex extends ManagementAttachment implements IORe
 		json.append("}");
 		return json.toString();
 	}
-} 
+}

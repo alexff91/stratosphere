@@ -27,20 +27,20 @@ public class PlanGroupReduceOperator<IN, OUT> extends GroupReduceOperatorBase<Ge
 {
 
 	private final TypeInformation<IN> inType;
-	
+
 	private final TypeInformation<OUT> outType;
-	
-	
-	public PlanGroupReduceOperator(GroupReduceFunction<IN, OUT> udf, int[] logicalGroupingFields, String name, 
+
+
+	public PlanGroupReduceOperator(GroupReduceFunction<IN, OUT> udf, int[] logicalGroupingFields, String name,
 				TypeInformation<IN> inputType, TypeInformation<OUT> outputType)
 	{
 		super(udf, logicalGroupingFields, name);
-		
+
 		this.inType = inputType;
 		this.outType = outputType;
 	}
-	
-	
+
+
 	@Override
 	public TypeInformation<OUT> getReturnType() {
 		return this.outType;

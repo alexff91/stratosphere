@@ -15,7 +15,7 @@ package eu.stratosphere.compiler.dag;
 import eu.stratosphere.util.Visitor;
 
 final class PlanCacheCleaner implements Visitor<OptimizerNode> {
-	
+
 	static final PlanCacheCleaner INSTANCE = new PlanCacheCleaner();
 
 	@Override

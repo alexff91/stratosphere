@@ -23,19 +23,19 @@ import eu.stratosphere.core.memory.DataInputView;
 
 
 public class DeserializationDelegate<T> implements IOReadableWritable {
-	
+
 	private T instance;
-	
+
 	private final TypeSerializer<T> serializer;
-	
+
 	private final InputViewWrapper wrapper;
-	
-	
+
+
 	public DeserializationDelegate(TypeSerializer<T> serializer) {
 		this.serializer = serializer;
 		this.wrapper = new InputViewWrapper();
 	}
-	
+
 	public void setInstance(T instance) {
 		this.instance = instance;
 	}
@@ -54,16 +54,16 @@ public class DeserializationDelegate<T> implements IOReadableWritable {
 		this.wrapper.setDelegate(in);
 		this.instance = this.serializer.deserialize(this.instance, this.wrapper);
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Utility class that wraps a {@link DataInput} as a {@link DataInputView}.
 	 */
 	private static final class InputViewWrapper implements DataInputView {
-		
+
 		private DataInput delegate;
-		
+
 		public void setDelegate(DataInput delegate) {
 			this.delegate = delegate;
 		}

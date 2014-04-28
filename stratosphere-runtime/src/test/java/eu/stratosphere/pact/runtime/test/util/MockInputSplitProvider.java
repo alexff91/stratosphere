@@ -27,7 +27,7 @@ import eu.stratosphere.nephele.template.InputSplitProvider;
  * jobs.
  * <p>
  * This class is thread-safe.
- * 
+ *
  */
 public class MockInputSplitProvider implements InputSplitProvider {
 
@@ -43,7 +43,7 @@ public class MockInputSplitProvider implements InputSplitProvider {
 
 	/**
 	 * Generates a set of input splits from an input path
-	 * 
+	 *
 	 * @param path
 	 *        the path of the local file to generate the input splits from
 	 * @param noSplits
@@ -60,7 +60,7 @@ public class MockInputSplitProvider implements InputSplitProvider {
 		} catch (URISyntaxException e) {
 			throw new IllegalArgumentException("Path URI can not be transformed to local path.");
 		}
-		
+
 		final File inFile = new File(localPath);
 
 		final long splitLength = inFile.length() / noSplits;

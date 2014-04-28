@@ -18,7 +18,7 @@ import eu.stratosphere.nephele.managementgraph.ManagementVertexID;
 
 /**
  * A class for statistically unique execution vertex IDs.
- * 
+ *
  */
 public class ExecutionVertexID extends AbstractID {
 
@@ -28,7 +28,7 @@ public class ExecutionVertexID extends AbstractID {
 	 * will be equal to the execution vertex ID in the sense
 	 * that the <code>equals</code> method will return <code>
 	 * true</code> when both IDs are compared.
-	 * 
+	 *
 	 * @return the new management vertex ID
 	 */
 	public ManagementVertexID toManagementVertexID() {
@@ -43,7 +43,7 @@ public class ExecutionVertexID extends AbstractID {
 	 * Converts the given management vertex ID into the corresponding execution vertex ID. The new execution vertex ID
 	 * will be equals to the management vertex ID in the sense that the <code>equals</code> method will return
 	 * <code>true</code> when both IDs are compared.
-	 * 
+	 *
 	 * @param vertexID
 	 *        the management vertex ID to be converted
 	 * @return the resulting execution vertex ID

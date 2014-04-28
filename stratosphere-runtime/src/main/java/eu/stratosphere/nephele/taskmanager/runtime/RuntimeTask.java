@@ -103,7 +103,7 @@ public final class RuntimeTask implements Task, ExecutionObserver {
 
 	/**
 	 * Returns the name of the task associated with this observer object.
-	 * 
+	 *
 	 * @return the name of the task associated with this observer object
 	 */
 	private String getTaskName() {
@@ -137,7 +137,7 @@ public final class RuntimeTask implements Task, ExecutionObserver {
 	/**
 	 * Registers the {@link ExecutionListener} object for this task. This object
 	 * will be notified about important events during the task execution.
-	 * 
+	 *
 	 * @param executionListener
 	 *        the object to be notified for important events during the task execution
 	 */
@@ -150,7 +150,7 @@ public final class RuntimeTask implements Task, ExecutionObserver {
 	/**
 	 * Unregisters the {@link ExecutionListener} object for this environment. This object
 	 * will no longer be notified about important events during the task execution.
-	 * 
+	 *
 	 * @param executionListener
 	 *        the lister object to be unregistered
 	 */
@@ -183,7 +183,7 @@ public final class RuntimeTask implements Task, ExecutionObserver {
 
 	/**
 	 * Cancels or kills the task.
-	 * 
+	 *
 	 * @param cancel
 	 *        <code>true/code> if the task shall be canceled, <code>false</code> if it shall be killed
 	 */
@@ -229,14 +229,15 @@ public final class RuntimeTask implements Task, ExecutionObserver {
 			try {
 				executingThread.join(1000);
 			} catch (InterruptedException e) {}
-			
+
 			if (!executingThread.isAlive()) {
 				break;
 			}
 
-			if (LOG.isDebugEnabled())
-				LOG.debug("Sending repeated " + (cancel == true ? "canceling" : "killing") + " signal to " +
-					this.environment.getTaskName() + " with state " + this.executionState);
+			if (LOG.isDebugEnabled()) {
+			LOG.debug("Sending repeated " + (cancel == true ? "canceling" : "killing") + " signal to " +
+				this.environment.getTaskName() + " with state " + this.executionState);
+			}
 		}
 	}
 
@@ -276,7 +277,7 @@ public final class RuntimeTask implements Task, ExecutionObserver {
 
 	/**
 	 * Returns the runtime environment associated with this task.
-	 * 
+	 *
 	 * @return the runtime environment associated with this task
 	 */
 	public RuntimeEnvironment getRuntimeEnvironment() {

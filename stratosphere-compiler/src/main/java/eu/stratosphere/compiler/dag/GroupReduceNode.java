@@ -32,24 +32,24 @@ import eu.stratosphere.configuration.Configuration;
  * The Optimizer representation of a <i>Reduce</i> contract node.
  */
 public class GroupReduceNode extends SingleInputNode {
-	
+
 	private GroupReduceNode combinerUtilityNode;
-	
+
 	/**
 	 * Creates a new ReduceNode for the given contract.
-	 * 
+	 *
 	 * @param pactContract The reduce contract object.
 	 */
 	public GroupReduceNode(GroupReduceOperatorBase<?> pactContract) {
 		super(pactContract);
-		
+
 		if (this.keys == null) {
 			// case of a key-less reducer. force a parallelism of 1
 			setDegreeOfParallelism(1);
 			setSubtasksPerInstance(1);
 		}
 	}
-	
+
 	public GroupReduceNode(GroupReduceNode reducerToCopyForCombiner) {
 		super(reducerToCopyForCombiner);
 	}
@@ -58,7 +58,7 @@ public class GroupReduceNode extends SingleInputNode {
 
 	/**
 	 * Gets the contract object for this reduce node.
-	 * 
+	 *
 	 * @return The contract.
 	 */
 	@Override
@@ -69,7 +69,7 @@ public class GroupReduceNode extends SingleInputNode {
 	/**
 	 * Checks, whether a combiner function has been given for the function encapsulated
 	 * by this reduce contract.
-	 * 
+	 *
 	 * @return True, if a combiner has been given, false otherwise.
 	 */
 	public boolean isCombineable() {
@@ -80,7 +80,7 @@ public class GroupReduceNode extends SingleInputNode {
 	public String getName() {
 		return "GroupReduce";
 	}
-	
+
 	@Override
 	protected List<OperatorDescriptorSingle> getPossibleProperties() {
 		// see if an internal hint dictates the strategy to use
@@ -93,7 +93,7 @@ public class GroupReduceNode extends SingleInputNode {
 				useCombiner = false;
 			} else if (PactCompiler.HINT_LOCAL_STRATEGY_COMBINING_SORT.equals(localStrategy)) {
 				if (!isCombineable()) {
-					PactCompiler.LOG.warn("Strategy hint for Reduce Pact '" + getPactContract().getName() + 
+					PactCompiler.LOG.warn("Strategy hint for Reduce Pact '" + getPactContract().getName() +
 						"' desires combinable reduce, but user function is not marked combinable.");
 				}
 				useCombiner = true;
@@ -103,7 +103,7 @@ public class GroupReduceNode extends SingleInputNode {
 		} else {
 			useCombiner = isCombineable();
 		}
-		
+
 		// check if we can work with a grouping (simple reducer), or if we need ordering because of a group order
 		Ordering groupOrder = null;
 		if (getPactContract() instanceof GroupReduceOperatorBase) {
@@ -112,28 +112,28 @@ public class GroupReduceNode extends SingleInputNode {
 				groupOrder = null;
 			}
 		}
-		
+
 		OperatorDescriptorSingle props = useCombiner ?
 			(this.keys == null ? new AllGroupWithPartialPreGroupProperties() : new GroupWithPartialPreGroupProperties(this.keys, groupOrder)) :
 			(this.keys == null ? new AllGroupProperties() : new GroupProperties(this.keys, groupOrder));
 
 			return Collections.singletonList(props);
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 	//  Estimates
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	protected void computeOperatorSpecificDefaultEstimates(DataStatistics statistics) {
 		// no real estimates possible for a reducer.
 	}
-	
+
 	public GroupReduceNode getCombinerUtilityNode() {
 		if (this.combinerUtilityNode == null) {
 			this.combinerUtilityNode = new GroupReduceNode(this);
-			
-			// we conservatively assume the combiner returns the same data size as it consumes 
+
+			// we conservatively assume the combiner returns the same data size as it consumes
 			this.combinerUtilityNode.estimatedOutputSize = getPredecessorNode().getEstimatedOutputSize();
 			this.combinerUtilityNode.estimatedNumRecords = getPredecessorNode().getEstimatedNumRecords();
 		}

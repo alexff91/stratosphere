@@ -21,7 +21,7 @@ import java.util.List;
  * gate of the actual execution vertex.
  * <p>
  * This class is not thread-safe.
- * 
+ *
  */
 public final class ManagementGate extends ManagementAttachment {
 
@@ -58,7 +58,7 @@ public final class ManagementGate extends ManagementAttachment {
 
 	/**
 	 * Constructs a new management gate.
-	 * 
+	 *
 	 * @param managementVertex
 	 *        the management vertex this gate belongs to
 	 * @param index
@@ -81,7 +81,7 @@ public final class ManagementGate extends ManagementAttachment {
 
 	/**
 	 * Checks if this gate represents an input gate.
-	 * 
+	 *
 	 * @return <code>true</code> if this gate represents an input gate in the actual execution graph, <code>false</code>
 	 *         otherwise
 	 */
@@ -91,7 +91,7 @@ public final class ManagementGate extends ManagementAttachment {
 
 	/**
 	 * Adds a new edge which originates at this gate.
-	 * 
+	 *
 	 * @param managementEdge
 	 *        the edge to be added
 	 * @param index
@@ -108,7 +108,7 @@ public final class ManagementGate extends ManagementAttachment {
 
 	/**
 	 * Adds a new edge which arrives at this gate.
-	 * 
+	 *
 	 * @param managementEdge
 	 *        the edge to be added
 	 * @param index
@@ -125,7 +125,7 @@ public final class ManagementGate extends ManagementAttachment {
 
 	/**
 	 * Returns the {@link ManagementGraph} this gate belongs to.
-	 * 
+	 *
 	 * @return the management graph this gate belongs to
 	 */
 	public ManagementGraph getGraph() {
@@ -134,7 +134,7 @@ public final class ManagementGate extends ManagementAttachment {
 
 	/**
 	 * Returns the number of edges originating at this gate.
-	 * 
+	 *
 	 * @return the number of edges originating at this gate
 	 */
 	public int getNumberOfForwardEdges() {
@@ -144,7 +144,7 @@ public final class ManagementGate extends ManagementAttachment {
 
 	/**
 	 * Returns the number of edges arriving at this gate.
-	 * 
+	 *
 	 * @return the number of edges arriving at this gate
 	 */
 	public int getNumberOfBackwardEdges() {
@@ -154,7 +154,7 @@ public final class ManagementGate extends ManagementAttachment {
 
 	/**
 	 * Returns the index of this gate.
-	 * 
+	 *
 	 * @return the index of this gate
 	 */
 	public int getIndex() {
@@ -163,7 +163,7 @@ public final class ManagementGate extends ManagementAttachment {
 
 	/**
 	 * Returns the edge originating at the given index.
-	 * 
+	 *
 	 * @param index
 	 *        the index of the edge to be returned
 	 * @return the edge at the given index or <code>null</code> if no such edge exists
@@ -179,7 +179,7 @@ public final class ManagementGate extends ManagementAttachment {
 
 	/**
 	 * Returns the edge arriving at the given index.
-	 * 
+	 *
 	 * @param index
 	 *        the index of the edge to be returned
 	 * @return the edge at the given index or <code>null</code> if no such edge exists
@@ -195,7 +195,7 @@ public final class ManagementGate extends ManagementAttachment {
 
 	/**
 	 * Returns the vertex this gate belongs to.
-	 * 
+	 *
 	 * @return the vertex this gate belongs to
 	 */
 	public ManagementVertex getVertex() {
@@ -204,7 +204,7 @@ public final class ManagementGate extends ManagementAttachment {
 
 	/**
 	 * Returns the id of the management gate.
-	 * 
+	 *
 	 * @return the id of the management gate
 	 */
 	public ManagementGateID getManagementGateID() {

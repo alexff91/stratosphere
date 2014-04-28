@@ -72,7 +72,7 @@ public class NirvanaOutputList implements List<Record> {
 
 	@Override
 	public Iterator<Record> iterator() {
-		
+
 		return new Iterator<Record>() {
 
 			@Override
@@ -89,7 +89,7 @@ public class NirvanaOutputList implements List<Record> {
 			public void remove() {
 				throw new UnsupportedOperationException();
 			}
-			
+
 		};
 	}
 
@@ -153,5 +153,5 @@ public class NirvanaOutputList implements List<Record> {
 		return null;
 	}
 
-	
+
 }

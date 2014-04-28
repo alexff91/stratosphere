@@ -131,7 +131,7 @@ final class RuntimeOutputChannelBroker extends AbstractOutputChannelForwarder im
 	 * Creates a new {@link TransferEnvelope} object. The method assigns
 	 * and increases the sequence number. Moreover, it will look up the list of receivers for this transfer envelope.
 	 * This method will block until the lookup is completed.
-	 * 
+	 *
 	 * @return a new {@link TransferEnvelope} object containing the correct sequence number and receiver list
 	 */
 	private TransferEnvelope createNewOutgoingTransferEnvelope() {
@@ -146,7 +146,7 @@ final class RuntimeOutputChannelBroker extends AbstractOutputChannelForwarder im
 	/**
 	 * Calculates the recommended size of the next buffer to be
 	 * handed to the attached channel object in bytes.
-	 * 
+	 *
 	 * @return the recommended size of the next buffer in bytes
 	 */
 	private int calculateBufferSize() {

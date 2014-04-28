@@ -30,7 +30,7 @@ import eu.stratosphere.configuration.Configuration;
  * Utility class to create instances from class objects and checking failure reasons.
  */
 public class InstantiationUtil {
-	
+
 	/**
 	 * A custom ObjectInputStream that can also load user-code using a
 	 * user-code ClassLoader.
@@ -56,13 +56,13 @@ public class InstantiationUtil {
 
 	/**
 	 * Creates a new instance of the given class.
-	 * 
+	 *
 	 * @param <T> The generic type of the class.
 	 * @param clazz The class to instantiate.
 	 * @param castTo Optional parameter, specifying the class that the given class must be a subclass off. This
-	 *               argument is added to prevent class cast exceptions occurring later. 
+	 *               argument is added to prevent class cast exceptions occurring later.
 	 * @return An instance of the given class.
-	 * 
+	 *
 	 * @throws RuntimeException Thrown, if the class could not be instantiated. The exception contains a detailed
 	 *                          message about the reason why the instantiation failed.
 	 */
@@ -70,13 +70,13 @@ public class InstantiationUtil {
 		if (clazz == null) {
 			throw new NullPointerException();
 		}
-		
+
 		// check if the class is a subclass, if the check is required
 		if (castTo != null && !castTo.isAssignableFrom(clazz)) {
-			throw new RuntimeException("The class '" + clazz.getName() + "' is not a subclass of '" + 
+			throw new RuntimeException("The class '" + clazz.getName() + "' is not a subclass of '" +
 				castTo.getName() + "' as is required.");
 		}
-		
+
 		// try to instantiate the class
 		try {
 			return clazz.newInstance();
@@ -84,59 +84,59 @@ public class InstantiationUtil {
 		catch (InstantiationException iex) {
 			// check for the common problem causes
 			checkForInstantiation(clazz);
-			
+
 			// here we are, if non of the common causes was the problem. then the error was
 			// most likely an exception in the constructor or field initialization
-			throw new RuntimeException("Could not instantiate type '" + clazz.getName() + 
+			throw new RuntimeException("Could not instantiate type '" + clazz.getName() +
 					"' due to an unspecified exception: " + iex.getMessage(), iex);
 		}
 		catch (IllegalAccessException iaex) {
 			// check for the common problem causes
 			checkForInstantiation(clazz);
-			
+
 			// here we are, if non of the common causes was the problem. then the error was
 			// most likely an exception in the constructor or field initialization
-			throw new RuntimeException("Could not instantiate type '" + clazz.getName() + 
+			throw new RuntimeException("Could not instantiate type '" + clazz.getName() +
 					"' due to an unspecified exception: " + iaex.getMessage(), iaex);
 		}
 		catch (Throwable t) {
 			String message = t.getMessage();
-			throw new RuntimeException("Could not instantiate type '" + clazz.getName() + 
-				"' Most likely the constructor (or a member variable initialization) threw an exception" + 
+			throw new RuntimeException("Could not instantiate type '" + clazz.getName() +
+				"' Most likely the constructor (or a member variable initialization) threw an exception" +
 				(message == null ? "." : ": " + message), t);
 		}
 	}
-	
+
 	/**
 	 * Checks, whether the given class has a public nullary constructor.
-	 * 
+	 *
 	 * @param clazz The class to check.
 	 * @return True, if the class has a public nullary constructor, false if not.
 	 */
 	public static boolean hasPublicNullaryConstructor(Class<?> clazz) {
 		Constructor<?>[] constructors = clazz.getConstructors();
 		for (int i = 0; i < constructors.length; i++) {
-			if (constructors[i].getParameterTypes().length == 0 && 
+			if (constructors[i].getParameterTypes().length == 0 &&
 					Modifier.isPublic(constructors[i].getModifiers())) {
 				return true;
 			}
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Checks, whether the given class is public.
-	 * 
+	 *
 	 * @param clazz The class to check.
 	 * @return True, if the class is public, false if not.
 	 */
 	public static boolean isPublic(Class<?> clazz) {
 		return Modifier.isPublic(clazz.getModifiers());
 	}
-	
+
 	/**
 	 * Checks, whether the class is a proper class, i.e. not abstract or an interface, and not a primitive type.
-	 * 
+	 *
 	 * @param clazz The class to check.
 	 * @return True, if the class is a proper class, false otherwise.
 	 */
@@ -148,7 +148,7 @@ public class InstantiationUtil {
 	/**
 	 * Checks, whether the class is an inner class that is not statically accessible. That is especially true for
 	 * anonymous inner classes.
-	 * 
+	 *
 	 * @param clazz The class to check.
 	 * @return True, if the class is a non-statically accessible inner class.
 	 */
@@ -167,21 +167,21 @@ public class InstantiationUtil {
 			}
 		}
 	}
-	
+
 	/**
 	 * Performs a standard check whether the class can be instantiated by {@code Class#newInstance()}.
-	 * 
+	 *
 	 * @param clazz The class to check.
 	 * @throws RuntimeException Thrown, if the class cannot be instantiated by {@code Class#newInstance()}.
 	 */
 	public static void checkForInstantiation(Class<?> clazz) {
 		final String errorMessage = checkForInstantiationError(clazz);
-		
+
 		if (errorMessage != null) {
 			throw new RuntimeException("The class '" + clazz.getName() + "' is not instantiable: " + errorMessage);
 		}
 	}
-	
+
 	public static String checkForInstantiationError(Class<?> clazz) {
 		if (!isPublic(clazz)) {
 			return "The class is not public.";
@@ -192,16 +192,16 @@ public class InstantiationUtil {
 		} else if (!hasPublicNullaryConstructor(clazz)) {
 			return "The class has no (implicit) public nullary constructor, i.e. a constructor without arguments.";
 		} else {
-			return null; 
+			return null;
 		}
 	}
-	
+
 	public static Object readObjectFromConfig(Configuration config, String key, ClassLoader cl) throws IOException, ClassNotFoundException {
 		byte[] bytes = config.getBytes(key, null);
 		if (bytes == null) {
 			return null;
 		}
-		
+
 		ObjectInputStream oois = null;
 		try {
 			oois = new ClassLoaderObjectInputStream(new ByteArrayInputStream(bytes), cl);
@@ -212,7 +212,7 @@ public class InstantiationUtil {
 			}
 		}
 	}
-	
+
 	public static void writeObjectToConfig(Object o, Configuration config, String key) throws IOException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -221,9 +221,9 @@ public class InstantiationUtil {
 		byte[] bytes = baos.toByteArray();
 		config.setBytes(key, bytes);
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Private constructor to prevent instantiation.
 	 */

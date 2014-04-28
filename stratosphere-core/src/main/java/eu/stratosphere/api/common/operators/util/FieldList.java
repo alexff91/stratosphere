@@ -22,33 +22,33 @@ import java.util.List;
  *
  */
 public class FieldList extends FieldSet {
-	
+
 	public FieldList() {
 		super();
 	}
-	
+
 	public FieldList(int columnIndex) {
 		this();
 		add(columnIndex);
 	}
-	
+
 	public FieldList(int[] columnIndexes) {
 		this();
 		addAll(columnIndexes);
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public Integer get(int pos) {
 		return get().get(pos);
 	}
-	
+
 	public FieldList toFieldList() {
 		return this;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 
 	@Override
 	public boolean isValidSubset(FieldSet set) {
@@ -58,7 +58,7 @@ public class FieldList extends FieldSet {
 			return false;
 		}
 	}
-	
+
 	public boolean isValidSubset(FieldList list) {
 		if (list.size() > size()) {
 			return false;
@@ -74,12 +74,12 @@ public class FieldList extends FieldSet {
 		}
 		return true;
 	}
-	
+
 	public boolean isValidUnorderedPrefix(FieldSet set) {
 		if (set.size() > size()) {
 			return false;
 		}
-		
+
 		List<Integer> list = get();
 		for (int i = 0; i < set.size(); i++) {
 			if (!set.contains(list.get(i))) {
@@ -88,9 +88,9 @@ public class FieldList extends FieldSet {
 		}
 		return true;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	protected Collection<Integer> initCollection() {
 		return new ArrayList<Integer>();
@@ -100,7 +100,7 @@ public class FieldList extends FieldSet {
 	protected String getDescriptionPrefix() {
 		return "[";
 	}
-	
+
 	@Override
 	protected String getDescriptionSuffix() {
 		return "]";

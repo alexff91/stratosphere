@@ -29,11 +29,11 @@ import eu.stratosphere.compiler.plan.SingleInputPlanNode;
 import eu.stratosphere.pact.runtime.task.DriverStrategy;
 
 public final class PartialGroupProperties extends OperatorDescriptorSingle {
-	
+
 	public PartialGroupProperties(FieldSet keys) {
 		super(keys);
 	}
-	
+
 	@Override
 	public DriverStrategy getStrategy() {
 		return DriverStrategy.PARTIAL_GROUP;
@@ -45,7 +45,7 @@ public final class PartialGroupProperties extends OperatorDescriptorSingle {
 		GroupReduceNode combinerNode = new GroupReduceNode((GroupReduceOperatorBase<?>) node.getPactContract());
 		combinerNode.setDegreeOfParallelism(in.getSource().getDegreeOfParallelism());
 		combinerNode.setSubtasksPerInstance(in.getSource().getSubtasksPerInstance());
-		
+
 		return new SingleInputPlanNode(combinerNode, "Combine("+node.getPactContract().getName()+")", in, DriverStrategy.PARTIAL_GROUP, this.keyList);
 	}
 
@@ -60,7 +60,7 @@ public final class PartialGroupProperties extends OperatorDescriptorSingle {
 		props.setGroupedFields(this.keys);
 		return Collections.singletonList(props);
 	}
-	
+
 	@Override
 	public GlobalProperties computeGlobalProperties(GlobalProperties gProps) {
 		if (gProps.getUniqueFieldCombination() != null && gProps.getUniqueFieldCombination().size() > 0 &&
@@ -71,7 +71,7 @@ public final class PartialGroupProperties extends OperatorDescriptorSingle {
 		gProps.clearUniqueFieldCombinations();
 		return gProps;
 	}
-	
+
 	@Override
 	public LocalProperties computeLocalProperties(LocalProperties lProps) {
 		lProps.clearUniqueFieldSets();

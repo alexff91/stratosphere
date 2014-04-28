@@ -14,7 +14,7 @@
 /**
  * This file is based on source code from the Hadoop Project (http://hadoop.apache.org/), licensed by the Apache
  * Software Foundation (ASF) under the Apache License, Version 2.0. See the NOTICE file distributed with this work for
- * additional information regarding copyright ownership. 
+ * additional information regarding copyright ownership.
  */
 
 package eu.stratosphere.util;
@@ -36,7 +36,7 @@ public final class StringUtils {
 
 	/**
 	 * Makes a string representation of the exception.
-	 * 
+	 *
 	 * @param e
 	 *        the exception to stringify
 	 * @return A string with exception name and call stack.
@@ -52,7 +52,7 @@ public final class StringUtils {
 	/**
 	 * Given an array of bytes it will convert the bytes to a hex string
 	 * representation of the bytes.
-	 * 
+	 *
 	 * @param bytes
 	 *        the bytes to convert in a hex string
 	 * @param start
@@ -75,7 +75,7 @@ public final class StringUtils {
 	/**
 	 * Given an array of bytes it will convert the bytes to a hex string
 	 * representation of the bytes.
-	 * 
+	 *
 	 * @param bytes
 	 *        the bytes to convert in a hex string
 	 * @return hex string representation of the byte array
@@ -87,7 +87,7 @@ public final class StringUtils {
 	/**
 	 * Given a hex string this will return the byte array corresponding to the
 	 * string .
-	 * 
+	 *
 	 * @param hex
 	 *        the hex String array
 	 * @return a byte array that is a hex string representation of the given
@@ -100,10 +100,10 @@ public final class StringUtils {
 		}
 		return bts;
 	}
-	
+
 	/**
 	 * Helper function to escape Strings for display in HTML pages
-	 * 
+	 *
 	 * @param str
 	 * 	String to Escape
 	 * @return escaped String
@@ -119,21 +119,21 @@ public final class StringUtils {
 				sb.append('\\');
 				sb.append(c);
 			}
-			else if (c == '\b')
-				sb.append("\\b");
-			else if (c == '\t')
-				sb.append("\\t");
-			else if (c == '\n')
-				sb.append("<br>");
-			else if (c == '\f')
-				sb.append("\\f");
-			else if (c == '\r')
-				sb.append("\\r");
-			else if (c == '>')
-				sb.append("&gt;");
-			else if (c == '<')
-				sb.append("&lt;");
-			else {
+			else if (c == '\b') {
+			sb.append("\\b");
+			} else if (c == '\t') {
+			sb.append("\\t");
+			} else if (c == '\n') {
+			sb.append("<br>");
+			} else if (c == '\f') {
+			sb.append("\\f");
+			} else if (c == '\r') {
+			sb.append("\\r");
+			} else if (c == '>') {
+			sb.append("&gt;");
+			} else if (c == '<') {
+			sb.append("&lt;");
+			} else {
 				if (c < ' ') {
 					// Unreadable throw away
 				} else {
@@ -144,8 +144,8 @@ public final class StringUtils {
 
 		return sb.toString();
 	}
-	
-	
+
+
 	public static final String arrayAwareToString(Object o) {
 		if (o == null) {
 			return "null";
@@ -153,11 +153,11 @@ public final class StringUtils {
 		if (o.getClass().isArray()) {
 			return arrayToString(o);
 		}
-		
+
 		return o.toString();
 	}
-	
-	
+
+
 	public static final String arrayToString(Object array) {
 		if (array instanceof int[]) {
 			return Arrays.toString((int[]) array);
@@ -186,10 +186,10 @@ public final class StringUtils {
 		if (array instanceof short[]) {
 			return Arrays.toString((short[]) array);
 		}
-		
+
 		return "<unknown array type>";
 	}
-	
+
 	public static final String showControlCharacters(String str) {
 		int len = str.length();
 		StringBuilder sb = new StringBuilder();
@@ -219,11 +219,11 @@ public final class StringUtils {
 
 		return sb.toString();
 	}
-	
+
 	/**
 	 * Creates a random string with a length within the given interval. The string contains only characters that
 	 * can be represented as a single code point.
-	 * 
+	 *
 	 * @param rnd The random used to create the strings.
 	 * @param minLength The minimum string length.
 	 * @param maxLength The maximum string length.
@@ -231,7 +231,7 @@ public final class StringUtils {
 	 */
 	public static String getRandomString(Random rnd, int minLength, int maxLength) {
 		int len = rnd.nextInt(maxLength - minLength + 1) + minLength;
-		
+
 		char[] data = new char[len];
 		for (int i = 0; i < data.length; i++) {
 			data[i] = (char) (rnd.nextInt(Character.MAX_VALUE) + 1);

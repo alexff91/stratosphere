@@ -24,7 +24,7 @@ import eu.stratosphere.core.memory.MemorySegment;
 /**
  * Boxed serializable and comparable long integer type, representing the primitive
  * type {@code long}.
- * 
+ *
  * @see eu.stratosphere.types.Key
  */
 public class LongValue implements Key, NormalizableKey, ResettableValue<LongValue>, CopyableValue<LongValue> {
@@ -40,8 +40,8 @@ public class LongValue implements Key, NormalizableKey, ResettableValue<LongValu
 	}
 
 	/**
-	 * Initializes the encapsulated long with the specified value. 
-	 * 
+	 * Initializes the encapsulated long with the specified value.
+	 *
 	 * @param value Initial value of the encapsulated long.
 	 */
 	public LongValue(final long value) {
@@ -50,7 +50,7 @@ public class LongValue implements Key, NormalizableKey, ResettableValue<LongValu
 
 	/**
 	 * Returns the value of the encapsulated long.
-	 * 
+	 *
 	 * @return The value of the encapsulated long.
 	 */
 	public long getValue() {
@@ -59,7 +59,7 @@ public class LongValue implements Key, NormalizableKey, ResettableValue<LongValu
 
 	/**
 	 * Sets the value of the encapsulated long to the specified value.
-	 * 
+	 *
 	 * @param value
 	 *        The new value of the encapsulated long.
 	 */
@@ -67,11 +67,11 @@ public class LongValue implements Key, NormalizableKey, ResettableValue<LongValu
 		this.value = value;
 	}
 
-    @Override
-    public void setValue(LongValue value) {
-        this.value = value.value;
-    }
-	
+@Override
+public void setValue(LongValue value) {
+	this.value = value.value;
+}
+
 	/*
 	 * (non-Javadoc)
 	 * @see java.lang.Object#toString()
@@ -82,7 +82,7 @@ public class LongValue implements Key, NormalizableKey, ResettableValue<LongValu
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see eu.stratosphere.nephele.io.IOReadableWritable#read(java.io.DataInput)
@@ -102,15 +102,16 @@ public class LongValue implements Key, NormalizableKey, ResettableValue<LongValu
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 */
 	@Override
 	public int compareTo(final Key o) {
-		if (!(o instanceof LongValue))
-			throw new ClassCastException("Cannot compare " + o.getClass().getName() + " to N_Integer!");
+		if (!(o instanceof LongValue)) {
+		throw new ClassCastException("Cannot compare " + o.getClass().getName() + " to N_Integer!");
+		}
 
 		final long other = ((LongValue) o).value;
 
@@ -137,9 +138,9 @@ public class LongValue implements Key, NormalizableKey, ResettableValue<LongValu
 		}
 		return false;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 
 	@Override
 	public int getMaxNormalizedKeyLen()
@@ -172,14 +173,14 @@ public class LongValue implements Key, NormalizableKey, ResettableValue<LongValu
 			}
 		}
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public int getBinaryLength() {
 		return 8;
 	}
-	
+
 	@Override
 	public void copyTo(LongValue target) {
 		target.value = this.value;

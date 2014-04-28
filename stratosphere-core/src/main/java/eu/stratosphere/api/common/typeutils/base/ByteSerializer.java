@@ -25,9 +25,9 @@ import eu.stratosphere.core.memory.DataOutputView;
 public class ByteSerializer extends TypeSerializer<Byte> implements ImmutableTypeUtil {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	public static final ByteSerializer INSTANCE = new ByteSerializer();
-	
+
 	private static final Byte ZERO = Byte.valueOf((byte) 0);
 
 

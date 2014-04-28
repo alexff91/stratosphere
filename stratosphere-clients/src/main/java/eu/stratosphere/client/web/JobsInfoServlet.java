@@ -41,7 +41,7 @@ public class JobsInfoServlet extends HttpServlet {
 	// ------------------------------------------------------------------------
 
 	private final Configuration config;
-	
+
 	public JobsInfoServlet(Configuration nepheleConfig) {
 		this.config = nepheleConfig;
 	}
@@ -49,21 +49,21 @@ public class JobsInfoServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		//resp.setContentType("application/json");
-		
+
 		ExtendedManagementProtocol jmConn = null;
 		try {
-			
+
 			jmConn = getJMConnection();
 			List<RecentJobEvent> recentJobs = jmConn.getRecentJobs();
-			
+
 			ArrayList<RecentJobEvent> jobs = new ArrayList<RecentJobEvent>(recentJobs);
-			
+
 			resp.setStatus(HttpServletResponse.SC_OK);
 			PrintWriter wrt = resp.getWriter();
 			wrt.write("[");
 			for (int i = 0; i < jobs.size(); i++) {
 				RecentJobEvent jobEvent = jobs.get(i);
-				
+
 				//Serialize job to json
 				wrt.write("{");
 				wrt.write("\"jobid\": \"" + jobEvent.getJobID() + "\",");
@@ -79,7 +79,7 @@ public class JobsInfoServlet extends HttpServlet {
 				}
 			}
 			wrt.write("]");
-			
+
 		} catch (Throwable t) {
 			resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			resp.getWriter().print(t.getMessage());
@@ -94,17 +94,17 @@ public class JobsInfoServlet extends HttpServlet {
 			jmConn = null;
 		}
 	}
-	
+
 	/**
 	 * Sets up a connection to the JobManager.
-	 * 
+	 *
 	 * @return Connection to the JobManager.
 	 * @throws IOException
 	 */
 	private ExtendedManagementProtocol getJMConnection() throws IOException {
 		String jmHost = config.getString(ConfigConstants.JOB_MANAGER_IPC_ADDRESS_KEY, null);
 		String jmPort = config.getString(ConfigConstants.JOB_MANAGER_IPC_PORT_KEY, null);
-		
+
 		return RPC.getProxy(ExtendedManagementProtocol.class,
 				new InetSocketAddress(jmHost, Integer.parseInt(jmPort)), NetUtils.getSocketFactory());
 	}
@@ -119,17 +119,17 @@ public class JobsInfoServlet extends HttpServlet {
 			if ((c == '\\') || (c == '"') || (c == '/')) {
 				sb.append('\\');
 				sb.append(c);
-			} else if (c == '\b')
-				sb.append("\\b");
-			else if (c == '\t')
-				sb.append("\\t");
-			else if (c == '\n')
-				sb.append("<br>");
-			else if (c == '\f')
-				sb.append("\\f");
-			else if (c == '\r')
-				sb.append("\\r");
-			else {
+			} else if (c == '\b') {
+			sb.append("\\b");
+			} else if (c == '\t') {
+			sb.append("\\t");
+			} else if (c == '\n') {
+			sb.append("<br>");
+			} else if (c == '\f') {
+			sb.append("\\f");
+			} else if (c == '\r') {
+			sb.append("\\r");
+			} else {
 				if (c < ' ') {
 					// Unreadable throw away
 				} else {

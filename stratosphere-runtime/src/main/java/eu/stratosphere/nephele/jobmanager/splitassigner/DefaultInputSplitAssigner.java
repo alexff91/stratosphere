@@ -33,7 +33,7 @@ import eu.stratosphere.nephele.jobgraph.JobID;
  * split assigner is always used when a more specific {@link InputSplitAssigned} could not be found.
  * <p>
  * This class is thread-safe.
- * 
+ *
  */
 public class DefaultInputSplitAssigner implements InputSplitAssigner {
 

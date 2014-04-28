@@ -21,20 +21,20 @@ public class UniformRecordGenerator implements MutableObjectIterator<Record> {
 
 	private final IntValue key = new IntValue();
 	private final IntValue value = new IntValue();
-	
+
 	int numKeys;
 	int numVals;
-	
+
 	int keyCnt = 0;
 	int valCnt = 0;
 	int startKey = 0;
 	int startVal = 0;
 	boolean repeatKey;
-	
+
 	public UniformRecordGenerator(int numKeys, int numVals, boolean repeatKey) {
 		this(numKeys, numVals, 0, 0, repeatKey);
 	}
-	
+
 	public UniformRecordGenerator(int numKeys, int numVals, int startKey, int startVal, boolean repeatKey) {
 		this.numKeys = numKeys;
 		this.numVals = numVals;
@@ -49,10 +49,10 @@ public class UniformRecordGenerator implements MutableObjectIterator<Record> {
 			if(valCnt >= numVals+startVal) {
 				return null;
 			}
-			
+
 			key.setValue(keyCnt++);
 			value.setValue(valCnt);
-			
+
 			if(keyCnt == numKeys+startKey) {
 				keyCnt = startKey;
 				valCnt++;
@@ -63,13 +63,13 @@ public class UniformRecordGenerator implements MutableObjectIterator<Record> {
 			}
 			key.setValue(keyCnt);
 			value.setValue(valCnt++);
-			
+
 			if(valCnt == numVals+startVal) {
 				valCnt = startVal;
 				keyCnt++;
 			}
 		}
-		
+
 		reuse.setField(0, this.key);
 		reuse.setField(1, this.value);
 		reuse.updateBinaryRepresenation();

@@ -29,20 +29,20 @@ import org.apache.commons.logging.LogFactory;
 import eu.stratosphere.util.StringUtils;
 
 public class LogfileInfoServlet extends HttpServlet {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * The log for this class.
 	 */
 	private static final Log LOG = LogFactory.getLog(LogfileInfoServlet.class);
-	
+
 	private File logDir;
-	
+
 	public LogfileInfoServlet(File logDir) {
 		this.logDir = logDir;
 	}
-	
+
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
@@ -54,7 +54,7 @@ public class LogfileInfoServlet extends HttpServlet {
 					if( f.getName().equals("jobmanager-stdout.log") ||
 							(f.getName().indexOf("jobmanager") != -1 && f.getName().indexOf(".out") != -1 && ! Character.isDigit(f.getName().charAt(f.getName().length() - 1) ))
 							) {
-						
+
 						resp.setStatus(HttpServletResponse.SC_OK);
 						resp.setContentType("text/plain ");
 						writeFile(resp.getOutputStream(), f);
@@ -68,13 +68,13 @@ public class LogfileInfoServlet extends HttpServlet {
 					// contains "jobmanager" ".log" and no number in the end ->needs improvement
 					if( f.getName().equals("jobmanager-stderr.log") ||
 							(f.getName().indexOf("jobmanager") != -1 && f.getName().indexOf(".log") != -1 && ! Character.isDigit(f.getName().charAt(f.getName().length() - 1) ))) {
-						
+
 						resp.setStatus(HttpServletResponse.SC_OK);
 						resp.setContentType("text/plain ");
 						writeFile(resp.getOutputStream(), f);
 						break;
 					}
-					
+
 				}
 			}
 		} catch (Throwable t) {
@@ -85,14 +85,14 @@ public class LogfileInfoServlet extends HttpServlet {
 			}
 		}
 	}
-	
+
 	private static void writeFile(OutputStream out, File file) throws IOException {
 		byte[] buf = new byte[4 * 1024]; // 4K buffer
-		
+
 		FileInputStream  is = null;
 		try {
 			is = new FileInputStream(file);
-			
+
 			int bytesRead;
 			while ((bytesRead = is.read(buf)) != -1) {
 				out.write(buf, 0, bytesRead);
@@ -103,5 +103,5 @@ public class LogfileInfoServlet extends HttpServlet {
 			}
 		}
 	}
-	
+
 }

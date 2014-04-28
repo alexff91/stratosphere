@@ -13,6 +13,10 @@
 
 package eu.stratosphere.compiler.plan;
 
+import static eu.stratosphere.compiler.plan.PlanNode.SourceAndDamReport.FOUND_SOURCE;
+import static eu.stratosphere.compiler.plan.PlanNode.SourceAndDamReport.FOUND_SOURCE_AND_DAM;
+import static eu.stratosphere.compiler.plan.PlanNode.SourceAndDamReport.NOT_FOUND;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -27,47 +31,45 @@ import eu.stratosphere.pact.runtime.task.DamBehavior;
 import eu.stratosphere.pact.runtime.task.DriverStrategy;
 import eu.stratosphere.util.Visitor;
 
-import static eu.stratosphere.compiler.plan.PlanNode.SourceAndDamReport.*;
-
 /**
- * 
+ *
  */
 public class SingleInputPlanNode extends PlanNode {
-	
+
 	protected final Channel input;
-	
+
 	protected final FieldList keys;
-	
+
 	protected final boolean[] sortOrders;
-	
+
 	private TypeComparatorFactory<?> comparator;
-	
+
 	public Object postPassHelper;
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	public SingleInputPlanNode(OptimizerNode template, String nodeName, Channel input, DriverStrategy driverStrategy) {
 		this(template, nodeName, input, driverStrategy, null, null);
 	}
-	
-	public SingleInputPlanNode(OptimizerNode template, String nodeName, Channel input, 
+
+	public SingleInputPlanNode(OptimizerNode template, String nodeName, Channel input,
 			DriverStrategy driverStrategy, FieldList driverKeyFields)
 	{
 		this(template, nodeName, input, driverStrategy, driverKeyFields, getTrueArray(driverKeyFields.size()));
 	}
-	
-	public SingleInputPlanNode(OptimizerNode template, String nodeName, Channel input, 
+
+	public SingleInputPlanNode(OptimizerNode template, String nodeName, Channel input,
 			DriverStrategy driverStrategy, FieldList driverKeyFields, boolean[] driverSortOrders)
 	{
 		super(template, nodeName, driverStrategy);
 		this.input = input;
 		this.keys = driverKeyFields;
 		this.sortOrders = driverSortOrders;
-		
+
 		if (this.input.getShipStrategy() == ShipStrategyType.BROADCAST) {
 			this.input.setReplicationFactor(getDegreeOfParallelism());
 		}
-		
+
 		final PlanNode predNode = input.getSource();
 		if (this.branchPlan == null) {
 			this.branchPlan = predNode.branchPlan;
@@ -77,7 +79,7 @@ public class SingleInputPlanNode extends PlanNode {
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	public SingleInputNode getSingleInputNode() {
 		if (this.template instanceof SingleInputNode) {
 			return (SingleInputNode) this.template;
@@ -85,33 +87,33 @@ public class SingleInputPlanNode extends PlanNode {
 			throw new RuntimeException();
 		}
 	}
-	
+
 	/**
 	 * Gets the input channel to this node.
-	 * 
+	 *
 	 * @return The input channel to this node.
 	 */
 	public Channel getInput() {
 		return this.input;
 	}
-	
+
 	/**
 	 * Gets the predecessor of this node, i.e. the source of the input channel.
-	 * 
+	 *
 	 * @return The predecessor of this node.
 	 */
 	public PlanNode getPredecessor() {
 		return this.input.getSource();
 	}
-	
+
 	public FieldList getKeys() {
 		return this.keys;
 	}
-	
+
 	public boolean[] getSortOrders() {
 		return sortOrders;
 	}
-	
+
 	/**
 	 * Gets the comparator from this PlanNode.
 	 *
@@ -120,7 +122,7 @@ public class SingleInputPlanNode extends PlanNode {
 	public TypeComparatorFactory<?> getComparator() {
 		return comparator;
 	}
-	
+
 	/**
 	 * Sets the comparator for this PlanNode.
 	 *
@@ -129,19 +131,19 @@ public class SingleInputPlanNode extends PlanNode {
 	public void setComparator(TypeComparatorFactory<?> comparator) {
 		this.comparator = comparator;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 
 	@Override
 	public void accept(Visitor<PlanNode> visitor) {
 		if (visitor.preVisit(this)) {
 			this.input.getSource().accept(visitor);
-			
+
 			for (Channel broadcastInput : getBroadcastInputs()) {
 				broadcastInput.getSource().accept(visitor);
 			}
-			
+
 			visitor.postVisit(this);
 		}
 	}
@@ -161,8 +163,9 @@ public class SingleInputPlanNode extends PlanNode {
 					if (this.hasLeft) {
 						this.hasLeft = false;
 						return SingleInputPlanNode.this.input.getSource();
-					} else 
-						throw new NoSuchElementException();
+					} else {
+					throw new NoSuchElementException();
+					}
 				}
 				@Override
 				public void remove() {
@@ -172,13 +175,13 @@ public class SingleInputPlanNode extends PlanNode {
 		}
 		else {
 			List<PlanNode> preds = new ArrayList<PlanNode>();
-			
+
 			preds.add(input.getSource());
-			
+
 			for (Channel c : getBroadcastInputs()) {
 				preds.add(c.getSource());
 			}
-			
+
 			return preds.iterator();
 		}
 	}
@@ -197,8 +200,9 @@ public class SingleInputPlanNode extends PlanNode {
 				if (this.hasLeft) {
 					this.hasLeft = false;
 					return SingleInputPlanNode.this.input;
-				} else 
-					throw new NoSuchElementException();
+				} else {
+				throw new NoSuchElementException();
+				}
 			}
 			@Override
 			public void remove() {
@@ -225,7 +229,7 @@ public class SingleInputPlanNode extends PlanNode {
 		else {
 			// NOT_FOUND
 			// check the broadcast inputs
-			
+
 			for (NamedChannel nc : getBroadcastInputs()) {
 				SourceAndDamReport bcRes = nc.getSource().hasDamOnPathDownTo(source);
 				if (bcRes != NOT_FOUND) {
@@ -236,9 +240,9 @@ public class SingleInputPlanNode extends PlanNode {
 			return NOT_FOUND;
 		}
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	protected static boolean[] getTrueArray(int length) {
 		final boolean[] a = new boolean[length];
 		for (int i = 0; i < length; i++) {

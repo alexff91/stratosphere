@@ -47,7 +47,7 @@ final class RuntimeInputChannelContext implements InputChannelContext, ByteBuffe
 	private final TransferEnvelopeDispatcher transferEnvelopeDispatcher;
 
 	private final Queue<TransferEnvelope> queuedEnvelopes = new ArrayDeque<TransferEnvelope>();
-	
+
 	private Iterator<AbstractEvent> pendingEvents;
 
 	private int lastReceivedEnvelope = -1;
@@ -93,7 +93,7 @@ final class RuntimeInputChannelContext implements InputChannelContext, ByteBuffe
 				this.pendingEvents = events;
 			}
 		}
-		
+
 		// get the buffer, if there is one
 		if (nextEnvelope.getBuffer() != null) {
 			return new BufferOrEvent(nextEnvelope.getBuffer());
@@ -104,7 +104,7 @@ final class RuntimeInputChannelContext implements InputChannelContext, ByteBuffe
 			if (!this.pendingEvents.hasNext()) {
 				this.pendingEvents = null;
 			}
-			
+
 			return next;
 		}
 		else {
@@ -117,7 +117,7 @@ final class RuntimeInputChannelContext implements InputChannelContext, ByteBuffe
 	public void transferEventToOutputChannel(AbstractEvent event) throws IOException, InterruptedException {
 		TransferEnvelope ephemeralTransferEnvelope = new TransferEnvelope(0, getJobID(), getChannelID());
 		ephemeralTransferEnvelope.addEvent(event);
-		
+
 		this.transferEnvelopeDispatcher.processEnvelopeFromInputChannel(ephemeralTransferEnvelope);
 	}
 
@@ -127,7 +127,7 @@ final class RuntimeInputChannelContext implements InputChannelContext, ByteBuffe
 		if (ReceiverNotFoundEvent.isReceiverNotFoundEvent(transferEnvelope)) {
 			return;
 		}
-		
+
 		// The sequence number of the envelope to be queued
 		final int sequenceNumber = transferEnvelope.getSequenceNumber();
 
@@ -146,7 +146,7 @@ final class RuntimeInputChannelContext implements InputChannelContext, ByteBuffe
 				// This is a problem, now we are actually missing some data
 				this.byteBufferedInputChannel.reportIOException(new IOException("Expected data packet "
 						+ expectedSequenceNumber + " but received " + sequenceNumber));
-				
+
 				// notify that something (an exception) is available
 				this.byteBufferedInputChannel.notifyGateThatInputIsAvailable();
 
@@ -281,7 +281,7 @@ final class RuntimeInputChannelContext implements InputChannelContext, ByteBuffe
 
 	/**
 	 * Constructs and returns a human-readable name of this channel used for debugging.
-	 * 
+	 *
 	 * @return a human-readable name of this channel used for debugging
 	 */
 	private String getChannelName() {

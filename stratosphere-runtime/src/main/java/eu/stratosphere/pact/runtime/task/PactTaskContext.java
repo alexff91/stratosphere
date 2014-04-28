@@ -35,24 +35,24 @@ import eu.stratosphere.util.MutableObjectIterator;
 public interface PactTaskContext<S extends Function, OT>
 {
 	TaskConfig getTaskConfig();
-	
+
 	ClassLoader getUserCodeClassLoader();
-	
+
 	MemoryManager getMemoryManager();
-	
+
 	IOManager getIOManager();
-	
+
 	<X> MutableObjectIterator<X> getInput(int index);
-	
+
 	<X> TypeSerializer<X> getInputSerializer(int index);
-	
+
 	<X> TypeComparator<X> getInputComparator(int index);
-	
+
 	S getStub();
-	
+
 	Collector<OT> getOutputCollector();
-	
+
 	AbstractInvokable getOwningNepheleTask();
-	
+
 	String formatLogString(String message);
 }

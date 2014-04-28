@@ -39,9 +39,9 @@ import eu.stratosphere.api.java.operators.DataSource;
 import eu.stratosphere.api.java.operators.OperatorTranslation;
 import eu.stratosphere.api.java.operators.translation.JavaPlan;
 import eu.stratosphere.api.java.typeutils.BasicTypeInfo;
+import eu.stratosphere.api.java.typeutils.ResultTypeQueryable;
 import eu.stratosphere.api.java.typeutils.TypeExtractor;
 import eu.stratosphere.api.java.typeutils.TypeInformation;
-import eu.stratosphere.api.java.typeutils.ResultTypeQueryable;
 import eu.stratosphere.api.java.typeutils.ValueTypeInfo;
 import eu.stratosphere.core.fs.Path;
 import eu.stratosphere.types.StringValue;
@@ -50,59 +50,60 @@ import eu.stratosphere.util.SplittableIterator;
 
 
 public abstract class ExecutionEnvironment {
-	
+
 	private static ExecutionEnvironment contextEnvironment;
-	
+
 	private static int defaultLocalDop = Runtime.getRuntime().availableProcessors();
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	private final UUID executionId;
-	
+
 	private final List<DataSink<?>> sinks = new ArrayList<DataSink<?>>();
-	
+
 	private int degreeOfParallelism = -1;
-	
-	
+
+
 	// --------------------------------------------------------------------------------------------
 	//  Constructor and Properties
 	// --------------------------------------------------------------------------------------------
-	
+
 	protected ExecutionEnvironment() {
 		this.executionId = UUID.randomUUID();
 	}
-	
+
 	public int getDegreeOfParallelism() {
 		return degreeOfParallelism;
 	}
-	
+
 	public void setDegreeOfParallelism(int degreeOfParallelism) {
-		if (degreeOfParallelism < 1)
-			throw new IllegalArgumentException("Degree of parallelism must be at least one.");
-		
+		if (degreeOfParallelism < 1) {
+		throw new IllegalArgumentException("Degree of parallelism must be at least one.");
+		}
+
 		this.degreeOfParallelism = degreeOfParallelism;
 	}
-	
+
 	public UUID getId() {
 		return this.executionId;
 	}
-	
+
 	public String getIdString() {
 		return this.executionId.toString();
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 	//  Data set creations
 	// --------------------------------------------------------------------------------------------
 
 	// ---------------------------------- Text Input Format ---------------------------------------
-	
+
 	public DataSet<String> readTextFile(String filePath) {
 		Validate.notNull(filePath, "The file path may not be null.");
-		
+
 		return new DataSource<String>(this, new TextInputFormat(new Path(filePath)), BasicTypeInfo.STRING_TYPE_INFO );
 	}
-	
+
 	public DataSet<String> readTextFile(String filePath, String charsetName) {
 		Validate.notNull(filePath, "The file path may not be null.");
 
@@ -110,47 +111,47 @@ public abstract class ExecutionEnvironment {
 		format.setCharsetName(charsetName);
 		return new DataSource<String>(this, format, BasicTypeInfo.STRING_TYPE_INFO );
 	}
-	
+
 	// -------------------------- Text Input Format With String Value------------------------------
-	
+
 	public DataSet<StringValue> readTextFileWithValue(String filePath) {
 		Validate.notNull(filePath, "The file path may not be null.");
-		
+
 		return new DataSource<StringValue>(this, new TextValueInputFormat(new Path(filePath)), new ValueTypeInfo<StringValue>(StringValue.class) );
 	}
-	
+
 	public DataSet<StringValue> readTextFileWithValue(String filePath, String charsetName, boolean skipInvalidLines) {
 		Validate.notNull(filePath, "The file path may not be null.");
-		
+
 		TextValueInputFormat format = new TextValueInputFormat(new Path(filePath));
 		format.setCharsetName(charsetName);
 		format.setSkipInvalidLines(skipInvalidLines);
 		return new DataSource<StringValue>(this, format, new ValueTypeInfo<StringValue>(StringValue.class) );
 	}
-	
+
 	// ----------------------------------- CSV Input Format ---------------------------------------
-	
+
 	public CsvReader readCsvFile(Path filePath) {
 		return new CsvReader(filePath, this);
 	}
-	
+
 	public CsvReader readCsvFile(String filePath) {
 		return new CsvReader(filePath, this);
 	}
-	
+
 	// ----------------------------------- Generic Input Format ---------------------------------------
-	
+
 	public <X> DataSet<X> createInput(InputFormat<X, ?> inputFormat) {
 		if (inputFormat == null) {
 			throw new IllegalArgumentException("InputFormat must not be null.");
 		}
-		
+
 		try {
 			@SuppressWarnings("unchecked")
 			TypeInformation<X> producedType = (inputFormat instanceof ResultTypeQueryable) ?
 					((ResultTypeQueryable<X>) inputFormat).getProducedType() :
 					TypeExtractor.extractInputFormatTypes(inputFormat);
-			
+
 			return createInput(inputFormat, producedType);
 		}
 		catch (Exception e) {
@@ -158,54 +159,59 @@ public abstract class ExecutionEnvironment {
 					"Please specify the TypeInformation of the produced type explicitly.");
 		}
 	}
-	
+
 	public <X> DataSet<X> createInput(InputFormat<X, ?> inputFormat, TypeInformation<X> producedType) {
-		if (inputFormat == null)
-			throw new IllegalArgumentException("InputFormat must not be null.");
-		
-		if (producedType == null)
-			throw new IllegalArgumentException("Produced type information must not be null.");
-		
+		if (inputFormat == null) {
+		throw new IllegalArgumentException("InputFormat must not be null.");
+		}
+
+		if (producedType == null) {
+		throw new IllegalArgumentException("Produced type information must not be null.");
+		}
+
 		return new DataSource<X>(this, inputFormat, producedType);
 	}
-	
+
 	// ----------------------------------- Collection ---------------------------------------
-	
+
 	public <X> DataSet<X> fromCollection(Collection<X> data) {
-		if (data == null)
-			throw new IllegalArgumentException("The data must not be null.");
-		
-		if (data.size() == 0)
-			throw new IllegalArgumentException("The size of the collection must not be empty.");
-		
+		if (data == null) {
+		throw new IllegalArgumentException("The data must not be null.");
+		}
+
+		if (data.size() == 0) {
+		throw new IllegalArgumentException("The size of the collection must not be empty.");
+		}
+
 		X firstValue = data.iterator().next();
-		
+
 		return fromCollection(data, TypeInformation.getForObject(firstValue));
 	}
-	
-	
+
+
 	public <X> DataSet<X> fromCollection(Collection<X> data, TypeInformation<X> type) {
 		CollectionInputFormat.checkCollection(data, type.getTypeClass());
-		
+
 		return new DataSource<X>(this, new CollectionInputFormat<X>(data), type);
 	}
-	
+
 	public <X> DataSet<X> fromCollection(Iterator<X> data, Class<X> type) {
 		return fromCollection(data, TypeInformation.getForClass(type));
 	}
-	
+
 	public <X> DataSet<X> fromCollection(Iterator<X> data, TypeInformation<X> type) {
-		if (!(data instanceof Serializable))
-			throw new IllegalArgumentException("The iterator must be serializable.");
-		
+		if (!(data instanceof Serializable)) {
+		throw new IllegalArgumentException("The iterator must be serializable.");
+		}
+
 		return new DataSource<X>(this, new IteratorInputFormat<X>(data), type);
 	}
-	
-	
+
+
 	/**
 	 * Creates a new data set that contains the given elements. The elements must all be of the same type,
 	 * for example, all of the Strings or integers.
-	 * 
+	 *
 	 * @param data The elements to make up the data set.
 	 * @return A data set representing the given list of elements.
 	 */
@@ -216,98 +222,98 @@ public abstract class ExecutionEnvironment {
 		if (data.length == 0) {
 			throw new IllegalArgumentException("The number of elements must not be zero.");
 		}
-		
+
 		return fromCollection(Arrays.asList(data), TypeInformation.getForObject(data[0]));
 	}
-	
-	
+
+
 	public <X> DataSet<X> fromParallelCollection(SplittableIterator<X> iterator, Class<X> type) {
 		return fromParallelCollection(iterator, TypeInformation.getForClass(type));
 	}
-	
-	
+
+
 	public <X> DataSet<X> fromParallelCollection(SplittableIterator<X> iterator, TypeInformation<X> type) {
 		return new DataSource<X>(this, new ParallelIteratorInputFormat<X>(iterator), type);
 	}
-	
-	
+
+
 	public DataSet<Long> generateSequence(long from, long to) {
 		return fromParallelCollection(new NumberSequenceIterator(from, to), BasicTypeInfo.LONG_TYPE_INFO);
-	}	
-	
+	}
+
 	// --------------------------------------------------------------------------------------------
 	//  Executing
 	// --------------------------------------------------------------------------------------------
-	
+
 	public JobExecutionResult execute() throws Exception {
 		return execute(getDefaultName());
 	}
-	
+
 	public abstract JobExecutionResult execute(String jobName) throws Exception;
-	
+
 	public abstract String getExecutionPlan() throws Exception;
-	
+
 	public JavaPlan createProgramPlan() {
 		return createProgramPlan(null);
 	}
-	
+
 	public JavaPlan createProgramPlan(String jobName) {
 		if (this.sinks.isEmpty()) {
 			throw new RuntimeException("No data sinks have been created yet.");
 		}
-		
+
 		if (jobName == null) {
 			jobName = getDefaultName();
 		}
-		
+
 		OperatorTranslation translator = new OperatorTranslation();
 		return translator.translateToPlan(this.sinks, jobName);
 	}
-	
+
 	void registerDataSink(DataSink<?> sink) {
 		this.sinks.add(sink);
 	}
-	
+
 	private static String getDefaultName() {
 		return "Stratosphere Java Job at " + Calendar.getInstance().getTime();
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 	//  Instantiation of Execution Contexts
 	// --------------------------------------------------------------------------------------------
-	
+
 	public static ExecutionEnvironment getExecutionEnvironment() {
 		return contextEnvironment == null ? createLocalEnvironment() : contextEnvironment;
 	}
-	
+
 	public static LocalEnvironment createLocalEnvironment() {
 		return createLocalEnvironment(defaultLocalDop);
 	}
-	
+
 	public static LocalEnvironment createLocalEnvironment(int degreeOfParallelism) {
 		LocalEnvironment lee = new LocalEnvironment();
 		lee.setDegreeOfParallelism(degreeOfParallelism);
 		return lee;
 	}
-	
+
 	public static ExecutionEnvironment createRemoteEnvironment(String host, int port, String... jarFiles) {
 		return new RemoteEnvironment(host, port, jarFiles);
 	}
-	
+
 	public static ExecutionEnvironment createRemoteEnvironment(String host, int port, int degreeOfParallelism, String... jarFiles) {
 		RemoteEnvironment rec = new RemoteEnvironment(host, port, jarFiles);
 		rec.setDegreeOfParallelism(degreeOfParallelism);
 		return rec;
 	}
-	
+
 	public static void setDefaultLocalParallelism(int degreeOfParallelism) {
 		defaultLocalDop = degreeOfParallelism;
 	}
-	
+
 	protected static void initializeContextEnvironment(ExecutionEnvironment ctx) {
 		contextEnvironment = ctx;
 	}
-	
+
 	protected boolean isContextEnvironmentSet() {
 		return contextEnvironment != null;
 	}

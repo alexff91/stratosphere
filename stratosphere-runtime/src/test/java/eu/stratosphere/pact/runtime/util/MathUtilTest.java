@@ -36,14 +36,14 @@ public class MathUtilTest
 		assertEquals(13, MathUtils.log2floor((0x1 << 13) + 1));
 		assertEquals(30, MathUtils.log2floor(Integer.MAX_VALUE));
 		assertEquals(31, MathUtils.log2floor(-1));
-		
+
 		try {
 			MathUtils.log2floor(0);
 			fail();
 		}
 		catch (ArithmeticException aex) {}
 	}
-	
+
 	@Test
 	public void testRoundDownToPowerOf2()
 	{

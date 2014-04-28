@@ -22,7 +22,7 @@ public class DoubleSumAggregator implements Aggregator<DoubleValue> {
 
 	private DoubleValue wrapper = new DoubleValue();
 	private double sum;
-	
+
 	@Override
 	public DoubleValue getAggregate() {
 		wrapper.setValue(sum);

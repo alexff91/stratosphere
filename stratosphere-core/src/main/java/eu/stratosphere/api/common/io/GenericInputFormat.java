@@ -25,14 +25,14 @@ import eu.stratosphere.core.io.GenericInputSplit;
 public abstract class GenericInputFormat<OT> implements InputFormat<OT, GenericInputSplit> {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	/**
 	 * The partition of this split.
 	 */
 	protected int partitionNumber;
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public void configure(Configuration parameters) {
 		//	nothing by default
@@ -58,7 +58,7 @@ public abstract class GenericInputFormat<OT> implements InputFormat<OT, GenericI
 		}
 		return splits;
 	}
-	
+
 	@Override
 	public Class<? extends GenericInputSplit> getInputSplitType() {
 		return GenericInputSplit.class;

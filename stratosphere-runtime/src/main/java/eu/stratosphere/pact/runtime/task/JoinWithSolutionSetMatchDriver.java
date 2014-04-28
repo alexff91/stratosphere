@@ -27,69 +27,69 @@ import eu.stratosphere.util.Collector;
 import eu.stratosphere.util.MutableObjectIterator;
 
 public abstract class JoinWithSolutionSetMatchDriver<IT1, IT2, OT> implements ResettablePactDriver<GenericJoiner<IT1, IT2, OT>, OT> {
-	
+
 	protected PactTaskContext<GenericJoiner<IT1, IT2, OT>, OT> taskContext;
-	
+
 	protected MutableHashTable<?, ?> hashTable;
-	
+
 	private TypeSerializer<IT1> serializer1;
 	private TypeSerializer<IT2> serializer2;
 //	private TypeComparator<IT1> comparator1;
 //	private TypeComparator<IT2> comparator2;
-	
+
 	private IT1 rec1;
 	private IT2 rec2;
-	
+
 	protected volatile boolean running;
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	protected abstract int getSolutionSetInputIndex();
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public void setup(PactTaskContext<GenericJoiner<IT1, IT2, OT>, OT> context) {
 		this.taskContext = context;
 		this.running = true;
 	}
-	
+
 	@Override
 	public int getNumberOfInputs() {
 		return 1;
 	}
-	
+
 	@Override
 	public Class<GenericJoiner<IT1, IT2, OT>> getStubType() {
 		@SuppressWarnings("unchecked")
 		final Class<GenericJoiner<IT1, IT2, OT>> clazz = (Class<GenericJoiner<IT1, IT2, OT>>) (Class<?>) GenericJoiner.class;
 		return clazz;
 	}
-	
+
 	@Override
 	public boolean requiresComparatorOnInput() {
 		return false;
 	}
-	
+
 	@Override
 	public boolean isInputResettable(int inputNum) {
 		if (inputNum < 0 || inputNum > 1) {
 			throw new IndexOutOfBoundsException();
 		}
-		
+
 		// from the perspective of the task that runs this operator, there is only one input, which is not resettable
 		// we implement the resettable interface only in order to avoid that this class is re-instantiated for
 		// every iterations
 		return false;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	@Override
 	public void initialize() throws Exception {
 		TaskConfig config = taskContext.getTaskConfig();
 		ClassLoader classLoader = taskContext.getUserCodeClassLoader();
-		
+
 		int ssIndex = getSolutionSetInputIndex();
 		if (ssIndex == 0) {
 			TypeSerializerFactory<IT1> sSerializerFact = config.getSolutionSetSerializer(classLoader);
@@ -110,7 +110,7 @@ public abstract class JoinWithSolutionSetMatchDriver<IT1, IT2, OT> implements Re
 		}
 		rec1 = serializer1.createInstance();
 		rec2 = serializer2.createInstance();
-		
+
 		// grab a handle to the hash table from the iteration broker
 		if (taskContext instanceof AbstractIterativePactTask) {
 			AbstractIterativePactTask<?, ?> iterativeTaskContext = (AbstractIterativePactTask<?, ?>) taskContext;
@@ -133,15 +133,15 @@ public abstract class JoinWithSolutionSetMatchDriver<IT1, IT2, OT> implements Re
 
 		final GenericJoiner<IT1, IT2, OT> matchStub = taskContext.getStub();
 		final Collector<OT> collector = taskContext.getOutputCollector();
-		
+
 		if (getSolutionSetInputIndex() == 0) {
 			IT1 buildSideRecord = rec1;
 			IT2 probeSideRecord = rec2;
-			
+
 			@SuppressWarnings("unchecked")
 			final MutableHashTable<IT1, IT2> join = (MutableHashTable<IT1, IT2>) hashTable;
 			final MutableObjectIterator<IT2> probeSideInput = taskContext.<IT2>getInput(0);
-			
+
 			while (this.running && ((probeSideRecord = probeSideInput.next(probeSideRecord)) != null)) {
 				final MutableHashTable.HashBucketIterator<IT1, IT2> bucket = join.getMatchesFor(probeSideRecord);
 				if ((buildSideRecord = bucket.next(buildSideRecord)) != null) {
@@ -154,11 +154,11 @@ public abstract class JoinWithSolutionSetMatchDriver<IT1, IT2, OT> implements Re
 		} else if (getSolutionSetInputIndex() == 1) {
 			IT2 buildSideRecord = rec2;
 			IT1 probeSideRecord = rec1;
-			
+
 			@SuppressWarnings("unchecked")
 			final MutableHashTable<IT2, IT1> join = (MutableHashTable<IT2, IT1>) hashTable;
 			final MutableObjectIterator<IT1> probeSideInput = taskContext.<IT1>getInput(0);
-			
+
 			while (this.running && ((probeSideRecord = probeSideInput.next(probeSideRecord)) != null)) {
 				final MutableHashTable.HashBucketIterator<IT2, IT1> bucket = join.getMatchesFor(probeSideRecord);
 				if ((buildSideRecord = bucket.next(buildSideRecord)) != null) {
@@ -198,7 +198,7 @@ public abstract class JoinWithSolutionSetMatchDriver<IT1, IT2, OT> implements Re
 
 	@Override
 	public void cleanup() throws Exception {}
-	
+
 	@Override
 	public void reset() throws Exception {}
 
@@ -211,10 +211,10 @@ public abstract class JoinWithSolutionSetMatchDriver<IT1, IT2, OT> implements Re
 	public void cancel() {
 		this.running = false;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 	// --------------------------------------------------------------------------------------------
-	
+
 	public static final class SolutionSetFirstJoinDriver<IT1, IT2, OT> extends JoinWithSolutionSetMatchDriver<IT1, IT2, OT> {
 
 		@Override
@@ -222,7 +222,7 @@ public abstract class JoinWithSolutionSetMatchDriver<IT1, IT2, OT> implements Re
 			return 0;
 		}
 	}
-	
+
 	public static final class SolutionSetSecondJoinDriver<IT1, IT2, OT> extends JoinWithSolutionSetMatchDriver<IT1, IT2, OT> {
 
 		@Override

@@ -24,8 +24,8 @@ import eu.stratosphere.api.common.operators.util.UserCodeObjectWrapper;
 import eu.stratosphere.api.java.record.io.DelimitedInputFormat;
 import eu.stratosphere.api.java.record.io.FileOutputFormat;
 import eu.stratosphere.configuration.Configuration;
-import eu.stratosphere.core.fs.Path;
 import eu.stratosphere.core.fs.FileSystem.WriteMode;
+import eu.stratosphere.core.fs.Path;
 import eu.stratosphere.nephele.services.memorymanager.MemoryManager;
 import eu.stratosphere.nephele.template.AbstractInputTask;
 import eu.stratosphere.nephele.template.AbstractOutputTask;
@@ -42,7 +42,7 @@ import eu.stratosphere.util.InstantiationUtil;
 import eu.stratosphere.util.MutableObjectIterator;
 
 public abstract class TaskTestBase {
-	
+
 	protected long memorySize = 0;
 
 	protected MockInputSplitProvider inputSplitProvider;
@@ -81,7 +81,7 @@ public abstract class TaskTestBase {
 		final TaskConfig config = new TaskConfig(this.mockEnv.getTaskConfiguration());
 		config.setDriver(driver);
 		config.setStubWrapper(new UserCodeClassWrapper<Function>(stubClass));
-		
+
 		task.setEnvironment(this.mockEnv);
 
 		if (task instanceof RegularPactTask<?, ?>) {
@@ -100,10 +100,10 @@ public abstract class TaskTestBase {
 	{
 		registerFileOutputTask(outTask, InstantiationUtil.instantiate(stubClass, FileOutputFormat.class), outPath);
 	}
-	
+
 	public void registerFileOutputTask(AbstractOutputTask outTask, FileOutputFormat outputFormat, String outPath) {
 		TaskConfig dsConfig = new TaskConfig(this.mockEnv.getTaskConfiguration());
-		
+
 		outputFormat.setOutputFilePath(new Path(outPath));
 		outputFormat.setWriteMode(WriteMode.OVERWRITE);
 
@@ -128,13 +128,13 @@ public abstract class TaskTestBase {
 		catch (Throwable t) {
 			throw new RuntimeException("Could not instantiate test input format.", t);
 		}
-		
+
 		format.setFilePath(inPath);
 		format.setDelimiter(delimiter);
-		
+
 		TaskConfig dsConfig = new TaskConfig(this.mockEnv.getTaskConfiguration());
 		dsConfig.setStubWrapper(new UserCodeObjectWrapper<DelimitedInputFormat>(format));
-		
+
 		this.inputSplitProvider.addInputSplits(inPath, 5);
 
 		inTask.setEnvironment(this.mockEnv);

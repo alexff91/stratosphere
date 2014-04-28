@@ -31,21 +31,21 @@ import eu.stratosphere.util.Collector;
 import eu.stratosphere.util.MutableObjectIterator;
 
 public class ChainedCombineDriver<T> extends ChainedDriver<T, T> {
-	
+
 	private InputDataCollector<T> inputCollector;
-	
+
 	private volatile Exception exception;
-	
+
 	private GenericGroupReduce<T, ?> combiner;
-	
+
 	private AsynchronousPartialSorterCollector<T> sorter;
-	
+
 	private CombinerThread combinerThread;
-	
+
 	private AbstractInvokable parent;
-	
+
 	private volatile boolean canceled;
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	@Override
@@ -63,14 +63,14 @@ public class ChainedCombineDriver<T> extends ChainedDriver<T, T> {
 		// open the stub first
 		final Configuration stubConfig = this.config.getStubParameters();
 		RegularPactTask.openUserCode(this.combiner, stubConfig);
-		
+
 		// ----------------- Set up the asynchronous sorter -------------------------
-		
+
 		final long availableMemory = this.config.getMemoryDriver();
 		final DriverStrategy ds = this.config.getDriverStrategy();
-		
+
 		final MemoryManager memoryManager = this.parent.getEnvironment().getMemoryManager();
-		
+
 		// instantiate the serializer / comparator
 		final TypeSerializerFactory<T> serializerFactory = this.config.getInputSerializer(0, this.userCodeClassLoader);
 		final TypeComparatorFactory<T> comparatorFactory = this.config.getDriverComparator(0, this.userCodeClassLoader);
@@ -90,9 +90,9 @@ public class ChainedCombineDriver<T> extends ChainedDriver<T, T> {
 			default:
 				throw new RuntimeException("Invalid local strategy provided for CombineTask.");
 		}
-		
+
 		// ----------------- Set up the combiner thread -------------------------
-		
+
 		this.combinerThread = new CombinerThread(this.sorter, serializer, comparator, this.combiner, this.outputCollector);
 		this.combinerThread.start();
 		if (this.parent != null) {
@@ -112,20 +112,21 @@ public class ChainedCombineDriver<T> extends ChainedDriver<T, T> {
 				throw iex;
 			}
 		}
-		
+
 		if (this.parent != null && this.combinerThread != null) {
 			this.parent.userThreadFinished(this.combinerThread);
 		}
-		
+
 		if (this.exception != null) {
 			throw new ExceptionInChainedStubException(this.taskName, this.exception);
 		}
-		
+
 		this.sorter.close();
-		
-		if (this.canceled)
-			return;
-		
+
+		if (this.canceled) {
+		return;
+		}
+
 		RegularPactTask.closeUserCode(this.combiner);
 	}
 
@@ -133,11 +134,11 @@ public class ChainedCombineDriver<T> extends ChainedDriver<T, T> {
 	public void cancelTask() {
 		this.canceled = true;
 		this.exception = new Exception("Task has been canceled");
-		
+
 		this.combinerThread.cancel();
 		this.inputCollector.close();
 		this.sorter.close();
-		
+
 		try {
 			this.combinerThread.join();
 		} catch (InterruptedException iex) {
@@ -148,7 +149,7 @@ public class ChainedCombineDriver<T> extends ChainedDriver<T, T> {
 			}
 		}
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	public Function getStub() {
@@ -158,51 +159,53 @@ public class ChainedCombineDriver<T> extends ChainedDriver<T, T> {
 	public String getTaskName() {
 		return this.taskName;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	@Override
 	public void collect(T record) {
-		if (this.exception != null)
-			throw new RuntimeException("The combiner failed due to an exception.", 
-				this.exception.getCause() == null ? this.exception : this.exception.getCause());
-		
+		if (this.exception != null) {
+		throw new RuntimeException("The combiner failed due to an exception.",
+			this.exception.getCause() == null ? this.exception : this.exception.getCause());
+		}
+
 		this.inputCollector.collect(record);
 	}
 
 	@Override
 	public void close() {
 		this.inputCollector.close();
-		
-		if (this.exception != null)
-			throw new RuntimeException("The combiner failed due to an exception.", 
-				this.exception.getCause() == null ? this.exception : this.exception.getCause());
+
+		if (this.exception != null) {
+		throw new RuntimeException("The combiner failed due to an exception.",
+			this.exception.getCause() == null ? this.exception : this.exception.getCause());
+		}
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	private final class CombinerThread extends Thread {
-		
+
 		private final AsynchronousPartialSorterCollector<T> sorter;
-		
+
 		private final TypeSerializer<T> serializer;
-		
+
 		private final TypeComparator<T> comparator;
-		
+
 		private final GenericGroupReduce<T, ?> stub;
-		
+
 		private final Collector<T> output;
-		
+
 		private volatile boolean running;
-		
-		
+
+
 		private CombinerThread(AsynchronousPartialSorterCollector<T> sorter,
-				TypeSerializer<T> serializer, TypeComparator<T> comparator, 
+				TypeSerializer<T> serializer, TypeComparator<T> comparator,
 				GenericGroupReduce<T, ?> stub, Collector<T> output)
 		{
 			super("Combiner Thread");
 			setDaemon(true);
-			
+
 			this.sorter = sorter;
 			this.serializer = serializer;
 			this.comparator = comparator;
@@ -219,13 +222,14 @@ public class ChainedCombineDriver<T> extends ChainedDriver<T, T> {
 						iterator = this.sorter.getIterator();
 					}
 					catch (InterruptedException iex) {
-						if (!this.running)
-							return;
+						if (!this.running) {
+						return;
+						}
 					}
 				}
-				
+
 				final KeyGroupedIterator<T> keyIter = new KeyGroupedIterator<T>(iterator, this.serializer, this.comparator);
-				
+
 				// cache references on the stack
 				final GenericGroupReduce<T, ?> stub = this.stub;
 				final Collector<T> output = this.output;
@@ -239,7 +243,7 @@ public class ChainedCombineDriver<T> extends ChainedDriver<T, T> {
 				ChainedCombineDriver.this.exception = new Exception("The combiner failed due to an exception.", t);
 			}
 		}
-		
+
 		public void cancel() {
 			this.running = false;
 			this.interrupt();
